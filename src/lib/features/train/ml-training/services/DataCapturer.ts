@@ -237,7 +237,6 @@ export class DataCapturer {
     }, 2000);
 
     this.notifyStateChange();
-    console.log(`📹 Started capture session: ${session.id}`);
 
     return session;
   }
@@ -250,7 +249,6 @@ export class DataCapturer {
 
     this.state.isPaused = true;
     this.notifyStateChange();
-    console.log("⏸️ Capture paused");
   }
 
   /**
@@ -261,7 +259,6 @@ export class DataCapturer {
 
     this.state.isPaused = false;
     this.notifyStateChange();
-    console.log("▶️ Capture resumed");
   }
 
   /**
@@ -295,8 +292,6 @@ export class DataCapturer {
     this.state.isRecording = false;
     this.state.isPaused = false;
     this.notifyStateChange();
-
-    console.log(`⏹️ Stopped capture. Total frames: ${this.state.frameCount}`);
 
     return session;
   }

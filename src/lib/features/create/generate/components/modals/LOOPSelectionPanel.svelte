@@ -1,4 +1,4 @@
-<!--
+﻿<!--
 LOOPSelectionPanel.svelte - Bottom sheet for selecting LOOP components
 Refactored to use Drawer component for consistent behavior
 -->

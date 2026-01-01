@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Bridge Finder Implementation
  *
  * Finds bridge letters that can connect a sequence to a loopable position.

@@ -94,8 +94,8 @@
   }
 
   function handleKeydown(event: KeyboardEvent) {
-    // Shift+Enter to save (allow Enter for newlines)
-    if (event.key === "Enter" && event.shiftKey) {
+    // Enter to save (Shift+Enter for newlines)
+    if (event.key === "Enter" && !event.shiftKey) {
       event.preventDefault();
       void saveEdit();
     } else if (event.key === "Escape") {
@@ -123,7 +123,7 @@
       </div>
     {:else if !hasChanges}
       <div class="hint" in:fly={{ y: -10, duration: 200 }}>
-        Make changes to enable Save • Press <kbd>Shift+Enter</kbd> to save,
+        Make changes to enable Save • Press <kbd>Enter</kbd> to save,
         <kbd>Esc</kbd> to cancel
       </div>
     {/if}

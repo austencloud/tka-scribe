@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Create Module Panel Coordination State Factory
  *
  * Manages panel state for CreateModule's construction interface using Svelte 5 runes pattern.
@@ -159,17 +159,17 @@ export interface PanelCoordinationState {
   setPracticeBeatIndex(index: number | null): void;
 
   // LOOP Panel State
-  get isCAPPanelOpen(): boolean;
-  get capSelectedComponents(): Set<LOOPComponent> | null;
-  get capCurrentType(): LOOPType | null;
-  get capOnChange(): ((loopType: LOOPType) => void) | null;
+  get isLOOPPanelOpen(): boolean;
+  get loopSelectedComponents(): Set<LOOPComponent> | null;
+  get loopCurrentType(): LOOPType | null;
+  get loopOnChange(): ((loopType: LOOPType) => void) | null;
 
-  openCAPPanel(
+  openLOOPPanel(
     currentType: LOOPType,
     selectedComponents: Set<LOOPComponent>,
     onChange: (loopType: LOOPType) => void
   ): void;
-  closeCAPPanel(): void;
+  closeLOOPPanel(): void;
 
   // Creation Method Panel State
   get isCreationMethodPanelOpen(): boolean;
@@ -278,10 +278,10 @@ export function createPanelCoordinationState(): PanelCoordinationState {
   let practiceBeatIndex = $state<number | null>(null);
 
   // LOOP panel state
-  let isCAPPanelOpen = $state(false);
-  let capSelectedComponents = $state<Set<LOOPComponent> | null>(null);
-  let capCurrentType = $state<LOOPType | null>(null);
-  let capOnChange = $state<((loopType: LOOPType) => void) | null>(null);
+  let isLOOPPanelOpen = $state(false);
+  let loopSelectedComponents = $state<Set<LOOPComponent> | null>(null);
+  let loopCurrentType = $state<LOOPType | null>(null);
+  let loopOnChange = $state<((loopType: LOOPType) => void) | null>(null);
 
   // Creation method panel state
   let isCreationMethodPanelOpen = $state(false);
@@ -321,10 +321,10 @@ export function createPanelCoordinationState(): PanelCoordinationState {
     isSequenceActionsPanelOpen = false;
     isBeatEditorPanelOpen = false;
 
-    isCAPPanelOpen = false;
-    capSelectedComponents = null;
-    capCurrentType = null;
-    capOnChange = null;
+    isLOOPPanelOpen = false;
+    loopSelectedComponents = null;
+    loopCurrentType = null;
+    loopOnChange = null;
 
     isCreationMethodPanelOpen = false;
 
@@ -614,36 +614,36 @@ export function createPanelCoordinationState(): PanelCoordinationState {
     },
 
     // LOOP Panel Getters
-    get isCAPPanelOpen() {
-      return isCAPPanelOpen;
+    get isLOOPPanelOpen() {
+      return isLOOPPanelOpen;
     },
-    get capSelectedComponents() {
-      return capSelectedComponents;
+    get loopSelectedComponents() {
+      return loopSelectedComponents;
     },
-    get capCurrentType() {
-      return capCurrentType;
+    get loopCurrentType() {
+      return loopCurrentType;
     },
-    get capOnChange() {
-      return capOnChange;
+    get loopOnChange() {
+      return loopOnChange;
     },
 
-    openCAPPanel(
+    openLOOPPanel(
       currentType: LOOPType,
       selectedComponents: Set<LOOPComponent>,
       onChange: (loopType: LOOPType) => void
     ) {
       closeAllPanels();
-      capCurrentType = currentType;
-      capSelectedComponents = selectedComponents;
-      capOnChange = onChange;
-      isCAPPanelOpen = true;
+      loopCurrentType = currentType;
+      loopSelectedComponents = selectedComponents;
+      loopOnChange = onChange;
+      isLOOPPanelOpen = true;
     },
 
-    closeCAPPanel() {
-      isCAPPanelOpen = false;
-      capCurrentType = null;
-      capSelectedComponents = null;
-      capOnChange = null;
+    closeLOOPPanel() {
+      isLOOPPanelOpen = false;
+      loopCurrentType = null;
+      loopSelectedComponents = null;
+      loopOnChange = null;
     },
 
     // Creation Method Panel Getters
@@ -714,7 +714,7 @@ export function createPanelCoordinationState(): PanelCoordinationState {
         isVideoRecordPanelOpen ||
         isFilterPanelOpen ||
         isSequenceActionsPanelOpen ||
-        isCAPPanelOpen ||
+        isLOOPPanelOpen ||
         isCustomizePanelOpen
       );
     },

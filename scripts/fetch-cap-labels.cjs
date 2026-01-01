@@ -1,5 +1,5 @@
-/**
- * Fetch CAP Labels from Firebase
+﻿/**
+ * Fetch LOOP Labels from Firebase
  *
  * Usage: node scripts/fetch-cap-labels.cjs [command] [args]
  *
@@ -138,8 +138,8 @@ function printLabel(label) {
     label.designations.forEach((d, i) => {
       const formatted = formatDesignation(d);
       console.log(`  ${i + 1}. ${formatted}`);
-      if (d.capType) {
-        console.log(`     CAP Type: ${d.capType}`);
+      if (d.loopType) {
+        console.log(`     LOOP Type: ${d.loopType}`);
       }
     });
   }
@@ -152,8 +152,8 @@ function printLabel(label) {
       const components = formatDesignation(s);
       const baseWord = s.baseWord ? ` [${s.baseWord.toUpperCase()}]` : "";
       console.log(`  ${i + 1}. ${beats}: ${components}${baseWord}`);
-      if (s.capType) {
-        console.log(`     CAP Type: ${s.capType}`);
+      if (s.loopType) {
+        console.log(`     LOOP Type: ${s.loopType}`);
       }
     });
   }
@@ -185,7 +185,7 @@ function printLabel(label) {
 
 function printStats(labels) {
   console.log("\n" + "=".repeat(50));
-  console.log("CAP Labels Statistics");
+  console.log("LOOP Labels Statistics");
   console.log("=".repeat(50));
 
   console.log(`\nTotal labeled: ${labels.length}`);

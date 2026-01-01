@@ -427,7 +427,7 @@ This is a core architectural decision. The word "Service" is redundant - everyth
 
 | If the service does... | Name it... | Example |
 |------------------------|------------|---------|
-| Detection/checking | `*Detector` | `CAPDetector`, `ReversalDetector` |
+| Detection/checking | `*Detector` | `LOOPDetector`, `ReversalDetector` |
 | Management/coordination | `*Manager` | `TurnManager`, `CollectionManager` |
 | Configuration | `*Configurator` | `CardConfigurator` |
 | Orchestration | `*Orchestrator` | `GenerationOrchestrator` |
@@ -454,13 +454,13 @@ This is a core architectural decision. The word "Service" is redundant - everyth
 
 ```typescript
 // ✅ CORRECT - Descriptive, action-oriented names
-class CAPDetector implements ICAPDetector { }
+class LOOPDetector implements ILOOPDetector { }
 class SequencePersister implements ISequencePersister { }
 class TurnManager implements ITurnManager { }
 class OptionFilter implements IOptionFilter { }
 
 // ❌ WRONG - Redundant "Service" suffix
-class CAPDetectionService implements ICAPDetectionService { }
+class LOOPDetectionService implements ILOOPDetectionService { }
 class SequencePersistenceService implements ISequencePersistenceService { }
 class TurnManagementService implements ITurnManagementService { }
 class OptionFilterService implements IOptionFilterService { }
@@ -468,7 +468,7 @@ class OptionFilterService implements IOptionFilterService { }
 
 **Interface naming:** Interfaces follow the same pattern with `I` prefix:
 - `ISequencePersister` (not `ISequencePersistenceService`)
-- `ICAPDetector` (not `ICAPDetectionService`)
+- `ILOOPDetector` (not `ILOOPDetectionService`)
 
 **When creating new services:**
 1. Think: "What does this service DO?"

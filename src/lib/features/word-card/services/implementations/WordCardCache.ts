@@ -62,9 +62,6 @@ export class WordCardCache implements IWordCardCache {
       this.ensureCacheSpace(entry.size);
 
       this.imageCache.set(cacheKey, entry);
-      console.log(
-        `📦 Cached image for sequence ${sequenceId} (${imageBlob.size} bytes)`
-      );
     } catch (error) {
       console.error("Failed to store image in cache:", error);
       // Don't throw - caching failures should not break the main flow
@@ -99,7 +96,6 @@ export class WordCardCache implements IWordCardCache {
       entry.lastAccessed = new Date();
       this.hitCount++;
 
-      console.log(`🎯 Cache hit for sequence ${sequenceId}`);
       return entry.data as Blob;
     } catch (error) {
       console.error("Failed to retrieve image from cache:", error);
@@ -126,9 +122,6 @@ export class WordCardCache implements IWordCardCache {
       this.ensureCacheSpace(entry.size);
 
       this.dataCache.set(sequenceId, entry);
-      console.log(
-        `📦 Cached sequence data for ${sequenceId} (${dataSize} bytes)`
-      );
     } catch (error) {
       console.error("Failed to store sequence data in cache:", error);
     }

@@ -106,7 +106,6 @@ export async function analyzeAudioBpm(
         });
       } catch (err) {
         // Skip failed sections
-        console.warn(`Section ${currentStart}-${sectionEnd}s failed:`, err);
       }
 
       currentStart += SECTION_STEP;
@@ -154,10 +153,6 @@ export async function analyzeAudioBpm(
     const finalConfidence = Math.min(1, best.confidence + agreementBoost);
 
     onProgress?.(1.0);
-
-    console.log(
-      `🎵 BPM analysis: ${sections.length} sections analyzed, best at ${best.startTime}s-${best.endTime}s`
-    );
 
     return {
       bpm: mostCommonBpm,

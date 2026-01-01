@@ -133,6 +133,3 @@ export class LOOPExecutorSelector implements ILOOPExecutorSelector {
     ].includes(loopType);
   }
 }
-
-/** @deprecated Use LOOPExecutorSelector instead */
-export const CAPExecutorSelector = LOOPExecutorSelector;

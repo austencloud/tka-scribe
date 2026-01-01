@@ -23,9 +23,7 @@
   } = $props();
 
   // Resolve haptic feedback service
-  const hapticService = resolve<IHapticFeedback>(
-    TYPES.IHapticFeedback
-  );
+  const hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
 
   // Check if sequence has content worth saving
   const hasContent = $derived.by(() => {
@@ -87,9 +85,17 @@
         100%
     );
     border: 1px solid
-      color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent-strong)) 30%, transparent);
+      color-mix(
+        in srgb,
+        var(--theme-accent-strong, var(--theme-accent-strong)) 30%,
+        transparent
+      );
     box-shadow: 0 4px 12px
-      color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent-strong)) 40%, transparent);
+      color-mix(
+        in srgb,
+        var(--theme-accent-strong, var(--theme-accent-strong)) 40%,
+        transparent
+      );
   }
 
   .save-button:hover:not(:disabled) {
@@ -110,7 +116,11 @@
         100%
     );
     box-shadow: 0 6px 16px
-      color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent-strong)) 60%, transparent);
+      color-mix(
+        in srgb,
+        var(--theme-accent-strong, var(--theme-accent-strong)) 60%,
+        transparent
+      );
   }
 
   .save-button:active:not(:disabled) {
@@ -144,7 +154,11 @@
         100%
     );
     box-shadow: 0 4px 12px
-      color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent-strong)) 40%, transparent);
+      color-mix(
+        in srgb,
+        var(--theme-accent-strong, var(--theme-accent-strong)) 40%,
+        transparent
+      );
   }
 
   /* Mobile responsive - 48px minimum per iOS/Android guidelines */
@@ -172,7 +186,7 @@
     }
   }
 
-  /* LANDSCAPE MOBILE: Maintain 48px minimum for accessibility */
+  /* LANDSLOOPE MOBILE: Maintain 48px minimum for accessibility */
   @media (min-aspect-ratio: 17/10) and (max-height: 500px) {
     .save-button {
       width: var(

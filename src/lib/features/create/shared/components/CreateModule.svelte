@@ -548,8 +548,6 @@
 
       // Switch to Constructor tab
       navigationState.setActiveTab("constructor");
-
-      console.log("✓ Transferred sequence to Constructor for editing");
     } catch (error) {
       console.error("❌ Failed to transfer sequence to Constructor:", error);
     }
@@ -577,7 +575,6 @@
   function handleCancelTransfer() {
     showTransferConfirmation = false;
     sequenceToTransfer = null;
-    console.log("❌ Sequence transfer cancelled by user");
   }
 
   // ============================================================================

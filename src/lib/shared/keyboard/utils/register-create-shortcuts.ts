@@ -285,9 +285,7 @@ export function registerCreateShortcuts(
       const { CreateModuleState } = ref;
       const success = CreateModuleState.undo();
 
-      if (success) {
-        console.log("⌨️ Ctrl+Z - Undo successful");
-      } else {
+      if (!success) {
         debug.log("Ctrl+Z - Nothing to undo");
       }
     },
@@ -313,9 +311,7 @@ export function registerCreateShortcuts(
       const { CreateModuleState } = ref;
       const success = CreateModuleState.redo();
 
-      if (success) {
-        console.log("⌨️ Ctrl+Shift+Z - Redo successful");
-      } else {
+      if (!success) {
         debug.log("Ctrl+Shift+Z - Nothing to redo");
       }
     },
@@ -350,10 +346,6 @@ export function registerCreateShortcuts(
 
       if (selectedBeatData && selectedBeatData.beatNumber === 0) {
         // Start position is selected - clear entire sequence using the same workflow as clear button
-        console.log(
-          "⌨️ Backspace - Clearing entire sequence (start position selected)"
-        );
-
         try {
           await executeClearSequenceWorkflow({
             CreateModuleState,
@@ -365,10 +357,8 @@ export function registerCreateShortcuts(
           if (panelState.isEditPanelOpen) {
             panelState.closeEditPanel();
           }
-
-          console.log("✅ Sequence cleared successfully");
         } catch (err) {
-          console.error("❌ Failed to clear sequence:", err);
+          console.error("Failed to clear sequence:", err);
         }
         return;
       }
@@ -379,10 +369,6 @@ export function registerCreateShortcuts(
         debug.log("Backspace - No beat selected");
         return;
       }
-
-      console.log(
-        `⌨️ Backspace - Deleting beat ${selectedBeatIndex} and all subsequent beats`
-      );
 
       // Remove the beat and all subsequent beats with animation (same as trash can button)
       sequenceState.removeBeatAndSubsequentWithAnimation(
@@ -426,7 +412,6 @@ export function registerCreateShortcuts(
       const sequenceState = ref.CreateModuleState.getActiveTabSequenceState();
       if (!sequenceState?.hasSequence()) return;
 
-      console.log("⌨️ M - Mirror sequence");
       await sequenceState.mirrorSequence();
     },
   });

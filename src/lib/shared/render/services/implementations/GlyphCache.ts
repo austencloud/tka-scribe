@@ -167,7 +167,6 @@ export class GlyphCache implements IGlyphCache {
 
   async initialize(): Promise<void> {
     if (this.ready) {
-      console.log("✅ GlyphCache: Already initialized");
       return;
     }
 

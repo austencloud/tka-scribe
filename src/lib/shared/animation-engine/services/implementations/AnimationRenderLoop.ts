@@ -142,11 +142,6 @@ export class AnimationRenderLoop implements IAnimationRenderLoop {
     const shouldContinueLoop =
       this.needsRender || trailsNeedContinuousRender || isPlaying;
 
-    // Debug: Log when loop decision changes
-    if (!shouldContinueLoop) {
-      console.log("[RenderLoop] STOPPING - needsRender:", this.needsRender,
-        "trails:", trailsNeedContinuousRender, "isPlaying:", isPlaying);
-    }
 
     if (shouldContinueLoop) {
       this.render(params, currentTime);
@@ -198,15 +193,6 @@ export class AnimationRenderLoop implements IAnimationRenderLoop {
     const effectiveRedMotionVisible =
       visibility.redMotionVisible && props.redProp !== null;
 
-    // Debug: log if grid should be visible but isn't showing
-    if (!effectiveGridVisible && (gridVisible || visibility.gridVisible)) {
-      console.log(
-        "[RenderLoop] Grid hidden - prop:",
-        gridVisible,
-        "manager:",
-        visibility.gridVisible
-      );
-    }
 
     // Render scene
     this.renderer.renderScene({

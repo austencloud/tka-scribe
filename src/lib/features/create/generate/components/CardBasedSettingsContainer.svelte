@@ -1,4 +1,4 @@
-<!--
+﻿<!--
 CardBasedSettingsContainer - Minimal card grid renderer
 Delegates ALL logic to services (SRP compliant)
 -->
@@ -57,7 +57,7 @@ Delegates ALL logic to services (SRP compliant)
   // Services - use $state to make them reactive
   let typographyService = $state<IResponsiveTypographer | null>(null);
   let cardConfigService = $state<ICardConfigurator | null>(null);
-  let capParamProvider = $state<ILOOPParameterProvider | null>(null);
+  let loopParamProvider = $state<ILOOPParameterProvider | null>(null);
 
   // State
   let headerFontSize = $state("9px");
@@ -65,11 +65,11 @@ Delegates ALL logic to services (SRP compliant)
 
   // Derived values - now safe because services are reactive $state
   let currentLevel = $derived(
-    capParamProvider?.numberToDifficulty(config.level) ?? null
+    loopParamProvider?.numberToDifficulty(config.level) ?? null
   );
   let allowedIntensityValues = $derived(
-    currentLevel && capParamProvider
-      ? capParamProvider.getAllowedTurnsForLevel(currentLevel)
+    currentLevel && loopParamProvider
+      ? loopParamProvider.getAllowedTurnsForLevel(currentLevel)
       : []
   );
 
@@ -81,7 +81,7 @@ Delegates ALL logic to services (SRP compliant)
     cardConfigService = resolve<ICardConfigurator>(
       TYPES.ICardConfigurator
     );
-    capParamProvider = resolve<ILOOPParameterProvider>(
+    loopParamProvider = resolve<ILOOPParameterProvider>(
       TYPES.ILOOPParameterProvider
     );
 
@@ -101,10 +101,10 @@ Delegates ALL logic to services (SRP compliant)
       : typographyService.calculateResponsiveFontSize(9, 14, 1.2);
   }
 
-  // Event handlers - safe because we check capParamProvider exists
+  // Event handlers - safe because we check loopParamProvider exists
   function handleLevelChange(level: DifficultyLevel) {
-    if (!capParamProvider) return;
-    updateConfig({ level: capParamProvider.difficultyToNumber(level) });
+    if (!loopParamProvider) return;
+    updateConfig({ level: loopParamProvider.difficultyToNumber(level) });
   }
 
   function handleLengthChange(length: number) {
@@ -212,7 +212,7 @@ Delegates ALL logic to services (SRP compliant)
         <SliceSizeCard {...card.props as any} />
       {:else if card.id === "turn-intensity"}
         <TurnIntensityCard {...card.props as any} />
-      {:else if card.id === "cap-type"}
+      {:else if card.id === "loop-type"}
         <LOOPCard {...card.props as any} />
       {:else if card.id === "customize"}
         <CustomizeCard {...card.props as any} />

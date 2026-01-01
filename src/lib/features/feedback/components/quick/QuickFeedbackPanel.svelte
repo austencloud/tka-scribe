@@ -93,7 +93,6 @@
   placement={drawerPlacement}
   onclose={handleClose}
   onbackdropclick={(e) => {
-    console.log("🟡 Backdrop clicked!", e);
     handleClose();
     return true;
   }}

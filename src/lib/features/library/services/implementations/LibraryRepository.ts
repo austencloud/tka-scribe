@@ -274,9 +274,6 @@ export class LibraryRepository implements ILibraryRepository {
       } catch (_e) {
         console.warn("Failed to track achievement:", _e);
       }
-      console.log(
-        `[LibraryRepository] Incremented sequenceCount for user ${userId}`
-      );
     }
 
     // Post-transaction: Sync to public index
@@ -380,9 +377,6 @@ export class LibraryRepository implements ILibraryRepository {
       await updateDoc(userDocRef, {
         sequenceCount: increment(-1),
       });
-      console.log(
-        `[LibraryRepository] Decremented sequenceCount for user ${userId}`
-      );
     } catch (error) {
       console.error(
         `[LibraryRepository] Failed to decrement sequenceCount for user ${userId}:`,
@@ -693,11 +687,6 @@ export class LibraryRepository implements ILibraryRepository {
       throw new LibraryError("Failed to delete sequences", "NETWORK");
     }
 
-    if (deletedCount > 0) {
-      console.log(
-        `[LibraryRepository] Decremented sequenceCount by ${deletedCount} for user ${userId}`
-      );
-    }
   }
 
   async moveToCollection(

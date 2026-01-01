@@ -9,14 +9,10 @@ export class ActManager implements IActManager {
   private acts: Map<string, ActSummary> = new Map();
   private initialized = false;
 
-  constructor() {
-    console.log("🎭 ActManager initialized");
-  }
+  constructor() {}
 
   async initialize(): Promise<void> {
     if (this.initialized) return;
-
-    console.log("🎭 ActManager: Initializing...");
 
     // TODO: Load acts from persistent storage
     // For now, create some sample acts
@@ -40,11 +36,9 @@ export class ActManager implements IActManager {
     }
 
     this.initialized = true;
-    console.log("✅ ActManager initialized with", this.acts.size, "acts");
   }
 
   cleanup(): void {
-    console.log("🎭 ActManager: Cleaning up...");
     this.acts.clear();
     this.initialized = false;
   }
@@ -54,11 +48,9 @@ export class ActManager implements IActManager {
 
     const act = this.acts.get(idOrPath);
     if (act) {
-      console.log("🎭 ActManager: Loaded act", act.name);
       return { ...act }; // Return a copy
     }
 
-    console.warn("🎭 ActManager: Act not found:", idOrPath);
     return null;
   }
 
@@ -66,7 +58,6 @@ export class ActManager implements IActManager {
     await this.ensureInitialized();
 
     const acts = Array.from(this.acts.values()).map((act) => ({ ...act }));
-    console.log("🎭 ActManager: Retrieved", acts.length, "acts");
     return acts;
   }
 
@@ -84,7 +75,6 @@ export class ActManager implements IActManager {
 
     if (!act.sequences.includes(sequenceId)) {
       act.sequences.push(sequenceId);
-      console.log("🎭 ActManager: Added sequence", sequenceId, "to act", actId);
     }
   }
 
@@ -103,12 +93,6 @@ export class ActManager implements IActManager {
       const index = act.sequences.indexOf(sequenceId);
       if (index > -1) {
         act.sequences.splice(index, 1);
-        console.log(
-          "🎭 ActManager: Removed sequence",
-          sequenceId,
-          "from act",
-          actId
-        );
       }
     }
   }
@@ -122,7 +106,6 @@ export class ActManager implements IActManager {
     }
 
     // TODO: Implement export functionality
-    console.log("🎭 ActManager: Exporting act", act.name);
     console.warn("🚧 ActManager: Export functionality not yet implemented");
   }
 

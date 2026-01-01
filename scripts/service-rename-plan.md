@@ -12,7 +12,7 @@ Drop the "Service" suffix in favor of names that describe what the class actuall
 | Transformation | `*TransformationService` | `*Transformer` | `SequenceTransformationService` → `SequenceTransformer` |
 | Conversion | `*ConversionService` | `*Converter` | `BeatConverterService` → `BeatConverter` |
 | Rendering | `*RenderingService` | `*Renderer` | `GridRenderingService` → `GridRenderer` |
-| Detection | `*DetectionService` | `*Detector` | `CAPDetectionService` → `CAPDetector` |
+| Detection | `*DetectionService` | `*Detector` | `LOOPDetectionService` → `LOOPDetector` |
 | Analysis | `*AnalysisService` | `*Analyzer` | `SequenceAnalysisService` → `SequenceAnalyzer` |
 | Calculation | `*CalculationService` | `*Calculator` | `DimensionCalculationService` → `DimensionCalculator` |
 | Export | `*ExportService` | `*Exporter` | `VideoExporter` → `VideoExporter` |
@@ -53,16 +53,16 @@ Drop the "Service" suffix in favor of names that describe what the class actuall
 | `SystemStateService` | `SystemStateManager` |
 | `UserActivityService` | `UserActivityTracker` |
 
-### CAP Labeler Feature
+### LOOP Labeler Feature
 
 | Current | Proposed |
 |---------|----------|
 | `BeatDataConversionService` | `BeatDataConverter` |
 | `BeatPairAnalysisService` | `BeatPairAnalyzer` |
 | `CandidateFormattingService` | `CandidateFormatter` |
-| `CAPDesignationService` | `CAPDesignator` |
-| `CAPDetectionService` | `CAPDetector` |
-| `CAPLabelsFirebaseService` | `CAPLabelsRepository` |
+| `LOOPDesignationService` | `LOOPDesignator` |
+| `LOOPDetectionService` | `LOOPDetector` |
+| `LOOPLabelsFirebaseService` | `LOOPLabelsRepository` |
 | `LayeredPathDetectionService` | `LayeredPathDetector` |
 | `NavigationService` | `Navigator` |
 | `PolyrhythmicDetectionService` | `PolyrhythmicDetector` |
@@ -99,9 +99,9 @@ Drop the "Service" suffix in favor of names that describe what the class actuall
 | `PictographPreparerService` | `PictographPreparer` |
 | `StartPositionService` | `StartPositionManager` |
 | `TurnControlService` | `TurnController` |
-| `CAPDetectionService` | `CAPDetector` |
+| `LOOPDetectionService` | `LOOPDetector` |
 | `BeatConverterService` | `BeatConverter` |
-| `CAPTypeService` | `CAPTypeResolver` |
+| `LOOPTypeService` | `LOOPTypeResolver` |
 | `CardConfigurationService` | `CardConfigurator` |
 | `GenerationOrchestrationService` | `GenerationOrchestrator` |
 | `PictographFilterService` | `PictographFilter` |

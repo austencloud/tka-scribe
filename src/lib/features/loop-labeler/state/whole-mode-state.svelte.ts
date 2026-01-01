@@ -10,7 +10,7 @@ import { LOOPLabelerTypes } from "$lib/shared/inversify/types/loop-labeler.types
 import type { ILOOPLabelsFirebaseRepository } from "../services/contracts/ILOOPLabelsFirebaseRepository";
 import type { ILOOPDesignator } from "../services/contracts/ILOOPDesignator";
 import type {
-  CAPDesignation,
+  LOOPDesignation,
   LabeledSequence,
   TransformationIntervals,
   TransformationInterval,
@@ -47,7 +47,7 @@ export interface WholeModeState {
   transformationIntervals: TransformationIntervals;
 
   // Multiple designations
-  pendingDesignations: CAPDesignation[];
+  pendingDesignations: LOOPDesignation[];
 
   // Actions
   actions: {
@@ -79,7 +79,7 @@ export function createWholeModeState(): WholeModeState {
   let isFreeform = $state(false);
   let selectedSliceSize = $state<SliceSize | null>(null);
   let transformationIntervals = $state<TransformationIntervals>({});
-  let pendingDesignations = $state<CAPDesignation[]>([]);
+  let pendingDesignations = $state<LOOPDesignation[]>([]);
 
   // Services
   const labelsService = tryResolve<ILOOPLabelsFirebaseRepository>(
@@ -183,7 +183,7 @@ export function createWholeModeState(): WholeModeState {
         relevantIntervals.invert = transformationIntervals.invert;
       }
 
-      const designation: CAPDesignation = {
+      const designation: LOOPDesignation = {
         components: Array.from(selectedComponents),
         loopType: derivedCapType,
         sliceSize: selectedComponents.has("rotated") ? selectedSliceSize : null,

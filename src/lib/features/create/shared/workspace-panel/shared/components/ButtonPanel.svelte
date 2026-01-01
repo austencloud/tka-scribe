@@ -264,7 +264,7 @@
     }
   }
 
-  /* 🎯 LANDSCAPE MOBILE: Ultra-compact mode for devices like Z Fold 5 horizontal (882x344) */
+  /* 🎯 LANDSLOOPE MOBILE: Ultra-compact mode for devices like Z Fold 5 horizontal (882x344) */
   /* Matches app's isLandscapeMobile() criteria: aspectRatio > 1.7 AND height < 500px */
   /* This preserves precious vertical space on wide but short screens */
   @media (min-aspect-ratio: 17/10) and (max-height: 500px) {

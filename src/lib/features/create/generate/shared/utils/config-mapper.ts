@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Config Mapper - Clean conversion between UI config and service options
  *
  * This utility provides type-safe bidirectional mapping between:

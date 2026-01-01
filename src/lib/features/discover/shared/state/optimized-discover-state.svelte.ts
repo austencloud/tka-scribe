@@ -28,9 +28,6 @@ export function createOptimizedExploreState() {
   // Initialize connection-aware image request throttling
   const connectionInfo = getConnectionInfo();
   adjustQueueForConnection(connectionInfo.quality);
-  console.log(
-    `📡 Image queue configured for ${connectionInfo.quality} connection (${connectionInfo.effectiveType})`
-  );
 
   // Core state
   let sequences = $state<SequenceMetadata[]>([]);
@@ -81,7 +78,6 @@ export function createOptimizedExploreState() {
     if (loadingState.isInitialLoading) return;
 
     try {
-      console.log("🚀 OptimizedGalleryState: Starting initial load...");
       loadStartTime = performance.now();
 
       loadingState.isInitialLoading = true;
@@ -102,13 +98,6 @@ export function createOptimizedExploreState() {
 
       const duration = performance.now() - (loadStartTime || 0);
       lastLoadDuration = Math.round(duration);
-
-      console.log(
-        `✅ OptimizedGalleryState: Initial load complete in ${lastLoadDuration}ms`
-      );
-      console.log(
-        `📊 Loaded ${result.sequences.length} of ${result.totalCount} sequences`
-      );
     } catch (error) {
       console.error("❌ OptimizedGalleryState: Initial load failed:", error);
       loadingState.error =
@@ -123,8 +112,6 @@ export function createOptimizedExploreState() {
     if (!canLoadMore) return;
 
     try {
-      console.log(`🔄 OptimizedGalleryState: Loading page ${currentPage}...`);
-
       loadingState.isLoadingMore = true;
       loadingState.error = null;
 
@@ -140,11 +127,6 @@ export function createOptimizedExploreState() {
       if (result.sequences.length > 0) {
         void galleryService.preloadNextBatch(result.sequences);
       }
-
-      console.log(`✅ OptimizedGalleryState: Loaded page ${currentPage - 1}`);
-      console.log(
-        `📊 Total sequences: ${sequences.length} of ${result.totalCount}`
-      );
     } catch (error) {
       console.error(
         `❌ OptimizedGalleryState: Failed to load page ${currentPage}:`,
@@ -179,18 +161,10 @@ export function createOptimizedExploreState() {
     // Debounce search
     searchTimeout = window.setTimeout(async () => {
       try {
-        console.log(
-          `🔍 OptimizedGalleryState: Searching for "${searchQuery}"...`
-        );
-
         isSearching = true;
 
         const result = await galleryService.searchSequences(searchQuery);
         searchResults = result.sequences;
-
-        console.log(
-          `✅ OptimizedGalleryState: Found ${result.sequences.length} search results`
-        );
       } catch (error) {
         console.error("❌ OptimizedGalleryState: Search failed:", error);
         searchResults = [];
@@ -213,8 +187,6 @@ export function createOptimizedExploreState() {
 
   // Refresh gallery (clear cache and reload)
   async function refreshGallery(): Promise<void> {
-    console.log("🔄 OptimizedGalleryState: Refreshing gallery...");
-
     // Clear cache
     galleryService.clearCache();
 

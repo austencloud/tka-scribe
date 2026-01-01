@@ -1,4 +1,4 @@
-# TKA Scribe MVP Guidelines
+﻿# TKA Scribe MVP Guidelines
 
 > **Target Release**: This week
 > **Last Updated**: 2024-12-31

@@ -99,9 +99,6 @@
     if (!primarySequence || !playbackController) return;
 
     try {
-      console.log(
-        `🎬 CellRenderer [${cell.id}]: Initializing with ${primarySequence.name}`
-      );
 
       const success = playbackController.initialize(
         primarySequence,
@@ -115,9 +112,6 @@
       // Apply rotation if set
       if (cell.rotationOffset && cell.rotationOffset !== 0) {
         // TODO: Apply rotation to the animation canvas
-        console.log(
-          `🔄 CellRenderer [${cell.id}]: Rotation ${cell.rotationOffset}°`
-        );
       }
 
       // Auto-start if previewing

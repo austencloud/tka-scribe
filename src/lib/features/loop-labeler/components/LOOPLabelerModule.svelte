@@ -1,4 +1,4 @@
-<!--
+﻿<!--
   LOOP Labeler Module
 
   Main orchestrator component that replaces the monolithic +page.svelte.
@@ -20,7 +20,7 @@
   import {
     LOOPLabelerState,
     loopLabelerState,
-    loopLabelerController
+    loopLabelerController,
   } from "../state/loop-labeler-state.svelte";
   import { createSectionModeState } from "../state/section-mode-state.svelte";
   import { createBeatPairModeState } from "../state/beatpair-mode-state.svelte";
@@ -78,10 +78,10 @@
         // Silent - will try direct import
       }
 
-      // If tryResolve failed, log error - CAPDetector has too many dependencies for manual instantiation
+      // If tryResolve failed, log error - LOOPDetector has too many dependencies for manual instantiation
       if (!resolvedService) {
         console.error(
-          "[LOOPLabelerModule] Failed to resolve CAPDetector from DI container. Detection features will be unavailable."
+          "[LOOPLabelerModule] Failed to resolve LOOPDetector from DI container. Detection features will be unavailable."
         );
       }
 
@@ -300,7 +300,7 @@
 
     const sorted = Array.from(components).sort().join("_");
 
-    // Component mapping (simplified - real mapping in CAPDesignator)
+    // Component mapping (simplified - real mapping in LOOPDesignator)
     const mapping: Record<string, string> = {
       rotated: "STRICT_ROTATED",
       mirrored: "STRICT_MIRRORED",

@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Explore Loader Service
  *
  * Orchestrates loading of gallery sequences from the sequence index.
@@ -101,7 +101,7 @@ export class DiscoverLoader implements IDiscoverLoader {
       const validSequences = await this.processRawSequences(rawSequences);
       return validSequences;
     } catch (error) {
-      console.error("❌ Failed to load sequence metadata:", error);
+      console.error("Failed to load sequence metadata:", error);
       throw error;
     }
   }
@@ -120,25 +120,13 @@ export class DiscoverLoader implements IDiscoverLoader {
       // Check if we have bundled metadata in the sequence index cache
       // This would be populated if you run: npm run bundle:metadata
       const cachedSequence = this.sequenceCache.get(sequenceName);
-      console.log(`[DiscoverLoader] loadFullSequenceData("${sequenceName}"):`, {
-        cacheHit: !!cachedSequence,
-        hasFullMetadata: !!cachedSequence?.fullMetadata,
-        cacheSize: this.sequenceCache.size,
-      });
 
       if (cachedSequence?.fullMetadata) {
-        console.log(`⚡ Using bundled metadata for ${sequenceName}`);
         const result = this.createSequenceFromBundledMetadata(cachedSequence);
-        console.log(`[DiscoverLoader] createSequenceFromBundledMetadata result:`, {
-          success: !!result,
-          beatsLength: result?.beats?.length,
-          firstBeatMotionsBlue: result?.beats?.[0]?.motions?.blue ? 'exists' : 'MISSING',
-        });
         return result;
       }
 
       // Fallback: Fetch metadata from .meta.json file (slower, but works in development)
-      console.log(`🔄 Fetching metadata for ${sequenceName} from .meta.json`);
       const thumbnailPath = `/gallery/${sequenceName}/${sequenceName}.webp`;
       const metadata = await this.metadataExtractor.extractMetadata(
         sequenceName,
@@ -173,7 +161,7 @@ export class DiscoverLoader implements IDiscoverLoader {
       });
     } catch (error) {
       console.error(
-        `❌ Failed to load full sequence data for ${sequenceName}:`,
+        `Failed to load full sequence data for ${sequenceName}:`,
         error
       );
       return null;
@@ -246,7 +234,7 @@ export class DiscoverLoader implements IDiscoverLoader {
         ownerAvatarUrl: rawSeq.ownerAvatarUrl,
       });
     } catch (error) {
-      console.error(`❌ Failed to parse bundled metadata:`, error);
+      console.error(`Failed to parse bundled metadata:`, error);
       return null;
     }
   }
@@ -572,16 +560,12 @@ export class DiscoverLoader implements IDiscoverLoader {
       const word = this.extractWord(rawSeq);
 
       if (!this.isValidWord(word)) {
-        console.warn(`🚫 Skipping invalid sequence: ${word}`);
+        console.warn(`Skipping invalid sequence: ${word}`);
         continue;
       }
 
       // Cache the raw sequence for later lazy loading
       this.sequenceCache.set(word, rawSeq);
-      if (this.sequenceCache.size === 1) {
-        // Log first cache entry as sanity check
-        console.log(`[DiscoverLoader] First cache entry: "${word}", hasFullMetadata=${!!rawSeq.fullMetadata}`);
-      }
 
       try {
         const sequence = await this.createSequenceFromRaw(rawSeq, word);
@@ -589,7 +573,7 @@ export class DiscoverLoader implements IDiscoverLoader {
       } catch (error) {
         const shouldLog = !this.isRoutineError(error);
         if (shouldLog) {
-          console.warn(`⚠️ Failed to process ${word}:`, error);
+          console.warn(`Failed to process ${word}:`, error);
         }
 
         // Use fallback sequence creation

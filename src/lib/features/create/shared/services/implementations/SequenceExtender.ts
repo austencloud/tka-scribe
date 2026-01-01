@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Sequence Extender Implementation
  *
  * Detects when a sequence is in an extendable state and generates extension beats

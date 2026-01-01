@@ -26,9 +26,7 @@
     const cleanupFns: Array<() => void> = [];
 
     try {
-      hapticService = resolve<IHapticFeedback>(
-        TYPES.IHapticFeedback
-      );
+      hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
     } catch (error) {
       console.warn("Failed to resolve haptic feedback service:", error);
     }
@@ -310,7 +308,7 @@
     }
   }
 
-  /* 🎯 LANDSCAPE MOBILE: Compact buttons for Z Fold 5 horizontal (882x344) */
+  /* 🎯 LANDSLOOPE MOBILE: Compact buttons for Z Fold 5 horizontal (882x344) */
   @media (min-aspect-ratio: 17/10) and (max-height: 500px) {
     .panel-button {
       width: var(

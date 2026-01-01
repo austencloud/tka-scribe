@@ -677,6 +677,3 @@ export class LOOPDetector implements ILOOPDetector {
     return null;
   }
 }
-
-/** @deprecated Use LOOPDetector instead */
-export const CAPDetector = LOOPDetector;

@@ -1,4 +1,4 @@
-<!--
+﻿<!--
   LOOP Type Labeling Tool
   Navigate to /test/loop-labeler to use
 

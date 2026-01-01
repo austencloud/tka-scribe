@@ -136,6 +136,3 @@ export class LOOPEndPositionSelector implements ILOOPEndPositionSelector {
     }
   }
 }
-
-/** @deprecated Use LOOPEndPositionSelector instead */
-export const CAPEndPositionSelector = LOOPEndPositionSelector;

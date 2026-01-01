@@ -5,7 +5,10 @@
    * Displays auto-detected designation candidates for user verification.
    * Supports multiple candidates with individual confirm/deny actions.
    */
-  import type { CAPDesignation, CandidateDesignation } from "../../../domain/models/label-models";
+  import type {
+    LOOPDesignation,
+    CandidateDesignation,
+  } from "../../../domain/models/label-models";
   import FontAwesomeIcon from "$lib/shared/foundation/ui/FontAwesomeIcon.svelte";
 
   interface Props {
@@ -13,7 +16,7 @@
     candidateDesignations: CandidateDesignation[];
     pendingCandidates: CandidateDesignation[];
     hasMultipleCandidates: boolean;
-    autoDetectedDesignations: CAPDesignation[];
+    autoDetectedDesignations: LOOPDesignation[];
     onConfirmAutoLabel?: () => void;
     onConfirmCandidate?: (index: number) => void;
     onDenyCandidate?: (index: number) => void;
@@ -33,16 +36,19 @@
   }: Props = $props();
 
   // Format intervals for display
-  function formatIntervals(d: CAPDesignation): string {
+  function formatIntervals(d: LOOPDesignation): string {
     if (!d.transformationIntervals) return "";
     const entries = Object.entries(d.transformationIntervals)
       .filter(([_, v]) => v)
-      .map(([k, v]) => `${k}: ${v === "halved" ? "½" : v === "quartered" ? "¼" : v}`);
+      .map(
+        ([k, v]) =>
+          `${k}: ${v === "halved" ? "½" : v === "quartered" ? "¼" : v}`
+      );
     return entries.length > 0 ? `(${entries.join(", ")})` : "";
   }
 
   // Get display text for auto-detected designation
-  function formatAutoDetected(d: CAPDesignation): string {
+  function formatAutoDetected(d: LOOPDesignation): string {
     const components = d.components?.join(" + ") || "None";
     const intervals = formatIntervals(d);
     return intervals ? `${components} ${intervals}` : components;
@@ -140,7 +146,11 @@
     flex-direction: column;
     gap: var(--spacing-sm);
     padding: var(--spacing-sm) var(--spacing-md);
-    background: linear-gradient(135deg, rgba(234, 179, 8, 0.12) 0%, rgba(234, 179, 8, 0.06) 100%);
+    background: linear-gradient(
+      135deg,
+      rgba(234, 179, 8, 0.12) 0%,
+      rgba(234, 179, 8, 0.06) 100%
+    );
     border: 1px solid rgba(234, 179, 8, 0.25);
     border-radius: 10px;
     margin-bottom: var(--spacing-xs);
@@ -264,7 +274,11 @@
     justify-content: space-between;
     gap: var(--spacing-md);
     padding: var(--spacing-sm) var(--spacing-md);
-    background: linear-gradient(135deg, rgba(234, 179, 8, 0.15) 0%, rgba(234, 179, 8, 0.08) 100%);
+    background: linear-gradient(
+      135deg,
+      rgba(234, 179, 8, 0.15) 0%,
+      rgba(234, 179, 8, 0.08) 100%
+    );
     border: 1px solid rgba(234, 179, 8, 0.3);
     border-radius: 8px;
     margin-bottom: var(--spacing-xs);

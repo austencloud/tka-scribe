@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Spell Tab State - Sub-tab State
  *
  * Manages state specific to the Spell sub-tab functionality.

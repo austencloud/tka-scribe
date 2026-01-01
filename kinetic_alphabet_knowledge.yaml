@@ -1,4 +1,4 @@
-# The Kinetic Alphabet Knowledge Base
+﻿# The Kinetic Alphabet Knowledge Base
 # Version 0.5 - Based on Austen Cloud's notation system
 
 metadata:
@@ -408,7 +408,7 @@ words:
       mnemonic: "Open Road"
 
 # Letter Transformations
-# Formal relationships between letters used in CAP generation and polyrhythmic analysis
+# Formal relationships between letters used in LOOP generation and polyrhythmic analysis
 letter_transformations:
   inversion:
     description: "Pro ↔ Anti motion type swap"
@@ -481,11 +481,11 @@ letter_transformations:
 # Sequences that return to their starting position through specific transformations
 caps:
   definition: |
-    A CAP is a circular sequence - one that returns to its starting position.
+    A LOOP is a circular sequence - one that returns to its starting position.
     LOOPs are classified by which transformation(s) bring the sequence home.
     A single sequence may satisfy multiple transformation paths (OR relationship).
 
-  # The 5 base components that can combine to form CAP types
+  # The 5 base components that can combine to form LOOP types
   base_components:
     rotated:
       description: "Positions rotate around the grid to return home"
@@ -536,7 +536,7 @@ caps:
         Rewound: Hands reverse direction to go back
         Rotated: Hands continue same rotational direction forward
 
-  # How components combine to form named CAP types
+  # How components combine to form named LOOP types
   compound_types:
     strict_rotated: ["rotated"]
     strict_mirrored: ["mirrored"]
@@ -564,7 +564,7 @@ caps:
 
   # Freeform sequences
   freeform:
-    description: "Circular sequences that don't fit any recognizable CAP pattern"
+    description: "Circular sequences that don't fit any recognizable LOOP pattern"
     note: "Still returns to start, just not via standard transformations"
 
 # Reversals

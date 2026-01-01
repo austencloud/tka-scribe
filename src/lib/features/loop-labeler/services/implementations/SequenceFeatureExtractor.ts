@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Sequence Feature Extractor Service Implementation
  *
  * Extracts analyzable features from sequences for rule-based tagging.

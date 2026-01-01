@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Generation Validation State - Reactive validation for generation configuration
  *
  * Provides real-time validation of generation settings before orchestration.
@@ -66,9 +66,9 @@ export function createGenerationValidationState() {
 
     // Validate LOOP configuration (circular mode only)
     if (config.mode === "circular") {
-      const capValidation = validateCAPConfiguration(config);
-      errors.push(...capValidation.errors);
-      warnings.push(...capValidation.warnings);
+      const loopValidation = validateLOOPConfiguration(config);
+      errors.push(...loopValidation.errors);
+      warnings.push(...loopValidation.warnings);
     }
 
     // Update reactive state
@@ -183,7 +183,7 @@ export function createGenerationValidationState() {
   /**
    * Validate LOOP configuration for circular mode
    */
-  function validateCAPConfiguration(
+  function validateLOOPConfiguration(
     config: UIGenerationConfig
   ): ValidationResult {
     const errors: ValidationError[] = [];
@@ -277,7 +277,7 @@ export function createGenerationValidationState() {
     validateConfig,
     validateLength,
     validateTurnIntensity,
-    validateCAPConfiguration,
+    validateLOOPConfiguration,
     clearValidation,
     getFieldErrors,
     getFieldWarnings,

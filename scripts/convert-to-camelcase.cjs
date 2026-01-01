@@ -75,7 +75,7 @@ const REMOVE_METADATA_KEYS = new Set([
 ]);
 
 /**
- * Keys to remove from fullMetadata.sequence[0] (legacy CAP flags)
+ * Keys to remove from fullMetadata.sequence[0] (legacy LOOP flags)
  */
 const REMOVE_SEQUENCE_META_KEYS = new Set([
   "isPermutable",
@@ -84,13 +84,13 @@ const REMOVE_SEQUENCE_META_KEYS = new Set([
   "isStrictlyColorswappedPermutation",
   "isMirroredColorSwappedPermutation",
   "isRotationalColorswappedPermutation",
-  // Additional legacy CAP flags (snake_case format)
-  "isStrictRotated_CAP",
-  "isStrictMirrored_CAP",
-  "isStrictSwapped_CAP",
-  "isMirroredSwapped_CAP",
-  "isRotatedSwapped_CAP",
-  "canBe_CAP",
+  // Additional legacy LOOP flags (snake_case format)
+  "isStrictRotated_LOOP",
+  "isStrictMirrored_LOOP",
+  "isStrictSwapped_LOOP",
+  "isMirroredSwapped_LOOP",
+  "isRotatedSwapped_LOOP",
+  "canBe_LOOP",
 ]);
 
 /**
@@ -261,7 +261,7 @@ function collectStats(data) {
     metadataSource: 0,
     realSequence: 0,
     aspectRatio: 0,
-    legacyCAPFlags: 0,
+    legacyLOOPFlags: 0,
     noRotValues: 0,
     propTypeAtTop: 0,
   };
@@ -297,7 +297,7 @@ function collectStats(data) {
         stats.metadataSource++;
       if (key === "realSequence") stats.realSequence++;
       if (key === "aspectRatio") stats.aspectRatio++;
-      if (REMOVE_SEQUENCE_META_KEYS.has(key)) stats.legacyCAPFlags++;
+      if (REMOVE_SEQUENCE_META_KEYS.has(key)) stats.legacyLOOPFlags++;
       if (key === "propRotDir" && value === "no_rot") stats.noRotValues++;
       if (path.match(/sequences\[\d+\]$/) && key === "propType")
         stats.propTypeAtTop++;
@@ -348,7 +348,7 @@ function main() {
   console.log(`  - "realSequence" flags: ${stats.realSequence}`);
   console.log(`  - Redundant "aspectRatio": ${stats.aspectRatio}`);
   console.log(
-    `  - Legacy CAP flags (isPermutable, etc.): ${stats.legacyCAPFlags}`
+    `  - Legacy LOOP flags (isPermutable, etc.): ${stats.legacyLOOPFlags}`
   );
   console.log(`  - "no_rot" propRotDir values: ${stats.noRotValues}`);
   console.log(`  - Unreliable top-level propType: ${stats.propTypeAtTop}`);
@@ -398,7 +398,7 @@ function main() {
   console.log(`  - "source: tka_dictionary": ${verifyStats.metadataSource}`);
   console.log(`  - "realSequence" flags: ${verifyStats.realSequence}`);
   console.log(`  - Redundant "aspectRatio": ${verifyStats.aspectRatio}`);
-  console.log(`  - Legacy CAP flags: ${verifyStats.legacyCAPFlags}`);
+  console.log(`  - Legacy LOOP flags: ${verifyStats.legacyLOOPFlags}`);
   console.log(`  - "no_rot" propRotDir values: ${verifyStats.noRotValues}`);
   console.log(`  - Top-level propType: ${verifyStats.propTypeAtTop}`);
   console.log(

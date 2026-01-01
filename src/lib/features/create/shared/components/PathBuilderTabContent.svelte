@@ -15,12 +15,10 @@
   }>();
 
   function handleSequenceComplete(motions: { blue: any[]; red: any[] }): void {
-    console.log("Path builder sequence complete:", motions);
     onPathBuilderSequenceComplete?.(motions);
   }
 
   function handleCancel(): void {
-    console.log("Path builder cancelled");
     // User can navigate back to construct using the nav buttons
   }
 </script>

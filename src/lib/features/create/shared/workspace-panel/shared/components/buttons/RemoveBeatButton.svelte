@@ -23,9 +23,7 @@
   let hapticService: IHapticFeedback;
 
   onMount(() => {
-    hapticService = resolve<IHapticFeedback>(
-      TYPES.IHapticFeedback
-    );
+    hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
   });
 
   function handleClick() {
@@ -84,11 +82,7 @@
       var(--semantic-warning) 0%,
       color-mix(in srgb, var(--semantic-warning) 80%, #ff0000) 100%
     );
-    border-color: color-mix(
-      in srgb,
-      var(--semantic-warning) 30%,
-      transparent
-    );
+    border-color: color-mix(in srgb, var(--semantic-warning) 30%, transparent);
     box-shadow: 0 4px 12px
       color-mix(in srgb, var(--semantic-warning) 40%, transparent);
   }
@@ -130,7 +124,7 @@
     }
   }
 
-  /* 🎯 LANDSCAPE MOBILE: Maintain 48px minimum for accessibility */
+  /* 🎯 LANDSLOOPE MOBILE: Maintain 48px minimum for accessibility */
   @media (min-aspect-ratio: 17/10) and (max-height: 500px) {
     .panel-button {
       width: var(

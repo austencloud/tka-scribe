@@ -1,18 +1,18 @@
-# CAP Detection Algorithm
+﻿# LOOP Detection Algorithm
 
-> How to determine what Continuous Assembly Pattern (CAP) type a sequence follows.
+> How to determine what Continuous Assembly Pattern (LOOP) type a sequence follows.
 
 ---
 
 ## Overview
 
-A **CAP** (Continuous Assembly Pattern) is a sequence that returns to its starting position AND follows a structured transformation pattern between its halves (or quarters). The detection algorithm analyzes a sequence to determine:
+A **LOOP** (Continuous Assembly Pattern) is a sequence that returns to its starting position AND follows a structured transformation pattern between its halves (or quarters). The detection algorithm analyzes a sequence to determine:
 
 1. Is it circular? (ends where it starts)
 2. What transformation components does it exhibit?
 3. At what slice granularity do these transformations operate?
 
-**Important**: The CAP type is determined by the **beat data** (positions, motion types, colors), not by the word or letters. The same letters arranged differently could produce different CAP types.
+**Important**: The LOOP type is determined by the **beat data** (positions, motion types, colors), not by the word or letters. The same letters arranged differently could produce different LOOP types.
 
 ---
 
@@ -20,7 +20,7 @@ A **CAP** (Continuous Assembly Pattern) is a sequence that returns to its starti
 
 ### Circularity
 
-A sequence is **circular** if the ending position matches the starting position. This is a prerequisite for being a CAP - if a sequence doesn't return home, it's not a CAP.
+A sequence is **circular** if the ending position matches the starting position. This is a prerequisite for being a LOOP - if a sequence doesn't return home, it's not a LOOP.
 
 ### Slices
 
@@ -65,14 +65,14 @@ Multiple components can combine:
 
 ```
 IF last beat's end position ≠ start position:
-    RETURN "Not circular, not a CAP"
+    RETURN "Not circular, not a LOOP"
 ```
 
 ### Step 2: Check Beat Count
 
 ```
 IF beat count is odd:
-    RETURN "Cannot be a structured CAP" (halved comparison impossible)
+    RETURN "Cannot be a structured LOOP" (halved comparison impossible)
 
 IF beat count % 4 ≠ 0:
     Skip quartered detection (only check halved)
@@ -310,7 +310,7 @@ This occurs when a sequence needs to repeat itself to return to the original ori
 ┌─────────────────────────────────┐
 │ Is sequence circular?           │
 └─────────────┬───────────────────┘
-              │ No → Not a CAP
+              │ No → Not a LOOP
               │ Yes ↓
 ┌─────────────────────────────────┐
 │ Check halved comparisons        │
@@ -339,7 +339,7 @@ This occurs when a sequence needs to repeat itself to return to the original ori
 └─────────────┬───────────────────┘
               ↓
 ┌─────────────────────────────────┐
-│ Map components to CAP type      │
+│ Map components to LOOP type      │
 └─────────────────────────────────┘
 ```
 

@@ -26,6 +26,3 @@ export interface ILOOPExecutorSelector {
    */
   isSupported(loopType: LOOPType): boolean;
 }
-
-/** @deprecated Use ILOOPExecutorSelector instead */
-export type ICAPExecutorSelector = ILOOPExecutorSelector;

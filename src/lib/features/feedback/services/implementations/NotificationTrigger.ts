@@ -98,9 +98,6 @@ export class NotificationTriggerService {
       type
     );
     if (isDuplicate) {
-      console.log(
-        `[NotificationTriggerService] Skipping duplicate ${type} notification for feedback ${feedbackId}`
-      );
       return null;
     }
 

@@ -1,4 +1,4 @@
-<script lang="ts">
+﻿<script lang="ts">
   /**
    * LOOP Labeler Header
    *

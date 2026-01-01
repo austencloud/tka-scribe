@@ -37,10 +37,6 @@
     const urlFeedbackId = urlParams.get("openFeedback");
 
     if (urlFeedbackId) {
-      console.log(
-        "[FeedbackManageTab] onMount: Found URL param openFeedback:",
-        urlFeedbackId
-      );
       pendingTargetId = urlFeedbackId;
       // Clear the URL param
       urlParams.delete("openFeedback");
@@ -52,10 +48,6 @@
       // Fallback to notification target state
       const targetId = getNotificationTargetFeedback();
       if (targetId) {
-        console.log(
-          "[FeedbackManageTab] onMount: Found notification target:",
-          targetId
-        );
         pendingTargetId = targetId;
         setNotificationTargetFeedback(null);
       }

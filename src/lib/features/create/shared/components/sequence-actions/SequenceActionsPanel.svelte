@@ -1,4 +1,4 @@
-<!--
+﻿<!--
   SequenceActionsPanel.svelte
 
   Panel for sequence-wide operations: transforms, patterns, extend.

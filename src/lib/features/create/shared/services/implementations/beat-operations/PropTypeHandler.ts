@@ -25,12 +25,6 @@ export function updateBeatPropType(
   propType: PropType,
   createModuleState: ICreateModuleState
 ): void {
-  console.log(`🎨 PropTypeHandler.updateBeatPropType called:`, {
-    beatNumber,
-    color,
-    propType,
-  });
-
   const beatData = getBeatDataFromState(beatNumber, createModuleState);
 
   if (!beatData?.motions) {
@@ -77,11 +71,6 @@ export function bulkUpdatePropType(
   propType: PropType,
   createModuleState: ICreateModuleState
 ): void {
-  console.log(`🎨 PropTypeHandler.bulkUpdatePropType called:`, {
-    color,
-    propType,
-  });
-
   // Update start position
   const startPosition = createModuleState.sequenceState.selectedStartPosition;
   if (startPosition?.motions) {

@@ -1,4 +1,4 @@
-import type { LOOPType } from "../../../circular/domain/models/circular-models";
+﻿import type { LOOPType } from "../../../circular/domain/models/circular-models";
 import type { LOOPComponent } from "../../domain/models/generate-models";
 
 /**

@@ -189,7 +189,6 @@ export class PreviewCache {
 
           // Check if sequence has changed
           if (cached.sequenceHash !== sequenceHash) {
-            console.log("🔄 Sequence changed, cache invalid");
             resolve(null);
             return;
           }
@@ -288,7 +287,6 @@ export class PreviewCache {
             cursor.delete();
             cursor.continue();
           } else {
-            console.log("🧹 Cleared old preview cache entries");
             resolve();
           }
         };
@@ -319,7 +317,6 @@ export class PreviewCache {
         const request = store.clear();
 
         request.onsuccess = () => {
-          console.log("🧹 Cleared all preview cache");
           resolve();
         };
 

@@ -101,7 +101,6 @@
 
   function handleVideoClick(video: CollaborativeVideo) {
     // TODO: Open video player or detail view
-    console.log("Video clicked:", video.id);
   }
 
   function handleSequenceClick(sequence: SequenceData) {

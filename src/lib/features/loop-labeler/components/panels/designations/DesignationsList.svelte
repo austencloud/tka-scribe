@@ -5,7 +5,7 @@
    * Displays the list of confirmed designations (whole, section, beat pair)
    * and special type indicators (freeform, modular, axis-alternating).
    */
-  import type { CAPDesignation } from "../../../domain/models/label-models";
+  import type { LOOPDesignation } from "../../../domain/models/label-models";
   import type { SectionDesignation } from "../../../domain/models/section-models";
   import type { BeatPairRelationship } from "../../../domain/models/beatpair-models";
   import type { AxisAlternatingPattern } from "../../../services/contracts/ILOOPDetector";
@@ -16,7 +16,7 @@
   import DesignationItem from "./DesignationItem.svelte";
 
   interface Props {
-    wholeDesignations: CAPDesignation[];
+    wholeDesignations: LOOPDesignation[];
     sectionDesignations: SectionDesignation[];
     beatPairDesignations: BeatPairRelationship[];
     isFreeform: boolean;
@@ -63,7 +63,9 @@
   {#if totalCount === 0 && !isFreeform}
     <div class="empty-state">
       <span class="empty-text">No designations yet</span>
-      <span class="empty-hint">1. Select components below → 2. Click "+ Add to designations"</span>
+      <span class="empty-hint"
+        >1. Select components below → 2. Click "+ Add to designations"</span
+      >
     </div>
   {:else}
     <!-- Whole sequence designations -->
@@ -103,14 +105,14 @@
         badge="A"
         label={axisAlternatingPattern.description}
       />
-    <!-- Modular indicator (multiple recognizable patterns) -->
+      <!-- Modular indicator (multiple recognizable patterns) -->
     {:else if isModular}
       <DesignationItem
         type="modular"
         badge="M"
         label="Modular (multiple patterns)"
       />
-    <!-- Freeform indicator (no recognizable patterns) -->
+      <!-- Freeform indicator (no recognizable patterns) -->
     {:else if isFreeform}
       <DesignationItem
         type="freeform"

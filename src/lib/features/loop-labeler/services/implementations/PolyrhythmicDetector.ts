@@ -49,7 +49,7 @@ export interface PeriodAnalysis {
   dominantPropertyType: "motion" | "spatial" | "both" | "other" | "none";
 }
 
-export interface PolyrhythmicCAPResult {
+export interface PolyrhythmicLOOPResult {
   isPolyrhythmic: boolean;
   polyrhythm: string | null; // e.g., "3:4"
   periods: PeriodAnalysis[];
@@ -158,7 +158,7 @@ export class PolyrhythmicDetector {
   /**
    * Analyze a sequence for polyrhythmic LOOP patterns
    */
-  detectPolyrhythmic(rawSequence: Record<string, unknown>[]): PolyrhythmicCAPResult {
+  detectPolyrhythmic(rawSequence: Record<string, unknown>[]): PolyrhythmicLOOPResult {
     // Filter to actual beats (exclude metadata at index 0)
     const beatRecords = rawSequence.filter(
       (item) => typeof item.beat === "number" && item.beat > 0
@@ -209,7 +209,7 @@ export class PolyrhythmicDetector {
     // for polyrhythmic detection - those are handled by beat-pair analysis
     const halvedPeriod = length / 2;  // period that would indicate halved LOOP
     const quarteredPeriod = length / 4;  // period that would indicate quartered LOOP
-    const isStandardCAPInterval = (period: number): boolean => {
+    const isStandardLOOPInterval = (period: number): boolean => {
       return period === halvedPeriod || period === quarteredPeriod;
     };
 
@@ -222,8 +222,8 @@ export class PolyrhythmicDetector {
         if (lcmValue === length) {
           // Skip pairs where BOTH periods are standard LOOP intervals
           // (this would just be a halved or quartered LOOP, not polyrhythmic)
-          const p1IsStandard = isStandardCAPInterval(p1.period);
-          const p2IsStandard = isStandardCAPInterval(p2.period);
+          const p1IsStandard = isStandardLOOPInterval(p1.period);
+          const p2IsStandard = isStandardLOOPInterval(p2.period);
 
           if (p1IsStandard && p2IsStandard) {
             continue;
@@ -518,7 +518,7 @@ export class PolyrhythmicDetector {
   /**
    * Return a "no polyrhythm" result
    */
-  private noPolyrhythmResult(reason: string): PolyrhythmicCAPResult {
+  private noPolyrhythmResult(reason: string): PolyrhythmicLOOPResult {
     return {
       isPolyrhythmic: false,
       polyrhythm: null,

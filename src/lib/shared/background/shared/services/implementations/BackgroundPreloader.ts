@@ -26,13 +26,7 @@ export class BackgroundPreLoader implements IBackgroundPreloader {
    * This works because CSS CAN transition opacity, even though gradients cannot be transitioned directly
    */
   updateBodyBackground(backgroundType: BackgroundType): void {
-    console.log(
-      "🔵 [Service] updateBodyBackground called with:",
-      backgroundType
-    );
-
     if (typeof window === "undefined" || typeof document === "undefined") {
-      console.log("⚠️ [Service] Window or document undefined (SSR)");
       return; // SSR safety
     }
 
@@ -40,41 +34,23 @@ export class BackgroundPreLoader implements IBackgroundPreloader {
       const newGradient = BACKGROUND_GRADIENTS[backgroundType];
       const newAnimation = BACKGROUND_ANIMATIONS[backgroundType];
 
-      console.log(
-        "🎨 [Service] New gradient:",
-        newGradient.substring(0, 50) + "..."
-      );
-      console.log("🎨 [Service] New animation:", newAnimation);
-
       // Get current gradient
       const currentGradient =
         document.documentElement.style.getPropertyValue("--gradient-cosmic");
 
-      console.log(
-        "🎨 [Service] Current gradient:",
-        currentGradient.substring(0, 50) + "..."
-      );
-
       // Skip if already set to this gradient
       if (currentGradient === newGradient) {
-        console.log("⏭️ [Service] Skipping - already showing this gradient");
         return;
       }
 
       if (isTransitioning) {
-        console.log("⏭️ [Service] Skipping - transition already in progress");
         return;
       }
 
-      console.log("✅ [Service] Starting transition...");
       isTransitioning = true;
       const body = document.body;
 
       // Update body animation class immediately
-      console.log(
-        "📝 [Service] Updating body animation class to:",
-        newAnimation
-      );
       body.classList.remove(
         "aurora-flow",
         "snow-fall",
@@ -90,33 +66,24 @@ export class BackgroundPreLoader implements IBackgroundPreloader {
       }
 
       // Step 1: Set the ::before overlay to the NEW gradient (separate CSS variable)
-      console.log("📝 [Service] Step 1: Setting --gradient-next");
       document.documentElement.style.setProperty(
         "--gradient-next",
         newGradient
       );
 
       // Step 2: Fade in the ::before overlay (showing NEW gradient on top of OLD)
-      console.log("📝 [Service] Step 2: Adding background-transitioning class");
       requestAnimationFrame(() => {
         body.classList.add("background-transitioning");
-        console.log(
-          "✨ [Service] Class added, opacity should be transitioning now"
-        );
       });
 
       // Step 3: After transition completes, swap the gradients
       setTimeout(() => {
-        console.log("📝 [Service] Step 3: Swapping gradients after 1s");
         document.documentElement.style.setProperty(
           "--gradient-cosmic",
           newGradient
         );
         body.classList.remove("background-transitioning");
         isTransitioning = false;
-        console.log(
-          `🎨 [Service] Body background transitioned to: ${backgroundType}`
-        );
       }, 1000); // Match the CSS transition duration (1s)
     } catch (error) {
       console.warn("[Service] Failed to update body background:", error);

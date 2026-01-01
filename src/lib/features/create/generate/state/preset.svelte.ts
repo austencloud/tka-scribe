@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Preset state management for GeneratePanel
  *
  * Manages user-saved generation presets with localStorage persistence.

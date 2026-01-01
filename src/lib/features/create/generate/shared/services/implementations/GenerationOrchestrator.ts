@@ -1,4 +1,4 @@
-import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
+﻿import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 import type { StartPositionData } from "$lib/features/create/shared/domain/models/StartPositionData";
 import type { BeatData } from "$lib/features/create/shared/domain/models/BeatData";
 import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";

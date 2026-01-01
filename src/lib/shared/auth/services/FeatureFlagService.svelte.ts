@@ -236,7 +236,7 @@ function checkFeatureAccess(featureId: FeatureId): boolean {
   // Get effective feature config
   const config = getEffectiveFeatureConfig(featureId);
   if (!config) {
-    console.warn(`⚠️ [FeatureFlagService] Unknown feature: ${featureId}`);
+    console.warn(`Unknown feature: ${featureId}`);
     return false;
   }
 
@@ -360,21 +360,15 @@ export const featureFlagService = {
   /** Set debug role override (admin only) */
   setDebugRoleOverride(role: UserRole | null): void {
     if (_state.userRole !== "admin") {
-      console.warn(
-        "⚠️ [FeatureFlagService] Only admins can set debug role override"
-      );
+      console.warn("Only admins can set debug role override");
       return;
     }
     _state.debugRoleOverride = role;
-    console.log(
-      `🔧 [FeatureFlagService] Debug role override set to: ${role || "none"}`
-    );
   },
 
   /** Clear debug role override */
   clearDebugRoleOverride(): void {
     _state.debugRoleOverride = null;
-    console.log("🔧 [FeatureFlagService] Debug role override cleared");
   },
 
   // ===== Initialization =====
@@ -423,7 +417,7 @@ export const featureFlagService = {
 
       _state.initialized = true;
     } catch (error) {
-      console.error("❌ [FeatureFlagService] Initialization failed:", error);
+      console.error("FeatureFlagService: Initialization failed:", error);
       // Fall back to defaults (or initialRole if provided)
       _state.userRole = initialRole || "user";
       _state.initialized = true;
@@ -464,7 +458,7 @@ export const featureFlagService = {
         }
       }
     } catch (error) {
-      console.warn("⚠️ [FeatureFlagService] Failed to fetch user data:", error);
+      console.warn("Failed to fetch user data:", error);
     }
   },
 
@@ -499,10 +493,7 @@ export const featureFlagService = {
           }
         },
         (_error) => {
-          console.warn(
-            "⚠️ [FeatureFlagService] User overrides subscription error:",
-            _error
-          );
+          console.warn("User overrides subscription error:", _error);
         }
       );
     });

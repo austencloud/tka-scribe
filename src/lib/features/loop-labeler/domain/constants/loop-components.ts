@@ -1,4 +1,4 @@
-/**
+﻿/**
  * LOOP component definitions and mapping utilities
  */
 

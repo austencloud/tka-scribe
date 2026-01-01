@@ -1,4 +1,4 @@
-/**
+﻿/**
  * LOOP Validator Interface
  *
  * Validates which LOOP (Linked Offset Operation Pattern) types are available

@@ -27,7 +27,7 @@ export class ApplicationInitializer implements IApplicationInitializer {
 
       this.initialized = true;
     } catch (error) {
-      console.error("❌ ApplicationInitializer: Initialization failed:", error);
+      console.error("ApplicationInitializer: Initialization failed:", error);
       throw error;
     }
   }
@@ -37,8 +37,6 @@ export class ApplicationInitializer implements IApplicationInitializer {
   }
 
   async shutdown(): Promise<void> {
-    console.log("🔄 ApplicationInitializer: Shutting down application...");
-
     try {
       // TODO: Add cleanup logic
       // - Save state
@@ -46,9 +44,8 @@ export class ApplicationInitializer implements IApplicationInitializer {
       // - Clean up resources
 
       this.initialized = false;
-      console.log("✅ ApplicationInitializer: Application shutdown complete");
     } catch (error) {
-      console.error("❌ ApplicationInitializer: Shutdown failed:", error);
+      console.error("ApplicationInitializer: Shutdown failed:", error);
       throw error;
     }
   }

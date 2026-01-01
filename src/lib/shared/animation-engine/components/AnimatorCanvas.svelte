@@ -100,10 +100,6 @@ Last audit: 2025-12-27
 
   // Initialize engine when container mounts
   onMount(() => {
-    // DEBUG: Track mount/unmount to find remount trigger
-    console.log("🔵 [AnimatorCanvas] MOUNTED - new instance created");
-    console.trace("AnimatorCanvas mount stack trace");
-
     engine.initialize(containerElement, {
       onCanvasReady,
       onTrailSettingsChange: (settings) => {
@@ -111,7 +107,6 @@ Last audit: 2025-12-27
       },
     });
     return () => {
-      console.log("🔴 [AnimatorCanvas] UNMOUNTING - instance destroyed");
       engine.dispose();
     };
   });

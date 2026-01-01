@@ -14,7 +14,7 @@ import type {
   LabeledSequence,
 } from "../contracts/ILOOPLabelsFirebaseRepository";
 
-const CAP_LABELS_COLLECTION = "cap-labels";
+const LOOP_LABELS_COLLECTION = "cap-labels";
 const PUBLIC_SEQUENCES_COLLECTION = "publicSequences";
 const LOCAL_STORAGE_KEY = "cap-labels";
 
@@ -44,7 +44,7 @@ export class LOOPLabelsFirebaseRepository implements ILOOPLabelsFirebaseReposito
       const firestore = await this.ensureFirestore();
       this.syncStatus = "syncing";
 
-      await setDoc(doc(firestore, CAP_LABELS_COLLECTION, word), {
+      await setDoc(doc(firestore, LOOP_LABELS_COLLECTION, word), {
         ...label,
         updatedAt: new Date().toISOString(),
       });
@@ -63,7 +63,7 @@ export class LOOPLabelsFirebaseRepository implements ILOOPLabelsFirebaseReposito
       const firestore = await this.ensureFirestore();
       this.syncStatus = "syncing";
 
-      await deleteDoc(doc(firestore, CAP_LABELS_COLLECTION, word));
+      await deleteDoc(doc(firestore, LOOP_LABELS_COLLECTION, word));
 
       this.syncStatus = "synced";
       console.log(`Deleted label for "${word}" from Firebase`);
@@ -129,7 +129,7 @@ export class LOOPLabelsFirebaseRepository implements ILOOPLabelsFirebaseReposito
       let successCount = 0;
       for (const [word, label] of entries) {
         try {
-          await setDoc(doc(firestore, CAP_LABELS_COLLECTION, word), {
+          await setDoc(doc(firestore, LOOP_LABELS_COLLECTION, word), {
             ...label,
             updatedAt: new Date().toISOString(),
           });
@@ -156,7 +156,7 @@ export class LOOPLabelsFirebaseRepository implements ILOOPLabelsFirebaseReposito
   private async loadFromFirebase(): Promise<Map<string, LabeledSequence>> {
     const firestore = await this.ensureFirestore();
     const snapshot = await getDocs(
-      collection(firestore, CAP_LABELS_COLLECTION)
+      collection(firestore, LOOP_LABELS_COLLECTION)
     );
 
     const labels = new Map<string, LabeledSequence>();
@@ -198,7 +198,7 @@ export class LOOPLabelsFirebaseRepository implements ILOOPLabelsFirebaseReposito
       }
 
       // Also delete the LOOP label if it exists
-      const labelRef = doc(firestore, CAP_LABELS_COLLECTION, word);
+      const labelRef = doc(firestore, LOOP_LABELS_COLLECTION, word);
       const labelSnap = await getDoc(labelRef);
       if (labelSnap.exists()) {
         await deleteDoc(labelRef);

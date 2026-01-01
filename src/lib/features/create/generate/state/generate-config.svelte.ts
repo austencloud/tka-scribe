@@ -1,4 +1,4 @@
-/**
+﻿/**
  * UI Configuration state management for GeneratePanel
  *
  * Manages UI-specific configuration state using UIGenerationConfig.

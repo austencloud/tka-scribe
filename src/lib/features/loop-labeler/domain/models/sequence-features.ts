@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Sequence Features Domain Model
  *
  * Analyzable features extracted from sequences for rule-based tagging.

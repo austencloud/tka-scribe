@@ -1,4 +1,4 @@
-import type { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
+﻿import type { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 /**
  * Sequence Domain Model
  *
@@ -46,7 +46,7 @@ export interface SequenceData {
   readonly isCircular: boolean;
   /**
    * LOOP type - Linked Offset Operation Pattern (TKA's algorithmic extension patterns)
-   * Formerly known as CAP type (Continuous Assembly Pattern).
+   * Formerly known as LOOP type (Continuous Assembly Pattern).
    */
   readonly loopType?: LOOPType | null;
   /** Number of sequence repetitions needed to return to starting orientation (1, 2, or 4) */

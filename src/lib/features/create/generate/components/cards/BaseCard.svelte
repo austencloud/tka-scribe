@@ -1,4 +1,4 @@
-<!--
+﻿<!--
 BaseCard.svelte - Base component for all setting cards
 Provides consistent styling and interaction patterns for all generation setting cards
 -->
@@ -41,9 +41,7 @@ Provides consistent styling and interaction patterns for all generation setting 
   let cardElement: HTMLDivElement | null = $state(null);
 
   onMount(() => {
-    hapticService = resolve<IHapticFeedback>(
-      TYPES.IHapticFeedback
-    );
+    hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
     rippleService = resolve<IRippleEffect>(TYPES.IRippleEffect);
 
     // 🌊 Attach ripple effect to clickable cards
@@ -173,8 +171,7 @@ Provides consistent styling and interaction patterns for all generation setting 
       0 1px 2px hsl(var(--shadow-color) / 0.15),
       0 2px 4px hsl(var(--shadow-color) / 0.12),
       0 4px 8px hsl(var(--shadow-color) / 0.1),
-      /* Inner highlight for 3D effect */ inset 0 1px 0
-        var(--theme-stroke);
+      /* Inner highlight for 3D effect */ inset 0 1px 0 var(--theme-stroke);
 
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     overflow: visible; /* Allow hover effects to overflow and pop over neighbors */
@@ -343,7 +340,7 @@ Provides consistent styling and interaction patterns for all generation setting 
 
   /* ✨ MAGICAL LOOP CARD - Animated Mesh Gradient */
   .base-card.cap-card {
-    /* Use the gradient passed from CAPCard component */
+    /* Use the gradient passed from LOOPCard component */
     background: var(--card-color) !important;
     background-size: 300% 300% !important;
 
@@ -402,7 +399,7 @@ Provides consistent styling and interaction patterns for all generation setting 
     }
   }
 
-  /* 📱 LANDSCAPE MOBILE: Adjust LOOP card styling for compact mode */
+  /* 📱 LANDSLOOPE MOBILE: Adjust LOOP card styling for compact mode */
   @media (min-aspect-ratio: 17/10) and (max-height: 500px) {
     .base-card.cap-card {
       /* Let grid control height - no forced constraints */

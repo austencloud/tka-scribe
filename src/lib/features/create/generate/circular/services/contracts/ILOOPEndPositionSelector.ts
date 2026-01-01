@@ -22,6 +22,3 @@ export interface ILOOPEndPositionSelector {
     sliceSize: SliceSize
   ): GridPosition;
 }
-
-/** @deprecated Use ILOOPEndPositionSelector instead */
-export type ICAPEndPositionSelector = ILOOPEndPositionSelector;

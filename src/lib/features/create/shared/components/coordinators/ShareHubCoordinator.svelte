@@ -89,13 +89,10 @@
   }
 
   async function handleExport(mode: 'single' | 'composite', settings?: ExportSettings) {
-    console.log("📱 ShareHubCoordinator: Export requested", { mode, settings });
-
     if (isExporting) return;
 
     // Check if sequence is saved
     if (!isSequenceSaved) {
-      console.log("📱 ShareHubCoordinator: Sequence not saved, opening SaveToLibraryPanel");
       pendingExport = { mode, settings };
       showSaveToLibrary = true;
       hapticService?.trigger("selection");
@@ -107,8 +104,6 @@
   }
 
   async function performExport(mode: 'single' | 'composite', settings?: ExportSettings) {
-    console.log("📱 ShareHubCoordinator: Performing export", { mode, settings });
-
     if (!currentSequence) {
       showToast("No sequence to export", "error");
       return;
@@ -144,7 +139,7 @@
       showToast("Export complete!", "success");
       panelState.closeShareHubPanel();
     } catch (error) {
-      console.error("📱 ShareHubCoordinator: Export failed", error);
+      console.error("Export failed:", error);
       hapticService?.trigger("error");
       showToast(
         error instanceof Error ? error.message : "Export failed",
@@ -177,8 +172,6 @@
       addDifficultyLevel: compositionSettings.addDifficultyLevel,
       userName: authState.user?.displayName ?? '',
     };
-
-    console.log("📱 ShareHubCoordinator: Exporting with options", { shareOptions, isMobile });
 
     // Use native share on mobile, download on desktop
     if (isMobile) {
@@ -213,7 +206,6 @@
   }
 
   function handleSaveComplete(savedSequenceId: string) {
-    console.log("📱 ShareHubCoordinator: Save complete, proceeding with export");
     showSaveToLibrary = false;
 
     // Proceed with pending export
@@ -226,7 +218,6 @@
   }
 
   function handleSaveCancel() {
-    console.log("📱 ShareHubCoordinator: Save cancelled");
     showSaveToLibrary = false;
     pendingExport = null;
   }

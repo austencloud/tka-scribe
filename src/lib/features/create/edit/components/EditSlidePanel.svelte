@@ -116,10 +116,8 @@ HMR Test: Nested component change test
 
   // Close handler with haptic feedback
   function handleClose() {
-    console.log("🟣 EditSlidePanel handleClose called");
     hapticService?.trigger("selection");
     onClose();
-    console.log("🟣 EditSlidePanel onClose() completed");
   }
 
   // NOTE: Backdrop click detection has been removed to prevent accidental panel closure
@@ -145,26 +143,20 @@ HMR Test: Nested component change test
 
   // Handle beat data updates from arrow adjustments
   function handleBeatDataUpdate(updatedBeatData: BeatData) {
-    console.log(
-      "[EditSlidePanel] Beat data updated with manual adjustments:",
-      updatedBeatData
-    );
     adjustedBeatData = updatedBeatData;
   }
 
   // Handle copy beat data to clipboard
   async function handleCopyBeatData() {
     if (!selectedBeatData) {
-      console.warn("No beat data selected to copy");
       return;
     }
 
     try {
       await copyBeatDebugDataToClipboard(selectedBeatData);
       hapticService?.trigger("success");
-      console.log("✅ Beat data copied to clipboard");
     } catch (error) {
-      console.error("❌ Failed to copy beat data:", error);
+      console.error("Failed to copy beat data:", error);
       hapticService?.trigger("error");
     }
   }

@@ -10,14 +10,10 @@ export class MusicPlayer implements IMusicPlayer {
   private currentAudio: HTMLAudioElement | null = null;
   private initialized = false;
 
-  constructor() {
-    console.log("🎵 MusicPlayer initialized");
-  }
+  constructor() {}
 
   async initialize(): Promise<void> {
     if (this.initialized) return;
-
-    console.log("🎵 MusicPlayer: Initializing audio context...");
 
     try {
       // Initialize Web Audio API context
@@ -33,7 +29,6 @@ export class MusicPlayer implements IMusicPlayer {
       }
 
       this.initialized = true;
-      console.log("✅ MusicPlayer initialized with audio context");
     } catch (error) {
       console.error(
         "❌ MusicPlayer: Failed to initialize audio context:",
@@ -41,13 +36,10 @@ export class MusicPlayer implements IMusicPlayer {
       );
       // Fallback to basic HTML audio without Web Audio API
       this.initialized = true;
-      console.log("⚠️ MusicPlayer: Fallback to basic HTML audio");
     }
   }
 
   cleanup(): void {
-    console.log("🎵 MusicPlayer: Cleaning up...");
-
     if (this.currentAudio) {
       this.currentAudio.pause();
       this.currentAudio.removeEventListener(
@@ -74,8 +66,6 @@ export class MusicPlayer implements IMusicPlayer {
   async play(track: string): Promise<void> {
     await this.ensureInitialized();
 
-    console.log("🎵 MusicPlayer: Playing track:", track);
-
     try {
       // Stop current audio if playing
       if (this.currentAudio) {
@@ -88,7 +78,6 @@ export class MusicPlayer implements IMusicPlayer {
 
       // Start playback
       await this.currentAudio.play();
-      console.log("✅ MusicPlayer: Track started playing");
     } catch (error) {
       console.error("❌ MusicPlayer: Failed to play track:", error);
       throw new Error(`Failed to play track: ${track}`);
@@ -97,23 +86,19 @@ export class MusicPlayer implements IMusicPlayer {
 
   async pause(): Promise<void> {
     if (!this.currentAudio) {
-      console.warn("🎵 MusicPlayer: No audio to pause");
       return;
     }
 
     this.currentAudio.pause();
-    console.log("⏸️ MusicPlayer: Playback paused");
   }
 
   async stop(): Promise<void> {
     if (!this.currentAudio) {
-      console.warn("🎵 MusicPlayer: No audio to stop");
       return;
     }
 
     this.currentAudio.pause();
     this.currentAudio.currentTime = 0;
-    console.log("⏹️ MusicPlayer: Playback stopped");
   }
 
   private async ensureInitialized(): Promise<void> {
@@ -135,23 +120,15 @@ export class MusicPlayer implements IMusicPlayer {
   }
 
   private handleLoadedMetadata = (): void => {
-    if (this.currentAudio) {
-      console.log(
-        "🎵 MusicPlayer: Audio metadata loaded, duration:",
-        this.currentAudio.duration
-      );
-    }
+    // Metadata loaded - could emit events here for UI updates
   };
 
   private handleTimeUpdate = (): void => {
-    if (this.currentAudio) {
-      // Could emit events here for UI updates
-      // console.log("🎵 Time update:", this.currentAudio.currentTime);
-    }
+    // Could emit events here for UI updates
   };
 
   private handleEnded = (): void => {
-    console.log("🎵 MusicPlayer: Track playback ended");
+    // Track ended - could emit events here for UI updates
   };
 
   private handleError = (event: Event): void => {

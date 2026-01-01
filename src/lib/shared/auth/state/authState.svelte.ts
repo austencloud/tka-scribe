@@ -212,7 +212,6 @@ export async function initializeAuthListener() {
   try {
     const { ensureAuthPersistence } = await import("../firebase");
     await ensureAuthPersistence();
-    console.log("✅ [authState] Auth persistence ready");
   } catch (error) {
     console.warn("⚠️ [authState] Could not ensure auth persistence:", error);
     // Continue anyway - auth will work, just might have stale state issues
@@ -222,23 +221,12 @@ export async function initializeAuthListener() {
   let justCompletedOAuthRedirect = false;
   let redirectResultUser: User | null = null;
 
-  // CRITICAL: Wait for Firebase Auth to initialize before checking redirect result
-  // Auth needs time to restore persisted session from IndexedDB
-  console.log("🔍 [authState] Waiting for Firebase Auth to initialize...");
-  console.log("🔍 [authState] Current URL:", typeof window !== 'undefined' ? window.location.href : 'SSR');
-  console.log("🔍 [authState] URL hash:", typeof window !== 'undefined' ? window.location.hash : 'SSR');
-  console.log("🔍 [authState] URL search:", typeof window !== 'undefined' ? window.location.search : 'SSR');
-
   // Check if we're returning from a link redirect
   if (typeof window !== 'undefined') {
     try {
       const linkRedirectMarker = sessionStorage.getItem('tka_link_redirect');
       if (linkRedirectMarker) {
-        console.log("🔍 [authState] Found link redirect marker:", linkRedirectMarker);
-        // Clear it after reading
         sessionStorage.removeItem('tka_link_redirect');
-      } else {
-        console.log("🔍 [authState] No link redirect marker found");
       }
     } catch (e) {
       console.warn("🔍 [authState] Could not read redirect marker:", e);
@@ -272,31 +260,17 @@ export async function initializeAuthListener() {
   });
 
   const initialUser = await authReady;
-  console.log("🔍 [authState] Auth initialized. Current user:",
-    initialUser?.email ?? "not signed in",
-    "providers:", initialUser?.providerData?.map(p => p.providerId) ?? []);
 
   // NOW check for OAuth redirect result (auth is ready)
   try {
-    console.log("🔍 [authState] Checking for OAuth redirect result...");
-
     const result = await getRedirectResult(auth);
 
-    console.log("🔍 [authState] getRedirectResult returned:", result ? "UserCredential" : "null");
-
     if (result?.user) {
-      console.log("✅ [authState] OAuth redirect completed for:", result.user.email);
-      console.log("✅ [authState] Providers after redirect:", result.user.providerData.map(p => p.providerId));
-      console.log("✅ [authState] Operation type:", result.operationType);
       justCompletedOAuthRedirect = true;
       redirectResultUser = result.user;
 
       // Reload to ensure providerData is synced
       await result.user.reload();
-      console.log("✅ [authState] User reloaded, providers:",
-        result.user.providerData.map(p => p.providerId));
-    } else {
-      console.log("🔍 [authState] No OAuth redirect pending");
     }
   } catch (error: unknown) {
     const errorCode = (error as { code?: string })?.code;
@@ -311,7 +285,6 @@ export async function initializeAuthListener() {
       // If we just completed an OAuth redirect, use the redirect result user
       // because it has the freshest providerData
       if (justCompletedOAuthRedirect && redirectResultUser) {
-        console.log("✅ [authState] Using OAuth redirect result user with updated providers");
         user = redirectResultUser;
         justCompletedOAuthRedirect = false;
         redirectResultUser = null;
@@ -692,8 +665,6 @@ export async function refreshUser(): Promise<void> {
         ..._state,
         user: refreshedUser,
       };
-      console.log("✅ [authState] User refreshed, providers:",
-        refreshedUser.providerData.map(p => p.providerId));
     }
   } catch (error) {
     console.error("❌ [authState] Failed to refresh user:", error);

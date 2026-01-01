@@ -59,12 +59,6 @@ export class VideoExportOrchestrator implements IVideoExportOrchestrator {
     onProgress: (progress: VideoExportProgress) => void,
     options: VideoExportOrchestratorOptions = {}
   ): Promise<void> {
-    console.log("🎬 VideoExportOrchestrator.executeExport called");
-    console.log("  Canvas:", canvas);
-    console.log("  Playback controller:", playbackController);
-    console.log("  Panel state:", panelState);
-    console.log("  Sequence data:", panelState.sequenceData);
-
     if (this._isExporting) {
       throw new Error("Export already in progress");
     }
@@ -129,10 +123,6 @@ export class VideoExportOrchestrator implements IVideoExportOrchestrator {
       // beatsPerFrame = totalBeats / framesPerLoop (for single loop)
       const beatsPerFrame = panelState.totalBeats / framesPerLoop;
 
-      console.log(
-        `📊 Export settings: ${totalFrames} frames @ ${fps} FPS, ${loopCount} loop(s), ${panelState.speed}x speed (${Math.round(panelState.speed * 60)} BPM), ${secondsPerBeat.toFixed(2)}s per beat, frame delay ${frameDelay}ms`
-      );
-
       // Check if composite mode is enabled
       const isCompositeMode = options.compositeMode && options.compositeMode !== 'none';
 
@@ -141,7 +131,6 @@ export class VideoExportOrchestrator implements IVideoExportOrchestrator {
         if (!panelState.sequenceData) {
           throw new Error('Sequence data is required for composite mode');
         }
-        console.log(`🎨 Composite mode enabled: ${options.compositeMode}`);
         await this.compositeRenderer.initialize(panelState.sequenceData, {
           orientation: options.compositeMode as 'horizontal' | 'vertical',
           gridBeatSize: options.gridBeatSize ?? 120,
@@ -164,7 +153,6 @@ export class VideoExportOrchestrator implements IVideoExportOrchestrator {
         const compositeDims = this.compositeRenderer.getCompositeDimensions();
         offscreenCanvas.width = compositeDims.width;
         offscreenCanvas.height = compositeDims.height;
-        console.log(`🎨 Composite canvas: ${compositeDims.width}x${compositeDims.height}`);
       } else {
         offscreenCanvas.width = canvas.width;
         offscreenCanvas.height = canvas.height;
@@ -324,24 +312,15 @@ export class VideoExportOrchestrator implements IVideoExportOrchestrator {
         });
       }
 
-      console.log(`✅ Captured ${totalFrames} frames`);
-
       if (this.shouldCancel) {
         throw new Error("Export cancelled");
       }
 
-      console.log("🔄 Encoding video...");
       onProgress({ progress: 0, stage: "encoding" });
       const outputBlob = await exporter.finish();
-      console.log(
-        `✅ ${exportFormat.toUpperCase()} encoded, size: ${(outputBlob.size / 1024 / 1024).toFixed(2)} MB`
-      );
 
-      console.log(`📥 Downloading ${exportFormat.toUpperCase()}: ${filename}`);
       await this.fileDownloadService.downloadBlob(outputBlob, filename);
-      console.log("✅ Download triggered");
 
-      console.log("✅ Export complete!");
       onProgress({ progress: 1, stage: "complete" });
     } catch (error) {
       // Don't log cancellation as an error - it's intentional user action
@@ -367,7 +346,6 @@ export class VideoExportOrchestrator implements IVideoExportOrchestrator {
   }
 
   cancelExport(): void {
-    console.log("🛑 VideoExportOrchestrator.cancelExport() called");
     this.shouldCancel = true;
     this.VideoExporter.cancelExport();
     this._isExporting = false;
@@ -501,7 +479,6 @@ export class VideoExportOrchestrator implements IVideoExportOrchestrator {
       this.letterGlyphCache.set(letter, result);
       return result;
     } catch (error) {
-      console.warn(`Failed to load letter glyph for ${letter}:`, error);
       const result = { image: null, dimensions: { width: 0, height: 0 } };
       this.letterGlyphCache.set(letter, result);
       return result;

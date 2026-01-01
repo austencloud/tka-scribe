@@ -76,7 +76,6 @@ export async function saveTrackMetadata(
   };
 
   await setDoc(docRef, trackData);
-  console.log("📝 Track metadata saved to Firestore:", metadata.title);
 }
 
 /**
@@ -90,7 +89,6 @@ export async function updateTrackMetadata(
   const docRef = doc(collectionRef, trackId);
 
   await updateDoc(docRef, updates as any);
-  console.log("📝 Track metadata updated:", trackId);
 }
 
 /**

@@ -1,4 +1,4 @@
-<!--
+﻿<!--
 PresetCard.svelte - Individual preset card display
 Displays a single preset with icon, name, summary, and action buttons
 -->
@@ -74,13 +74,9 @@ Displays a single preset with icon, name, summary, and action buttons
       config.gridMode.charAt(0).toUpperCase() + config.gridMode.slice(1);
     const mode = config.mode.charAt(0).toUpperCase() + config.mode.slice(1);
 
-    // Shorten "Inverted" to "Compl." for narrow screens
-    let capLabel = LOOP_TYPE_LABELS[config.loopType as LOOPType] || config.loopType;
-    if (capLabel === "Inverted") {
-      capLabel = "Compl.";
-    }
+    const loopLabel = LOOP_TYPE_LABELS[config.loopType as LOOPType] || config.loopType;
 
-    const parts = [`${config.length} beats`, gridMode, mode, capLabel];
+    const parts = [`${config.length} beats`, gridMode, mode, loopLabel];
 
     if (config.turnIntensity > 0) {
       parts.push(

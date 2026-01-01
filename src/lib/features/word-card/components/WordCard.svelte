@@ -33,7 +33,6 @@
 
   function handleClick() {
     hapticService?.trigger("selection");
-    console.log("Word card clicked:", sequence.name);
   }
 
   function handleKeyDown(event: KeyboardEvent) {

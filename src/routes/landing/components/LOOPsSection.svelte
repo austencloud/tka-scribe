@@ -1,4 +1,4 @@
-<script lang="ts">
+﻿<script lang="ts">
 	import { LOOP_TYPES } from '../landing-content';
 </script>
 

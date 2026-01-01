@@ -1,4 +1,4 @@
-<!--
+﻿<!--
 LOOPCard.svelte - Card for selecting LOOP type
 Always opens selector panel when clicked
 -->
@@ -40,9 +40,7 @@ Always opens selector panel when clicked
   const panelState = getContext<PanelCoordinationState>("panelState");
 
   onMount(() => {
-    hapticService = resolve<IHapticFeedback>(
-      TYPES.IHapticFeedback
-    );
+    hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
   });
 
   // Get current selected components using service
@@ -56,7 +54,7 @@ Always opens selector panel when clicked
 
     // Open the LOOP panel via coordinator - this renders at CreateModule level
     // so the backdrop will properly cover the workspace
-    panelState.openCAPPanel(
+    panelState.openLOOPPanel(
       currentLOOPType,
       selectedComponents,
       onLOOPTypeChange
@@ -169,8 +167,7 @@ Always opens selector panel when clicked
         0 2px 4px color-mix(in srgb, var(--theme-shadow) 12%, transparent),
         0 4px 8px color-mix(in srgb, var(--theme-shadow) 10%, transparent),
         0 8px 16px color-mix(in srgb, var(--theme-shadow) 8%, transparent),
-        0 16px 24px
-          color-mix(in srgb, var(--theme-shadow) 6%, transparent),
+        0 16px 24px color-mix(in srgb, var(--theme-shadow) 6%, transparent),
         inset 0 1px 0 var(--theme-stroke-strong);
       transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }

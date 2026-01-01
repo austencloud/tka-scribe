@@ -21,6 +21,3 @@ export interface ILOOPExecutor {
    */
   executeLOOP(sequence: BeatData[], sliceSize: SliceSize): BeatData[];
 }
-
-/** @deprecated Use ILOOPExecutor instead */
-export type ICAPExecutor = ILOOPExecutor;

@@ -5,11 +5,11 @@
    * Visualizes polyrhythmic pattern detection results including
    * motion/spatial periods and zone coverage analysis.
    */
-  import type { PolyrhythmicCAPResult } from "../../../services/contracts/IPolyrhythmicDetector";
+  import type { PolyrhythmicLOOPResult } from "../../../services/contracts/IPolyrhythmicDetector";
   import FontAwesomeIcon from "$lib/shared/foundation/ui/FontAwesomeIcon.svelte";
 
   interface Props {
-    polyrhythmic: PolyrhythmicCAPResult;
+    polyrhythmic: PolyrhythmicLOOPResult;
   }
 
   let { polyrhythmic }: Props = $props();
@@ -18,7 +18,8 @@
 <div class="polyrhythmic-section">
   <div class="polyrhythmic-header">
     <FontAwesomeIcon icon="wave-square" size="1em" />
-    <span>Polyrhythmic Pattern: <strong>{polyrhythmic.polyrhythm}</strong></span>
+    <span>Polyrhythmic Pattern: <strong>{polyrhythmic.polyrhythm}</strong></span
+    >
   </div>
 
   <div class="polyrhythmic-details">
@@ -47,7 +48,9 @@
         {#if zc.summary.isComplete}
           <span class="zone-badge complete">Complete</span>
         {:else}
-          <span class="zone-badge partial">{zc.summary.totalZonesCovered}/4</span>
+          <span class="zone-badge partial"
+            >{zc.summary.totalZonesCovered}/4</span
+          >
         {/if}
       </div>
       <div class="zone-grid">
@@ -55,7 +58,8 @@
           <span class="zone-label">α</span>
           <div class="zone-dots">
             {#each Array(8) as _, i}
-              <span class="zone-dot" class:filled={i < zc.summary.alphaCount}></span>
+              <span class="zone-dot" class:filled={i < zc.summary.alphaCount}
+              ></span>
             {/each}
           </div>
           <span class="zone-count">{zc.summary.alphaCount}</span>
@@ -64,7 +68,8 @@
           <span class="zone-label">β</span>
           <div class="zone-dots">
             {#each Array(8) as _, i}
-              <span class="zone-dot" class:filled={i < zc.summary.betaCount}></span>
+              <span class="zone-dot" class:filled={i < zc.summary.betaCount}
+              ></span>
             {/each}
           </div>
           <span class="zone-count">{zc.summary.betaCount}</span>
@@ -73,7 +78,10 @@
           <span class="zone-label">γ₁₋₈</span>
           <div class="zone-dots">
             {#each Array(8) as _, i}
-              <span class="zone-dot" class:filled={i < zc.summary.gamma1to8Count}></span>
+              <span
+                class="zone-dot"
+                class:filled={i < zc.summary.gamma1to8Count}
+              ></span>
             {/each}
           </div>
           <span class="zone-count">{zc.summary.gamma1to8Count}</span>
@@ -82,7 +90,10 @@
           <span class="zone-label">γ₉₋₁₆</span>
           <div class="zone-dots">
             {#each Array(8) as _, i}
-              <span class="zone-dot" class:filled={i < zc.summary.gamma9to16Count}></span>
+              <span
+                class="zone-dot"
+                class:filled={i < zc.summary.gamma9to16Count}
+              ></span>
             {/each}
           </div>
           <span class="zone-count">{zc.summary.gamma9to16Count}</span>
@@ -94,9 +105,14 @@
   <div class="confidence-bar">
     <span class="confidence-label">Confidence:</span>
     <div class="confidence-track">
-      <div class="confidence-fill" style="width: {polyrhythmic.confidence * 100}%"></div>
+      <div
+        class="confidence-fill"
+        style="width: {polyrhythmic.confidence * 100}%"
+      ></div>
     </div>
-    <span class="confidence-value">{Math.round(polyrhythmic.confidence * 100)}%</span>
+    <span class="confidence-value"
+      >{Math.round(polyrhythmic.confidence * 100)}%</span
+    >
   </div>
 </div>
 
@@ -106,7 +122,11 @@
     flex-direction: column;
     gap: var(--spacing-sm);
     padding: var(--spacing-sm) var(--spacing-md);
-    background: linear-gradient(135deg, rgba(168, 85, 247, 0.12) 0%, rgba(139, 92, 246, 0.06) 100%);
+    background: linear-gradient(
+      135deg,
+      rgba(168, 85, 247, 0.12) 0%,
+      rgba(139, 92, 246, 0.06) 100%
+    );
     border: 1px solid rgba(168, 85, 247, 0.25);
     border-radius: 10px;
     margin-bottom: var(--spacing-xs);

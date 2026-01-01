@@ -1,4 +1,4 @@
-import type { UIGenerationConfig } from "../../../state/generate-config.svelte";
+﻿import type { UIGenerationConfig } from "../../../state/generate-config.svelte";
 import type {
   DifficultyLevel,
   GenerationMode,
