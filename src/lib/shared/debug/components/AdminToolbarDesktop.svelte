@@ -183,6 +183,7 @@
         selectedUserDisplay={previewProfile?.displayName || previewProfile?.email || ""}
         placeholder="Search users to preview..."
         disabled={isLoading}
+        autofocus={true}
       />
     </div>
   {/if}

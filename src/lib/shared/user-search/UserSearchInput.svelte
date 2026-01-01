@@ -30,6 +30,7 @@
     useFixedPosition?: boolean;
     inlineResults?: boolean;
     excludeUserIds?: string[];
+    autofocus?: boolean;
   }
 
   let {
@@ -41,6 +42,7 @@
     useFixedPosition = false,
     inlineResults = false,
     excludeUserIds = [],
+    autofocus = false,
   }: Props = $props();
 
   let inputElement: HTMLInputElement | undefined = $state();
@@ -60,6 +62,16 @@
     hapticService = resolve<IHapticFeedback>(
       TYPES.IHapticFeedback
     );
+  });
+
+  // Auto-focus when requested
+  $effect(() => {
+    if (autofocus && inputElement && !disabled) {
+      // Small delay to ensure DOM is ready after transitions
+      requestAnimationFrame(() => {
+        inputElement?.focus();
+      });
+    }
   });
 
   // Pre-fill if we have a selected user (but not if user cleared it)
