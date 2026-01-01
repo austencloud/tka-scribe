@@ -1,6 +1,9 @@
 <!--
   AnimationControlsPanel - Orchestrates playback, BPM, visibility, and export controls.
 
+  Uses futuristic inline SettingsTogglePanel for mode switching between
+  Playback (style, BPM) and Visual (motion, elements, trails) settings.
+
   Responsive modes:
   - Mobile compact: CompactMobileRow + tool area (beat grid or BPM presets)
   - Mobile expanded: All controls visible, scrollable
@@ -15,16 +18,15 @@
     animationSettings,
     TrailMode,
   } from "$lib/shared/animation-engine/state/animation-settings-state.svelte";
+  import { resolve } from "$lib/shared/inversify/resolve-utils";
+  import { TYPES } from "$lib/shared/inversify/types";
+  import type { ISettingsState } from "$lib/shared/settings/services/contracts/ISettingsState";
 
   // Subcomponents
   import CompactMobileRow from "../controls/CompactMobileRow.svelte";
   import QuickBpmPresets from "../controls/QuickBpmPresets.svelte";
   import TransportControls from "../controls/TransportControls.svelte";
-  import PlaybackStyleRow from "../controls/PlaybackStyleRow.svelte";
-  import StepModeSettings from "../controls/StepModeSettings.svelte";
-  import BpmChips from "../controls/BpmChips.svelte";
-  import SettingsButtonRow from "../controls/SettingsButtonRow.svelte";
-  import VisibilitySettingsSheet from "../controls/VisibilitySettingsSheet.svelte";
+  import SettingsTogglePanel from "../controls/SettingsTogglePanel.svelte";
   import ExportActionsPanel from "./ExportActionsPanel.svelte";
   import AnimationSettingsSheet from "../controls/AnimationSettingsSheet.svelte";
   import AnimationBeatGrid from "$lib/shared/animation-engine/components/AnimationBeatGrid.svelte";
@@ -132,12 +134,19 @@
     onSpeedChange(newSpeed);
   }
 
+  // Settings service for prop types
+  let settingsService: ISettingsState | null = $state(null);
+
   // Viewport detection
   let viewportHeight = $state(0);
   let viewportWidth = $state(0);
 
   onMount(() => {
     if (!browser) return;
+
+    // Initialize settings service
+    settingsService = resolve<ISettingsState>(TYPES.ISettingsState);
+
     const checkViewport = () => {
       viewportHeight = window.innerHeight;
       viewportWidth = window.innerWidth;
@@ -154,11 +163,10 @@
 
   // Settings sheet state - sync with bindable prop
   let isSettingsSheetOpen = $state(false);
-  let isVisibilitySheetOpen = $state(false);
 
   // Sync internal state with bindable prop for parent to track
   $effect(() => {
-    isSettingsOpen = isSettingsSheetOpen || isVisibilitySheetOpen;
+    isSettingsOpen = isSettingsSheetOpen;
   });
 
   // Derive trail preset for settings button summary
@@ -174,15 +182,19 @@
     playbackMode === "step" ? "Step" : "Continuous"
   );
 
-  // Get propType for trail controls
+  // Get prop types from SETTINGS (not sequence data)
+  const bluePropType = $derived.by(() => {
+    if (!settingsService) return null;
+    return settingsService.settings.bluePropType ?? settingsService.settings.propType ?? null;
+  });
+
+  const redPropType = $derived.by(() => {
+    if (!settingsService) return null;
+    return settingsService.settings.redPropType ?? settingsService.settings.propType ?? null;
+  });
+
   const currentPropType = $derived.by(() => {
-    const firstBeat = sequenceData?.beats?.[0];
-    if (firstBeat?.motions?.blue?.propType)
-      return firstBeat.motions.blue.propType;
-    if (firstBeat?.motions?.red?.propType)
-      return firstBeat.motions.red.propType;
-    if (sequenceData?.propType) return sequenceData.propType;
-    return null;
+    return bluePropType ?? redPropType ?? null;
   });
 </script>
 
@@ -231,32 +243,22 @@
       />
     </div>
 
-    <!-- Playback Style Row (Continuous vs Step-by-Step) - always visible when expanded -->
+    <!-- Futuristic Settings Toggle Panel - switches between Playback and Visual modes -->
     {#if !useCompactControls}
-      <div class="control-row style-row">
-        <PlaybackStyleRow
-          {playbackMode}
-          {isPlaying}
-          {onPlaybackModeChange}
-          {onPlaybackToggle}
-        />
-      </div>
-
-      <!-- Step Mode Settings (shown when step mode active) -->
-      {#if playbackMode === "step"}
-        <div class="control-row step-settings-container">
-          <StepModeSettings
-            {stepPlaybackStepSize}
-            {onStepPlaybackStepSizeChange}
-          />
-        </div>
-      {/if}
-    {/if}
-  {/if}
-
-  <!-- BPM & Settings Buttons -->
-  {#if isSideBySideLayout || isExpanded}
-    {#if useCompactControls}
+      <SettingsTogglePanel
+        propType={currentPropType}
+        {bluePropType}
+        {redPropType}
+        bind:bpm
+        {playbackMode}
+        {stepPlaybackStepSize}
+        {isPlaying}
+        onBpmChange={handleBpmChange}
+        {onPlaybackModeChange}
+        {onStepPlaybackStepSizeChange}
+        {onPlaybackToggle}
+      />
+    {:else}
       <!-- Compact: Single settings button for all settings -->
       <div class="control-row compact-row-settings">
         <button
@@ -269,23 +271,6 @@
           <span class="settings-btn-label">Settings</span>
           <span class="settings-summary">{playbackModeLabel} · {bpm} BPM</span>
         </button>
-      </div>
-    {:else}
-      <!-- Full controls: BPM inline, Trails/Visibility as sheet buttons -->
-      <div class="control-row bpm-row">
-        <BpmChips
-          bind:bpm
-          min={15}
-          max={180}
-          step={1}
-          onBpmChange={handleBpmChange}
-        />
-      </div>
-
-      <div class="control-row settings-row">
-        <SettingsButtonRow
-          onOpenVisibility={() => (isVisibilitySheetOpen = true)}
-        />
       </div>
     {/if}
   {/if}
@@ -324,8 +309,6 @@
   {onPlaybackToggle}
 />
 
-<!-- Visual Settings Sheet (visibility + trails) -->
-<VisibilitySettingsSheet bind:isOpen={isVisibilitySheetOpen} propType={currentPropType} />
 
 <style>
   /* Controls Panel Container */
@@ -418,22 +401,6 @@
   .playback-row {
     justify-content: center;
     gap: 12px;
-  }
-
-  .step-settings-container {
-    width: 100%;
-  }
-
-  .step-settings-container :global(.step-settings-row) {
-    width: 100%;
-  }
-
-  .bpm-row {
-    width: 100%;
-  }
-
-  .settings-row {
-    width: 100%;
   }
 
   /* Compact Settings Button */
