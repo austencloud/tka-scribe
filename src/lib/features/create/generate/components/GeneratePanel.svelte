@@ -92,12 +92,17 @@ Card-based architecture with integrated Generate button:
     align-items: center;
     justify-content: stretch; /* Default: fill space (stacked layouts) */
     min-height: 0;
+    /* Mobile: Add vertical padding so panel doesn't touch viewport edges */
+    padding-block: 1rem;
+    /* Smooth transition for padding changes (syncs with 450ms workspace animation) */
+    transition: padding 450ms cubic-bezier(0.4, 0, 0.2, 1);
   }
 
-  /* Desktop: center cards vertically since we constrain their height */
+  /* Desktop: center cards vertically since we constrain their height, remove vertical padding */
   @media (min-width: 1024px) {
     .generate-panel-inner {
       justify-content: center;
+      padding-block: 0;
     }
   }
 

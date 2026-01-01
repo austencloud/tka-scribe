@@ -27,10 +27,10 @@ Shows BOTH Freeform and Circular options vertically with clear active/inactive s
 </script>
 
 <ToggleCard
-  title="Gen Mode"
+  title="Mode"
   option1={{
     value: GenerationMode.CIRCULAR,
-    label: "Loop",
+    label: "LOOP",
     icon: "arrows-rotate",
   }}
   option2={{
