@@ -19,7 +19,7 @@
 		</p>
 
 		<div class="hero-cta">
-			<a href="/" class="btn btn-primary">
+			<a href="/app" class="btn btn-primary">
 				Open TKA Scribe
 				<span class="arrow">→</span>
 			</a>

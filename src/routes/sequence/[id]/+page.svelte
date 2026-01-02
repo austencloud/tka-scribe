@@ -33,7 +33,7 @@
 
   // Handle navigation back to home
   function handleClose() {
-    goto("/");
+    goto("/app");
   }
 
   // Handle opening in Create module
@@ -44,10 +44,10 @@
         "tka-pending-edit-sequence",
         JSON.stringify(sequence)
       );
-      goto("/?module=create&tab=edit");
+      goto("/app?module=create&tab=edit");
     } catch (err) {
       console.error("Failed to store sequence for editing:", err);
-      goto("/");
+      goto("/app");
     }
   }
 </script>

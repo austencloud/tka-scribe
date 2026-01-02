@@ -125,9 +125,9 @@
       // Clear the email from storage
       window.localStorage.removeItem("emailForSignIn");
 
-      // Navigate to home
-      console.log(`🔐 [email-link] Navigating to home...`);
-      goto("/");
+      // Navigate to app
+      console.log(`🔐 [email-link] Navigating to app...`);
+      goto("/app");
     } catch (err: any) {
       console.error(`❌ [email-link] Sign-in error:`, err);
       console.error(`❌ [email-link] Error code:`, err.code);
