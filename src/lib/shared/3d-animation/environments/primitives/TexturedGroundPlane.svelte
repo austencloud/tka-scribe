@@ -41,7 +41,7 @@
   const texture = textureLoader.load(diffuseMap);
 
   // Reference to material for direct manipulation
-  let materialRef = $state<MeshStandardMaterialType | null>(null);
+  let materialRef = $state<MeshStandardMaterialType | undefined>(undefined);
 
   // Configure texture and apply to material when both are ready
   $effect(() => {

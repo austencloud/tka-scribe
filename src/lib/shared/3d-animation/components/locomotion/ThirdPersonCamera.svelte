@@ -39,7 +39,7 @@
 	const { invalidate, renderer } = useThrelte();
 
 	// Camera reference
-	let cameraRef = $state<PerspectiveCamera | null>(null);
+	let cameraRef = $state<PerspectiveCamera | undefined>(undefined);
 
 	// Pointer lock state
 	let isPointerLocked = $state(false);

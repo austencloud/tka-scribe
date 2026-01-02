@@ -17,6 +17,7 @@
 
   import { onMount, onDestroy, untrack } from "svelte";
   import { T, useTask } from "@threlte/core";
+  import { Vector3 } from "three";
   import { loadFeatureModule } from "$lib/shared/inversify/container";
   import type { IAvatarSkeletonBuilder } from "../services/contracts/IAvatarSkeletonBuilder";
   import type { IIKSolver } from "../services/contracts/IIKSolver";
@@ -249,7 +250,7 @@
     const gridOffset = -WALL_OFFSET; // Same as passed to Staff3D
 
     // Transform grid-local position to world position (mirrors Staff3D.position calculation)
-    function toWorldPosition(local: { x: number; y: number; z: number }) {
+    function toWorldPosition(local: { x: number; y: number; z: number }): Vector3 {
       // Body-local position with forward offset (same as Staff3D)
       const localX = local.x;
       const localZ = local.z + gridOffset;
@@ -258,11 +259,11 @@
       const rotatedX = localX * cos + localZ * sin;
       const rotatedZ = -localX * sin + localZ * cos;
 
-      return {
-        x: rotatedX + position.x,
-        y: local.y + (position.y ?? 0),
-        z: rotatedZ + position.z,
-      };
+      return new Vector3(
+        rotatedX + position.x,
+        local.y + (position.y ?? 0),
+        rotatedZ + position.z,
+      );
     }
 
     const blueWorldProp = bluePropState ? {

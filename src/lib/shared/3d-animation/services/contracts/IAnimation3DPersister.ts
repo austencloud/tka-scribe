@@ -50,6 +50,7 @@ export interface Animation3DPersistedState {
   speed: number;
 
   // Avatar customization
+  avatarId: string;
   bodyType: "masculine" | "feminine" | "androgynous";
   skinTone: string;
   showFigure: boolean;

@@ -335,13 +335,20 @@
     const isFirefly = type === "fireflies";
 
     // Get direct references to geometry arrays (once per frame, not per particle)
-    const posArray = geometry.attributes.position.array as Float32Array;
-    const sizeArray = geometry.attributes.size.array as Float32Array;
-    const rotArray = geometry.attributes.rotation.array as Float32Array;
-    const colorArray = geometry.attributes.colorIndex.array as Float32Array;
+    const posAttr = geometry.attributes.position;
+    const sizeAttr = geometry.attributes.size;
+    const rotAttr = geometry.attributes.rotation;
+    const colorAttr = geometry.attributes.colorIndex;
+    if (!posAttr || !sizeAttr || !rotAttr || !colorAttr) return;
+
+    const posArray = posAttr.array as Float32Array;
+    const sizeArray = sizeAttr.array as Float32Array;
+    const rotArray = rotAttr.array as Float32Array;
+    const colorArray = colorAttr.array as Float32Array;
 
     for (let i = 0; i < particles.length; i++) {
       const p = particles[i];
+      if (!p) continue;
 
       // Apply gravity (fireflies have none)
       if (config.gravity !== 0) {
@@ -414,10 +421,10 @@
     }
 
     // Mark attributes as needing update
-    geometry.attributes.position.needsUpdate = true;
-    geometry.attributes.size.needsUpdate = true;
-    geometry.attributes.rotation.needsUpdate = true;
-    geometry.attributes.colorIndex.needsUpdate = true;
+    posAttr.needsUpdate = true;
+    sizeAttr.needsUpdate = true;
+    rotAttr.needsUpdate = true;
+    colorAttr.needsUpdate = true;
 
     // Compute bounding sphere for proper culling
     geometry.computeBoundingSphere();

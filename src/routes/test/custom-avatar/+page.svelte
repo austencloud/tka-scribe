@@ -5,9 +5,8 @@
    * Tests loading a raw mesh from SAM 3D Body.
    * This is unrigged geometry, so no animation - just static display.
    */
-  import { Canvas, T, useLoader } from "@threlte/core";
+  import { Canvas, T } from "@threlte/core";
   import { OrbitControls, useGltf } from "@threlte/extras";
-  import { Suspense } from "@threlte/extras";
 
   let showWireframe = $state(false);
   let rotationY = $state(0);
@@ -52,30 +51,26 @@
       <T.DirectionalLight position={[5, 10, 5]} intensity={1} />
       <T.DirectionalLight position={[-5, 5, -5]} intensity={0.3} />
 
-      {#snippet fallback()}
+      {#await useGltf("/models/austen.glb")}
         <!-- Loading indicator -->
         <T.Mesh>
           <T.BoxGeometry args={[0.5, 0.5, 0.5]} />
           <T.MeshStandardMaterial color="gray" />
         </T.Mesh>
-      {/snippet}
-
-      <Suspense {fallback}>
-        {#await useGltf("/models/austen.glb") then gltf}
-          <T.Group scale={[1, 1, 1]} position={[0, -1, 0]}>
-            <T is={gltf.scene}>
-              {#if showWireframe}
-                <!-- Override materials to wireframe -->
-              {/if}
-            </T>
-          </T.Group>
-        {:catch error}
-          <T.Mesh>
-            <T.BoxGeometry args={[0.5, 0.5, 0.5]} />
-            <T.MeshStandardMaterial color="red" />
-          </T.Mesh>
-        {/await}
-      </Suspense>
+      {:then gltf}
+        <T.Group scale={[1, 1, 1]} position={[0, -1, 0]}>
+          <T is={gltf.scene}>
+            {#if showWireframe}
+              <!-- Override materials to wireframe -->
+            {/if}
+          </T>
+        </T.Group>
+      {:catch error}
+        <T.Mesh>
+          <T.BoxGeometry args={[0.5, 0.5, 0.5]} />
+          <T.MeshStandardMaterial color="red" />
+        </T.Mesh>
+      {/await}
 
       <!-- Ground plane for reference -->
       <T.Mesh rotation.x={-Math.PI / 2} position.y={-1} receiveShadow>

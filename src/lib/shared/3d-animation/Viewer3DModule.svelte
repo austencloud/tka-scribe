@@ -197,8 +197,12 @@
 
     // Recreate sync state if we have exactly 2 performers
     if (performerStates.length === 2) {
-      syncState?.destroy();
-      syncState = createAvatarSyncState(performerStates[0], performerStates[1]);
+      const first = performerStates[0];
+      const second = performerStates[1];
+      if (first && second) {
+        syncState?.destroy();
+        syncState = createAvatarSyncState(first, second);
+      }
     }
   }
 
@@ -206,6 +210,7 @@
     if (performerStates.length <= 1) return;
 
     const removed = performerStates[performerStates.length - 1];
+    if (!removed) return;
     removed.destroy();
 
     performerStates = performerStates.slice(0, -1);
@@ -248,7 +253,7 @@
     // Check if this is a performer (either avatar body or hitbox)
     // Avatar3D names its group: PERFORMER_performer-0, PERFORMER_performer-1, etc.
     const performerMatch = meshName.match(/^PERFORMER_performer-(\d+)$/);
-    if (performerMatch) {
+    if (performerMatch && performerMatch[1]) {
       const performerIndex = parseInt(performerMatch[1], 10);
       activePerformerIndex = performerIndex;
       isDraggingPerformer = true;
@@ -320,7 +325,7 @@
     serviceDeps = { propInterpolator, sequenceConverter };
 
     // Create initial performer (start with 1, user can add more)
-    const initialPosition = getDefaultPositions(1)[0];
+    const initialPosition = getDefaultPositions(1)[0] ?? { x: 0, z: 0 };
     const initialPerformer = createAvatarInstanceState({
       id: 'performer-0',
       positionX: initialPosition.x,

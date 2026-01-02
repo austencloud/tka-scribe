@@ -215,7 +215,7 @@
         max="1"
         step="0.05"
         value={getIntensity(expandedEffect)}
-        oninput={(e) => setIntensity(expandedEffect, parseFloat(e.currentTarget.value))}
+        oninput={(e) => expandedEffect && setIntensity(expandedEffect, parseFloat(e.currentTarget.value))}
         class="intensity-slider"
       />
     </div>

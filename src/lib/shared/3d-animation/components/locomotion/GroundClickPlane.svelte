@@ -9,7 +9,7 @@
 	 */
 	import { T } from '@threlte/core';
 	import { interactivity } from '@threlte/extras';
-	import type { ThreeEvent } from '@threlte/core';
+	import type { Vector3 } from 'three';
 
 	interface Props {
 		onGroundClick: (point: { x: number; z: number }) => void;
@@ -23,7 +23,13 @@
 	// Enable click detection for this component tree
 	interactivity();
 
-	function handleClick(event: ThreeEvent<MouseEvent>) {
+	// Threlte click event type with intersection point
+	interface ThrelteClickEvent {
+		stopPropagation: () => void;
+		point: Vector3;
+	}
+
+	function handleClick(event: ThrelteClickEvent) {
 		if (!enabled) return;
 
 		// Stop propagation to prevent OrbitControls from handling
