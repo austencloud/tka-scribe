@@ -171,7 +171,7 @@ This component orchestrates the UI; business logic lives in extracted services.
       spellState.setExpandedWord(parseResult.expandedWord || spellState.inputWord);
 
       // Estimate total variations for progress UI
-      const gridMode = spellState.preferences.gridMode ?? GridMode.DIAMOND;
+      const gridMode = GridMode.DIAMOND;
       const estimatedTotal = await orchestrator.estimateVariationCount(
         parseResult.expandedLetters,
         gridMode
@@ -205,8 +205,8 @@ This component orchestrates the UI; business logic lives in extracted services.
       }
 
       // Auto-select the best variation
-      if (variationState.variations.length > 0) {
-        const best = variationState.variations[0];
+      const best = variationState.variations[0];
+      if (best) {
         variationState.selectVariation(best.id);
         handleVariationSelect(best.id);
       }
@@ -298,7 +298,7 @@ This component orchestrates the UI; business logic lives in extracted services.
             sequenceState.setCurrentSequence({
               ...result.sequence,
               name: spellState.inputWord,
-              word: result.expandedWord,
+              word: result.expandedWord ?? spellState.inputWord,
             });
           }
 

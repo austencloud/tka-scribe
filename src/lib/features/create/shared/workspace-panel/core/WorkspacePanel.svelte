@@ -12,11 +12,10 @@
   import { onMount } from "svelte";
   import Toast from "../components/Toast.svelte";
   import SequenceDisplay from "../sequence-display/components/SequenceDisplay.svelte";
-  import HandPathWorkspace from "../hand-path/HandPathWorkspace.svelte";
   import type { IBeatOperator } from "../../services/contracts/IBeatOperator";
   import type { SequenceState } from "../../state/SequenceStateOrchestrator.svelte";
   import type { CreateModuleState } from "../../state/create-module-state.svelte";
-  import type { IAnimationPlaybackController } from "$lib/features/compose/services/contracts/IAnimationPlaybackController";
+  import type { IAnimationStateRef } from "../../types/create-module-types";
   import type { PanelCoordinationState } from "../../state/panel-coordination-state.svelte";
   import type { LetterSource } from "$lib/features/create/spell/domain/models/spell-models";
 
@@ -52,7 +51,7 @@
     shouldOrbitAroundCenter?: boolean;
 
     // Animation state ref
-    animationStateRef?: IAnimationPlaybackController | null;
+    animationStateRef?: IAnimationStateRef | null;
 
     // Layout mode
     isSideBySideLayout?: boolean;
@@ -180,25 +179,7 @@
 </script>
 
 {#if sequenceState}
-  {#if navigationState.activeTab === "gestural" && createModuleState?.handPathCoordinator?.isStarted}
-    <!-- Hand Path Builder Workspace - only visible when started -->
-    <div class="workspace-panel" data-testid="workspace-panel">
-      <div class="hand-path-workspace-container">
-        <HandPathWorkspace
-          pathState={createModuleState.handPathCoordinator.pathState}
-          isStarted={createModuleState.handPathCoordinator.isStarted}
-          onSegmentComplete={createModuleState.handPathCoordinator
-            .handleSegmentComplete}
-          onAdvancePressed={createModuleState.handPathCoordinator
-            .handleAdvancePressed}
-          onAdvanceReleased={createModuleState.handPathCoordinator
-            .handleAdvanceReleased}
-        />
-      </div>
-    </div>
-  {:else if navigationState.activeTab !== "gestural"}
-    <!-- Standard Sequence Display (not in gestural mode) -->
-    <div class="workspace-panel" data-testid="workspace-panel">
+  <div class="workspace-panel" data-testid="workspace-panel">
       <!-- Sequence Display -->
       <div class="sequence-display-container">
         <SequenceDisplay
@@ -223,7 +204,6 @@
         onDismiss={() => (toastMessage = null)}
       />
     </div>
-  {/if}
 {:else}
   <div class="workspace-panel loading" data-testid="workspace-panel">
     <div class="loading-message">Initializing workspace...</div>
@@ -244,8 +224,7 @@
     border-radius: 12px;
   }
 
-  .sequence-display-container,
-  .hand-path-workspace-container {
+  .sequence-display-container {
     flex: 1;
     display: flex;
     flex-direction: column;

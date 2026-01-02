@@ -36,7 +36,6 @@
     buttonPanelElement = $bindable(),
     toolPanelElement = $bindable(),
     // Event handlers
-    onPlayAnimation,
     onClearSequence,
     onShareHub = undefined,
     onSequenceActionsClick,
@@ -54,7 +53,6 @@
     toolPanelRef?: IToolPanelMethods | null;
     buttonPanelElement?: HTMLElement | null;
     toolPanelElement?: HTMLElement | null;
-    onPlayAnimation: () => void;
     onClearSequence: () => void;
     onShareHub?: () => void;
     onSequenceActionsClick: () => void;
@@ -165,8 +163,6 @@
     bind:this={workspaceContainerRef}
     class="workspace-container"
     class:workspace-collapsed={!hasWorkspaceContent}
-    class:hidden-workspace={navigationState.activeTab === "gestural" &&
-      !CreateModuleState?.handPathCoordinator?.isStarted}
     style:--workspace-border-color={workspaceBorderColor}
   >
     <!-- Workspace Content Area -->
@@ -174,7 +170,6 @@
       {#if hasWorkspaceContent}
         <CreationWorkspaceArea
           {animatingBeatNumber}
-          {onPlayAnimation}
           {currentDisplayWord}
           {buttonPanelHeight}
           letterSources={currentLetterSources}
@@ -186,10 +181,9 @@
     </div>
 
     <!-- Button Panel -->
-    {#if hasWorkspaceContent && navigationState.activeTab !== "gestural"}
+    {#if hasWorkspaceContent}
       <div class="button-panel-wrapper" bind:this={buttonPanelElement}>
         <ButtonPanel
-          {onPlayAnimation}
           {onClearSequence}
           {onShareHub}
           {onSequenceActionsClick}
@@ -283,12 +277,6 @@
     opacity: 0;
     pointer-events: none;
     border-color: transparent;
-  }
-
-  /* Gestural mode hidden state */
-  .workspace-container.hidden-workspace {
-    opacity: 0;
-    pointer-events: none;
   }
 
   .workspace-content {

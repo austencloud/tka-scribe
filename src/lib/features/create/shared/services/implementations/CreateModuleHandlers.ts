@@ -45,13 +45,6 @@ export class CreateModuleHandlers implements ICreateModuleHandlers {
   }
 
   /**
-   * Handle play animation button click
-   */
-  handlePlayAnimation(panelState: PanelCoordinationState): void {
-    panelState.openAnimationPanel();
-  }
-
-  /**
    * Handle share button click
    */
   handleOpenSharePanel(panelState: PanelCoordinationState): void {

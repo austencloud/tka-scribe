@@ -6,7 +6,7 @@
 
   Layout:
   - LEFT ZONE: Sequence Actions (tools menu)
-  - CENTER ZONE: Play, Share Hub
+  - CENTER ZONE: Share Hub
   - RIGHT ZONE: Clear Sequence
 
   Note: Undo and Save to Library are in the workspace top bar (SequenceDisplay).
@@ -23,7 +23,6 @@
   import { PresenceAnimation } from "../../../../../../shared/ui-animation/animations.svelte";
   import { getCreateModuleContext } from "$lib/features/create/shared/context/create-module-context";
   import ClearSequencePanelButton from "./buttons/ClearSequenceButton.svelte";
-  import PlayButton from "./buttons/PlayButton.svelte";
   import SequenceActionsButton from "./buttons/SequenceActionsButton.svelte";
   import ShareHubButton from "./buttons/ShareHubButton.svelte";
 
@@ -34,19 +33,16 @@
   const {
     onClearSequence,
     onSequenceActionsClick,
-    onPlayAnimation,
     onShareHub,
     visible = true,
   }: {
     onClearSequence?: () => void;
     onSequenceActionsClick?: () => void;
-    onPlayAnimation?: () => void;
     onShareHub?: () => void;
     visible?: boolean;
   } = $props();
 
   // Derive computed values from context
-  const showPlayButton = $derived(CreateModuleState.canShowActionButtons());
   const showShareHubButton = $derived(CreateModuleState.canShowActionButtons());
   const showSequenceActions = $derived(
     CreateModuleState.canShowSequenceActionsButton()
@@ -58,7 +54,6 @@
   // Note: SequenceActions is now in left zone, not center
   const centerZoneButtonCount = $derived(() => {
     let count = 0;
-    if (showPlayButton) count++;
     if (showShareHubButton) count++;
     return count;
   });
@@ -102,7 +97,7 @@
       {/if}
     </div>
 
-    <!-- CENTER ZONE: Main action buttons (Play, Share Hub) -->
+    <!-- CENTER ZONE: Main action button (Share Hub) -->
     <!-- Wrapper maintains layout space during transitions -->
     <div class="center-zone-wrapper">
       {#key centerZoneButtonCount()}
@@ -111,14 +106,7 @@
           out:fade={{ duration: 150 }}
           in:fade={{ duration: 150, delay: 150 }}
         >
-          <!-- Play Button (opens animation viewer) -->
-          {#if showPlayButton && onPlayAnimation}
-            <div>
-              <PlayButton onclick={onPlayAnimation} />
-            </div>
-          {/if}
-
-          <!-- Share Hub Button -->
+          <!-- Share Hub Button (opens unified share/export panel with animation preview) -->
           {#if showShareHubButton && onShareHub}
             <div>
               <ShareHubButton onclick={onShareHub} isActive={isShareHubOpen} />

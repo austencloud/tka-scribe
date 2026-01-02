@@ -42,7 +42,6 @@ export class NavigationSyncer implements INavigationSyncer {
     const validCreateTabs = [
       "assembler",
       "constructor",
-      "gestural",
       "generator",
       "spell",
     ];
@@ -118,7 +117,7 @@ export class NavigationSyncer implements INavigationSyncer {
   }
 
   validateTabAccess(_mode: BuildSection, _canAccessEditTab: boolean): boolean {
-    // Construct, gestural, and generate are always accessible
+    // Construct and generate are always accessible
     return true;
   }
 

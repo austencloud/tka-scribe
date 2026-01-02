@@ -28,7 +28,6 @@ type ConstructTabState =
 type PersistenceControllerDeps = {
   sequenceState: SequenceState;
   SequencePersister?: ISequencePersister;
-  handPathCoordinator: { initializeServices: () => void };
   optionHistoryManager: OptionHistoryManager;
   /** Function to get the sequence state for a specific tab (or fallback to shared) */
   getSequenceStateForTab?: (tab: BuildModeId) => SequenceState;
@@ -37,7 +36,6 @@ type PersistenceControllerDeps = {
 export function createCreateModulePersistenceController({
   sequenceState,
   SequencePersister,
-  handPathCoordinator,
   optionHistoryManager,
   getSequenceStateForTab,
 }: PersistenceControllerDeps) {
@@ -55,7 +53,6 @@ export function createCreateModulePersistenceController({
   }
 
   async function initialize(): Promise<BuildModeId> {
-    handPathCoordinator.initializeServices();
     let modeToLoad: BuildModeId = "constructor";
 
     try {

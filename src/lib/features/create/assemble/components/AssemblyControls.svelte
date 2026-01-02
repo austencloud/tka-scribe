@@ -16,40 +16,32 @@ Shows contextual action buttons based on current phase:
   const {
     phase,
     bluePathLength,
-    redPathLength,
+    redPathLength = 0,
     canProceedToRed,
     canComplete,
-    onUndo,
     onNextHand,
     onComplete,
     onReset,
   } = $props<{
     phase: HandPathPhase;
     bluePathLength: number;
-    redPathLength: number;
+    redPathLength?: number;
     canProceedToRed: boolean;
     canComplete: boolean;
-    onUndo: () => void;
     onNextHand: () => void;
     onComplete: () => void;
     onReset: () => void;
   }>();
 
+  // Calculate remaining positions needed in red phase
+  const remainingPositions = $derived(
+    phase === "red" ? bluePathLength - redPathLength : 0
+  );
+
   // Resolve haptic feedback service
   const hapticService = resolve<IHapticFeedback>(
     TYPES.IHapticFeedback
   );
-
-  // Show undo only when there's something to undo
-  const canUndo = $derived(
-    (phase === "blue" && bluePathLength > 0) ||
-      (phase === "red" && redPathLength > 0)
-  );
-
-  function handleUndo() {
-    hapticService?.trigger("selection");
-    onUndo();
-  }
 
   function handleNextHand() {
     hapticService?.trigger("selection");
@@ -69,26 +61,13 @@ Shows contextual action buttons based on current phase:
 
 <div class="assembly-controls">
   {#if phase === "blue"}
-    <!-- Blue hand phase controls -->
-    <div class="controls-row">
-      <button
-        class="control-button secondary"
-        onclick={handleUndo}
-        disabled={!canUndo}
-        aria-label="Undo last position"
-      >
-        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-          <path
-            d="M4 8L8 4M4 8L8 12M4 8H14C15.1046 8 16 8.89543 16 10V14"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-        </svg>
-        <span>Undo</span>
-      </button>
+    <!-- Hint text area - always reserves space -->
+    <p class="hint-text" class:visible={bluePathLength > 0 && bluePathLength < 2}>
+      Add at least 2 positions to continue
+    </p>
 
+    <!-- Blue hand phase controls -->
+    <div class="controls-row centered">
       <button
         class="control-button primary blue"
         onclick={handleNextHand}
@@ -106,31 +85,14 @@ Shows contextual action buttons based on current phase:
         </svg>
       </button>
     </div>
-
-    {#if bluePathLength > 0 && bluePathLength < 2}
-      <p class="hint-text">Add at least 2 positions to continue</p>
-    {/if}
   {:else if phase === "red"}
-    <!-- Red hand phase controls -->
-    <div class="controls-row">
-      <button
-        class="control-button secondary"
-        onclick={handleUndo}
-        disabled={!canUndo}
-        aria-label="Undo last position"
-      >
-        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-          <path
-            d="M4 8L8 4M4 8L8 12M4 8H14C15.1046 8 16 8.89543 16 10V14"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-        </svg>
-        <span>Undo</span>
-      </button>
+    <!-- Hint text area - always reserves space -->
+    <p class="hint-text" class:visible={remainingPositions > 0}>
+      {remainingPositions} position{remainingPositions !== 1 ? 's' : ''} remaining to match blue hand
+    </p>
 
+    <!-- Red hand phase controls -->
+    <div class="controls-row centered">
       <button
         class="control-button primary red"
         onclick={handleComplete}
@@ -148,12 +110,6 @@ Shows contextual action buttons based on current phase:
         </svg>
       </button>
     </div>
-
-    {#if redPathLength < bluePathLength}
-      <p class="hint-text">
-        Match blue hand length ({redPathLength}/{bluePathLength} positions)
-      </p>
-    {/if}
   {:else if phase === "complete"}
     <!-- Completion phase controls -->
     <div class="controls-row centered">
@@ -273,12 +229,19 @@ Shows contextual action buttons based on current phase:
     box-shadow: 0 6px 16px rgba(16, 185, 129, 0.4);
   }
 
-  /* Hint text - themed */
+  /* Hint text - themed, always reserves space */
   .hint-text {
     font-size: var(--font-size-compact);
     color: var(--theme-text-dim, var(--theme-text-dim));
     margin: 0;
     text-align: center;
+    min-height: 1.4em; /* Reserve space for text */
+    opacity: 0;
+    transition: opacity 0.2s ease;
+  }
+
+  .hint-text.visible {
+    opacity: 1;
   }
 
   /* Mobile adjustments */

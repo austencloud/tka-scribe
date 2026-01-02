@@ -5,8 +5,7 @@
   Handles cross-browser fullscreen API with proper state management.
 -->
 <script lang="ts">
-  // Import vendor-prefixed types
-  import "$lib/shared/types/vendor-prefixed";
+  // Note: Vendor-prefixed types (webkit*, moz*, ms*) are declared in src/lib/shared/types/vendor-prefixed.d.ts
   import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
   import type { IMobileFullscreenManager } from "$lib/shared/mobile/services/contracts/IMobileFullscreenManager";
   import { resolve } from "$lib/shared/inversify/di";

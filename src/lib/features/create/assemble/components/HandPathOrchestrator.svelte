@@ -36,7 +36,15 @@ Integrates all Assembly components and manages state transitions.
   import HandPathGrid from "./HandPathGrid.svelte";
   import RotationSelector from "./RotationSelector.svelte";
 
-  const {
+  /**
+   * Undo ref interface - exposed to parent for workspace-level undo
+   */
+  export interface AssemblyUndoRef {
+    canUndo: boolean;
+    undo: () => void;
+  }
+
+  let {
     initialGridMode = GridMode.DIAMOND,
     hasExistingSequence = false,
     existingStartPositionBeat = null,
@@ -46,6 +54,8 @@ Integrates all Assembly components and manages state transitions.
     onSequenceUpdate,
     onHeaderTextChange,
     onStartPositionSet,
+    // Bindable undo ref for workspace integration
+    undoRef = $bindable(),
   } = $props<{
     initialGridMode?: GridMode;
     hasExistingSequence?: boolean;
@@ -56,11 +66,16 @@ Integrates all Assembly components and manages state transitions.
     onSequenceUpdate?: (sequence: PictographData[]) => void;
     onHeaderTextChange?: (text: string) => void;
     onStartPositionSet?: (startPosition: PictographData) => void;
+    // Bindable undo ref for workspace integration
+    undoRef?: AssemblyUndoRef | null;
   }>();
 
   // Local state for whether user has started building
   // Initialize with default - $effect syncs from prop
   let hasStarted = $state(false);
+
+  // Transition state for animated exit back to welcome
+  let isExitingToWelcome = $state(false);
 
   // Grid mode (managed locally)
   // Initialize with default - $effect syncs from prop
@@ -142,6 +157,12 @@ Integrates all Assembly components and manages state transitions.
   const bluePathLength = $derived(assemblyState.blueHandPath.length);
   const redPathLength = $derived(assemblyState.redHandPath.length);
 
+  // Are we selecting the start position? (first position of either phase)
+  const isSelectingStartPosition = $derived(
+    (currentPhase === "blue" && bluePathLength === 0) ||
+    (currentPhase === "red" && redPathLength === 0)
+  );
+
   // Can proceed to red hand? Need at least 2 positions
   const canProceedToRed = $derived(bluePathLength >= 2);
 
@@ -149,6 +170,24 @@ Integrates all Assembly components and manages state transitions.
   const canComplete = $derived(
     redPathLength >= 2 && redPathLength === bluePathLength
   );
+
+  // Can undo? In building phases - includes undoing "Start Building" action
+  const canUndoAssembly = $derived.by(() => {
+    if (!hasStarted) return false;
+    // In blue phase: can always undo (either positions or back to welcome)
+    if (currentPhase === "blue") return true;
+    // In red phase: can undo if positions selected
+    if (currentPhase === "red") return redPathLength > 0;
+    return false; // Can't undo in rotation-selection or complete phases
+  });
+
+  // Expose undo ref to parent for workspace-level undo button
+  $effect(() => {
+    undoRef = {
+      canUndo: canUndoAssembly,
+      undo: handleUndo,
+    };
+  });
 
   // Update header text when phase changes
   $effect(() => {
@@ -246,6 +285,19 @@ Integrates all Assembly components and manages state transitions.
 
   // Handle undo
   function handleUndo() {
+    // If in blue phase with no positions, undo the "Start Building" action with animation
+    if (currentPhase === "blue" && bluePathLength === 0) {
+      // Trigger exit animation
+      isExitingToWelcome = true;
+      onSequenceUpdate?.([]);
+      // Wait for animation to complete before switching view
+      setTimeout(() => {
+        hasStarted = false;
+        isExitingToWelcome = false;
+      }, 280); // Match animation duration
+      return;
+    }
+
     assemblyState.undoLastPosition();
 
     // Update workspace
@@ -323,22 +375,21 @@ Integrates all Assembly components and manages state transitions.
 <div class="handpath-orchestrator">
   {#if !hasStarted}
     <!-- Welcome Screen -->
-    <AssemblyWelcome
-      {gridMode}
-      onStart={handleStart}
-      onGridModeChange={handleGridModeChange}
-    />
+    <div class="welcome-wrapper">
+      <AssemblyWelcome
+        {gridMode}
+        onStart={handleStart}
+        onGridModeChange={handleGridModeChange}
+      />
+    </div>
   {:else}
     <!-- Building Phases -->
-    <div class="build-phases">
+    <div class="build-phases" class:exiting={isExitingToWelcome}>
       <!-- Phase Header -->
       <AssemblyPhaseHeader
         phase={currentPhase}
         {bluePathLength}
         {redPathLength}
-        onBack={currentPhase !== "blue" && currentPhase !== "complete"
-          ? handleBack
-          : undefined}
       />
 
       <!-- Phase Content -->
@@ -350,33 +401,10 @@ Integrates all Assembly components and manages state transitions.
               <HandPathGrid
                 gridMode={assemblyState.gridMode}
                 currentPosition={assemblyState.currentPosition}
+                handColor={currentPhase === "red" ? "red" : "blue"}
+                {isSelectingStartPosition}
                 onPositionSelect={handlePositionSelect}
               />
-            </div>
-
-            <!-- Visual path indicator -->
-            <div class="path-indicator">
-              {#if currentPhase === "blue"}
-                <div class="path-dots blue">
-                  {#each assemblyState.blueHandPath as pos, i}
-                    <span class="path-dot" title={pos}>{i + 1}</span>
-                  {/each}
-                  {#if bluePathLength === 0}
-                    <span class="path-placeholder">Tap a position to start</span
-                    >
-                  {/if}
-                </div>
-              {:else}
-                <div class="path-dots red">
-                  {#each assemblyState.redHandPath as pos, i}
-                    <span class="path-dot" title={pos}>{i + 1}</span>
-                  {/each}
-                  {#if redPathLength === 0}
-                    <span class="path-placeholder">Tap a position to start</span
-                    >
-                  {/if}
-                </div>
-              {/if}
             </div>
           </div>
         {:else if currentPhase === "rotation-selection"}
@@ -406,7 +434,6 @@ Integrates all Assembly components and manages state transitions.
           {redPathLength}
           {canProceedToRed}
           {canComplete}
-          onUndo={handleUndo}
           onNextHand={handleNextHand}
           onComplete={handleProceedToRotation}
           onReset={handleFullReset}
@@ -431,6 +458,62 @@ Integrates all Assembly components and manages state transitions.
     display: flex;
     flex-direction: column;
     overflow: hidden;
+    animation: build-phases-entrance 280ms cubic-bezier(0.33, 1, 0.68, 1) both;
+  }
+
+  @keyframes build-phases-entrance {
+    from {
+      opacity: 0;
+      transform: scale(0.94);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  /* Exit animation when undoing back to welcome */
+  .build-phases.exiting {
+    animation: build-phases-exit 280ms cubic-bezier(0.33, 1, 0.68, 1) both;
+  }
+
+  @keyframes build-phases-exit {
+    from {
+      opacity: 1;
+      transform: scale(1);
+    }
+    to {
+      opacity: 0;
+      transform: scale(0.94);
+    }
+  }
+
+  /* Welcome wrapper with entrance animation */
+  .welcome-wrapper {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    animation: welcome-entrance 280ms cubic-bezier(0.33, 1, 0.68, 1) both;
+  }
+
+  @keyframes welcome-entrance {
+    from {
+      opacity: 0;
+      transform: scale(0.94);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .build-phases,
+    .build-phases.exiting,
+    .welcome-wrapper {
+      animation: none;
+    }
   }
 
   .phase-content {
@@ -456,47 +539,6 @@ Integrates all Assembly components and manages state transitions.
     justify-content: center;
     padding: 16px;
     min-height: 0;
-  }
-
-  /* Path indicator */
-  .path-indicator {
-    padding: 12px 16px;
-    background: var(--theme-panel-bg);
-    border-top: 1px solid var(--theme-stroke);
-  }
-
-  .path-dots {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    flex-wrap: wrap;
-  }
-
-  .path-dot {
-    width: 28px;
-    height: 28px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: var(--font-size-compact);
-    font-weight: 700;
-    color: white;
-  }
-
-  .path-dots.blue .path-dot {
-    background: rgba(59, 130, 246, 0.8);
-  }
-
-  .path-dots.red .path-dot {
-    background: rgba(239, 68, 68, 0.8);
-  }
-
-  .path-placeholder {
-    font-size: var(--font-size-compact);
-    color: var(--theme-text-dim);
-    font-style: italic;
   }
 
   /* Rotation Phase */

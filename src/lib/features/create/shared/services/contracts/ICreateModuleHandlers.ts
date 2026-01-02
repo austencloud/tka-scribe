@@ -30,11 +30,6 @@ export interface ICreateModuleHandlers {
   handleOptionSelected(option: PictographData): Promise<void>;
 
   /**
-   * Handle play animation button click
-   */
-  handlePlayAnimation(panelState: PanelCoordinationState): void;
-
-  /**
    * Handle share button click
    */
   handleOpenSharePanel(panelState: PanelCoordinationState): void;

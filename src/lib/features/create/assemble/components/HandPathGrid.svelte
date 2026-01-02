@@ -10,17 +10,101 @@ Positions are enabled/disabled based on grid mode:
 - Diamond mode: N, E, S, W enabled
 - Box mode: NE, SE, SW, NW enabled
 - Center (C) is always disabled for now (future feature)
+
+The hand overlay shows the current position and animates between positions.
 -->
 <script lang="ts">
   import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
   import { GridLocation } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
   import GridPositionButton from "./GridPositionButton.svelte";
 
-  const { gridMode, currentPosition, onPositionSelect } = $props<{
+  const {
+    gridMode,
+    currentPosition,
+    handColor = "blue",
+    isSelectingStartPosition = false,
+    onPositionSelect,
+  } = $props<{
     gridMode: GridMode;
     currentPosition: GridLocation | null;
+    handColor?: "blue" | "red";
+    isSelectingStartPosition?: boolean;
     onPositionSelect: (position: GridLocation) => void;
   }>();
+
+  // Track color transitions for animation
+  let previousColor = $state<"blue" | "red">("blue");
+  let isTransitioning = $state(false);
+
+  // Track ghost hand selection animations
+  let selectedGhostPosition = $state<GridLocation | null>(null);
+  let isAnimatingGhostSelection = $state(false);
+
+  // Detect color changes and trigger transition animation
+  $effect(() => {
+    if (handColor !== previousColor) {
+      isTransitioning = true;
+      // Animation duration matches CSS (500ms)
+      setTimeout(() => {
+        isTransitioning = false;
+      }, 500);
+      previousColor = handColor;
+    }
+  });
+
+  // Handle position selection with ghost animation
+  function handlePositionSelect(position: GridLocation) {
+    if (isSelectingStartPosition) {
+      // Trigger ghost selection animation for visual feedback
+      selectedGhostPosition = position;
+      isAnimatingGhostSelection = true;
+
+      // Call handler immediately so hand appears right away
+      onPositionSelect(position);
+
+      // Clean up animation state after animation completes
+      setTimeout(() => {
+        isAnimatingGhostSelection = false;
+        selectedGhostPosition = null;
+      }, 400); // Match ghost-fade-in animation duration
+    } else {
+      onPositionSelect(position);
+    }
+  }
+
+  /**
+   * Map GridLocation to grid position (row, col) for positioning the hand overlay
+   * Grid is 3x3:
+   *   NW(0,0)  N(0,1)  NE(0,2)
+   *   W(1,0)   C(1,1)  E(1,2)
+   *   SW(2,0)  S(2,1)  SE(2,2)
+   */
+  const positionToGridCoords: Record<GridLocation, { row: number; col: number }> = {
+    [GridLocation.NORTHWEST]: { row: 0, col: 0 },
+    [GridLocation.NORTH]: { row: 0, col: 1 },
+    [GridLocation.NORTHEAST]: { row: 0, col: 2 },
+    [GridLocation.WEST]: { row: 1, col: 0 },
+    [GridLocation.EAST]: { row: 1, col: 2 },
+    [GridLocation.SOUTHWEST]: { row: 2, col: 0 },
+    [GridLocation.SOUTH]: { row: 2, col: 1 },
+    [GridLocation.SOUTHEAST]: { row: 2, col: 2 },
+  };
+
+  // Get the CSS position for the hand overlay based on current position
+  const handPosition = $derived.by(() => {
+    if (!currentPosition) return null;
+    // Type assertion needed because TypeScript can't narrow GridLocation | null properly
+    const coords = positionToGridCoords[currentPosition as GridLocation];
+    if (!coords) return null;
+
+    // Calculate percentage position (each cell is 33.33% of the grid)
+    // Add gap compensation: 12px gap on desktop, 8px on mobile
+    // For simplicity, we'll use CSS calc with grid position
+    return {
+      row: coords.row,
+      col: coords.col,
+    };
+  });
 
   // 3x3 grid layout (row by row, left to right)
   const gridLayout: (GridLocation | null)[][] = [
@@ -90,7 +174,11 @@ Positions are enabled/disabled based on grid mode:
               {position}
               enabled={isPositionEnabled(position)}
               isCurrent={currentPosition === position}
-              onSelect={onPositionSelect}
+              showGhostHand={isSelectingStartPosition}
+              ghostHandColor={handColor}
+              isGhostFadingOut={isAnimatingGhostSelection && selectedGhostPosition !== position}
+              isGhostFadingIn={isAnimatingGhostSelection && selectedGhostPosition === position}
+              onSelect={handlePositionSelect}
             />
           {:else}
             <!-- Center position (disabled) -->
@@ -100,6 +188,30 @@ Positions are enabled/disabled based on grid mode:
           {/if}
         {/each}
       {/each}
+
+      <!-- Animated hand overlay -->
+      {#if handPosition}
+        <div
+          class="hand-overlay"
+          class:blue={handColor === "blue"}
+          class:red={handColor === "red"}
+          class:transitioning={isTransitioning}
+          style:--hand-row={handPosition.row}
+          style:--hand-col={handPosition.col}
+        >
+          <!-- Inline SVG with CSS variable for animatable fill -->
+          <svg
+            class="hand-icon"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 75 100"
+          >
+            <path
+              class="hand-path"
+              d="M11.17 44.59h3.37V12.7a5.61 5.61 0 1 1 11.2-.01v31.9h3.32V5.72A5.5 5.5 0 0 1 34.66 0a5.55 5.55 0 0 1 5.58 5.77v38.81h3.32V13.56c0-2.99 1.95-5.19 4.97-5.64 3.08-.45 6.18 2.1 6.19 5.15q.02 5.73 0 11.46v38.13c0 .79.16 1.47.94 1.87.85.44 1.73.15 2.27-.77l6.41-10.87c1.64-2.79 4.42-3.73 7.43-2.48 3.04 1.26 4.15 4.73 2.41 7.7L65.3 73.19c-2.17 3.68-4.29 7.4-6.55 11.03a18 18 0 0 1-2.81 3.27 46 46 0 0 1-14.76 9.87c-5.01 2.03-10.23 3.03-15.63 2.51-9.85-.94-17.1-5.78-21.71-14.35A32 32 0 0 1 .26 73a76 76 0 0 1-.25-6.23L0 25.08a5.6 5.6 0 0 1 5.74-5.7 5.5 5.5 0 0 1 5.42 5.41z"
+            />
+          </svg>
+        </div>
+      {/if}
     </div>
   {/if}
 </div>
@@ -114,11 +226,113 @@ Positions are enabled/disabled based on grid mode:
   }
 
   .hand-path-grid {
+    position: relative;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     grid-template-rows: repeat(3, 1fr);
     gap: 12px;
     /* Width and height are set dynamically via inline styles */
+  }
+
+  /* Animated hand overlay */
+  .hand-overlay {
+    position: absolute;
+    pointer-events: none;
+    z-index: 10;
+
+    /* Position based on CSS custom properties (row, col) */
+    /* Each cell is 1/3 of the grid, accounting for gaps */
+    --cell-size: calc((100% - 24px) / 3); /* 24px = 2 gaps × 12px */
+    --gap: 12px;
+
+    width: var(--cell-size);
+    height: var(--cell-size);
+
+    /* Position: col * (cell + gap) */
+    left: calc(var(--hand-col) * (var(--cell-size) + var(--gap)));
+    top: calc(var(--hand-row) * (var(--cell-size) + var(--gap)));
+
+    /* Smooth animation when position changes */
+    transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                top 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .hand-icon {
+    width: 60%;
+    height: 60%;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                filter 0.3s ease;
+  }
+
+  /* SVG path fill using CSS */
+  .hand-path {
+    transition: fill 0.5s ease;
+  }
+
+  /* Blue phase colors */
+  .hand-overlay.blue .hand-path {
+    fill: #3b82f6;
+  }
+
+  /* Red phase colors */
+  .hand-overlay.red .hand-path {
+    fill: #ef4444;
+  }
+
+  /* Color-matched glow for each phase */
+  .hand-overlay.blue .hand-icon {
+    filter: drop-shadow(0 4px 16px rgba(59, 130, 246, 0.6))
+            drop-shadow(0 0 8px rgba(59, 130, 246, 0.4));
+  }
+
+  .hand-overlay.red .hand-icon {
+    filter: drop-shadow(0 4px 16px rgba(239, 68, 68, 0.6))
+            drop-shadow(0 0 8px rgba(239, 68, 68, 0.4));
+  }
+
+  /* Phase transition animation */
+  .hand-overlay.transitioning .hand-icon {
+    animation: phase-transition 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .hand-overlay.transitioning .hand-path {
+    animation: color-morph 0.5s ease;
+  }
+
+  @keyframes phase-transition {
+    0% {
+      transform: scale(1);
+      opacity: 1;
+    }
+    40% {
+      transform: scale(0.7);
+      opacity: 0.6;
+    }
+    60% {
+      transform: scale(0.7);
+      opacity: 0.6;
+    }
+    100% {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+
+  /* Color morphs through purple midpoint */
+  @keyframes color-morph {
+    0% {
+      fill: #3b82f6; /* blue */
+    }
+    50% {
+      fill: #8b5cf6; /* purple midpoint */
+    }
+    100% {
+      fill: #ef4444; /* red */
+    }
   }
 
   .center-placeholder {
@@ -140,6 +354,32 @@ Positions are enabled/disabled based on grid mode:
   @media (max-width: 768px) {
     .hand-path-grid {
       gap: 8px;
+    }
+
+    .hand-overlay {
+      /* Adjust for smaller gap on mobile */
+      --cell-size: calc((100% - 16px) / 3); /* 16px = 2 gaps × 8px */
+      --gap: 8px;
+    }
+  }
+
+  /* Reduced motion preference */
+  @media (prefers-reduced-motion: reduce) {
+    .hand-overlay {
+      transition: none;
+    }
+
+    .hand-icon {
+      transition: none;
+    }
+
+    .hand-path {
+      transition: none;
+    }
+
+    .hand-overlay.transitioning .hand-icon,
+    .hand-overlay.transitioning .hand-path {
+      animation: none;
     }
   }
 </style>

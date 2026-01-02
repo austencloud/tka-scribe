@@ -17,6 +17,7 @@
   import GeneratePanel from "../../generate/components/GeneratePanel.svelte";
   import ConstructTabContent from "./ConstructTabContent.svelte";
   import AssemblerTab from "../../assemble/components/AssemblerTab.svelte";
+  import type { AssemblyUndoRef } from "../../assemble/components/HandPathOrchestrator.svelte";
   import SpellPanel from "../../spell/components/SpellPanel.svelte";
   import { desktopSidebarState } from "$lib/shared/layout/desktop-sidebar-state.svelte";
 
@@ -27,8 +28,10 @@
     constructTabState,
     panelState,
     layout,
-    assemblyTabKey,
   } = ctx;
+
+  // Access assemblyTabKey reactively via getter (don't destructure - loses reactivity)
+  const assemblyTabKey = $derived(ctx.assemblyTabKey);
 
   // Derive values from context
   const isSideBySideLayout = () => layout.shouldUseSideBySideLayout;
@@ -92,6 +95,21 @@
   // Transition state for undo animations
   let isUndoingOption = $state(false);
 
+  // Assembly undo ref - synced to CreateModuleState for workspace-level undo
+  let assemblyUndoRef: AssemblyUndoRef | null = $state(null);
+
+  // Sync assembly undo ref to CreateModuleState when it changes
+  $effect(() => {
+    createModuleState.assemblyUndoRef = assemblyUndoRef;
+  });
+
+  // Reset assembly undo ref when assembly tab remounts (via key change)
+  $effect(() => {
+    // Track key changes to clear stale undo ref
+    void assemblyTabKey;
+    assemblyUndoRef = null;
+  });
+
   // Props (only callbacks and bindable refs)
   let {
     toolPanelRef = $bindable(),
@@ -138,6 +156,7 @@
               hasExistingSequence={hasExistingAssemblerData}
               existingStartPositionBeat={existingStartBeat}
               existingBeats={existingBeatsArray}
+              bind:undoRef={assemblyUndoRef}
               onStartPositionSet={(startPosition) => {
                 console.log(
                   "[CreationToolPanelSlot] onStartPositionSet called with",
@@ -339,11 +358,6 @@
                 <p>Spell tab loading...</p>
               </div>
             {/if}
-          {:else if activeToolPanel === "gestural"}
-            <!-- Hand Path Builder (coming soon) -->
-            <div class="coming-soon-panel">
-              <p>Hand Path Builder coming soon...</p>
-            </div>
           {/if}
         </div>
       {/key}

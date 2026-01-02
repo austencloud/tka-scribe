@@ -7,9 +7,9 @@ Handles real-time workspace updates and sequence completion.
 <script lang="ts">
   import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
   import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
-  import HandPathOrchestrator from "./HandPathOrchestrator.svelte";
+  import HandPathOrchestrator, { type AssemblyUndoRef } from "./HandPathOrchestrator.svelte";
 
-  const {
+  let {
     onSequenceUpdate,
     onSequenceComplete,
     onHeaderTextChange,
@@ -18,6 +18,8 @@ Handles real-time workspace updates and sequence completion.
     hasExistingSequence = false,
     existingStartPositionBeat = null,
     existingBeats = [],
+    // Bindable undo ref for workspace integration
+    undoRef = $bindable(),
   } = $props<{
     onSequenceUpdate?: (sequence: PictographData[]) => void;
     onSequenceComplete?: (sequence: PictographData[]) => void;
@@ -27,6 +29,8 @@ Handles real-time workspace updates and sequence completion.
     hasExistingSequence?: boolean;
     existingStartPositionBeat?: PictographData | null;
     existingBeats?: PictographData[];
+    // Bindable undo ref for workspace integration
+    undoRef?: AssemblyUndoRef | null;
   }>();
 
   // Handle sequence updates (during building)
@@ -55,6 +59,7 @@ Handles real-time workspace updates and sequence completion.
     onSequenceComplete={handleSequenceComplete}
     onStartPositionSet={handleStartPositionSet}
     {onHeaderTextChange}
+    bind:undoRef
   />
 </div>
 

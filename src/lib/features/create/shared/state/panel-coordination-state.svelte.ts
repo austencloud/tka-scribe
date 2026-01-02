@@ -101,9 +101,11 @@ export interface PanelCoordinationState {
 
   // Share Hub Panel State (Multi-format sharing)
   get isShareHubPanelOpen(): boolean;
+  get requestedShareHubFormat(): "animation" | "static" | null;
 
-  openShareHubPanel(): void;
+  openShareHubPanel(format?: "animation" | "static"): void;
   closeShareHubPanel(): void;
+  clearRequestedShareHubFormat(): void;
 
   // Save to Library Panel State
   get isSaveToLibraryPanelOpen(): boolean;
@@ -223,6 +225,7 @@ export function createPanelCoordinationState(): PanelCoordinationState {
 
   // Share Hub panel state (Multi-format sharing - persisted)
   let isShareHubPanelOpen = $state(shareHubPanelPersistence.load());
+  let requestedShareHubFormat = $state<"animation" | "static" | null>(null);
 
   // Save to Library panel state
   let isSaveToLibraryPanelOpen = $state(false);
@@ -315,6 +318,7 @@ export function createPanelCoordinationState(): PanelCoordinationState {
 
     isSharePanelOpen = false;
     isShareHubPanelOpen = false;
+    requestedShareHubFormat = null;
     isSaveToLibraryPanelOpen = false;
     isVideoRecordPanelOpen = false;
     isFilterPanelOpen = false;
@@ -453,14 +457,23 @@ export function createPanelCoordinationState(): PanelCoordinationState {
     get isShareHubPanelOpen() {
       return isShareHubPanelOpen;
     },
+    get requestedShareHubFormat() {
+      return requestedShareHubFormat;
+    },
 
-    openShareHubPanel() {
+    openShareHubPanel(format?: "animation" | "static") {
       closeAllPanels();
+      requestedShareHubFormat = format ?? null;
       isShareHubPanelOpen = true;
     },
 
     closeShareHubPanel() {
       isShareHubPanelOpen = false;
+      requestedShareHubFormat = null;
+    },
+
+    clearRequestedShareHubFormat() {
+      requestedShareHubFormat = null;
     },
 
     // Save to Library Panel Getters

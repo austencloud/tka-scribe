@@ -26,14 +26,12 @@
   // Props (only presentation-specific props)
   let {
     animatingBeatNumber = null,
-    onPlayAnimation,
     animationStateRef,
     currentDisplayWord,
     buttonPanelHeight = 0,
     letterSources = null,
   }: {
     animatingBeatNumber?: number | null;
-    onPlayAnimation: () => void;
     animationStateRef?: ReturnType<IToolPanelMethods["getAnimationStateRef"]>;
     currentDisplayWord: string;
     buttonPanelHeight?: number;

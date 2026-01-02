@@ -85,26 +85,7 @@ export function createCurrentWordDisplayEffect(
           displayText = CreateModuleState.sequenceState.sequenceWord() ?? "";
         }
       }
-      // PRIORITY 2: Gestural (hand path) mode - contextual messages
-      else if (
-        navigationState.activeTab === "gestural" &&
-        CreateModuleState.handPathCoordinator
-      ) {
-        const coordinator = CreateModuleState.handPathCoordinator;
-
-        if (!coordinator.isStarted) {
-          displayText = "Configure Your Settings";
-        } else if (coordinator.pathState.isSessionComplete) {
-          displayText = "Sequence Complete!";
-        } else if (coordinator.pathState.currentHand === "blue") {
-          displayText = "Drawing Blue Hand Path";
-        } else if (coordinator.pathState.currentHand === "red") {
-          displayText = "Drawing Red Hand Path";
-        } else {
-          displayText = "Draw Hand Path";
-        }
-      }
-      // PRIORITY 3: Constructor tab - start position instructions
+      // PRIORITY 2: Constructor tab - start position instructions
       else if (navigationState.activeTab === "constructor") {
         if (constructTabState.shouldShowStartPositionPicker()) {
           displayText = "Choose your start position!";

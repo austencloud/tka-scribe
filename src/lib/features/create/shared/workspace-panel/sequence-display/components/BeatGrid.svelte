@@ -188,22 +188,32 @@
     if (beatsArrayChanged && currentBeatCount > 0) {
       const beatCountDiff = currentBeatCount - previousBeatCount;
 
-      if (beatCountDiff === 1 && previousBeatCount > 0) {
-        // 🚀 PERFORMANCE: Check only the last beat ID instead of iterating through all beats
-        // This is O(1) instead of O(n), eliminating the 60-70ms setTimeout violations
-        const lastPreviousBeat = previousBeatsRef[previousBeatCount - 1];
-        const lastCurrentBeat = beats[previousBeatCount - 1];
-        const previousBeatsUnchanged =
-          lastPreviousBeat &&
-          lastCurrentBeat &&
-          lastPreviousBeat.id === lastCurrentBeat.id;
-
-        if (previousBeatsUnchanged) {
-          // Single beat added (Construct mode)
+      if (beatCountDiff === 1) {
+        // Single beat added - handles both first beat (previousBeatCount = 0) and subsequent beats
+        if (previousBeatCount === 0) {
+          // First beat added (e.g., Assembly mode starting fresh)
+          displayState.handleSingleBeatAddition(currentBeatCount - 1);
+        } else if (activeMode === "assembler") {
+          // Assembly mode: always animate new beat
+          // Assembly regenerates all beats with new IDs on each update, so ID comparison won't work
           displayState.handleSingleBeatAddition(currentBeatCount - 1);
         } else {
-          // Beats replaced - trigger full animation
-          triggerFullAnimation();
+          // 🚀 PERFORMANCE: Check only the last beat ID instead of iterating through all beats
+          // This is O(1) instead of O(n), eliminating the 60-70ms setTimeout violations
+          const lastPreviousBeat = previousBeatsRef[previousBeatCount - 1];
+          const lastCurrentBeat = beats[previousBeatCount - 1];
+          const previousBeatsUnchanged =
+            lastPreviousBeat &&
+            lastCurrentBeat &&
+            lastPreviousBeat.id === lastCurrentBeat.id;
+
+          if (previousBeatsUnchanged) {
+            // Single beat added (Construct mode)
+            displayState.handleSingleBeatAddition(currentBeatCount - 1);
+          } else {
+            // Beats replaced - trigger full animation
+            triggerFullAnimation();
+          }
         }
       } else if (beatCountDiff === 0) {
         // Same number of beats - check if IDs are preserved
@@ -399,7 +409,6 @@
             index={-1}
             shouldAnimate={displayState.shouldAnimateStartPosition}
             isSelected={selectedBeatNumber === 0}
-            {shouldOrbitAroundCenter}
             isPracticeBeat={practiceBeatNumber === 0}
             {activeMode}
             onLongPress={onBeatLongPress}
@@ -439,7 +448,6 @@
             onLongPress={onBeatLongPress}
             shouldAnimate={shouldAnimateBeat}
             isSelected={selectedBeatNumber === beat.beatNumber}
-            {shouldOrbitAroundCenter}
             isPracticeBeat={practiceBeatNumber === beat.beatNumber}
             {activeMode}
             highlightStyle={highlightedBeats?.get(beat.beatNumber) ?? null}
@@ -485,7 +493,6 @@
               index={-1}
               shouldAnimate={displayState.shouldAnimateStartPosition}
               isSelected={selectedBeatNumber === 0}
-              {shouldOrbitAroundCenter}
               isPracticeBeat={practiceBeatNumber === 0}
               {activeMode}
               onLongPress={onBeatLongPress}
@@ -525,7 +532,6 @@
               onLongPress={onBeatLongPress}
               shouldAnimate={shouldAnimateBeat}
               isSelected={selectedBeatNumber === beat.beatNumber}
-              {shouldOrbitAroundCenter}
               isPracticeBeat={practiceBeatNumber === beat.beatNumber}
               {activeMode}
               highlightStyle={highlightedBeats?.get(beat.beatNumber) ?? null}

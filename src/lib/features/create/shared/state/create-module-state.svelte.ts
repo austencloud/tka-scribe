@@ -7,7 +7,6 @@
 
 import { createSequenceState } from "./SequenceStateOrchestrator.svelte";
 import type { SequenceState } from "./SequenceStateOrchestrator.svelte";
-import { createHandPathCoordinator } from "./hand-path-coordinator.svelte";
 import { createCreateModulePersistenceController } from "./create-module/persistence-controller.svelte";
 import { createNavigationController } from "./create-module/navigation-controller.svelte";
 import { createOptionHistoryManager } from "./create-module/option-history-manager.svelte";
@@ -73,9 +72,6 @@ export function createCreateModuleState(
   const generatorFallbackState = createTabFallbackState();
   const spellFallbackState = createTabFallbackState();
 
-  // Create hand path coordinator
-  const handPathCoordinator = createHandPathCoordinator();
-
   // Create option history manager
   const optionHistoryManager = createOptionHistoryManager({
     getSequence: () => sequenceState.currentSequence,
@@ -86,6 +82,10 @@ export function createCreateModuleState(
   let _assemblerTabState: AssemblerTabState | null = null;
   let _generatorTabState: GeneratorTabState | null = null;
   let _spellTabState: SpellTabState | null = null;
+
+  // Assembly handpath builder undo ref - separate from sequence-level undo
+  // This is set by the HandPathOrchestrator component when in assembler mode
+  let _assemblyUndoRef: { canUndo: boolean; undo: () => void } | null = null;
 
   /**
    * Get the sequence state for a specific tab
@@ -120,7 +120,6 @@ export function createCreateModuleState(
   const persistenceController = createCreateModulePersistenceController({
     sequenceState,
     ...(SequencePersister && { SequencePersister }),
-    handPathCoordinator,
     optionHistoryManager,
     getSequenceStateForTab,
   });
@@ -285,6 +284,12 @@ export function createCreateModuleState(
       controller?.pushUndoSnapshot(type, metadata);
     },
     undo: () => {
+      // Check assembly handpath builder undo first (when in assembler mode building positions)
+      if (navigationState.activeTab === "assembler" && _assemblyUndoRef?.canUndo) {
+        _assemblyUndoRef.undo();
+        return true;
+      }
+      // Fall back to sequence-level undo controller
       const controller = getActiveTabUndoController();
       return controller?.undo() || false;
     },
@@ -309,6 +314,11 @@ export function createCreateModuleState(
       controller?.setOnUndoingOptionCallback(callback);
     },
     get canUndo() {
+      // Check assembly handpath builder undo first (when in assembler mode building positions)
+      if (navigationState.activeTab === "assembler" && _assemblyUndoRef?.canUndo) {
+        return true;
+      }
+      // Fall back to sequence-level undo controller
       const controller = getActiveTabUndoController();
       return controller?.canUndo || false;
     },
@@ -336,9 +346,6 @@ export function createCreateModuleState(
       const controller = getActiveTabUndoController();
       return controller?.getOperationDescription(type) || "Unknown";
     },
-
-    // Hand path
-    handPathCoordinator,
 
     // Workspace state queries
     isWorkspaceEmpty,
@@ -376,6 +383,13 @@ export function createCreateModuleState(
     },
     set assemblerTabState(value: AssemblerTabState | null) {
       _assemblerTabState = value;
+    },
+    // Assembly handpath builder undo ref - set by HandPathOrchestrator when building positions
+    get assemblyUndoRef() {
+      return _assemblyUndoRef;
+    },
+    set assemblyUndoRef(value: { canUndo: boolean; undo: () => void } | null) {
+      _assemblyUndoRef = value;
     },
     get generatorTabState() {
       return _generatorTabState;

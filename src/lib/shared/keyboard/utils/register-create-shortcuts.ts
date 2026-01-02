@@ -21,14 +21,14 @@ export function registerCreateShortcuts(
 ) {
   // ==================== Animation Control ====================
 
-  // Space - Open animation panel OR toggle play/pause if already open
+  // Space - Open Share Hub with animation OR toggle play/pause if already open
   service.register({
     id: "create.toggle-animation",
     label: "Play/Pause Animation",
-    description: "Open animation viewer or toggle play/pause",
+    description: "Open Share Hub animation viewer or toggle play/pause",
     key: "Space", // Normalized key name (not " ")
     modifiers: [],
-    context: ["create", "animation-panel"], // Works in both contexts
+    context: ["create", "share-hub"], // Works in both contexts
     scope: "animation",
     priority: "high",
     condition: () => {
@@ -45,39 +45,39 @@ export function registerCreateShortcuts(
 
       const { panelState } = ref;
 
-      if (panelState.isAnimationPanelOpen) {
-        // Panel is open - toggle play/pause
+      if (panelState.isShareHubPanelOpen) {
+        // Share Hub is open - toggle play/pause
         const playbackController = getAnimationPlaybackRef();
         if (playbackController) {
           playbackController.togglePlayback();
         }
       } else {
-        // Panel is closed - open it
-        panelState.openAnimationPanel();
+        // Share Hub is closed - open it with animation format pre-selected
+        panelState.openShareHubPanel("animation");
       }
     },
   });
 
-  // Escape - Close animation panel
+  // Escape - Close Share Hub panel
   service.register({
-    id: "create.close-animation",
-    label: "Close Animation",
-    description: "Close the animation viewer",
+    id: "create.close-share-hub",
+    label: "Close Share Hub",
+    description: "Close the Share Hub panel",
     key: "Escape",
     modifiers: [],
-    context: ["create", "animation-panel"], // Works in both contexts
+    context: ["create", "share-hub"], // Works in both contexts
     scope: "animation",
     priority: "high",
     condition: () => {
-      // Only when animation panel is open
+      // Only when Share Hub panel is open
       const ref = getCreateModuleRef();
-      return ref?.panelState.isAnimationPanelOpen ?? false;
+      return ref?.panelState.isShareHubPanelOpen ?? false;
     },
     action: () => {
       const ref = getCreateModuleRef();
       if (!ref) return;
 
-      ref.panelState.closeAnimationPanel();
+      ref.panelState.closeShareHubPanel();
     },
   });
 

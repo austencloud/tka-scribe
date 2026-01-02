@@ -56,11 +56,9 @@
   import { createPanelCoordinationState } from "../state/panel-coordination-state.svelte";
   import { setCreateModuleStateRef } from "../state/create-module-state-ref.svelte";
   import type { IToolPanelMethods } from "../types/create-module-types";
-  import HandPathSettingsView from "./HandPathSettingsView.svelte";
   import TransferConfirmDialog from "./TransferConfirmDialog.svelte";
   import ConfirmDialog from "$lib/shared/foundation/ui/ConfirmDialog.svelte";
   import StandardWorkspaceLayout from "./StandardWorkspaceLayout.svelte";
-  import AnimationSheetCoordinator from "../../../../shared/coordinators/AnimationSheetCoordinator.svelte";
   import { setCreateModuleContext } from "../context/create-module-context";
   import LOOPCoordinator from "./coordinators/LOOPCoordinator.svelte";
   import EditCoordinator from "./coordinators/EditCoordinator.svelte";
@@ -469,11 +467,6 @@
     error = null;
   }
 
-  function handlePlayAnimation() {
-    if (!handlers) return;
-    handlers.handlePlayAnimation(panelState);
-  }
-
   function handleOpenShareHubPanel() {
     if (!handlers) return;
     handlers.handleOpenShareHubPanel(panelState);
@@ -611,13 +604,7 @@
   <ErrorBanner message={error} onDismiss={clearError} />
 {:else if CreateModuleState && constructTabState && services && CreateModuleState.isPersistenceInitialized}
   <div class="create-tab">
-    <!-- Hand Path Settings View (Pre-Start State) -->
-    {#if navigationState.activeTab === "gestural" && !CreateModuleState?.handPathCoordinator?.isStarted}
-      <HandPathSettingsView
-        handPathCoordinator={CreateModuleState.handPathCoordinator}
-      />
-    {:else}
-      <StandardWorkspaceLayout
+    <StandardWorkspaceLayout
         {shouldUseSideBySideLayout}
         {CreateModuleState}
         {panelState}
@@ -627,7 +614,6 @@
         bind:toolPanelRef
         bind:buttonPanelElement
         bind:toolPanelElement
-        onPlayAnimation={handlePlayAnimation}
         onClearSequence={handleClearSequence}
         onShareHub={handleOpenShareHubPanel}
         onSequenceActionsClick={handleOpenSequenceActions}
@@ -637,7 +623,6 @@
           panelState.closeFilterPanel();
         }}
       />
-    {/if}
   </div>
 
   <!-- Edit Coordinator -->
@@ -657,22 +642,6 @@
 
   <!-- Beat Editor Coordinator - Opens when clicking a pictograph -->
   <BeatEditorCoordinator />
-
-  <!-- Animation Coordinator - Rendered outside stacking context to appear above navigation -->
-  <!-- Note: Merge selectedStartPosition into sequence because Create module stores it separately -->
-  {#if CreateModuleState}
-    {@const seq = CreateModuleState.sequenceState.currentSequence}
-    {@const startPos = CreateModuleState.sequenceState.selectedStartPosition}
-    {@const sequenceWithStartPosition = seq && startPos && !seq.startPosition
-      ? { ...seq, startPosition: startPos }
-      : seq}
-    <AnimationSheetCoordinator
-      sequence={sequenceWithStartPosition}
-      bind:isOpen={panelState.isAnimationPanelOpen}
-      bind:animatingBeatNumber
-      combinedPanelHeight={panelState.combinedPanelHeight}
-    />
-  {/if}
 
   <!-- LOOP Coordinator -->
   <LOOPCoordinator />

@@ -389,17 +389,6 @@
             {/if}
           {:else if activeToolPanel === "generate"}
             <GeneratePanel sequenceState={createModuleState.sequenceState} />
-          {:else if activeToolPanel === "gestural"}
-            <!-- Hand Path Builder Controls -->
-            <!-- TODO: Re-enable when handPathCoordinator is added to ICreateModuleState -->
-            <!-- {#if createModuleState.handPathCoordinator}
-              <HandPathToolContent
-                handPathCoordinator={createModuleState.handPathCoordinator}
-              />
-            {/if} -->
-            <div class="coming-soon-panel">
-              <p>Hand Path Builder coming soon...</p>
-            </div>
           {/if}
         </div>
       {/key}

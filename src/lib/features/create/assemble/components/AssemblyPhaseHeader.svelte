@@ -2,71 +2,58 @@
 AssemblyPhaseHeader.svelte - Phase indicator and instructions for Assembly mode
 
 Shows current phase (Blue Hand, Red Hand, Rotation), progress, and contextual instructions.
+Undo is handled by the workspace-level undo button, not here.
 -->
 <script lang="ts">
   import type { HandPathPhase } from "../state/handpath-assemble-state.svelte";
-  import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
-  import { resolve } from "$lib/shared/inversify/di";
-  import { TYPES } from "$lib/shared/inversify/types";
 
-  const { phase, bluePathLength, redPathLength, onBack } = $props<{
+  const { phase, bluePathLength, redPathLength } = $props<{
     phase: HandPathPhase;
     bluePathLength: number;
     redPathLength: number;
-    onBack?: () => void;
   }>();
 
-  // Resolve haptic feedback service
-  const hapticService = resolve<IHapticFeedback>(
-    TYPES.IHapticFeedback
-  );
-
-  function handleBack() {
-    hapticService?.trigger("selection");
-    onBack?.();
-  }
-
-  // Phase display info
+  // Phase display info - title is now the main instruction
   const phaseInfo = $derived.by(() => {
     switch (phase) {
-      case "blue":
+      case "blue": {
+        // First position is the start position, subsequent are beats
+        const title =
+          bluePathLength === 0
+            ? "Select Starting Position"
+            : `Select Beat ${bluePathLength}`;
         return {
-          title: "Blue Hand",
-          subtitle:
-            bluePathLength === 0
-              ? "Tap your starting position"
-              : `${bluePathLength} position${bluePathLength !== 1 ? "s" : ""} • Tap to add more`,
+          title,
           color: "var(--semantic-info)",
           step: 1,
         };
-      case "red":
+      }
+      case "red": {
+        const title =
+          redPathLength === 0
+            ? "Select Starting Position"
+            : `Select Beat ${redPathLength}`;
         return {
-          title: "Red Hand",
-          subtitle:
-            redPathLength === 0
-              ? "Tap your starting position"
-              : `${redPathLength} of ${bluePathLength} positions`,
+          title,
           color: "var(--semantic-error)",
           step: 2,
         };
+      }
       case "rotation-selection":
         return {
           title: "Choose Rotation",
-          subtitle: "Select how props should rotate during shifts",
           color: "var(--semantic-success)",
           step: 3,
         };
       case "complete":
         return {
           title: "Complete!",
-          subtitle: "Your sequence is ready",
           color: "var(--semantic-success)",
           step: 3,
         };
       default:
         return {
           title: "Assembly",
-          subtitle: "",
           color: "#8b5cf6",
           step: 0,
         };
@@ -91,30 +78,12 @@ Shows current phase (Blue Hand, Red Hand, Rotation), progress, and contextual in
 </script>
 
 <div class="phase-header" style:--phase-color={phaseInfo.color}>
-  <!-- Back button -->
-  {#if onBack && phase !== "blue"}
-    <button class="back-button" onclick={handleBack} aria-label="Go back">
-      <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-        <path
-          d="M12 4L6 10L12 16"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        />
-      </svg>
-    </button>
-  {:else}
-    <div class="back-placeholder"></div>
-  {/if}
-
   <!-- Phase info -->
   <div class="phase-info">
     <div class="phase-badge">
       <span class="phase-dot"></span>
       <span class="phase-title">{phaseInfo.title}</span>
     </div>
-    <p class="phase-subtitle">{phaseInfo.subtitle}</p>
   </div>
 
   <!-- Step indicator -->
@@ -139,32 +108,6 @@ Shows current phase (Blue Hand, Red Hand, Rotation), progress, and contextual in
     background: var(--theme-panel-bg);
     border-bottom: 1px solid var(--theme-stroke);
     gap: 12px;
-  }
-
-  .back-button {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 48px; /* WCAG AAA touch target */
-    height: 48px;
-    border: none;
-    background: var(--theme-card-bg);
-    border-radius: 8px;
-    color: var(--theme-text-dim, var(--theme-text-dim));
-    cursor: pointer;
-    transition: all 0.2s ease;
-    flex-shrink: 0;
-  }
-
-  .back-button:hover {
-    background: var(--theme-card-hover-bg);
-    color: var(--theme-text);
-  }
-
-  .back-placeholder {
-    width: 48px;
-    height: 48px;
-    flex-shrink: 0;
   }
 
   .phase-info {
@@ -193,14 +136,6 @@ Shows current phase (Blue Hand, Red Hand, Rotation), progress, and contextual in
     color: var(--theme-text);
   }
 
-  .phase-subtitle {
-    font-size: var(--font-size-compact);
-    color: var(--theme-text-dim, var(--theme-text-dim));
-    margin: 4px 0 0 0;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
 
   .step-indicator {
     display: flex;
@@ -248,16 +183,6 @@ Shows current phase (Blue Hand, Red Hand, Rotation), progress, and contextual in
 
     .phase-title {
       font-size: var(--font-size-sm);
-    }
-
-    .phase-subtitle {
-      font-size: var(--font-size-compact);
-    }
-
-    .back-button,
-    .back-placeholder {
-      width: 48px; /* WCAG AAA touch target - maintain on mobile */
-      height: 48px;
     }
   }
 </style>

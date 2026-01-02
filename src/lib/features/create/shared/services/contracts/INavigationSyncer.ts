@@ -2,7 +2,7 @@
  * Create Module Navigation Sync Service Contract
  *
  * Handles bidirectional synchronization between global navigation state and Create Module state.
- * Manages tab switching within Create Module's tool panel (Construct, Gestural, and Generate).
+ * Manages tab switching within Create Module's tool panel (Construct and Generate).
  * Includes tab accessibility validation and navigation guard logic for construction workflow.
  *
  * Note: "animate" and "share" are now separate panels (not tabs within the tool panel).
@@ -12,7 +12,7 @@
  * Extracted from CreateModule.svelte monolith to follow DI architecture.
  */
 
-export type CreateTab = "construct" | "gestural" | "generate";
+export type CreateTab = "construct" | "generate";
 
 // Legacy type alias for backward compatibility
 /** @deprecated Use CreateTab instead */
