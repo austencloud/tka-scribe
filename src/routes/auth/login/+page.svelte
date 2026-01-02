@@ -13,9 +13,37 @@
   import SocialAuthButton from "$lib/shared/auth/components/SocialAuthButton.svelte";
   import EmailPasswordAuth from "$lib/shared/auth/components/EmailPasswordAuth.svelte";
   import EmailLinkAuth from "$lib/shared/auth/components/EmailLinkAuth.svelte";
+  import GoogleOneTap from "$lib/shared/auth/components/GoogleOneTap.svelte";
+  import { isGoogleOneTapConfigured } from "$lib/shared/auth/config/google-oauth";
+  import LegalSheet from "../../landing/components/LegalSheet.svelte";
 
   let emailAuthMode: "password" | "link" = $state("link"); // Default to passwordless
   let hasRedirected = $state(false);
+
+  // Legal sheet state
+  let sheetOpen = $state(false);
+  let sheetType = $state<"terms" | "privacy">("terms");
+  const MOBILE_BREAKPOINT = 768;
+
+  function handleTermsClick(e: MouseEvent) {
+    if (window.innerWidth < MOBILE_BREAKPOINT) {
+      e.preventDefault();
+      sheetType = "terms";
+      sheetOpen = true;
+    }
+  }
+
+  function handlePrivacyClick(e: MouseEvent) {
+    if (window.innerWidth < MOBILE_BREAKPOINT) {
+      e.preventDefault();
+      sheetType = "privacy";
+      sheetOpen = true;
+    }
+  }
+
+  function closeSheet() {
+    sheetOpen = false;
+  }
 
   onMount(() => {
     console.log("🔐 Login page mounted");
@@ -33,9 +61,9 @@
   // OAuth redirect results are processed by authState.initializeAuthListener() in the root layout
   $effect(() => {
     if (authState.isAuthenticated && authState.initialized && !hasRedirected) {
-      console.log("✅ User is authenticated, redirecting to home...");
+      console.log("✅ User is authenticated, redirecting to app...");
       hasRedirected = true;
-      goto("/");
+      goto("/app");
     }
   });
 </script>
@@ -45,6 +73,14 @@
 </svelte:head>
 
 <div class="login-container">
+  <!-- Google One Tap container at top of page -->
+  <div id="google-one-tap-container" class="one-tap-container"></div>
+
+  <!-- Google One Tap - shows the one-tap prompt automatically -->
+  {#if isGoogleOneTapConfigured()}
+    <GoogleOneTap autoPrompt={true} promptParentId="google-one-tap-container" />
+  {/if}
+
   <div class="login-card">
     <div class="login-header">
       <h1>Welcome to TKA</h1>
@@ -134,13 +170,15 @@
       <div class="login-footer">
         <p>
           By continuing, you agree to our
-          <a href="/terms">Terms of Service</a> and
-          <a href="/privacy">Privacy Policy</a>
+          <a href="/terms" onclick={handleTermsClick}>Terms of Service</a> and
+          <a href="/privacy" onclick={handlePrivacyClick}>Privacy Policy</a>
         </p>
       </div>
     {/if}
   </div>
 </div>
+
+<LegalSheet isOpen={sheetOpen} type={sheetType} onClose={closeSheet} />
 
 <style>
   .login-container {
@@ -153,6 +191,14 @@
       --gradient-cosmic,
       linear-gradient(135deg, #667eea 0%, #764ba2 100%)
     );
+  }
+
+  /* Google One Tap container - positioned at top of viewport */
+  .one-tap-container {
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    z-index: 9999;
   }
 
   .login-card {

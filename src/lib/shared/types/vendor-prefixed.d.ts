@@ -154,4 +154,56 @@ interface CanvasCaptureMediaStreamTrack extends MediaStreamTrack {
   requestFrame(): void;
 }
 
-export {};
+// ============================================================================
+// Google Identity Services (One Tap) API
+// ============================================================================
+
+interface GoogleAccountsId {
+  initialize(config: {
+    client_id: string;
+    callback?: (response: { credential: string }) => void;
+    auto_select?: boolean;
+    cancel_on_tap_outside?: boolean;
+    context?: "signin" | "signup" | "use";
+    itp_support?: boolean;
+    use_fedcm_for_prompt?: boolean;
+  }): void;
+  prompt(
+    callback?: (notification: {
+      isNotDisplayed: () => boolean;
+      isSkippedMoment: () => boolean;
+      isDismissedMoment: () => boolean;
+      getNotDisplayedReason: () => string;
+      getSkippedReason: () => string;
+      getDismissedReason: () => string;
+    }) => void
+  ): void;
+  disableAutoSelect(): void;
+  cancel(): void;
+  revoke(hint: string, callback?: () => void): void;
+  renderButton(
+    parent: HTMLElement,
+    options: {
+      type?: "standard" | "icon";
+      theme?: "outline" | "filled_blue" | "filled_black";
+      size?: "large" | "medium" | "small";
+      text?: "signin_with" | "signup_with" | "continue_with" | "signin";
+      shape?: "rectangular" | "pill" | "circle" | "square";
+      logo_alignment?: "left" | "center";
+      width?: number;
+      locale?: string;
+    }
+  ): void;
+}
+
+interface GoogleAccounts {
+  id: GoogleAccountsId;
+}
+
+interface Window {
+  google?: {
+    accounts: GoogleAccounts;
+  };
+}
+
+// Note: No export {} - this file provides ambient type declarations for vendor-prefixed APIs

@@ -21,6 +21,7 @@ import {
   linkWithPopup,
   sendEmailVerification,
   setPersistence,
+  signInWithCredential,
   signInWithEmailAndPassword,
   signInWithPopup,
   signOut as firebaseSignOut,
@@ -39,6 +40,13 @@ export class Authenticator implements IAuthenticator {
     provider.addScope("profile");
     // Use popup instead of redirect - more reliable and better UX
     await signInWithPopup(auth, provider);
+  }
+
+  async signInWithGoogleCredential(idToken: string): Promise<void> {
+    // Create credential from Google One Tap's ID token
+    const credential = GoogleAuthProvider.credential(idToken);
+    // Sign in with the credential - no redirects!
+    await signInWithCredential(auth, credential);
   }
 
   async signInWithFacebook(): Promise<void> {

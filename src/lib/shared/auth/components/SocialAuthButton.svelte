@@ -3,7 +3,7 @@
    * SocialAuthButton
    *
    * Branded social auth button wrapper.
-   * Note: Authenticator-app 2FA (TOTP) has been removed from the app.
+   * Google uses One Tap for seamless authentication (no redirects).
    */
 
   import { goto } from "$app/navigation";
@@ -19,6 +19,7 @@
     TwitterAuthProvider,
   } from "firebase/auth";
   import { auth } from "../firebase";
+  import { isGoogleOneTapConfigured } from "../config/google-oauth";
 
   let {
     provider,
@@ -57,6 +58,25 @@
     loading = true;
     error = null;
 
+    // For Google, try One Tap first (seamless, no redirects)
+    if (provider === "google" && isGoogleOneTapConfigured() && window.google?.accounts?.id) {
+      window.google.accounts.id.prompt((notification) => {
+        // If One Tap can't display, fall back to popup/redirect
+        if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
+          console.log("[SocialAuthButton] One Tap unavailable, using fallback");
+          handleLegacyAuth();
+        } else {
+          loading = false;
+        }
+      });
+      return;
+    }
+
+    // For other providers or if One Tap unavailable
+    await handleLegacyAuth();
+  }
+
+  async function handleLegacyAuth() {
     try {
       try {
         await setPersistence(auth, indexedDBLocalPersistence);
@@ -72,7 +92,7 @@
       }
 
       await signInWithPopup(auth, authProvider);
-      await goto("/");
+      await goto("/app");
     } catch (e: unknown) {
       const message = e instanceof Error ? e.message : "Sign-in failed";
       error = message;

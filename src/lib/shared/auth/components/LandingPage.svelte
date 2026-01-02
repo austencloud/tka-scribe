@@ -9,16 +9,37 @@
   import SocialAuthCompact from "./SocialAuthCompact.svelte";
   import EmailPasswordAuth from "./EmailPasswordAuth.svelte";
   import AuthFooter from "./AuthFooter.svelte";
+  import GoogleOneTap from "./GoogleOneTap.svelte";
+  import LegalSheet from "../../../../routes/landing/components/LegalSheet.svelte";
   import { resolve } from "../../inversify/di";
   import { TYPES } from "../../inversify/types";
   import type { IAuthenticator } from "../services/contracts/IAuthenticator";
   import { settingsService } from "../../settings/state/SettingsState.svelte";
   import { BackgroundType } from "../../background/shared/domain/enums/background-enums";
   import { applyThemeForBackground } from "../../settings/utils/background-theme-calculator";
+  import { isGoogleOneTapConfigured } from "../config/google-oauth";
 
   let authMode = $state<"signin" | "signup">("signin");
   let showEmailAuth = $state(false);
   let authService: IAuthenticator | null = null;
+
+  // Legal sheet state (lifted here so it renders outside backdrop-filter container)
+  let sheetOpen = $state(false);
+  let sheetType = $state<"terms" | "privacy">("terms");
+
+  function openTerms() {
+    sheetType = "terms";
+    sheetOpen = true;
+  }
+
+  function openPrivacy() {
+    sheetType = "privacy";
+    sheetOpen = true;
+  }
+
+  function closeSheet() {
+    sheetOpen = false;
+  }
 
   // Background toggle state
   const backgrounds: { type: BackgroundType; icon: string; label: string }[] = [
@@ -69,6 +90,14 @@
 </script>
 
 <div class="landing-page" in:fade={{ duration: 300 }}>
+  <!-- Google One Tap container at top of page -->
+  <div id="google-one-tap-container" class="one-tap-container"></div>
+
+  <!-- Google One Tap - shows the One Tap prompt in the container above -->
+  {#if isGoogleOneTapConfigured()}
+    <GoogleOneTap autoPrompt={true} promptParentId="google-one-tap-container" />
+  {/if}
+
   <div class="landing-content">
     <!-- Logo & Branding -->
     <header
@@ -141,6 +170,9 @@
     </footer>
   </div>
 
+  <!-- Legal Sheet - rendered OUTSIDE landing-content to avoid backdrop-filter containment -->
+  <LegalSheet isOpen={sheetOpen} type={sheetType} onClose={closeSheet} />
+
   <!-- Background Toggle (Easter Egg) -->
   <button
     class="bg-toggle"
@@ -165,6 +197,14 @@
     clip: rect(0, 0, 0, 0);
     white-space: nowrap;
     border: 0;
+  }
+
+  /* Google One Tap container - positioned at top of viewport */
+  .one-tap-container {
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    z-index: 9999;
   }
 
   .landing-page {

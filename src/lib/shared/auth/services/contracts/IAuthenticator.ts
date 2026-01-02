@@ -7,10 +7,18 @@
 
 export interface IAuthenticator {
   /**
-   * Sign in with Google using Firebase redirect flow
+   * Sign in with Google using Firebase popup flow
    * @throws Error if sign-in fails
    */
   signInWithGoogle(): Promise<void>;
+
+  /**
+   * Sign in with Google using a credential (ID token) from Google One Tap
+   * This is the preferred method - no redirects, just one tap.
+   * @param idToken The JWT credential from Google One Tap
+   * @throws Error if sign-in fails
+   */
+  signInWithGoogleCredential(idToken: string): Promise<void>;
 
   /**
    * Sign in with Facebook using Firebase redirect flow

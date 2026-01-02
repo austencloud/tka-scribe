@@ -2,7 +2,7 @@
   SocialAuthCompact.svelte - Compact Social Authentication Buttons
 
   Side-by-side Google and Facebook auth buttons for sign-in/sign-up flows.
-  Note: Authenticator-app 2FA (TOTP) has been removed from the app.
+  Google button uses One Tap for seamless authentication (no redirects).
 -->
 <script lang="ts">
   import {
@@ -15,6 +15,7 @@
   import FacebookIcon from "./icons/FacebookIcon.svelte";
   import GoogleIcon from "./icons/GoogleIcon.svelte";
   import { auth } from "../firebase";
+  import { isGoogleOneTapConfigured } from "../config/google-oauth";
 
   let { mode = "signin", onFacebookAuth } = $props<{
     mode: "signin" | "signup";
@@ -25,6 +26,24 @@
 
   async function handleGoogleClick() {
     googleError = null;
+
+    // Try One Tap first (seamless, no redirects)
+    if (isGoogleOneTapConfigured() && window.google?.accounts?.id) {
+      window.google.accounts.id.prompt((notification) => {
+        // If One Tap can't display, fall back to popup
+        if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
+          console.log("[SocialAuthCompact] One Tap unavailable, using popup fallback");
+          handleGooglePopupFallback();
+        }
+      });
+      return;
+    }
+
+    // Fallback to popup if One Tap not available
+    await handleGooglePopupFallback();
+  }
+
+  async function handleGooglePopupFallback() {
     try {
       try {
         await setPersistence(auth, indexedDBLocalPersistence);
@@ -37,7 +56,7 @@
       provider.addScope("profile");
       await signInWithPopup(auth, provider);
     } catch (error: any) {
-      console.error("? [SocialAuthCompact] Google sign-in error:", error);
+      console.error("[SocialAuthCompact] Google sign-in error:", error);
       googleError = error?.message || "Google sign-in failed";
     }
   }
