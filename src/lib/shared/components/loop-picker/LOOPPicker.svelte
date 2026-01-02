@@ -123,7 +123,10 @@
               {#each option.availableLOOPs as loop}
                 <button
                   class="loop-button bridge"
-                  onclick={() => handleBridgeClick(option.bridgeLetters[0], loop.loopType)}
+                  onclick={() => {
+                    const bridgeLetter = option.bridgeLetters[0];
+                    if (bridgeLetter) handleBridgeClick(bridgeLetter, loop.loopType);
+                  }}
                   disabled={isApplying}
                   title={loop.description || formatLOOPType(loop.loopType)}
                 >

@@ -305,11 +305,11 @@
     if (onClose) {
       onClose();
     } else if (browser) {
-      // Navigate back or to home
+      // Navigate back or to app
       if (history.length > 1) {
         history.back();
       } else {
-        goto("/");
+        goto("/app");
       }
     }
   }

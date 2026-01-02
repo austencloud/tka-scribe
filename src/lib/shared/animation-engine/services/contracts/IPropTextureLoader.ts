@@ -18,14 +18,85 @@ export interface PropDimensions {
 }
 
 /**
+ * Prop dimensions lookup by prop type
+ * These are the exact viewBox dimensions from each prop SVG in /images/props/animated/
+ * Used to display correct dimensions before async texture loading completes.
+ */
+export const PROP_DIMENSIONS: Record<string, PropDimensions> = {
+  // Staff family
+  staff: { width: 300, height: 92.33 },
+  simple_staff: { width: 300, height: 92.33 },
+  bigstaff: { width: 600, height: 54.5 },
+  staff_v2: { width: 300, height: 48.6 },
+
+  // Club family
+  club: { width: 300, height: 39.63 },
+  bigclub: { width: 300.5, height: 77.2 },
+
+  // Fan family
+  fan: { width: 300, height: 239.4 },
+  bigfan: { width: 600, height: 567.4 },
+
+  // Triad family
+  triad: { width: 300, height: 264.22 },
+  bigtriad: { width: 600, height: 523.5 },
+
+  // Hoop family
+  minihoop: { width: 300.9, height: 161.1 },
+  bighoop: { width: 600, height: 300 },
+
+  // Buugeng family
+  buugeng: { width: 300, height: 155.26 },
+  bigbuugeng: { width: 600, height: 293.1 },
+  fractalgeng: { width: 300, height: 228.36 },
+
+  // Hand
+  hand: { width: 300, height: 400 },
+
+  // Triquetra family
+  triquetra: { width: 300, height: 175.27 },
+  triquetra2: { width: 300, height: 175.32 },
+
+  // Sword
+  sword: { width: 578.8, height: 64 },
+
+  // Chicken family
+  chicken: { width: 300, height: 28 },
+  bigchicken: { width: 300, height: 52.7 },
+
+  // Guitar family
+  guitar: { width: 593.4, height: 168 },
+  ukulele: { width: 350, height: 71.5 },
+
+  // Doublestar family
+  doublestar: { width: 300, height: 150 },
+  bigdoublestar: { width: 600, height: 300 },
+
+  // Eightrings family
+  eightrings: { width: 300, height: 159.85 },
+  bigeightrings: { width: 600, height: 309.5 },
+
+  // Quiad
+  quiad: { width: 300, height: 300 },
+};
+
+/**
  * Default prop dimensions (staff dimensions)
- * These values ensure props render at correct size before textures load.
- * Matches the standard staff SVG dimensions from prop generation.
+ * Fallback when prop type is unknown.
  */
 export const DEFAULT_PROP_DIMENSIONS: PropDimensions = {
-  width: 252.8,
-  height: 77.8,
+  width: 300,
+  height: 92.33,
 };
+
+/**
+ * Get prop dimensions for a given prop type
+ * Uses the lookup table, falls back to default (staff) if unknown
+ */
+export function getPropDimensions(propType: string): PropDimensions {
+  const normalized = propType.toLowerCase();
+  return PROP_DIMENSIONS[normalized] ?? { ...DEFAULT_PROP_DIMENSIONS };
+}
 
 /**
  * Reactive state for prop textures

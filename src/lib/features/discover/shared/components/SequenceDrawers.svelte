@@ -14,9 +14,10 @@
   import BentoFilterPanel from "../../gallery/filtering/components/bento-filter/BentoFilterPanel.svelte";
   import LetterSelectionSheet from "../../gallery/filtering/components/bento-filter/LetterSelectionSheet.svelte";
   import PositionOptionsSheet from "../../gallery/filtering/components/bento-filter/PositionOptionsSheet.svelte";
+  import type { FilterPreset } from "../domain/types/discover-types";
 
   interface CurrentFilter {
-    type: string;
+    type: FilterPreset | string;
     value: ExploreFilterValue;
   }
 
@@ -92,9 +93,9 @@
 
   function handleStartPositionChange(position: PictographData | null) {
     startPosition = position;
-    // Apply position filter
+    // Apply position filter - pass the grid position string, not the full PictographData
     if (position) {
-      onFilterChange("startPosition", position);
+      onFilterChange("startPosition", position.startPosition ?? undefined);
     } else if (!endPosition) {
       // Only clear if no end position either
       onFilterChange("all");
@@ -103,9 +104,9 @@
 
   function handleEndPositionChange(position: PictographData | null) {
     endPosition = position;
-    // Apply position filter
+    // Apply position filter - pass the grid position string, not the full PictographData
     if (position) {
-      onFilterChange("endPosition", position);
+      onFilterChange("endPosition", position.endPosition ?? undefined);
     } else if (!startPosition) {
       // Only clear if no start position either
       onFilterChange("all");
@@ -149,7 +150,7 @@
       </button>
     </div>
     <ViewPresetsSheet
-      {currentFilter}
+      currentFilter={currentFilter.type as FilterPreset}
       onFilterChange={(preset) => {
         onFilterChange(preset);
         galleryPanelManager.close();

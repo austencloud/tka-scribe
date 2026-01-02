@@ -462,7 +462,16 @@
     const constructTabState = ctx.constructTabState;
     if (!constructTabState?.sequenceState) return;
 
-    await transferHandler.executeTransfer(sequenceToTransfer, constructTabState);
+    // Create properly typed object for transfer (TypeScript narrowing doesn't apply to the whole object)
+    const transferTarget = {
+      sequenceState: constructTabState.sequenceState,
+      syncGridModeFromSequence: constructTabState.syncGridModeFromSequence,
+      setSelectedStartPosition: constructTabState.setSelectedStartPosition,
+      setShowStartPositionPicker: constructTabState.setShowStartPositionPicker,
+      syncPickerStateWithSequence: constructTabState.syncPickerStateWithSequence,
+    };
+
+    await transferHandler.executeTransfer(sequenceToTransfer, transferTarget);
 
     // Close panel and switch tab AFTER state is saved
     handleClose();

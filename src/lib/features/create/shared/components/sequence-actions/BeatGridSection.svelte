@@ -6,11 +6,12 @@
 -->
 <script lang="ts">
   import BeatGrid from "../../workspace-panel/sequence-display/components/BeatGrid.svelte";
-  import type { BeatData } from "$lib/shared/foundation/domain/models/PictographData";
+  import type { BeatData } from "$lib/features/create/shared/domain/models/BeatData";
+  import type { StartPositionData } from "$lib/features/create/shared/domain/models/StartPositionData";
 
   interface Props {
-    beats: BeatData[];
-    startPosition: BeatData | null;
+    beats: readonly BeatData[];
+    startPosition: BeatData | StartPositionData | null;
     selectedBeatNumber: number | null;
     isShiftMode: boolean;
     onBeatClick: (beatNumber: number) => void;

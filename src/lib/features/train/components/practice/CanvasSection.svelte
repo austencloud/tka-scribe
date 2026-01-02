@@ -43,25 +43,28 @@
   let loadError = $state<string | null>(null);
 
   // Initialize services and load Pixi
-  onMount(async () => {
-    try {
-      // Load the animate feature module (contains IAnimationPlaybackController)
-      await loadFeatureModule("animate");
+  onMount(() => {
+    // Async initialization (not awaited for cleanup)
+    (async () => {
+      try {
+        // Load the animate feature module (contains IAnimationPlaybackController)
+        await loadFeatureModule("animate");
 
-      // Get playback controller
-      playbackController = resolve(
-        TYPES.IAnimationPlaybackController
-      ) as IAnimationPlaybackController;
+        // Get playback controller
+        playbackController = resolve(
+          TYPES.IAnimationPlaybackController
+        ) as IAnimationPlaybackController;
 
-      // Load Pixi module on-demand
-      await loadPixiModule();
-      pixiReady = true;
-      isLoading = false;
-    } catch (error) {
-      console.error("[CanvasSection] Failed to initialize:", error);
-      loadError = "Failed to load animation canvas";
-      isLoading = false;
-    }
+        // Load Pixi module on-demand
+        await loadPixiModule();
+        pixiReady = true;
+        isLoading = false;
+      } catch (error) {
+        console.error("[CanvasSection] Failed to initialize:", error);
+        loadError = "Failed to load animation canvas";
+        isLoading = false;
+      }
+    })();
 
     return () => {
       animationState.dispose();

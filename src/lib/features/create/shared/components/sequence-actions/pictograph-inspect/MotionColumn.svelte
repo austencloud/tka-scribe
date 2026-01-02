@@ -30,7 +30,7 @@
     <h3><span class="dot {dotClass}"></span> {label}</h3>
     <button
       class="copy-btn"
-      onclick={() => onCopy(formatMotionText(motion, color, rotationOverride), color)}
+      onclick={async () => onCopy(await formatMotionText(motion, color, rotationOverride), color)}
       title="Copy {label}"
     >
       <i class="fas fa-copy" aria-hidden="true"></i>

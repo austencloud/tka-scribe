@@ -102,7 +102,7 @@ Renders a section with:
   const pictographsWithReversals = $derived(() => {
     if (!reversalDetector) {
       // Service not ready yet, return pictographs without reversal info
-      return sectionPictographs().map(p => ({
+      return sectionPictographs().map((p: PictographData) => ({
         ...p,
         blueReversal: false,
         redReversal: false,

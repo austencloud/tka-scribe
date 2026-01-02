@@ -37,61 +37,7 @@
   let scriptLoaded = $state(false);
   let authService: IAuthenticator | null = null;
 
-  // Declare google on window for TypeScript
-  declare global {
-    interface Window {
-      google?: {
-        accounts: {
-          id: {
-            initialize: (config: GoogleOneTapConfig) => void;
-            prompt: (callback?: (notification: PromptNotification) => void) => void;
-            renderButton: (element: HTMLElement, config: ButtonConfig) => void;
-            cancel: () => void;
-            disableAutoSelect: () => void;
-          };
-        };
-      };
-    }
-  }
-
-  interface GoogleOneTapConfig {
-    client_id: string;
-    callback: (response: CredentialResponse) => void;
-    auto_select?: boolean;
-    cancel_on_tap_outside?: boolean;
-    prompt_parent_id?: string;
-    context?: "signin" | "signup" | "use";
-    itp_support?: boolean;
-    use_fedcm_for_prompt?: boolean;
-  }
-
-  interface CredentialResponse {
-    credential: string; // JWT ID token
-    select_by: string;
-    client_id: string;
-  }
-
-  interface PromptNotification {
-    isDisplayed: () => boolean;
-    isNotDisplayed: () => boolean;
-    isSkippedMoment: () => boolean;
-    isDismissedMoment: () => boolean;
-    getMomentType: () => string;
-    getDismissedReason: () => string;
-    getNotDisplayedReason: () => string;
-    getSkippedReason: () => string;
-  }
-
-  interface ButtonConfig {
-    type: "standard" | "icon";
-    theme?: "outline" | "filled_blue" | "filled_black";
-    size?: "large" | "medium" | "small";
-    text?: "signin_with" | "signup_with" | "continue_with" | "signin";
-    shape?: "rectangular" | "pill" | "circle" | "square";
-    logo_alignment?: "left" | "center";
-    width?: number;
-    locale?: string;
-  }
+  // Uses global types from app.d.ts (GoogleOneTapConfig, GooglePromptNotification, GoogleButtonConfig, Window.google)
 
   function loadGoogleScript(): Promise<void> {
     return new Promise((resolve, reject) => {
@@ -122,7 +68,7 @@
     });
   }
 
-  async function handleCredentialResponse(response: CredentialResponse) {
+  async function handleCredentialResponse(response: { credential: string }) {
     debug.info("Received Google credential, signing in...");
 
     try {
@@ -159,8 +105,7 @@
       cancel_on_tap_outside: false,
       context: "signin",
       itp_support: true, // Intelligent Tracking Prevention support
-      // FedCM is becoming mandatory - enable it for proper positioning support
-      // If FedCM fails, Google falls back to legacy mode automatically
+      // FedCM is mandatory - users who dismiss can re-enable via browser address bar icon
       use_fedcm_for_prompt: true,
     };
 

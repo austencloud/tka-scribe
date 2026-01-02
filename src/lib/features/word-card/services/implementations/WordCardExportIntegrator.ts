@@ -226,9 +226,6 @@ export class WordCardExportIntegrationService
             }
           });
         }
-
-          `✅ Successfully downloaded ${downloadData.length - failedDownloads.length} files`
-        );
       }
 
       onProgress?.(
@@ -312,20 +309,12 @@ export class WordCardExportIntegrationService
       const found = document.querySelectorAll(selector);
       if (found.length > 0) {
         elements = Array.from(found) as HTMLElement[];
-          `✅ Found ${elements.length} page elements using selector: ${selector}`
-        );
         break;
       }
     }
 
     if (elements.length === 0) {
       console.warn("⚠️ No printable page elements found with any selector");
-        "- Elements with data-page-id:",
-        document.querySelectorAll("[data-page-id]").length
-      );
-        "- Elements with class printable-page:",
-        document.querySelectorAll(".printable-page").length
-      );
     }
 
     return elements;
@@ -362,11 +351,6 @@ export class WordCardExportIntegrationService
     }
 
     const canExport = issues.length === 0;
-
-      canExport,
-      pageCount,
-      issues,
-    });
 
     return {
       canExport,

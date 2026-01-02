@@ -22,6 +22,7 @@ Uses PropAwareThumbnail for cloud-cached rendering:
     redPropType = undefined,
     catDogModeEnabled = false,
     lightMode = false,
+    coverUrl: _coverUrl = undefined, // Legacy prop - kept for backwards compatibility
   }: {
     sequence: SequenceData;
     onPrimaryAction?: (sequence: SequenceData) => void;
@@ -30,6 +31,7 @@ Uses PropAwareThumbnail for cloud-cached rendering:
     redPropType?: PropType;
     catDogModeEnabled?: boolean;
     lightMode?: boolean;
+    coverUrl?: string;
   } = $props();
 
   function handlePrimaryAction() {

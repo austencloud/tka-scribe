@@ -303,7 +303,7 @@
         >
           {#snippet children()}
             <AccountSettingsSection
-              user={authState.user}
+              user={authState.user!}
               hasPasswordProvider={hasPasswordProvider()}
               onChangePassword={handleChangePassword}
               {hapticService}

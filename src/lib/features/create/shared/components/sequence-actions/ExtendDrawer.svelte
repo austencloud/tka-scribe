@@ -63,9 +63,11 @@
 
   function handleBridgeSelect(option: CircularizationOption) {
     if (isApplying) return;
+    const bridgeLetter = option.bridgeLetters[0];
+    if (!bridgeLetter) return;
     // Immediately append the bridge letter to the sequence
     // Parent will re-analyze and the analysis prop will update to show LOOPs
-    onBridgeAppend(option.bridgeLetters[0]);
+    onBridgeAppend(bridgeLetter);
   }
 
   function handleLoopSelect(_bridgeLetter: Letter | null, loopType: LOOPType) {

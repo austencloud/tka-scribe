@@ -96,7 +96,7 @@
         : `Loading ${selectedLength}-beat sequences...`;
     }
 
-    if (pages.length === 1 && pages[0].isEmpty) {
+    if (pages.length === 1 && pages[0]?.isEmpty) {
       return selectedLength === 0
         ? "No sequences found"
         : `No ${selectedLength}-beat sequences`;

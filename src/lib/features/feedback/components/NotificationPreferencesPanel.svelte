@@ -237,7 +237,7 @@
   {#if isPreviewMode}
     <div class="preview-banner">
       <i class="fas fa-eye" aria-hidden="true"></i>
-      <span>Viewing {userPreviewState.data.displayName ?? "user"}'s preferences (read-only)</span>
+      <span>Viewing {userPreviewState.data.profile?.displayName ?? "user"}'s preferences (read-only)</span>
     </div>
   {/if}
 

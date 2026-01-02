@@ -25,6 +25,10 @@ export const layoutState = $state({
 
   // Current learn header - updated by LearnTab
   currentLearnHeader: "",
+
+  // Side-by-side layout detection - true when viewport is wide enough for desktop layout
+  // Updated by MainInterface component based on container width
+  isSideBySideLayout: false,
 });
 
 // Helper functions
@@ -46,6 +50,10 @@ export function setCurrentWord(word: string) {
 
 export function setLearnHeader(header: string) {
   layoutState.currentLearnHeader = header;
+}
+
+export function setSideBySideLayout(isSideBySide: boolean) {
+  layoutState.isSideBySideLayout = isSideBySide;
 }
 
 // Helper to check if module needs primary navigation

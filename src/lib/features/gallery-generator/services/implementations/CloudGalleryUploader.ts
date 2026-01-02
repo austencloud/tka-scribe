@@ -74,7 +74,9 @@ export class CloudGalleryUploader {
     const total = images.length;
 
     for (let i = 0; i < images.length; i++) {
-      const { name, blob } = images[i];
+      const image = images[i];
+      if (!image) continue;
+      const { name, blob } = image;
       try {
         const url = await this.uploadImage(name, blob, propType, lightMode);
         results.push({ name, url, success: true });

@@ -10,7 +10,7 @@ import { authState } from "$lib/shared/auth/state/authState.svelte";
 import { featureFlagService } from "$lib/shared/auth/services/FeatureFlagService.svelte";
 import { libraryState } from "$lib/features/library/state/library-state.svelte";
 import { userPreviewState } from "$lib/shared/debug/state/user-preview-state.svelte";
-import { MODULE_GRADIENTS } from "../domain/models/dashboard-config";
+import { getModuleGradient } from "../domain/models/dashboard-config";
 import type { FeedbackItem } from "$lib/features/feedback/domain/models/feedback-models";
 import type { User } from "firebase/auth";
 import type { ModuleDefinition } from "$lib/shared/navigation/domain/types";
@@ -134,7 +134,7 @@ function createDashboardState() {
       })
       .map((m) => ({
         ...m,
-        gradient: MODULE_GRADIENTS[m.id] || MODULE_GRADIENTS["learn"],
+        gradient: getModuleGradient(m.id),
         isLocked: false,
       }))
   );

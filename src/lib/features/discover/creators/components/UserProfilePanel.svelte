@@ -30,9 +30,10 @@
 
   interface Props {
     userId: string;
+    onUserDeleted?: () => void;
   }
 
-  let { userId }: Props = $props();
+  let { userId, onUserDeleted }: Props = $props();
 
   import type { UserProfile } from "$lib/shared/community/domain/models/enhanced-user-profile";
 
@@ -103,8 +104,11 @@
       console.log(`[UserProfilePanel] Loading profile for user: ${userId}`);
 
       // Ensure required feature modules are loaded
-      // Note: "community" feature already loads "library" module as a dependency
-      await loadFeatureModule("community");
+      // Note: Load both community AND discover explicitly to ensure IDiscoverThumbnailProvider is available
+      await Promise.all([
+        loadFeatureModule("community"),
+        loadFeatureModule("discover"),
+      ]);
 
       // Resolve services
       userService = resolve<IUserRepository>(TYPES.IUserRepository);
@@ -129,7 +133,10 @@
       }
 
       // Load user's sequences from Firestore
-      userSequences = await libraryService.getUserSequences(userId);
+      // If viewing someone else's profile, only show public sequences (Firestore rules)
+      userSequences = await libraryService.getUserSequences(userId, {
+        visibility: isOwnProfile ? undefined : "public",
+      });
 
       isLoading = false;
       console.log(
@@ -346,7 +353,7 @@
 
       <!-- Admin Controls (only visible to admins, not on own profile) -->
       {#if isAdmin && !isOwnProfile}
-        <ProfileAdminSection {userProfile} onUserUpdated={handleAdminUpdate} />
+        <ProfileAdminSection {userProfile} onUserUpdated={handleAdminUpdate} {onUserDeleted} />
       {/if}
     </div>
   {/if}

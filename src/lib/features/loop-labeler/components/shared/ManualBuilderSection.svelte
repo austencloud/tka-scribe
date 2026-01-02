@@ -5,7 +5,7 @@
   Contains mode toggle and mode-specific panels.
 -->
 <script lang="ts">
-  import type { LabelingMode } from "../../domain/models/label-models";
+  import type { LabelingMode } from "../../state/loop-labeler-state.svelte";
   import type { createSectionModeState } from "../../state/section-mode-state.svelte";
   import type { createBeatPairModeState } from "../../state/beatpair-mode-state.svelte";
   import type { createWholeModeState } from "../../state/whole-mode-state.svelte";

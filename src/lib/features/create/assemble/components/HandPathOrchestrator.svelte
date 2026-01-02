@@ -228,20 +228,39 @@ Integrates all Assembly components and manages state transitions.
   // Handle position selection on grid
   function handlePositionSelect(position: GridLocation) {
     try {
-      // Check if this is the first position (start position)
-      const isFirstPosition =
+      // Check if this is the first position for blue hand
+      const isBlueFirstPosition =
         assemblyState.blueHandPath.length === 0 &&
         assemblyState.currentPhase === "blue";
 
+      // Check if this is the first position for red hand
+      const isRedFirstPosition =
+        assemblyState.redHandPath.length === 0 &&
+        assemblyState.currentPhase === "red";
+
       assemblyState.addPosition(position);
 
-      // If this was the first position, create and send the start position pictograph
-      if (isFirstPosition && onStartPositionSet) {
+      // If this was blue's first position, create start position with blue only
+      if (isBlueFirstPosition && onStartPositionSet) {
         const startPositionPictograph = createStartPositionPictograph(
           position,
           MotionColor.BLUE,
           assemblyState.gridMode
         );
+        onStartPositionSet(startPositionPictograph);
+      }
+
+      // If this was red's first position, update start position to include both hands
+      if (isRedFirstPosition && onStartPositionSet) {
+        const blueStartPosition = assemblyState.blueHandPath[0];
+        console.log("[HandPathOrchestrator] Red first position selected:", position);
+        console.log("[HandPathOrchestrator] Blue start position:", blueStartPosition);
+        const startPositionPictograph = createDualHandStartPositionPictograph(
+          blueStartPosition,
+          position,
+          assemblyState.gridMode
+        );
+        console.log("[HandPathOrchestrator] Dual hand pictograph motions:", startPositionPictograph.motions);
         onStartPositionSet(startPositionPictograph);
       }
 
@@ -255,7 +274,7 @@ Integrates all Assembly components and manages state transitions.
     }
   }
 
-  // Create a static start position pictograph
+  // Create a static start position pictograph (single hand)
   function createStartPositionPictograph(
     location: GridLocation,
     color: MotionColor,
@@ -279,6 +298,50 @@ Integrates all Assembly components and manages state transitions.
     return createPictographData({
       motions: {
         [color]: motion,
+      },
+    });
+  }
+
+  // Create a static start position pictograph with both hands
+  function createDualHandStartPositionPictograph(
+    blueLocation: GridLocation,
+    redLocation: GridLocation,
+    gridMode: GridMode
+  ): PictographData {
+    const blueMotion = createMotionData({
+      color: MotionColor.BLUE,
+      startLocation: blueLocation,
+      endLocation: blueLocation,
+      motionType: MotionType.STATIC,
+      rotationDirection: RotationDirection.NO_ROTATION,
+      gridMode,
+      propType: PropType.HAND,
+      startOrientation: Orientation.IN,
+      endOrientation: Orientation.IN,
+      turns: 0,
+      arrowLocation: blueLocation,
+      isVisible: true,
+    });
+
+    const redMotion = createMotionData({
+      color: MotionColor.RED,
+      startLocation: redLocation,
+      endLocation: redLocation,
+      motionType: MotionType.STATIC,
+      rotationDirection: RotationDirection.NO_ROTATION,
+      gridMode,
+      propType: PropType.HAND,
+      startOrientation: Orientation.IN,
+      endOrientation: Orientation.IN,
+      turns: 0,
+      arrowLocation: redLocation,
+      isVisible: true,
+    });
+
+    return createPictographData({
+      motions: {
+        [MotionColor.BLUE]: blueMotion,
+        [MotionColor.RED]: redMotion,
       },
     });
   }

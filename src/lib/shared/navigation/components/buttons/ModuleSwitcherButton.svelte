@@ -32,7 +32,7 @@
     clearLongPress();
     longPressTimer = setTimeout(() => {
       suppressClick = true;
-      hapticService?.trigger("impact");
+      hapticService?.trigger("selection");
       onLongPress();
     }, longPressMs);
   }

@@ -41,7 +41,7 @@
     <div class="pictograph-wrapper">
       <PictographWithVisibility
         {pictographData}
-        enableVisibility={true}
+        forceShowAll={true}
         previewMode={true}
         {...onToggleTKA && { onToggleTKA }}
         {...onToggleVTG && { onToggleVTG }}

@@ -84,9 +84,8 @@
     navigationState.currentModule === "create" &&
       !hasCompletedCreateTutorial()
   );
-  const isOnTutorialChoiceStep = $derived(
-    navigationState.isCreateTutorialOnChoiceStep
-  );
+  // No Create tutorial implemented - always show tabs
+  const isOnTutorialChoiceStep = $derived(false);
 
   // Get filtered settings sections using feature flag service
   const filteredSettingsSections = $derived(

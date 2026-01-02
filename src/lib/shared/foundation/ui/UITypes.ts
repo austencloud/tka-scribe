@@ -33,11 +33,10 @@ export type TabId = ImportedModuleId | LegacyTabId;
  * Note: Record and Share have been removed
  */
 export type BuildModeId =
-  | "assembler" // Guided step-by-step builder (one hand at a time)
+  | "assembler" // Tap-based hand path builder (one hand at a time)
   | "constructor" // Manual builder (one pictograph at a time)
   | "construct" // Alias for constructor (legacy/UI compatibility)
   | "one-handed"
-  | "gestural"
   | "guided" // Guided mode
   | "generator" // Automatic sequence generation
   | "generate" // Alias for generator (legacy/UI compatibility)

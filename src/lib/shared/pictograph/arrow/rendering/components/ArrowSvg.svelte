@@ -52,7 +52,9 @@ Now with intelligent rotation animation matching prop behavior!
   });
 
   // Get the glow color based on motion color
-  const glowColor = $derived(LED_GLOW_COLORS[motionData.color] ?? LED_GLOW_COLORS[MotionColor.BLUE]);
+  const glowColor = $derived(
+    LED_GLOW_COLORS[motionData.color as MotionColor.BLUE | MotionColor.RED] ?? LED_GLOW_COLORS[MotionColor.BLUE]
+  );
 
   // White stroke for visibility against light backgrounds (when NOT in dark mode)
   const lightModeStroke = $derived(
@@ -292,7 +294,7 @@ Now with intelligent rotation animation matching prop behavior!
   });
 
   // Handle arrow click
-  function handleArrowClick(event: MouseEvent) {
+  function handleArrowClick(event: MouseEvent | KeyboardEvent) {
     if (!isClickable || !pictographData) return;
 
     event.stopPropagation();

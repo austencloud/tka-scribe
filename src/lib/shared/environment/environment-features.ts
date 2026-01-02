@@ -127,4 +127,6 @@ export const PRODUCTION_MODULES: Record<ModuleId, boolean> = {
   admin: false,
   settings: true, // Settings always available
   "3d-viewer": false, // Admin-only (Level 6 feature)
+  word_card: false, // Word card generator (internal tool)
+  write: false, // Write module (unreleased)
 };

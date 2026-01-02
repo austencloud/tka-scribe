@@ -52,7 +52,7 @@
         <span>Try Again</span>
       </button>
     </div>
-  {:else if pages.length === 1 && pages[0].isEmpty}
+  {:else if pages.length === 1 && pages[0]?.isEmpty}
     <div class="state-container">
       <div class="state-icon empty">
         <i class="fas fa-file-alt" aria-hidden="true"></i>

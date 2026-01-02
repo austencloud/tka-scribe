@@ -290,7 +290,7 @@
       addReversalSymbols: true,
       backgroundColor: lightMode ? "#ffffff" : "#1a1a2e",
       // For single-prop mode, override all props to the selected type
-      propTypeOverride: isCatDog ? undefined : effectivePropType,
+      propTypeOverride: isCatDog ? undefined : effectivePropType ?? undefined,
       // For cat-dog mode, override each color independently
       bluePropTypeOverride: isCatDog ? bluePropType : undefined,
       redPropTypeOverride: isCatDog ? redPropType : undefined,
@@ -312,7 +312,10 @@
       redPropTypeOverride: renderOptions.redPropTypeOverride,
       sequenceHasBeats: fullSequence.beats.length,
       sequenceHasStartPosition: !!fullSequence.startPosition,
-      startPositionGridPos: fullSequence.startPosition?.gridPosition ?? 'none',
+      startPositionGridPos:
+        fullSequence.startPosition && 'gridPosition' in fullSequence.startPosition
+          ? fullSequence.startPosition.gridPosition
+          : 'none',
     });
 
     const blob = await renderer.renderSequenceToBlob(fullSequence, renderOptions);

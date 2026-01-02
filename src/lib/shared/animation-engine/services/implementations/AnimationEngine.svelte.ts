@@ -659,6 +659,11 @@ export class AnimationEngine {
     }
 
     await this.propTextureService.loadPropTextures(bluePropType, redPropType);
+
+    // CRITICAL: Sync dimensions to engine state immediately after loading
+    // This ensures getFrameParams() has correct dimensions for the first render
+    this.state.bluePropDimensions = this.propTextureService.state.blueDimensions;
+    this.state.redPropDimensions = this.propTextureService.state.redDimensions;
   }
 
   private initializeResizeService(): void {

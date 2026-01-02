@@ -553,10 +553,9 @@ Orchestrates specialized components and services:
   // Setup content area tracking when element becomes available
   // (it's inside a conditional block so can't be done in onMount)
   $effect(() => {
-    if (contentAreaElement) {
-      const cleanup = contentAreaDimensions.attachToElement(contentAreaElement);
-      return cleanup;
-    }
+    if (!contentAreaElement) return;
+    const cleanup = contentAreaDimensions.attachToElement(contentAreaElement);
+    return cleanup;
   });
 </script>
 

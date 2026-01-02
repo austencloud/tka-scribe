@@ -469,7 +469,7 @@ export function getModuleDefinitions() {
 type HistoryState = { moduleId: ModuleId; sectionId?: string };
 
 function buildPath(moduleId: ModuleId, sectionId?: string) {
-  return sectionId ? `/${moduleId}/${sectionId}` : `/${moduleId}`;
+  return sectionId ? `/app/${moduleId}/${sectionId}` : `/app/${moduleId}`;
 }
 
 function replaceHistoryState(moduleId: ModuleId, sectionId?: string) {
@@ -494,7 +494,7 @@ let historyInitialized = false;
 
 /**
  * Parse the URL pathname and extract module/section IDs
- * Expected format: /moduleId or /moduleId/sectionId
+ * Expected format: /app/moduleId or /app/moduleId/sectionId
  * Also handles legacy hash format for backwards compatibility
  */
 function parsePathNavigation(): {
@@ -503,8 +503,14 @@ function parsePathNavigation(): {
 } | null {
   if (typeof window === "undefined") return null;
 
-  // First try pathname (new format: /create/constructor)
-  const pathname = window.location.pathname;
+  // First try pathname (new format: /app/create/constructor)
+  let pathname = window.location.pathname;
+
+  // Strip /app prefix if present
+  if (pathname.startsWith("/app")) {
+    pathname = pathname.substring(4); // Remove "/app"
+  }
+
   if (pathname && pathname !== "/") {
     // Remove leading slash and split by /
     const parts = pathname.substring(1).split("/").filter(Boolean);

@@ -90,7 +90,7 @@
 
   // Check if current preview user is in quick access
   const isCurrentUserInQuickAccess = $derived(
-    previewProfile && quickAccessPersister ? quickAccessPersister.has(previewProfile.uid) : false
+    previewProfile?.uid && quickAccessPersister?.has(previewProfile.uid) || false
   );
 
   // Quick Access Functions

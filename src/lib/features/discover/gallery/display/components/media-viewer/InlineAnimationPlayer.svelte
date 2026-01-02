@@ -17,9 +17,49 @@
   import { resolve, loadFeatureModule } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import { animationSettings } from "$lib/shared/animation-engine/state/animation-settings-state.svelte";
+  import { Letter } from "$lib/shared/foundation/domain/models/Letter";
 
   // BPM/Speed conversion constant
   const DEFAULT_BPM = 60;
+
+  /**
+   * Get the Greek letter (α, β, γ) for the start position phase.
+   * Uses the sequence prop which has startingPositionGroup preserved.
+   */
+  function getStartPositionLetter(): Letter | null {
+    // Use sequence prop - it has startingPositionGroup preserved
+    // (animationState.sequenceData loses this field during processing)
+    const seq = sequence;
+    if (!seq) return null;
+
+    // 1. Derive from startingPositionGroup (most reliable)
+    if (seq.startingPositionGroup) {
+      const group = seq.startingPositionGroup.toLowerCase();
+      if (group === "alpha") return Letter.ALPHA;
+      if (group === "beta") return Letter.BETA;
+      if (group === "gamma") return Letter.GAMMA;
+    }
+
+    // 2. Check if startPosition.letter is already a valid Greek letter
+    const spLetter = seq.startPosition?.letter;
+    if (spLetter === Letter.ALPHA || spLetter === Letter.BETA || spLetter === Letter.GAMMA) {
+      return spLetter;
+    }
+
+    // 3. Derive from first beat's startPosition field (GridPosition like "alpha1")
+    const firstBeat = seq.beats?.[0];
+    if (firstBeat) {
+      const startPos = firstBeat.startPosition || (firstBeat as any).startPos;
+      if (startPos && typeof startPos === "string") {
+        const posLower = startPos.toLowerCase();
+        if (posLower.startsWith("alpha")) return Letter.ALPHA;
+        if (posLower.startsWith("beta")) return Letter.BETA;
+        if (posLower.startsWith("gamma")) return Letter.GAMMA;
+      }
+    }
+
+    return null;
+  }
 
   let {
     sequence,
@@ -67,12 +107,9 @@
     if (!animationState.sequenceData) return null;
     const currentBeat = animationState.currentBeat;
 
-    if (
-      currentBeat === 0 &&
-      !animationState.isPlaying &&
-      animationState.sequenceData.startPosition
-    ) {
-      return animationState.sequenceData.startPosition.letter || null;
+    // At start position phase (before beat 1) - show Greek letter (α, β, γ)
+    if (currentBeat < 1) {
+      return getStartPositionLetter();
     }
 
     if (animationState.sequenceData.beats?.length > 0) {
@@ -93,8 +130,7 @@
     const currentBeat = animationState.currentBeat;
 
     if (
-      currentBeat === 0 &&
-      !animationState.isPlaying &&
+      currentBeat < 1 &&
       animationState.sequenceData.startPosition
     ) {
       return animationState.sequenceData.startPosition;
@@ -365,6 +401,70 @@
   .bpm-controls {
     flex: 1;
     min-width: 0;
+  }
+
+  /* ===========================================
+     WIDE LANDSCAPE LAYOUT (e.g., unfolded Z-Fold)
+     Switch to side-by-side: canvas left, controls right
+     =========================================== */
+  @media (orientation: landscape) and (min-width: 600px) and (min-height: 400px) {
+    .inline-animation-player {
+      flex-direction: row;
+      gap: 12px;
+    }
+
+    .canvas-container {
+      flex: 1;
+      min-width: 0;
+      border-radius: 12px;
+    }
+
+    .controls {
+      flex-direction: column;
+      width: 140px;
+      flex-shrink: 0;
+      padding: 12px;
+      border-radius: 12px;
+      gap: 12px;
+      justify-content: flex-start;
+      align-items: stretch;
+    }
+
+    .control-btn.play-btn {
+      width: 100%;
+      height: 48px;
+      border-radius: 10px;
+    }
+
+    .bpm-controls {
+      flex: none;
+      width: 100%;
+    }
+
+    /* Stack BPM chips vertically in sidebar */
+    .bpm-controls :global(.bpm-chips.compact) {
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .bpm-controls :global(.preset-chip) {
+      flex: 1 1 calc(50% - 3px);
+      min-width: 0;
+      padding: 10px 4px;
+    }
+
+    /* Custom chip takes full width at bottom */
+    .bpm-controls :global(.custom-chip) {
+      flex: 1 1 100%;
+      max-width: none;
+    }
+  }
+
+  /* Extra wide screens (like tablets or larger foldables) - give controls more room */
+  @media (orientation: landscape) and (min-width: 900px) and (min-height: 500px) {
+    .controls {
+      width: 160px;
+    }
   }
 
   .loading-state,

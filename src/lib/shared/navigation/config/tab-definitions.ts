@@ -11,7 +11,6 @@ import type { Section } from "../domain/types";
 // Note: Edit functionality is now handled via a slide-out panel, not a tab
 // Note: Animate is now a Play button in the button panel with inline animator
 // Note: Record removed (not implemented yet, users will use native camera apps)
-// Note: HandPath (gestural) temporarily removed - not ready for production
 export const CREATE_TABS: Section[] = [
   {
     id: "assembler",

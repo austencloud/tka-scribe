@@ -56,7 +56,7 @@ export class DiscoverFilter implements IDiscoverFilter {
         return this.filterByFavorites(sequences);
       case ExploreFilterType.RECENT:
         return this.filterByRecent(sequences);
-      case ExploreFilterType.CAP_TYPE:
+      case ExploreFilterType.LOOP_TYPE:
         return this.filterByLOOPType(sequences, filterValue);
       default:
         return sequences;
@@ -78,7 +78,7 @@ export class DiscoverFilter implements IDiscoverFilter {
         return this.getUniqueAuthors(sequences);
       case ExploreFilterType.GRID_MODE:
         return GRID_MODE_OPTIONS;
-      case ExploreFilterType.CAP_TYPE:
+      case ExploreFilterType.LOOP_TYPE:
         return this.getLOOPTypeOptions(sequences);
       default:
         return [];

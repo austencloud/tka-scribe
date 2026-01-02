@@ -20,8 +20,7 @@
   import { getContext, onMount } from "svelte";
   import MainInterface from "../../MainInterface.svelte";
   import AuthSheet from "../../navigation/components/AuthSheet.svelte";
-  import PrivacySheet from "../../navigation/components/PrivacySheet.svelte";
-  import TermsSheet from "../../navigation/components/TermsSheet.svelte";
+  import LegalSheet from "../../../../routes/landing/components/LegalSheet.svelte";
   import type {
     ISheetRouter,
     SheetType,
@@ -397,15 +396,10 @@
       onClose={() => sheetRouterService?.closeSheet()}
     />
 
-    <!-- Terms sheet (route-based) -->
-    <TermsSheet
-      isOpen={showTermsSheet}
-      onClose={() => sheetRouterService?.closeSheet()}
-    />
-
-    <!-- Privacy sheet (route-based) -->
-    <PrivacySheet
-      isOpen={showPrivacySheet}
+    <!-- Legal sheets (terms/privacy - route-based) -->
+    <LegalSheet
+      isOpen={showTermsSheet || showPrivacySheet}
+      type={showPrivacySheet ? "privacy" : "terms"}
       onClose={() => sheetRouterService?.closeSheet()}
     />
 

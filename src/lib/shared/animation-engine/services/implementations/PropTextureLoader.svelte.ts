@@ -12,7 +12,7 @@ import type {
   IPropTextureLoader,
   PropTextureState,
 } from "../contracts/IPropTextureLoader";
-import { DEFAULT_PROP_DIMENSIONS } from "../contracts/IPropTextureLoader";
+import { DEFAULT_PROP_DIMENSIONS, getPropDimensions } from "../contracts/IPropTextureLoader";
 
 export class PropTextureLoader implements IPropTextureLoader {
   // Reactive state - owned by service, read by component via $derived
@@ -49,6 +49,11 @@ export class PropTextureLoader implements IPropTextureLoader {
       this.state.error = "Service not initialized";
       return;
     }
+
+    // IMMEDIATELY set dimensions from lookup table before async loading
+    // This prevents "smooshed" props on initial render
+    this.state.blueDimensions = getPropDimensions(bluePropType);
+    this.state.redDimensions = getPropDimensions(redPropType);
 
     this.state.isLoading = true;
     this.state.error = null;

@@ -40,7 +40,7 @@
   // Domain managers
   import ModuleRenderer from "./modules/ModuleRenderer.svelte";
   import PWAInstallationManager from "./pwa/PWAInstallationManager.svelte";
-  import SpotlightRouter from "./spotlight/SpotlightRouter.svelte";
+    import SpotlightRouter from "./spotlight/SpotlightRouter.svelte";
   import { desktopSidebarState } from "./layout/desktop-sidebar-state.svelte";
   // Keyboard shortcuts
 

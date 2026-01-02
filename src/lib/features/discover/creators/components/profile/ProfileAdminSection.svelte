@@ -6,8 +6,9 @@
    * Only visible to admins viewing another user's profile.
    */
 
-  import { doc, updateDoc, writeBatch } from "firebase/firestore";
-  import { getFirestoreInstance } from "$lib/shared/auth/firebase";
+  import { doc, updateDoc, writeBatch, collection, getDocs, deleteDoc } from "firebase/firestore";
+  import { ref, remove } from "firebase/database";
+  import { getFirestoreInstance, database } from "$lib/shared/auth/firebase";
   import type { UserRole } from "$lib/shared/auth/domain/models/UserRole";
   import {
     ROLE_DISPLAY,
@@ -18,9 +19,10 @@
   interface Props {
     userProfile: EnhancedUserProfile;
     onUserUpdated?: (updates: Partial<EnhancedUserProfile>) => void;
+    onUserDeleted?: () => void;
   }
 
-  let { userProfile, onUserUpdated }: Props = $props();
+  let { userProfile, onUserUpdated, onUserDeleted }: Props = $props();
 
   // State
   let isActionPending = $state(false);
@@ -118,6 +120,94 @@
     }
   }
 
+  /**
+   * Delete user completely from Firestore.
+   * Note: This deletes Firestore data only. The Firebase Auth user remains
+   * (they'll get a fresh profile on next sign-in, good for testing).
+   */
+  async function deleteUser() {
+    if (isActionPending) return;
+
+    isActionPending = true;
+    actionError = null;
+
+    try {
+      const firestore = await getFirestoreInstance();
+      const userId = userProfile.id;
+
+      // Delete subcollections first (Firestore doesn't cascade deletes)
+      // These must match the actual subcollection names in firestore.rules
+      const subcollections = [
+        "xp",
+        "streak",
+        "achievements",
+        "sequences",        // User's library sequences
+        "activityLog",      // Activity logging
+        "notifications",
+        "settings",
+        "tags",
+        "xpEvents",
+        "challengeProgress",
+        "dismissedAnnouncements",
+        "sessions",
+        "onboarding",
+        "drafts",
+        "following",
+        "followers",
+        "weeklyProgress",
+        "skillProgress",
+        "trainProgress",
+      ];
+
+      for (const subcol of subcollections) {
+        try {
+          const subcolRef = collection(firestore, `users/${userId}/${subcol}`);
+          const snapshot = await getDocs(subcolRef);
+          const batch = writeBatch(firestore);
+          let count = 0;
+
+          for (const docSnap of snapshot.docs) {
+            batch.delete(docSnap.ref);
+            count++;
+            // Firestore batch limit is 500
+            if (count >= 500) {
+              await batch.commit();
+              count = 0;
+            }
+          }
+
+          if (count > 0) {
+            await batch.commit();
+          }
+        } catch {
+          // Subcollection might not exist, that's fine
+        }
+      }
+
+      // Delete the user document itself
+      const userRef = doc(firestore, "users", userId);
+      await deleteDoc(userRef);
+
+      // Remove from Realtime Database presence (this is where active users come from)
+      try {
+        const presenceRef = ref(database, `presence/${userId}`);
+        await remove(presenceRef);
+        console.log(`[ProfileAdminSection] Removed presence from RTDB for: ${userId}`);
+      } catch (err) {
+        console.warn(`[ProfileAdminSection] Could not remove RTDB presence:`, err);
+      }
+
+      console.log(`[ProfileAdminSection] Deleted user: ${userId}`);
+      onUserDeleted?.();
+    } catch (err) {
+      console.error("[ProfileAdminSection] Failed to delete user:", err);
+      actionError = "Failed to delete user";
+    } finally {
+      isActionPending = false;
+      confirmAction = null;
+    }
+  }
+
   function handleConfirm() {
     if (!confirmAction) return;
 
@@ -127,6 +217,9 @@
         break;
       case "reset":
         resetUserData();
+        break;
+      case "delete":
+        deleteUser();
         break;
     }
   }
@@ -202,6 +295,20 @@
       >
         <i class="fas fa-rotate-left" aria-hidden="true"></i>
         Reset Progress
+      </button>
+
+      <button
+        class="action-btn destructive"
+        disabled={isActionPending}
+        onclick={() => {
+          confirmAction = {
+            type: "delete",
+            message: `DELETE ${userProfile.displayName}'s account?`,
+          };
+        }}
+      >
+        <i class="fas fa-trash-alt" aria-hidden="true"></i>
+        Delete User
       </button>
     </div>
   </div>
@@ -377,6 +484,19 @@
     background: rgba(34, 197, 94, 0.1);
     border-color: rgba(34, 197, 94, 0.3);
     color: #86efac;
+  }
+
+  /* Destructive action - more severe than danger */
+  .action-btn.destructive {
+    background: rgba(220, 38, 38, 0.15);
+    border-color: rgba(220, 38, 38, 0.4);
+    color: #f87171;
+  }
+
+  .action-btn.destructive:hover:not(:disabled) {
+    background: rgba(220, 38, 38, 0.25);
+    border-color: rgba(220, 38, 38, 0.6);
+    color: #fca5a5;
   }
 
   .action-btn:disabled {

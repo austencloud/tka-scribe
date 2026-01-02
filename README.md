@@ -38,7 +38,7 @@ Contact austencloud@gmail.com for inquiries.
 
 **Austen Cloud**
 
-- Website: [thekineticalphabet.com](https://thekineticalphabet.com)
+- Website: [tkascribe.com](https://tkascribe.com)
 - Email: austencloud@gmail.com
 
 ---
