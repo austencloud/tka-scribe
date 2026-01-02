@@ -28,6 +28,8 @@
   import StaticSettingsPanel from './settings/StaticSettings.svelte';
   import PerformanceSettingsPanel from './settings/PerformanceSettings.svelte';
   import type { SequenceData } from '$lib/shared/foundation/domain/models/SequenceData';
+  import type { VideoExportProgress } from '$lib/features/compose/services/contracts/IVideoExportOrchestrator';
+  import type { PlaybackMode, StepPlaybackStepSize } from '$lib/features/compose/state/animation-panel-state.svelte';
   import { untrack } from 'svelte';
 
   import type { ExportSettings } from '../domain/models/ExportSettings';
@@ -37,6 +39,43 @@
     isSequenceSaved = true,
     isMobile = false,
     onExport,
+    // Animation props from ShareHubCoordinator
+    animationSequenceData = null,
+    isAnimationPlaying = false,
+    animationCurrentBeat = 0,
+    animationSpeed = 1,
+    animationBluePropState = null,
+    animationRedPropState = null,
+    isCircular = false,
+    exportLoopCount = 1,
+    isAnimationExporting = false,
+    animationExportProgress = null,
+    animationServicesReady = false,
+    animationLoading = false,
+    selectedFormat = 'animation',
+    // Full animation controls
+    playbackMode = 'continuous' as PlaybackMode,
+    stepPlaybackPauseMs = 300,
+    stepPlaybackStepSize = 1 as StepPlaybackStepSize,
+    blueMotionVisible = true,
+    redMotionVisible = true,
+    isSideBySideLayout = false,
+    onPlaybackToggle,
+    onSpeedChange,
+    onStepHalfBeatForward,
+    onStepHalfBeatBackward,
+    onStepFullBeatForward,
+    onStepFullBeatBackward,
+    onLoopCountChange,
+    onCanvasReady,
+    onCancelExport,
+    onExportVideo,
+    onFormatChange,
+    onPlaybackModeChange,
+    onStepPlaybackPauseMsChange,
+    onStepPlaybackStepSizeChange,
+    onToggleBlue,
+    onToggleRed,
   }: {
     sequence?: SequenceData | null;
     /** Whether the sequence has been saved to the library */
@@ -44,6 +83,43 @@
     /** Whether we're on a mobile device (affects button label) */
     isMobile?: boolean;
     onExport?: (mode: 'single' | 'composite', settings?: ExportSettings) => Promise<void>;
+    // Animation props
+    animationSequenceData?: SequenceData | null;
+    isAnimationPlaying?: boolean;
+    animationCurrentBeat?: number;
+    animationSpeed?: number;
+    animationBluePropState?: any;
+    animationRedPropState?: any;
+    isCircular?: boolean;
+    exportLoopCount?: number;
+    isAnimationExporting?: boolean;
+    animationExportProgress?: VideoExportProgress | null;
+    animationServicesReady?: boolean;
+    animationLoading?: boolean;
+    selectedFormat?: 'animation' | 'static' | 'performance';
+    // Full animation controls
+    playbackMode?: PlaybackMode;
+    stepPlaybackPauseMs?: number;
+    stepPlaybackStepSize?: StepPlaybackStepSize;
+    blueMotionVisible?: boolean;
+    redMotionVisible?: boolean;
+    isSideBySideLayout?: boolean;
+    onPlaybackToggle?: () => void;
+    onSpeedChange?: (speed: number) => void;
+    onStepHalfBeatForward?: () => void;
+    onStepHalfBeatBackward?: () => void;
+    onStepFullBeatForward?: () => void;
+    onStepFullBeatBackward?: () => void;
+    onLoopCountChange?: (count: number) => void;
+    onCanvasReady?: (canvas: HTMLCanvasElement | null) => void;
+    onCancelExport?: () => void;
+    onExportVideo?: () => void;
+    onFormatChange?: (format: 'animation' | 'static' | 'performance') => void;
+    onPlaybackModeChange?: (mode: PlaybackMode) => void;
+    onStepPlaybackPauseMsChange?: (pauseMs: number) => void;
+    onStepPlaybackStepSizeChange?: (stepSize: StepPlaybackStepSize) => void;
+    onToggleBlue?: () => void;
+    onToggleRed?: () => void;
   } = $props();
 
   // FIX: Use 'hubState' instead of 'state' to avoid collision with $state rune
@@ -108,7 +184,46 @@
 
   <!-- Content Area - Single Media only for MVP -->
   <div class="content-area">
-    <SingleMediaView {isSequenceSaved} {isMobile} onExport={handleExport} />
+    <SingleMediaView
+      {isSequenceSaved}
+      {isMobile}
+      onExport={handleExport}
+      {animationSequenceData}
+      {isAnimationPlaying}
+      {animationCurrentBeat}
+      {animationSpeed}
+      {animationBluePropState}
+      {animationRedPropState}
+      {isCircular}
+      {exportLoopCount}
+      {isAnimationExporting}
+      {animationExportProgress}
+      {animationServicesReady}
+      {animationLoading}
+      {selectedFormat}
+      {playbackMode}
+      {stepPlaybackPauseMs}
+      {stepPlaybackStepSize}
+      {blueMotionVisible}
+      {redMotionVisible}
+      {isSideBySideLayout}
+      {onPlaybackToggle}
+      {onSpeedChange}
+      {onStepHalfBeatForward}
+      {onStepHalfBeatBackward}
+      {onStepFullBeatForward}
+      {onStepFullBeatBackward}
+      {onLoopCountChange}
+      {onCanvasReady}
+      {onCancelExport}
+      {onExportVideo}
+      {onFormatChange}
+      {onPlaybackModeChange}
+      {onStepPlaybackPauseMsChange}
+      {onStepPlaybackStepSizeChange}
+      {onToggleBlue}
+      {onToggleRed}
+    />
   </div>
 
   <!-- Settings Panel Overlay -->

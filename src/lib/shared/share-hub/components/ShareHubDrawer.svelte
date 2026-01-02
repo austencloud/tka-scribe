@@ -13,6 +13,8 @@
   import ShareHubPanel from './ShareHubPanel.svelte';
   import type { ExportSettings } from '../domain/models/ExportSettings';
   import type { SequenceData } from '$lib/shared/foundation/domain/models/SequenceData';
+  import type { VideoExportProgress } from '$lib/features/compose/services/contracts/IVideoExportOrchestrator';
+  import type { PlaybackMode, StepPlaybackStepSize } from '$lib/features/compose/state/animation-panel-state.svelte';
   import { tryGetCreateModuleContext } from '$lib/features/create/shared/context/create-module-context';
 
   let {
@@ -22,6 +24,43 @@
     isMobile = false,
     onClose,
     onExport,
+    // Animation props (optional - only passed when animation services ready)
+    animationSequenceData = null,
+    isAnimationPlaying = false,
+    animationCurrentBeat = 0,
+    animationSpeed = 1,
+    animationBluePropState = null,
+    animationRedPropState = null,
+    isCircular = false,
+    exportLoopCount = 1,
+    isAnimationExporting = false,
+    animationExportProgress = null,
+    animationServicesReady = false,
+    animationLoading = false,
+    selectedFormat = 'animation',
+    // Full animation controls props
+    playbackMode = 'continuous' as PlaybackMode,
+    stepPlaybackPauseMs = 300,
+    stepPlaybackStepSize = 1 as StepPlaybackStepSize,
+    blueMotionVisible = true,
+    redMotionVisible = true,
+    isSideBySideLayout = false,
+    onPlaybackToggle,
+    onSpeedChange,
+    onStepHalfBeatForward,
+    onStepHalfBeatBackward,
+    onStepFullBeatForward,
+    onStepFullBeatBackward,
+    onLoopCountChange,
+    onCanvasReady,
+    onCancelExport,
+    onExportVideo,
+    onFormatChange,
+    onPlaybackModeChange,
+    onStepPlaybackPauseMsChange,
+    onStepPlaybackStepSizeChange,
+    onToggleBlue,
+    onToggleRed,
   }: {
     isOpen?: boolean;
     sequence: SequenceData | null;
@@ -31,6 +70,43 @@
     isMobile?: boolean;
     onClose?: () => void;
     onExport?: (mode: 'single' | 'composite', settings?: ExportSettings) => Promise<void>;
+    // Animation props
+    animationSequenceData?: SequenceData | null;
+    isAnimationPlaying?: boolean;
+    animationCurrentBeat?: number;
+    animationSpeed?: number;
+    animationBluePropState?: any;
+    animationRedPropState?: any;
+    isCircular?: boolean;
+    exportLoopCount?: number;
+    isAnimationExporting?: boolean;
+    animationExportProgress?: VideoExportProgress | null;
+    animationServicesReady?: boolean;
+    animationLoading?: boolean;
+    selectedFormat?: 'animation' | 'static' | 'performance';
+    // Full animation controls
+    playbackMode?: PlaybackMode;
+    stepPlaybackPauseMs?: number;
+    stepPlaybackStepSize?: StepPlaybackStepSize;
+    blueMotionVisible?: boolean;
+    redMotionVisible?: boolean;
+    isSideBySideLayout?: boolean;
+    onPlaybackToggle?: () => void;
+    onSpeedChange?: (speed: number) => void;
+    onStepHalfBeatForward?: () => void;
+    onStepHalfBeatBackward?: () => void;
+    onStepFullBeatForward?: () => void;
+    onStepFullBeatBackward?: () => void;
+    onLoopCountChange?: (count: number) => void;
+    onCanvasReady?: (canvas: HTMLCanvasElement | null) => void;
+    onCancelExport?: () => void;
+    onExportVideo?: () => void;
+    onFormatChange?: (format: 'animation' | 'static' | 'performance') => void;
+    onPlaybackModeChange?: (mode: PlaybackMode) => void;
+    onStepPlaybackPauseMsChange?: (pauseMs: number) => void;
+    onStepPlaybackStepSizeChange?: (stepSize: StepPlaybackStepSize) => void;
+    onToggleBlue?: () => void;
+    onToggleRed?: () => void;
   } = $props();
 
   // Try to get Create module context for measured tool panel width
@@ -88,7 +164,47 @@
       preventScroll={true}
     >
       <div class="share-hub-content">
-        <ShareHubPanel {sequence} {isSequenceSaved} {isMobile} {onExport} />
+        <ShareHubPanel
+          {sequence}
+          {isSequenceSaved}
+          {isMobile}
+          {onExport}
+          {animationSequenceData}
+          {isAnimationPlaying}
+          {animationCurrentBeat}
+          {animationSpeed}
+          {animationBluePropState}
+          {animationRedPropState}
+          {isCircular}
+          {exportLoopCount}
+          {isAnimationExporting}
+          {animationExportProgress}
+          {animationServicesReady}
+          {animationLoading}
+          {selectedFormat}
+          {playbackMode}
+          {stepPlaybackPauseMs}
+          {stepPlaybackStepSize}
+          {blueMotionVisible}
+          {redMotionVisible}
+          {isSideBySideLayout}
+          {onPlaybackToggle}
+          {onSpeedChange}
+          {onStepHalfBeatForward}
+          {onStepHalfBeatBackward}
+          {onStepFullBeatForward}
+          {onStepFullBeatBackward}
+          {onLoopCountChange}
+          {onCanvasReady}
+          {onCancelExport}
+          {onExportVideo}
+          {onFormatChange}
+          {onPlaybackModeChange}
+          {onStepPlaybackPauseMsChange}
+          {onStepPlaybackStepSizeChange}
+          {onToggleBlue}
+          {onToggleRed}
+        />
       </div>
     </Drawer>
   </div>
@@ -108,7 +224,47 @@
     preventScroll={true}
   >
     <div class="share-hub-content">
-      <ShareHubPanel {sequence} {isSequenceSaved} {isMobile} {onExport} />
+      <ShareHubPanel
+        {sequence}
+        {isSequenceSaved}
+        {isMobile}
+        {onExport}
+        {animationSequenceData}
+        {isAnimationPlaying}
+        {animationCurrentBeat}
+        {animationSpeed}
+        {animationBluePropState}
+        {animationRedPropState}
+        {isCircular}
+        {exportLoopCount}
+        {isAnimationExporting}
+        {animationExportProgress}
+        {animationServicesReady}
+        {animationLoading}
+        {selectedFormat}
+        {playbackMode}
+        {stepPlaybackPauseMs}
+        {stepPlaybackStepSize}
+        {blueMotionVisible}
+        {redMotionVisible}
+        {isSideBySideLayout}
+        {onPlaybackToggle}
+        {onSpeedChange}
+        {onStepHalfBeatForward}
+        {onStepHalfBeatBackward}
+        {onStepFullBeatForward}
+        {onStepFullBeatBackward}
+        {onLoopCountChange}
+        {onCanvasReady}
+        {onCancelExport}
+        {onExportVideo}
+        {onFormatChange}
+        {onPlaybackModeChange}
+        {onStepPlaybackPauseMsChange}
+        {onStepPlaybackStepSizeChange}
+        {onToggleBlue}
+        {onToggleRed}
+      />
     </div>
   </Drawer>
 {/if}

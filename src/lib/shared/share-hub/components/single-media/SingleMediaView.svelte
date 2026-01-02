@@ -14,10 +14,13 @@
 -->
 <script lang="ts">
   import type { MediaFormat } from '../../domain/models/MediaFormat';
+  import type { SequenceData } from '$lib/shared/foundation/domain/models/SequenceData';
+  import type { VideoExportProgress } from '$lib/features/compose/services/contracts/IVideoExportOrchestrator';
+  import type { PlaybackMode, StepPlaybackStepSize } from '$lib/features/compose/state/animation-panel-state.svelte';
   import { getShareHubState } from '../../state/share-hub-state.svelte';
   import FormatSelector from '../shared/FormatSelector.svelte';
   import ExportButton from '../shared/ExportButton.svelte';
-  import AnimationPreview from './AnimationPreview.svelte';
+  import AnimationExportView from './AnimationExportView.svelte';
   import StaticPreview from './StaticPreview.svelte';
   import PerformancePreview from './PerformancePreview.svelte';
 
@@ -25,12 +28,86 @@
     isSequenceSaved = true,
     isMobile = false,
     onExport,
+    // Animation props from ShareHubCoordinator
+    animationSequenceData = null,
+    isAnimationPlaying = false,
+    animationCurrentBeat = 0,
+    animationSpeed = 1,
+    animationBluePropState = null,
+    animationRedPropState = null,
+    isCircular = false,
+    exportLoopCount = 1,
+    isAnimationExporting = false,
+    animationExportProgress = null,
+    animationServicesReady = false,
+    animationLoading = false,
+    selectedFormat = 'animation',
+    // Full animation controls
+    playbackMode = 'continuous' as PlaybackMode,
+    stepPlaybackPauseMs = 300,
+    stepPlaybackStepSize = 1 as StepPlaybackStepSize,
+    blueMotionVisible = true,
+    redMotionVisible = true,
+    isSideBySideLayout = false,
+    onPlaybackToggle,
+    onSpeedChange,
+    onStepHalfBeatForward,
+    onStepHalfBeatBackward,
+    onStepFullBeatForward,
+    onStepFullBeatBackward,
+    onLoopCountChange,
+    onCanvasReady,
+    onCancelExport,
+    onExportVideo,
+    onFormatChange,
+    onPlaybackModeChange,
+    onStepPlaybackPauseMsChange,
+    onStepPlaybackStepSizeChange,
+    onToggleBlue,
+    onToggleRed,
   }: {
     /** Whether the sequence has been saved to the library */
     isSequenceSaved?: boolean;
     /** Whether we're on a mobile device (affects button label) */
     isMobile?: boolean;
     onExport?: () => void;
+    // Animation props
+    animationSequenceData?: SequenceData | null;
+    isAnimationPlaying?: boolean;
+    animationCurrentBeat?: number;
+    animationSpeed?: number;
+    animationBluePropState?: any;
+    animationRedPropState?: any;
+    isCircular?: boolean;
+    exportLoopCount?: number;
+    isAnimationExporting?: boolean;
+    animationExportProgress?: VideoExportProgress | null;
+    animationServicesReady?: boolean;
+    animationLoading?: boolean;
+    selectedFormat?: 'animation' | 'static' | 'performance';
+    // Full animation controls
+    playbackMode?: PlaybackMode;
+    stepPlaybackPauseMs?: number;
+    stepPlaybackStepSize?: StepPlaybackStepSize;
+    blueMotionVisible?: boolean;
+    redMotionVisible?: boolean;
+    isSideBySideLayout?: boolean;
+    onPlaybackToggle?: () => void;
+    onSpeedChange?: (speed: number) => void;
+    onStepHalfBeatForward?: () => void;
+    onStepHalfBeatBackward?: () => void;
+    onStepFullBeatForward?: () => void;
+    onStepFullBeatBackward?: () => void;
+    onLoopCountChange?: (count: number) => void;
+    onCanvasReady?: (canvas: HTMLCanvasElement | null) => void;
+    onCancelExport?: () => void;
+    onExportVideo?: () => void;
+    onFormatChange?: (format: 'animation' | 'static' | 'performance') => void;
+    onPlaybackModeChange?: (mode: PlaybackMode) => void;
+    onStepPlaybackPauseMsChange?: (pauseMs: number) => void;
+    onStepPlaybackStepSizeChange?: (stepSize: StepPlaybackStepSize) => void;
+    onToggleBlue?: () => void;
+    onToggleRed?: () => void;
   } = $props();
 
   // FIX: Use 'hubState' instead of 'state' to avoid collision with $state rune
@@ -50,6 +127,8 @@
 
   function handleFormatSelect(format: MediaFormat) {
     hubState.selectedFormat = format;
+    // Notify parent coordinator of format change (for animation loading)
+    onFormatChange?.(format);
   }
 
   async function handleExport() {
@@ -75,7 +154,41 @@
   <!-- Preview Area (conditional based on selected format) -->
   <div class="preview-area">
     {#if hubState.selectedFormat === 'animation'}
-      <AnimationPreview />
+      <AnimationExportView
+        sequenceData={animationSequenceData}
+        isPlaying={isAnimationPlaying}
+        currentBeat={animationCurrentBeat}
+        speed={animationSpeed}
+        bluePropState={animationBluePropState}
+        redPropState={animationRedPropState}
+        {isCircular}
+        {exportLoopCount}
+        isExporting={isAnimationExporting}
+        exportProgress={animationExportProgress}
+        servicesReady={animationServicesReady}
+        loading={animationLoading}
+        {playbackMode}
+        {stepPlaybackPauseMs}
+        {stepPlaybackStepSize}
+        {blueMotionVisible}
+        {redMotionVisible}
+        {isSideBySideLayout}
+        {onPlaybackToggle}
+        {onSpeedChange}
+        {onStepHalfBeatForward}
+        {onStepHalfBeatBackward}
+        {onStepFullBeatForward}
+        {onStepFullBeatBackward}
+        {onLoopCountChange}
+        {onCanvasReady}
+        {onCancelExport}
+        {onExportVideo}
+        {onPlaybackModeChange}
+        {onStepPlaybackPauseMsChange}
+        {onStepPlaybackStepSizeChange}
+        {onToggleBlue}
+        {onToggleRed}
+      />
     {:else if hubState.selectedFormat === 'static'}
       <StaticPreview />
     {:else if hubState.selectedFormat === 'performance'}
@@ -83,14 +196,16 @@
     {/if}
   </div>
 
-  <!-- Export Button -->
-  <div class="export-container">
-    <ExportButton
-      label={buttonLabel}
-      loading={exporting}
-      onclick={handleExport}
-    />
-  </div>
+  <!-- Export Button (hidden for Animation - AnimationControlsPanel has its own) -->
+  {#if hubState.selectedFormat !== 'animation'}
+    <div class="export-container">
+      <ExportButton
+        label={buttonLabel}
+        loading={exporting}
+        onclick={handleExport}
+      />
+    </div>
+  {/if}
 </div>
 
 <style>
