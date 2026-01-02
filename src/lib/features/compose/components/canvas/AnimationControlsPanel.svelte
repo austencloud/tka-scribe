@@ -317,19 +317,15 @@
     flex-direction: column;
     width: 100%;
     flex: 0 0 auto;
-    gap: 10px;
+    gap: 8px;
     overflow-y: auto;
     overflow-x: hidden;
-    padding: 12px;
-    background: linear-gradient(
-      145deg,
-      rgba(15, 15, 20, 0.95) 0%,
-      rgba(10, 10, 15, 0.98) 100%
-    );
+    padding: 10px;
+    background: var(--theme-panel-bg, rgba(18, 18, 28, 0.98));
     border: 1.5px solid var(--theme-stroke);
-    border-radius: 16px;
+    border-radius: 14px;
     box-shadow:
-      0 4px 24px var(--theme-shadow),
+      0 4px 20px var(--theme-shadow),
       inset 0 1px 0 var(--theme-card-bg);
     -webkit-overflow-scrolling: touch;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -340,7 +336,7 @@
     overflow-x: hidden;
     flex: 0 0 auto;
     max-height: none;
-    padding: 10px;
+    padding: 8px;
     gap: 0;
   }
 
@@ -351,16 +347,16 @@
     flex: 1 1 0;
     min-height: 0;
     max-height: none;
-    padding: 12px;
-    gap: 10px;
+    padding: 10px;
+    gap: 8px;
   }
 
   .controls-panel.desktop {
     overflow-y: hidden !important;
     overflow-x: hidden;
     flex: 0 0 auto;
-    padding: 14px;
-    gap: 12px;
+    padding: 10px;
+    gap: 10px;
   }
 
   /* Scrollbar */
@@ -400,7 +396,7 @@
 
   .playback-row {
     justify-content: center;
-    gap: 12px;
+    gap: 8px;
   }
 
   /* Compact Settings Button */
@@ -431,7 +427,7 @@
 
   .settings-sheet-btn i {
     font-size: 1rem;
-    color: rgba(139, 92, 246, 0.8);
+    color: var(--theme-accent, rgba(139, 92, 246, 0.8));
   }
 
   .settings-sheet-btn .settings-btn-label {
@@ -460,18 +456,18 @@
   /* Responsive */
   @media (max-width: 480px) {
     .controls-panel {
-      padding: 10px;
-      gap: 10px;
+      padding: 8px;
+      gap: 8px;
     }
     .control-row {
-      gap: 8px;
+      gap: 6px;
     }
   }
 
   @media (max-height: 500px) and (orientation: landscape) {
     .controls-panel {
-      padding: 10px;
-      gap: 8px;
+      padding: 8px;
+      gap: 6px;
     }
   }
 </style>

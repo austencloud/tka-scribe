@@ -102,8 +102,7 @@
     const newState = !lightsOffEnabled;
     console.log("[TimelineControls] toggleLightsOff:", newState);
     visibilityManager.setLightsOff(newState);
-    // Also enable prop glow when enabling Lights Off
-    visibilityManager.setPropGlow(newState);
+    // Prop glow is automatically handled by lightsOff setting
     lightsOffEnabled = newState;
 
     // When enabling Lights Off mode, also enable neon trail effect

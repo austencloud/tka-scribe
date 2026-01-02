@@ -20,6 +20,7 @@
   import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
   import type { ISequenceAnimationOrchestrator } from "../../services/contracts/ISequenceAnimationOrchestrator";
   import type { PropState } from "../../shared/domain/types/PropState";
+  import type { IStartPositionDeriver } from "$lib/shared/pictograph/shared/services/contracts/IStartPositionDeriver";
 
   interface Props {
     /** Current playhead position in seconds */
@@ -52,6 +53,7 @@
 
   // Animation orchestrator for calculating prop states
   let animationOrchestrator = $state<ISequenceAnimationOrchestrator | null>(null);
+  let startPositionDeriver = $state<IStartPositionDeriver | null>(null);
   let initialized = $state(false);
   let loading = $state(true);
   let error = $state<string | null>(null);
@@ -82,6 +84,7 @@
   });
 
   // Calculate beat position within the active clip (fractional for smooth animation)
+  // A 4-beat sequence has range 0-5: [0-1) start position, [1-5) beats 1-4
   const clipBeatPosition = $derived.by(() => {
     if (!activeClip) return 0;
 
@@ -97,23 +100,38 @@
     // Progress through the visible portion
     const progressInClip = clipContentDuration > 0 ? timeInClip / clipContentDuration : 0;
 
-    // Map to source position
+    // Map to source position (0-1 fraction through source content)
     const sourcePosition = sourceStartFraction + (progressInClip * sourceDurationFraction);
 
     // Convert to beat number (fractional for interpolation)
+    // fullBeatRange = totalBeats + 1 to account for start position
+    // Start position occupies beat range [0-1), then motion beats follow
     const totalBeats = activeClip.sequence.beats?.length || 1;
-    const beat = sourcePosition * totalBeats;
+    const fullBeatRange = totalBeats + 1; // +1 for start position
+    const beat = sourcePosition * fullBeatRange;
 
     // Handle looping
     if (activeClip.loop) {
-      return beat % totalBeats;
+      return beat % fullBeatRange;
     }
 
-    return Math.min(beat, totalBeats);
+    return Math.min(beat, fullBeatRange - 0.001);
   });
 
   // Check if we're at start position (before beat 1)
   const isAtStartPosition = $derived(clipBeatPosition < 1);
+
+  // Derive start position using the StartPositionDeriver service
+  // This handles sequences that don't have an explicit startPosition field
+  const derivedStartPosition = $derived.by(() => {
+    if (!activeClip?.sequence || !startPositionDeriver) return null;
+    try {
+      return startPositionDeriver.getOrDeriveStartPosition(activeClip.sequence);
+    } catch (err) {
+      console.warn("TimelinePreview: Failed to derive start position:", err);
+      return null;
+    }
+  });
 
   // Current letter derived from beat position
   // Start position has its own letter (e.g., "α"), beats have their own
@@ -122,9 +140,9 @@
 
     const seq = activeClip.sequence;
 
-    // At start position - return start position letter
-    if (isAtStartPosition && seq.startPosition) {
-      return (seq.startPosition as any).letter || null;
+    // At start position - return start position letter from derived start position
+    if (isAtStartPosition && derivedStartPosition) {
+      return (derivedStartPosition as any).letter || null;
     }
 
     // At motion beat - beat N uses beats[N-1]
@@ -144,9 +162,9 @@
 
     const seq = activeClip.sequence;
 
-    // At start position - return start position data
-    if (isAtStartPosition && seq.startPosition) {
-      return seq.startPosition as any;
+    // At start position - return derived start position data
+    if (isAtStartPosition && derivedStartPosition) {
+      return derivedStartPosition as any;
     }
 
     // At motion beat - beat N uses beats[N-1]
@@ -169,8 +187,9 @@
       await loadFeatureModule("animate");
       await loadPixiModule();
 
-      // Resolve the animation orchestrator
+      // Resolve services
       animationOrchestrator = resolve(TYPES.ISequenceAnimationOrchestrator) as ISequenceAnimationOrchestrator;
+      startPositionDeriver = resolve(TYPES.IStartPositionDeriver) as IStartPositionDeriver;
       initialized = true;
       loading = false;
     } catch (err) {

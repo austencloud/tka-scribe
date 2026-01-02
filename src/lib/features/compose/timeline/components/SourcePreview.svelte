@@ -19,6 +19,9 @@
   import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
   import type { ISequenceAnimationOrchestrator } from "../../services/contracts/ISequenceAnimationOrchestrator";
   import type { PropState } from "../../shared/domain/types/PropState";
+  import type { IStartPositionDeriver } from "$lib/shared/pictograph/shared/services/contracts/IStartPositionDeriver";
+  import type { StartPositionData } from "$lib/features/create/shared/domain/models/StartPositionData";
+  import type { BeatData } from "$lib/features/create/shared/domain/models/BeatData";
 
   interface Props {
     /** Sequence to preview (from library) */
@@ -31,6 +34,7 @@
 
   // Animation orchestrator for calculating prop states
   let animationOrchestrator = $state<ISequenceAnimationOrchestrator | null>(null);
+  let startPositionDeriver = $state<IStartPositionDeriver | null>(null);
   let initialized = $state(false);
   let loading = $state(true);
   let error = $state<string | null>(null);
@@ -49,19 +53,33 @@
 
   // Derived values
   // totalBeats = number of motion beats (NOT including start position)
+  // fullBeatRange = total playback range (start position + motion beats)
+  // A 4-beat sequence has range 0-5: [0-1) start, [1-2) beat 1, [2-3) beat 2, [3-4) beat 3, [4-5) beat 4
   const totalBeats = $derived(sequence?.beats?.length || 0);
+  const fullBeatRange = $derived(totalBeats + 1); // +1 for start position
   const displayName = $derived(sequence?.word || sequence?.name || "No sequence loaded");
 
   // Check if we're at start position (before beat 1)
   const isAtStartPosition = $derived(currentBeat < 1);
+
+  // Get the derived start position data (handles missing startPosition field)
+  const derivedStartPosition = $derived.by(() => {
+    if (!sequence || !startPositionDeriver) return null;
+    try {
+      return startPositionDeriver.getOrDeriveStartPosition(sequence);
+    } catch (err) {
+      console.warn("SourcePreview: Failed to derive start position:", err);
+      return null;
+    }
+  });
 
   // Get current letter - start position has its own letter (e.g., "α")
   const currentLetter = $derived.by(() => {
     if (!sequence) return null;
 
     // At start position - return start position letter
-    if (isAtStartPosition && sequence.startPosition) {
-      return (sequence.startPosition as any).letter || null;
+    if (isAtStartPosition && derivedStartPosition) {
+      return (derivedStartPosition as any).letter || null;
     }
 
     // At motion beat - beat N uses beats[N-1]
@@ -78,9 +96,9 @@
   const currentBeatData = $derived.by(() => {
     if (!sequence) return null;
 
-    // At start position - return start position data
-    if (isAtStartPosition && sequence.startPosition) {
-      return sequence.startPosition as any;
+    // At start position - return derived start position data
+    if (isAtStartPosition && derivedStartPosition) {
+      return derivedStartPosition;
     }
 
     // At motion beat - beat N uses beats[N-1]
@@ -100,6 +118,7 @@
       await loadFeatureModule("animate");
       await loadPixiModule();
       animationOrchestrator = resolve(TYPES.ISequenceAnimationOrchestrator) as ISequenceAnimationOrchestrator;
+      startPositionDeriver = resolve(TYPES.IStartPositionDeriver) as IStartPositionDeriver;
       initialized = true;
       loading = false;
     } catch (err) {
@@ -187,9 +206,10 @@
 
     playbackInterval = window.setInterval(() => {
       currentBeat += 1 / stepsPerBeat;
-      // Range: 0 (start position) to totalBeats (last motion beat)
+      // Range: 0 to fullBeatRange (start position + all motion beats)
+      // A 4-beat sequence uses range 0-5: [0-1) start, [1-5) beats 1-4
       // Loop back to start position after completing last beat
-      if (currentBeat > totalBeats) {
+      if (currentBeat >= fullBeatRange) {
         currentBeat = 0; // Loop back to start position
       }
     }, msPerStep);
@@ -208,7 +228,7 @@
   }
 
   function goToEnd() {
-    currentBeat = totalBeats; // Go to last motion beat
+    currentBeat = fullBeatRange - 0.01; // Go to end of last motion beat (just before loop point)
   }
 
   function stepBackward() {
@@ -216,8 +236,10 @@
   }
 
   function stepForward() {
-    // Range: 0 (start position) to totalBeats (last motion beat)
-    currentBeat = Math.min(totalBeats, Math.floor(currentBeat) + 1);
+    // Range: 0 (start position) to fullBeatRange (end of last motion beat)
+    // Step to next whole beat, but don't exceed the last beat
+    const nextBeat = Math.floor(currentBeat) + 1;
+    currentBeat = Math.min(fullBeatRange - 0.01, nextBeat);
   }
 
   function handleScrub(e: Event) {
@@ -308,7 +330,7 @@
       <input
         type="range"
         min="0"
-        max={sequence ? totalBeats : 1}
+        max={sequence ? fullBeatRange : 1}
         step="0.01"
         value={currentBeat}
         oninput={handleScrub}

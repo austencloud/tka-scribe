@@ -125,7 +125,7 @@
     background: var(--theme-card-hover-bg);
   }
 
-  /* Play/Pause Button */
+  /* Play/Pause Button - Uses semantic success/error colors */
   .play-pause-btn {
     display: flex;
     align-items: center;
@@ -133,63 +133,43 @@
     width: var(--min-touch-target);
     height: var(--min-touch-target);
     flex-shrink: 0;
-    background: linear-gradient(
-      135deg,
-      rgba(34, 197, 94, 0.25) 0%,
-      rgba(22, 163, 74, 0.2) 100%
-    );
-    border: 1.5px solid rgba(34, 197, 94, 0.4);
+    background: var(--theme-card-bg);
+    border: 1.5px solid var(--theme-accent, rgba(139, 92, 246, 0.4));
     border-radius: 50%;
-    color: rgba(134, 239, 172, 1);
+    color: var(--theme-accent, rgba(139, 92, 246, 1));
     cursor: pointer;
     transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     box-shadow:
-      0 2px 8px rgba(34, 197, 94, 0.15),
-      0 0 16px rgba(34, 197, 94, 0.1),
+      0 2px 8px var(--theme-shadow),
       inset 0 1px 0 var(--theme-stroke);
     -webkit-tap-highlight-color: transparent;
     font-size: var(--font-size-base);
   }
 
   .play-pause-btn.playing {
-    background: linear-gradient(
-      135deg,
-      rgba(239, 68, 68, 0.25) 0%,
-      rgba(220, 38, 38, 0.2) 100%
-    );
-    border-color: rgba(239, 68, 68, 0.4);
-    color: rgba(254, 202, 202, 1);
+    background: var(--theme-card-bg);
+    border-color: var(--theme-stroke-strong);
+    color: var(--theme-text);
     box-shadow:
-      0 2px 8px rgba(239, 68, 68, 0.15),
-      0 0 16px rgba(239, 68, 68, 0.1),
+      0 2px 8px var(--theme-shadow),
       inset 0 1px 0 var(--theme-stroke);
   }
 
   @media (hover: hover) and (pointer: fine) {
     .play-pause-btn:hover {
       transform: scale(1.05);
-      background: linear-gradient(
-        135deg,
-        rgba(34, 197, 94, 0.35) 0%,
-        rgba(22, 163, 74, 0.3) 100%
-      );
-      border-color: rgba(34, 197, 94, 0.6);
+      background: var(--theme-card-hover-bg);
+      border-color: var(--theme-accent, rgba(139, 92, 246, 0.6));
       box-shadow:
-        0 4px 14px rgba(34, 197, 94, 0.25),
-        0 0 20px rgba(34, 197, 94, 0.15),
+        0 4px 14px var(--theme-shadow),
         inset 0 1px 0 var(--theme-card-hover-bg);
     }
 
     .play-pause-btn.playing:hover {
-      background: linear-gradient(
-        135deg,
-        rgba(239, 68, 68, 0.35) 0%,
-        rgba(220, 38, 38, 0.3) 100%
-      );
-      border-color: rgba(239, 68, 68, 0.6);
+      background: var(--theme-card-hover-bg);
+      border-color: var(--theme-stroke-strong);
       box-shadow:
-        0 4px 14px rgba(239, 68, 68, 0.25),
-        0 0 20px rgba(239, 68, 68, 0.15),
+        0 4px 14px var(--theme-shadow),
         inset 0 1px 0 var(--theme-card-hover-bg);
     }
   }

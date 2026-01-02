@@ -1,0 +1,210 @@
+<!--
+  PlaybackPane.svelte
+
+  Playback settings:
+  - Style toggle (Flow/Step)
+  - Step size selector (Beat/Half) - shown in step mode
+  - BPM control with tap tempo and presets
+-->
+<script lang="ts">
+  import type {
+    PlaybackMode,
+    StepPlaybackStepSize,
+  } from "../../../state/animation-panel-state.svelte";
+  import BpmControl from "./BpmControl.svelte";
+
+  let {
+    bpm = $bindable(60),
+    playbackMode = "continuous",
+    stepPlaybackStepSize = 1,
+    isPlaying = false,
+    onBpmChange = () => {},
+    onPlaybackModeChange = () => {},
+    onStepPlaybackStepSizeChange = () => {},
+    onPlaybackToggle = () => {},
+  }: {
+    bpm: number;
+    playbackMode?: PlaybackMode;
+    stepPlaybackStepSize?: StepPlaybackStepSize;
+    isPlaying?: boolean;
+    onBpmChange?: (bpm: number) => void;
+    onPlaybackModeChange?: (mode: PlaybackMode) => void;
+    onStepPlaybackStepSizeChange?: (stepSize: StepPlaybackStepSize) => void;
+    onPlaybackToggle?: () => void;
+  } = $props();
+
+  function handleModeChange(mode: PlaybackMode) {
+    if (mode === playbackMode) return;
+    const wasPlaying = isPlaying;
+    if (wasPlaying) onPlaybackToggle();
+    onPlaybackModeChange(mode);
+    if (wasPlaying) setTimeout(() => onPlaybackToggle(), 0);
+  }
+</script>
+
+<div class="playback-pane">
+  <!-- Style Toggle: Flow / Step -->
+  <div class="style-toggle">
+    <button
+      class="style-btn"
+      class:active={playbackMode === "continuous"}
+      onclick={() => handleModeChange("continuous")}
+      type="button"
+    >
+      <i class="fas fa-infinity" aria-hidden="true"></i>
+      <span>Flow</span>
+    </button>
+    <button
+      class="style-btn"
+      class:active={playbackMode === "step"}
+      onclick={() => handleModeChange("step")}
+      type="button"
+    >
+      <i class="fas fa-shoe-prints" aria-hidden="true"></i>
+      <span>Step</span>
+    </button>
+  </div>
+
+  <!-- Step Size (only in step mode) -->
+  {#if playbackMode === "step"}
+    <div class="step-size-row">
+      <span class="step-label">Step Size</span>
+      <div class="step-chips">
+        <button
+          class="step-chip"
+          class:active={stepPlaybackStepSize === 1}
+          onclick={() => onStepPlaybackStepSizeChange(1)}
+          type="button"
+        >
+          Beat
+        </button>
+        <button
+          class="step-chip"
+          class:active={stepPlaybackStepSize === 0.5}
+          onclick={() => onStepPlaybackStepSizeChange(0.5)}
+          type="button"
+        >
+          Half
+        </button>
+      </div>
+    </div>
+  {/if}
+
+  <!-- BPM Control -->
+  <BpmControl bind:bpm {onBpmChange} />
+</div>
+
+<style>
+  .playback-pane {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    animation: fadeSlideIn 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  @keyframes fadeSlideIn {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Style Toggle: Flow / Step */
+  .style-toggle {
+    display: flex;
+    gap: 8px;
+  }
+
+  .style-btn {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 48px;
+    padding: 12px 16px;
+    background: var(--theme-card-bg);
+    border: 1.5px solid var(--theme-stroke);
+    border-radius: 12px;
+    color: var(--theme-text-dim);
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .style-btn i {
+    font-size: 0.9rem;
+  }
+
+  .style-btn.active {
+    background: var(--theme-accent);
+    border-color: var(--theme-accent);
+    color: white;
+    box-shadow: 0 2px 8px var(--theme-shadow);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .style-btn:hover:not(.active) {
+      background: var(--theme-card-hover-bg);
+      border-color: var(--theme-stroke-strong);
+      color: var(--theme-text);
+    }
+  }
+
+  /* Step Size Row */
+  .step-size-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 12px;
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke);
+    border-radius: 10px;
+    animation: fadeSlideIn 0.3s ease;
+  }
+
+  .step-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--theme-text-dim);
+    white-space: nowrap;
+  }
+
+  .step-chips {
+    display: flex;
+    gap: 6px;
+    flex: 1;
+  }
+
+  .step-chip {
+    flex: 1;
+    min-height: 40px;
+    padding: 8px 12px;
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke);
+    border-radius: 8px;
+    color: var(--theme-text-dim);
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .step-chip.active {
+    background: var(--theme-accent);
+    border-color: var(--theme-accent);
+    color: white;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .playback-pane,
+    .step-size-row {
+      animation: none;
+    }
+  }
+</style>

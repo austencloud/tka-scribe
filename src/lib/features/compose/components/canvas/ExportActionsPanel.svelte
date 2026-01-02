@@ -50,7 +50,7 @@
 
   // Derive display text based on export state
   const buttonText = $derived(() => {
-    if (!isExporting) return "Save";
+    if (!isExporting) return "Share";
     if (!exportProgress) return "Starting...";
 
     const { stage, progress } = exportProgress;
@@ -61,7 +61,7 @@
     } else if (stage === "complete") {
       return "Complete!";
     }
-    return "Saving...";
+    return "Exporting...";
   });
 
   const buttonHint = $derived(() => {
@@ -69,9 +69,9 @@
       if (isCircular && loopCount > 1) {
         return `MP4 · ${loopCount}x loop`;
       }
-      return "Download as MP4";
+      return "MP4 Video";
     }
-    if (exportProgress?.stage === "complete") return "Download started";
+    if (exportProgress?.stage === "complete") return "Ready to share";
     return "Please wait...";
   });
 
@@ -103,17 +103,17 @@
         {/if}
       </button>
     {:else}
-      <!-- Normal save button -->
+      <!-- Share button -->
       <button
         class="save-btn"
         class:complete={exportProgress?.stage === "complete"}
         onclick={handleSaveClick}
         type="button"
-        aria-label="Save as MP4 video"
+        aria-label="Share as MP4 video"
       >
         <i
           class="fas main-icon"
-          class:fa-download={exportProgress?.stage !== "complete"}
+          class:fa-share={exportProgress?.stage !== "complete"}
           class:fa-check={exportProgress?.stage === "complete"}
           aria-hidden="true"
         ></i>
@@ -241,52 +241,48 @@
     width: 100%;
   }
 
-  /* Save Button - Cyan/Teal theme */
+  /* Share Button - Compact horizontal layout */
   .save-btn {
     position: relative;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
     justify-content: center;
-    gap: 4px;
-    padding: 16px 20px;
+    gap: 10px;
+    padding: 0 16px;
+    min-height: var(--min-touch-target);
     flex: 1;
-    border-radius: 14px;
+    border-radius: 12px;
     color: var(--theme-text);
     cursor: pointer;
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     -webkit-tap-highlight-color: transparent;
     overflow: hidden;
-    background: linear-gradient(
-      135deg,
-      rgba(6, 182, 212, 0.2) 0%,
-      rgba(8, 145, 178, 0.15) 100%
-    );
-    border: 1.5px solid rgba(6, 182, 212, 0.35);
+    background: var(--theme-card-bg);
+    border: 1.5px solid var(--theme-accent, rgba(139, 92, 246, 0.35));
     box-shadow:
-      0 2px 10px rgba(6, 182, 212, 0.15),
-      0 0 20px rgba(6, 182, 212, 0.1),
+      0 2px 8px var(--theme-shadow),
       inset 0 1px 0 var(--theme-stroke);
   }
 
   .save-btn .main-icon {
-    font-size: var(--font-size-2xl);
-    color: rgba(6, 182, 212, 1);
+    font-size: var(--font-size-lg);
+    color: var(--theme-accent, rgba(139, 92, 246, 1));
     transition: transform 0.2s ease;
   }
 
   .btn-label {
     font-size: 0.85rem;
     font-weight: 700;
-    color: rgba(255, 255, 255, 0.95);
+    color: var(--theme-text);
     letter-spacing: 0.3px;
   }
 
   .btn-hint {
-    font-size: 0.65rem;
+    font-size: 0.7rem;
     font-weight: 500;
     color: var(--theme-text-dim);
-    letter-spacing: 0.2px;
+    opacity: 0.8;
   }
 
   /* Settings Button */
@@ -307,22 +303,17 @@
   }
 
   .settings-btn.has-settings {
-    color: rgba(6, 182, 212, 0.8);
-    border-color: rgba(6, 182, 212, 0.25);
+    color: var(--theme-accent, rgba(139, 92, 246, 0.8));
+    border-color: var(--theme-accent, rgba(139, 92, 246, 0.25));
   }
 
   @media (hover: hover) and (pointer: fine) {
     .save-btn:hover:not(:disabled) {
-      background: linear-gradient(
-        135deg,
-        rgba(6, 182, 212, 0.3) 0%,
-        rgba(8, 145, 178, 0.25) 100%
-      );
-      border-color: rgba(6, 182, 212, 0.5);
+      background: var(--theme-card-hover-bg);
+      border-color: var(--theme-accent, rgba(139, 92, 246, 0.5));
       transform: translateY(-2px);
       box-shadow:
-        0 4px 16px rgba(6, 182, 212, 0.25),
-        0 0 28px rgba(6, 182, 212, 0.18),
+        0 4px 16px var(--theme-shadow),
         inset 0 1px 0 var(--theme-card-hover-bg);
     }
 
@@ -337,8 +328,8 @@
     }
 
     .settings-btn.has-settings:hover:not(:disabled) {
-      border-color: rgba(6, 182, 212, 0.4);
-      color: rgba(6, 182, 212, 1);
+      border-color: var(--theme-accent, rgba(139, 92, 246, 0.4));
+      color: var(--theme-accent, rgba(139, 92, 246, 1));
     }
   }
 
@@ -357,53 +348,38 @@
   }
 
   .save-btn.cancelling {
-    background: linear-gradient(
-      135deg,
-      rgba(239, 68, 68, 0.2) 0%,
-      rgba(220, 38, 38, 0.15) 100%
-    );
-    border-color: rgba(239, 68, 68, 0.35);
+    background: var(--theme-card-bg);
+    border-color: var(--semantic-error, rgba(239, 68, 68, 0.35));
     box-shadow:
-      0 2px 10px rgba(239, 68, 68, 0.15),
-      0 0 20px rgba(239, 68, 68, 0.1),
+      0 2px 10px var(--theme-shadow),
       inset 0 1px 0 var(--theme-stroke);
   }
 
   .save-btn.cancelling .main-icon {
-    color: rgba(239, 68, 68, 1);
+    color: var(--semantic-error, rgba(239, 68, 68, 1));
   }
 
   @media (hover: hover) and (pointer: fine) {
     .save-btn.cancelling:hover {
-      background: linear-gradient(
-        135deg,
-        rgba(239, 68, 68, 0.3) 0%,
-        rgba(220, 38, 38, 0.25) 100%
-      );
-      border-color: rgba(239, 68, 68, 0.5);
+      background: var(--theme-card-hover-bg);
+      border-color: var(--semantic-error, rgba(239, 68, 68, 0.5));
       transform: translateY(-2px);
       box-shadow:
-        0 4px 16px rgba(239, 68, 68, 0.25),
-        0 0 28px rgba(239, 68, 68, 0.18),
+        0 4px 16px var(--theme-shadow),
         inset 0 1px 0 var(--theme-card-hover-bg);
     }
   }
 
   .save-btn.complete {
-    background: linear-gradient(
-      135deg,
-      rgba(34, 197, 94, 0.25) 0%,
-      rgba(22, 163, 74, 0.2) 100%
-    );
-    border-color: rgba(34, 197, 94, 0.5);
+    background: var(--theme-card-bg);
+    border-color: var(--semantic-success, rgba(34, 197, 94, 0.5));
     box-shadow:
-      0 2px 14px rgba(34, 197, 94, 0.25),
-      0 0 24px rgba(34, 197, 94, 0.15),
+      0 2px 14px var(--theme-shadow),
       inset 0 1px 0 var(--theme-card-hover-bg);
   }
 
   .save-btn.complete .main-icon {
-    color: rgba(34, 197, 94, 1);
+    color: var(--semantic-success, rgba(34, 197, 94, 1));
   }
 
   .progress-bar {
@@ -419,11 +395,7 @@
 
   .progress-fill {
     height: 100%;
-    background: linear-gradient(
-      90deg,
-      rgba(6, 182, 212, 1) 0%,
-      rgba(8, 145, 178, 1) 100%
-    );
+    background: var(--theme-accent, rgba(139, 92, 246, 1));
     transition: width 0.3s ease;
   }
 
@@ -500,13 +472,9 @@
     width: 100%;
     padding: 14px;
     border-radius: 12px;
-    background: linear-gradient(
-      135deg,
-      rgba(6, 182, 212, 0.25) 0%,
-      rgba(8, 145, 178, 0.2) 100%
-    );
-    border: 1.5px solid rgba(6, 182, 212, 0.4);
-    color: rgba(255, 255, 255, 0.95);
+    background: var(--theme-accent);
+    border: 1.5px solid var(--theme-accent);
+    color: white;
     font-size: 0.9rem;
     font-weight: 600;
     cursor: pointer;
@@ -514,12 +482,7 @@
   }
 
   .done-btn:hover {
-    background: linear-gradient(
-      135deg,
-      rgba(6, 182, 212, 0.35) 0%,
-      rgba(8, 145, 178, 0.3) 100%
-    );
-    border-color: rgba(6, 182, 212, 0.5);
+    filter: brightness(1.1);
   }
 
   .done-btn:active {
@@ -541,7 +504,7 @@
 
   .section-icon {
     font-size: var(--font-size-lg);
-    color: rgba(6, 182, 212, 0.9);
+    color: var(--theme-accent, rgba(139, 92, 246, 0.9));
     margin-top: 2px;
   }
 
@@ -606,14 +569,10 @@
   }
 
   .loop-preset-btn.active {
-    background: linear-gradient(
-      135deg,
-      rgba(6, 182, 212, 0.3) 0%,
-      rgba(8, 145, 178, 0.25) 100%
-    );
-    border-color: rgba(6, 182, 212, 0.5);
-    color: rgba(255, 255, 255, 1);
-    box-shadow: 0 0 16px rgba(6, 182, 212, 0.2);
+    background: var(--theme-accent);
+    border-color: var(--theme-accent);
+    color: white;
+    box-shadow: 0 0 16px var(--theme-shadow);
   }
 
   /* ===========================
@@ -622,11 +581,12 @@
 
   @media (max-width: 360px) {
     .save-btn {
-      padding: 14px 16px;
+      padding: 0 12px;
+      gap: 8px;
     }
 
     .save-btn .main-icon {
-      font-size: var(--font-size-xl);
+      font-size: var(--font-size-base);
     }
 
     .btn-label {
@@ -634,11 +594,10 @@
     }
 
     .btn-hint {
-      font-size: 0.6rem;
+      display: none; /* Hide hint on very small screens */
     }
 
     .settings-btn {
-      width: var(--min-touch-target);
       font-size: var(--font-size-base);
     }
 
