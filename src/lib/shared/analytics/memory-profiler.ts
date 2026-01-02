@@ -155,7 +155,9 @@ class MemoryProfiler {
     let growthCount = 0;
 
     for (let i = 1; i < recentSnapshots.length; i++) {
-      if (recentSnapshots[i].usedJSHeapSize > recentSnapshots[i - 1].usedJSHeapSize) {
+      const current = recentSnapshots[i];
+      const previous = recentSnapshots[i - 1];
+      if (current && previous && current.usedJSHeapSize > previous.usedJSHeapSize) {
         growthCount++;
       }
     }
@@ -166,10 +168,12 @@ class MemoryProfiler {
 
     // Check if exceeding 80% of heap limit
     const latest = this.snapshots[this.snapshots.length - 1];
-    const usagePercent = (latest.usedJSHeapSize / latest.jsHeapSizeLimit) * 100;
+    if (latest) {
+      const usagePercent = (latest.usedJSHeapSize / latest.jsHeapSizeLimit) * 100;
 
-    if (usagePercent > 80) {
-      warnings.push(`⚠️ High memory usage: ${usagePercent.toFixed(1)}% of heap limit`);
+      if (usagePercent > 80) {
+        warnings.push(`⚠️ High memory usage: ${usagePercent.toFixed(1)}% of heap limit`);
+      }
     }
 
     return warnings;

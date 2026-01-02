@@ -101,6 +101,11 @@ export function formatActivityTime(
   lastActivity: number,
   online: boolean
 ): string {
+  // Handle users who have never been seen
+  if (lastActivity === 0) {
+    return "Never";
+  }
+
   if (!online) {
     return formatLastSeenTime(lastActivity);
   }
@@ -122,6 +127,11 @@ export function formatActivityTime(
  * Format offline "Last seen X ago" time
  */
 function formatLastSeenTime(timestamp: number): string {
+  // Handle users who have never been seen
+  if (timestamp === 0) {
+    return "Never";
+  }
+
   const now = Date.now();
   const diff = now - timestamp;
 

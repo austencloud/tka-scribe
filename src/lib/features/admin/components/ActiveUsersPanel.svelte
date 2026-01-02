@@ -1,12 +1,12 @@
 <!-- ActiveUsersPanel.svelte - Admin view of all users with activity-based presence -->
 <script lang="ts">
   import { onMount, onDestroy } from "svelte";
-  import { resolve } from "$lib/shared/inversify/di";
+  import { resolve, loadFeatureModule } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import type { IUserActivityTracker } from "../services/contracts/IUserActivityTracker";
   import type { UserPresenceWithId } from "$lib/shared/presence/domain/models/presence-models";
   import UserPresenceCard from "./active-users/UserPresenceCard.svelte";
-  import UserActivityDetail from "./active-users/UserActivityDetail.svelte";
+  import UserProfilePanel from "$lib/features/discover/creators/components/UserProfilePanel.svelte";
   import Drawer from "$lib/shared/foundation/ui/Drawer.svelte";
   import PanelGrid from "$lib/shared/components/panel/PanelGrid.svelte";
 
@@ -26,6 +26,9 @@
   // Responsive layout
   let isMobile = $state(false);
   const drawerPlacement = $derived(isMobile ? "bottom" : "right");
+
+  // Track if community module is loaded for profile panel
+  let communityModuleLoaded = $state(false);
 
   // Stats computed from activity status
   let activeCount = $derived(
@@ -65,10 +68,10 @@
         TYPES.IUserActivityTracker
       );
 
-      // Subscribe to real-time presence updates
-      unsubscribe = userActivityService.subscribeToAllPresence(
-        (presenceUsers) => {
-          users = presenceUsers;
+      // Subscribe to all users (Firestore + presence data merged)
+      unsubscribe = userActivityService.subscribeToAllUsers(
+        (allUsers) => {
+          users = allUsers;
           isLoading = false;
         }
       );
@@ -88,7 +91,7 @@
     }
   });
 
-  function selectUser(userId: string) {
+  async function selectUser(userId: string) {
     if (selectedUserId === userId) {
       // Clicking same user - toggle drawer
       drawerOpen = !drawerOpen;
@@ -96,11 +99,30 @@
       // Clicking different user - select and open
       selectedUserId = userId;
       drawerOpen = true;
+
+      // Ensure community module is loaded for profile panel
+      if (!communityModuleLoaded) {
+        try {
+          await loadFeatureModule("community");
+          communityModuleLoaded = true;
+        } catch (err) {
+          console.error("[ActiveUsersPanel] Failed to load community module:", err);
+        }
+      }
     }
   }
 
   function closeDrawer() {
     drawerOpen = false;
+  }
+
+  function handleUserDeleted() {
+    // Remove user from local list and close drawer
+    if (selectedUserId) {
+      users = users.filter((u) => u.userId !== selectedUserId);
+      selectedUserId = null;
+      drawerOpen = false;
+    }
   }
 
   function setFilter(filter: "all" | "active" | "inactive") {
@@ -163,7 +185,7 @@
       <div class="empty">
         <i class="fas fa-users" aria-hidden="true"></i>
         <span>No users found</span>
-        <p>Users will appear here when they sign in</p>
+        <p>No registered users in the system</p>
       </div>
     {:else if filteredUsers.length === 0}
       <div class="empty">
@@ -188,16 +210,21 @@
     {/if}
   </div>
 
-  <!-- User Activity Drawer -->
+  <!-- User Profile Drawer -->
   <Drawer
     bind:isOpen={drawerOpen}
     placement={drawerPlacement}
     showHandle={true}
-    class="user-activity-drawer"
-    ariaLabel="User Activity"
+    class="user-profile-drawer"
+    ariaLabel="User Profile"
   >
-    {#if selectedUserId}
-      <UserActivityDetail userId={selectedUserId} onClose={closeDrawer} />
+    {#if selectedUserId && communityModuleLoaded}
+      <UserProfilePanel userId={selectedUserId} onUserDeleted={handleUserDeleted} />
+    {:else if selectedUserId}
+      <div class="loading-profile">
+        <div class="spinner" aria-hidden="true"></div>
+        <span>Loading profile...</span>
+      </div>
     {/if}
   </Drawer>
 </div>
@@ -394,14 +421,33 @@
     height: 100%;
   }
 
-  /* Drawer styling */
-  :global(.user-activity-drawer) {
-    max-width: 450px;
+  /* Drawer styling - wider for full profile */
+  :global(.user-profile-drawer) {
+    max-width: 600px;
     width: 100%;
   }
 
-  :global(.user-activity-drawer[data-placement="bottom"]) {
+  :global(.user-profile-drawer[data-placement="bottom"]) {
     max-width: 100%;
-    max-height: 80vh;
+    max-height: 90vh;
+  }
+
+  .loading-profile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 40px;
+    color: var(--theme-text-dim);
+  }
+
+  .loading-profile .spinner {
+    width: 32px;
+    height: 32px;
+    border: 3px solid var(--theme-stroke);
+    border-top-color: var(--theme-accent);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
   }
 </style>

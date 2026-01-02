@@ -62,6 +62,16 @@ export interface IUserActivityTracker {
   ): () => void;
 
   /**
+   * Subscribe to ALL users (from Firestore) merged with presence data
+   * Users without presence data will show "never" activity
+   * @param callback - Called when user list or presence changes
+   * @returns Unsubscribe function
+   */
+  subscribeToAllUsers(
+    callback: (users: UserPresenceWithId[]) => void
+  ): () => void;
+
+  /**
    * Get activity events for a specific user
    * @param options - Query options
    */

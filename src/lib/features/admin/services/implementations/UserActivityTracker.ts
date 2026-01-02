@@ -81,6 +81,92 @@ export class UserActivityTracker implements IUserActivityTracker {
     return this.presenceService.subscribeToAllPresence(callback);
   }
 
+  subscribeToAllUsers(
+    callback: (users: UserPresenceWithId[]) => void
+  ): () => void {
+    let allFirestoreUsers: Map<string, { displayName: string; email: string; photoURL: string | null }> = new Map();
+    let presenceUsers: UserPresenceWithId[] = [];
+    let isInitialized = false;
+
+    // Fetch all users from Firestore
+    (async () => {
+      try {
+        const firestore = await getFirestoreInstance();
+        const usersRef = collection(firestore, "users");
+        const snapshot = await getDocs(usersRef);
+
+        snapshot.docs.forEach(doc => {
+          const data = doc.data();
+          allFirestoreUsers.set(doc.id, {
+            displayName: (data["displayName"] as string) ?? "Unknown",
+            email: (data["email"] as string) ?? "",
+            photoURL: (data["photoURL"] as string | null) ?? null,
+          });
+        });
+
+        isInitialized = true;
+        mergeAndNotify();
+      } catch (error) {
+        console.error("[UserActivityTracker] Failed to fetch all users:", error);
+      }
+    })();
+
+    // Subscribe to presence updates
+    const unsubscribePresence = this.presenceService.subscribeToAllPresence((users) => {
+      presenceUsers = users;
+      if (isInitialized) {
+        mergeAndNotify();
+      }
+    });
+
+    // Merge Firestore users with presence data and notify
+    function mergeAndNotify() {
+      const presenceMap = new Map(presenceUsers.map(u => [u.userId, u]));
+      const merged: UserPresenceWithId[] = [];
+
+      // Add all Firestore users
+      for (const [userId, userData] of allFirestoreUsers) {
+        const presence = presenceMap.get(userId);
+
+        if (presence) {
+          // User has presence data - use it
+          merged.push(presence);
+        } else {
+          // User exists in Firestore but no presence data - create default
+          merged.push({
+            userId,
+            displayName: userData.displayName,
+            email: userData.email,
+            photoURL: userData.photoURL,
+            online: false,
+            activityStatus: "offline",
+            lastActivity: 0, // Never seen
+            lastSeen: 0,
+            currentModule: "",
+            currentTab: null,
+            sessionId: "",
+            device: "desktop",
+          });
+        }
+      }
+
+      // Sort: active first, then by last activity (most recent first)
+      merged.sort((a, b) => {
+        if (a.activityStatus !== b.activityStatus) {
+          return a.activityStatus === "active" ? -1 : 1;
+        }
+        return b.lastActivity - a.lastActivity;
+      });
+
+      callback(merged);
+    }
+
+    // Return cleanup function
+    return () => {
+      unsubscribePresence();
+    };
+  }
+
   async getUserActivity(
     options: UserActivityQueryOptions
   ): Promise<ActivityEvent[]> {

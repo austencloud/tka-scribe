@@ -16,8 +16,10 @@ import {
   serverTimestamp,
   off,
   get,
+  remove,
 } from "firebase/database";
-import { database, auth } from "../../../auth/firebase";
+import { doc, getDoc } from "firebase/firestore";
+import { database, auth, getFirestoreInstance } from "../../../auth/firebase";
 import { TYPES } from "../../../inversify/types";
 import type { IPresenceTracker } from "../contracts/IPresenceTracker";
 import type { ISessionTracker } from "../../../analytics/services/contracts/ISessionTracker";
@@ -36,19 +38,67 @@ export class PresenceTracker implements IPresenceTracker {
   private initialized = false;
   private presenceRef: ReturnType<typeof ref> | null = null;
   private activityTracker: ActivityTracker | null = null;
+  private userDeleted = false;
 
   constructor(
     @inject(TYPES.ISessionTracker)
     private sessionTrackingService: ISessionTracker
   ) {}
 
+  /**
+   * Check if the user's Firestore document exists.
+   * If not, the user was deleted and we should not write presence.
+   */
+  private async checkUserExists(userId: string): Promise<boolean> {
+    try {
+      const firestore = await getFirestoreInstance();
+      const userDoc = await getDoc(doc(firestore, "users", userId));
+      return userDoc.exists();
+    } catch (err) {
+      console.warn("[PresenceTracker] Could not verify user exists:", err);
+      // If we can't check, assume user exists to avoid breaking presence for real users
+      return true;
+    }
+  }
+
+  /**
+   * Clean up presence for a deleted user.
+   */
+  private async cleanupDeletedUser(): Promise<void> {
+    this.userDeleted = true;
+    this.stopActivityTracking();
+
+    if (this.presenceRef) {
+      try {
+        await remove(this.presenceRef);
+        console.log("[PresenceTracker] Cleaned up presence for deleted user");
+      } catch (err) {
+        console.warn("[PresenceTracker] Could not remove presence:", err);
+      }
+    }
+
+    this.currentPresence = null;
+    this.initialized = false;
+    this.presenceRef = null;
+  }
+
   async initialize(): Promise<void> {
     if (this.initialized) return;
+    if (this.userDeleted) return; // User was deleted, don't reinitialize
 
     const user = auth.currentUser;
     if (!user) return;
 
     const userId = user.uid;
+
+    // Verify user document exists in Firestore before setting up presence
+    const userExists = await this.checkUserExists(userId);
+    if (!userExists) {
+      console.log("[PresenceTracker] User document not found, skipping presence setup");
+      await this.cleanupDeletedUser();
+      return;
+    }
+
     this.presenceRef = ref(database, `presence/${userId}`);
 
     // Get session info
@@ -117,6 +167,20 @@ export class PresenceTracker implements IPresenceTracker {
   /** Handle detected user activity */
   private async handleUserActivity(): Promise<void> {
     if (!this.presenceRef || !this.currentPresence) return;
+    if (this.userDeleted) return;
+
+    // Periodically verify user still exists (every ~30 activity updates)
+    if (Math.random() < 0.03) {
+      const user = auth.currentUser;
+      if (user) {
+        const userExists = await this.checkUserExists(user.uid);
+        if (!userExists) {
+          console.log("[PresenceTracker] User deleted, cleaning up presence");
+          await this.cleanupDeletedUser();
+          return;
+        }
+      }
+    }
 
     const now = Date.now();
     this.currentPresence.lastActivity = now;
@@ -130,6 +194,8 @@ export class PresenceTracker implements IPresenceTracker {
   }
 
   async updateLocation(module: string, tab?: string | null): Promise<void> {
+    if (this.userDeleted) return;
+
     if (!this.presenceRef || !this.currentPresence) {
       // Try to initialize first
       await this.initialize();

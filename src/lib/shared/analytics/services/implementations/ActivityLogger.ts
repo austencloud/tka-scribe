@@ -42,6 +42,7 @@ export class ActivityLogger implements IActivityLogger {
   private writeBuffer: ActivityEvent[] = [];
   private flushTimeout: ReturnType<typeof setTimeout> | null = null;
   private sessionTrackingService: ISessionTracker | null = null;
+  private isFlushingBuffer = false; // Mutex to prevent concurrent flushes
 
   constructor(
     @inject(TYPES.ISessionTracker)
@@ -203,53 +204,62 @@ export class ActivityLogger implements IActivityLogger {
 
     if (this.writeBuffer.length === 0) return;
 
+    // Prevent concurrent flush operations
+    if (this.isFlushingBuffer) return;
+    this.isFlushingBuffer = true;
+
     const eventsToWrite = [...this.writeBuffer];
     this.writeBuffer = [];
 
-    const firestore = await getFirestoreInstance();
+    try {
+      const firestore = await getFirestoreInstance();
 
-    // Write each event (could be optimized with batch writes)
-    for (const event of eventsToWrite) {
-      try {
-        const activityRef = collection(
-          firestore,
-          `users/${event.userId}/activityLog`
-        );
-
-        // Build document data, excluding undefined fields (Firestore doesn't accept undefined)
-        const docData: Record<string, unknown> = {
-          userId: event.userId,
-          category: event.category,
-          eventType: event.eventType,
-          timestamp: Timestamp.fromDate(event.timestamp),
-        };
-
-        // Add sessionId if present
-        if (event.sessionId) {
-          docData["sessionId"] = event.sessionId;
-        }
-
-        // Only add metadata if it's defined and has properties
-        if (event.metadata !== undefined) {
-          // Filter out undefined values from metadata
-          const filteredMetadata = Object.fromEntries(
-            Object.entries(event.metadata).filter(([, v]) => v !== undefined)
+      // Write each event (could be optimized with batch writes)
+      for (const event of eventsToWrite) {
+        try {
+          const activityRef = collection(
+            firestore,
+            `users/${event.userId}/activityLog`
           );
-          if (Object.keys(filteredMetadata).length > 0) {
-            docData["metadata"] = filteredMetadata;
+
+          // Build document data, excluding undefined fields (Firestore doesn't accept undefined)
+          const docData: Record<string, unknown> = {
+            userId: event.userId,
+            category: event.category,
+            eventType: event.eventType,
+            timestamp: Timestamp.fromDate(event.timestamp),
+          };
+
+          // Add sessionId if present
+          if (event.sessionId) {
+            docData["sessionId"] = event.sessionId;
           }
-        }
 
-        // Only add client info if defined
-        if (event.client !== undefined) {
-          docData["client"] = event.client;
-        }
+          // Only add metadata if it's defined and has properties
+          if (event.metadata !== undefined) {
+            // Filter out undefined values from metadata
+            const filteredMetadata = Object.fromEntries(
+              Object.entries(event.metadata).filter(([, v]) => v !== undefined)
+            );
+            if (Object.keys(filteredMetadata).length > 0) {
+              docData["metadata"] = filteredMetadata;
+            }
+          }
 
-        await addDoc(activityRef, docData);
-      } catch (error) {
-        console.error("Failed to log activity event:", error);
-        // Don't re-buffer failed events to avoid infinite loops
+          // Only add client info if defined
+          if (event.client !== undefined) {
+            docData["client"] = event.client;
+          }
+
+          await addDoc(activityRef, docData);
+        } catch (error) {
+          console.error("Failed to log activity event:", error);
+          // Don't re-buffer failed events to avoid infinite loops
+        }
       }
+    } finally {
+      // Always release mutex, even if something throws
+      this.isFlushingBuffer = false;
     }
   }
 
