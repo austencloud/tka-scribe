@@ -25,9 +25,6 @@ import { LayoutDetector } from "../../../features/create/construct/option-picker
 import { TurnController } from "../../../features/create/edit/services/TurnController";
 
 import { TYPES } from "../types";
-import { HandPathDirectionDetector } from "../../../features/create/assemble/handpath-builder/services/implementations/HandPathDirectionDetector";
-import { PathToMotionConverter } from "../../../features/create/assemble/handpath-builder/services/implementations/PathToMotionConverter";
-import { SwipeDetector } from "../../../features/create/assemble/handpath-builder/services/implementations/SwipeDetector";
 import { ReversalChecker } from "../../../features/create/construct/option-picker/services/implementations/ReversalChecker";
 import { StartPositionManager } from "../../../features/create/construct/start-position-picker/services/implementations/StartPositionManager";
 import { LOOPEndPositionSelector } from "../../../features/create/generate/circular/services/implementations/LOOPEndPositionSelector";
@@ -143,13 +140,6 @@ export const createModule = new ContainerModule(
       .bind(TYPES.IStartPositionManager)
       .to(StartPositionManager)
       .inSingletonScope();
-
-    // === GESTURAL PATH BUILDER SERVICES === (January 2025)
-    options
-      .bind(TYPES.IHandPathDirectionDetector)
-      .to(HandPathDirectionDetector);
-    options.bind(TYPES.ISwipeDetector).to(SwipeDetector);
-    options.bind(TYPES.IPathToMotionConverter).to(PathToMotionConverter);
 
     // === GENERATION SERVICES === (restored active services 2025-10-25)
     options.bind(TYPES.IBeatConverter).to(BeatConverter);

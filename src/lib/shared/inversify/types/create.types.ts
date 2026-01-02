@@ -48,11 +48,6 @@ export const CreateTypes = {
   IBuildConstructTabCoordinator: Symbol.for("IBuildConstructTabCoordinator"),
   IStartPositionManager: Symbol.for("IStartPositionManager"),
 
-  // Gestural Path Builder
-  IHandPathDirectionDetector: Symbol.for("IHandPathDirectionDetector"),
-  ISwipeDetector: Symbol.for("ISwipeDetector"),
-  IPathToMotionConverter: Symbol.for("IPathToMotionConverter"),
-
   // Sequence Extension
   ISequenceExtender: Symbol.for("ISequenceExtender"),
   ILOOPValidator: Symbol.for("ILOOPValidator"),
