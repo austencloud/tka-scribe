@@ -1,57 +1,54 @@
 <!--
   AuthFooter.svelte - Authentication Sheet Footer
 
-  Footer with Terms of Service and Privacy Policy links
+  Footer with Terms of Service and Privacy Policy links.
+  On mobile (<768px): Opens bottom sheets
+  On desktop (≥768px): Navigates to /terms or /privacy pages
 -->
 <script lang="ts">
-  import { resolve } from "../../inversify/di";
-  import { TYPES } from "../../inversify/types";
-  import type { IHapticFeedback } from "../../application/services/contracts/IHapticFeedback";
-  import type { ISheetRouter } from "$lib/shared/navigation/services/contracts/ISheetRouter";
-  import { onMount } from "svelte";
+  import LegalSheet from "../../../../routes/landing/components/LegalSheet.svelte";
 
-  // Services
-  let hapticService: IHapticFeedback | null = null;
-  let sheetRouterService: ISheetRouter | null = null;
+  // Local sheet state
+  let sheetOpen = $state(false);
+  let sheetType = $state<"terms" | "privacy">("terms");
 
-  onMount(() => {
-    hapticService = resolve<IHapticFeedback>(
-      TYPES.IHapticFeedback
-    );
-    try {
-      sheetRouterService = resolve<ISheetRouter>(
-        TYPES.ISheetRouter
-      );
-    } catch {
-      // Service not available
+  const MOBILE_BREAKPOINT = 768;
+
+  function handleTermsClick(e: MouseEvent) {
+    if (typeof window !== "undefined" && window.innerWidth < MOBILE_BREAKPOINT) {
+      e.preventDefault();
+      sheetType = "terms";
+      sheetOpen = true;
     }
-  });
-
-  function openTerms(e: Event) {
-    e.preventDefault();
-    hapticService?.trigger("selection");
-    sheetRouterService?.openSheet("terms");
   }
 
-  function openPrivacy(e: Event) {
-    e.preventDefault();
-    hapticService?.trigger("selection");
-    sheetRouterService?.openSheet("privacy");
+  function handlePrivacyClick(e: MouseEvent) {
+    if (typeof window !== "undefined" && window.innerWidth < MOBILE_BREAKPOINT) {
+      e.preventDefault();
+      sheetType = "privacy";
+      sheetOpen = true;
+    }
+  }
+
+  function closeSheet() {
+    sheetOpen = false;
   }
 </script>
 
 <footer class="auth-footer">
   <p class="auth-footer__text">
     By continuing, you agree to our
-    <button class="auth-footer__link" onclick={openTerms}
-      >Terms of Service</button
+    <a href="/terms" class="auth-footer__link" onclick={handleTermsClick}
+      >Terms of Service</a
     >
     and
-    <button class="auth-footer__link" onclick={openPrivacy}
-      >Privacy Policy</button
+    <a href="/privacy" class="auth-footer__link" onclick={handlePrivacyClick}
+      >Privacy Policy</a
     >
   </p>
 </footer>
+
+<LegalSheet isOpen={sheetOpen} type={sheetType} onClose={closeSheet} />
 
 <style>
   .auth-footer {

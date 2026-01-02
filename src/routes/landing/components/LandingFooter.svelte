@@ -1,10 +1,31 @@
 <script lang="ts">
+	import LegalSheet from './LegalSheet.svelte';
+
 	const footerLinks = [
-		{ href: '/', label: 'App' },
+		{ href: '/app', label: 'App' },
 		{ href: '#features', label: 'Features' },
 		{ href: '#notation', label: 'Notation' },
 		{ href: '#loops', label: 'LOOPs' }
 	];
+
+	let sheetOpen = $state(false);
+	let sheetType = $state<'terms' | 'privacy'>('terms');
+
+	const MOBILE_BREAKPOINT = 768;
+
+	function handleLegalClick(e: MouseEvent, type: 'terms' | 'privacy') {
+		// On mobile, use sheet. On desktop, let link navigate normally.
+		if (window.innerWidth < MOBILE_BREAKPOINT) {
+			e.preventDefault();
+			sheetType = type;
+			sheetOpen = true;
+		}
+		// On desktop, don't prevent default - link navigates to /terms or /privacy
+	}
+
+	function closeSheet() {
+		sheetOpen = false;
+	}
 </script>
 
 <section class="final-cta">
@@ -16,7 +37,7 @@
 			community.
 		</p>
 
-		<a href="/" class="btn btn-primary btn-large">
+		<a href="/app" class="btn btn-primary btn-large">
 			Open TKA Scribe
 			<span class="arrow">→</span>
 		</a>
@@ -43,8 +64,14 @@
 				complex multi-beat sequences.
 			</p>
 		</div>
+		<div class="footer-legal">
+			<a href="/terms" onclick={(e) => handleLegalClick(e, 'terms')}>Terms of Service</a>
+			<a href="/privacy" onclick={(e) => handleLegalClick(e, 'privacy')}>Privacy Policy</a>
+		</div>
 	</div>
 </footer>
+
+<LegalSheet isOpen={sheetOpen} type={sheetType} onClose={closeSheet} />
 
 <style>
 	.container {
@@ -169,10 +196,33 @@
 		max-width: 700px;
 	}
 
+	.footer-legal {
+		display: flex;
+		gap: 24px;
+		padding-top: 24px;
+		border-top: 1px solid var(--border, rgba(255, 255, 255, 0.1));
+		margin-top: 24px;
+	}
+
+	.footer-legal a {
+		color: var(--text-muted, rgba(255, 255, 255, 0.5));
+		text-decoration: none;
+		font-size: 0.75rem;
+		transition: color 0.2s ease;
+	}
+
+	.footer-legal a:hover {
+		color: var(--text, #ffffff);
+	}
+
 	@media (max-width: 768px) {
 		.footer-content {
 			flex-direction: column;
 			text-align: center;
+		}
+
+		.footer-legal {
+			justify-content: center;
 		}
 	}
 
@@ -185,7 +235,8 @@
 			transform: none;
 		}
 
-		.footer-links a {
+		.footer-links a,
+		.footer-legal a {
 			transition: none;
 		}
 	}
