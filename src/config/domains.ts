@@ -5,12 +5,12 @@
  */
 
 // Primary domain (canonical)
-export const PRIMARY_DOMAIN = "https://thekineticalphabet.com";
+export const PRIMARY_DOMAIN = "https://tkascribe.com";
 
 // Secondary domains (will redirect to primary)
 export const SECONDARY_DOMAINS = [
   "https://kineticalphabet.com",
-  "https://www.thekineticalphabet.com",
+  "https://www.tkascribe.com",
   "https://www.kineticalphabet.com",
 ];
 

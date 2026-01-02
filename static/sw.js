@@ -10,7 +10,7 @@ const API_CACHE = `tka-launcher-api-${CACHE_VERSION}`;
 const CACHE_STRATEGIES = {
   // Static assets - Cache First (long-term cache)
   static: [
-    "/",
+    "/app",
     "/app.css",
     "/pwa/manifest.webmanifest",
     "/pwa/",
@@ -51,7 +51,7 @@ self.addEventListener("install", (event) => {
         // Pre-cache static assets
         const staticCache = await caches.open(STATIC_CACHE);
         const staticUrls = [
-          "/",
+          "/app",
           "/app.css",
           "/pwa/manifest.webmanifest",
           "/offline.html",
@@ -403,7 +403,7 @@ self.addEventListener("notificationclick", (event) => {
             await clients[0].focus();
           } else {
             // Open new window
-            await self.clients.openWindow("/");
+            await self.clients.openWindow("/app");
           }
           break;
 
@@ -416,7 +416,7 @@ self.addEventListener("notificationclick", (event) => {
           if (clients.length > 0) {
             await clients[0].focus();
           } else {
-            await self.clients.openWindow("/");
+            await self.clients.openWindow("/app");
           }
       }
     })()

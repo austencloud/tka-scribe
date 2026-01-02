@@ -1,5 +1,6 @@
 /// <reference types="vitest/config" />
 import { sveltekit } from "@sveltejs/kit/vite";
+import { SvelteKitPWA } from "@vite-pwa/sveltekit";
 import fs from "fs";
 import type { IncomingMessage, ServerResponse } from "http";
 import path from "path";
@@ -213,6 +214,86 @@ export default defineConfig({
       hot: {
         preserveLocalState: true,
         injectCss: true,
+      },
+    }),
+    // ============================================================================
+    // PWA CONFIGURATION (Google Play Store / Installable Web App)
+    // ============================================================================
+    SvelteKitPWA({
+      registerType: "autoUpdate",
+      devOptions: {
+        enabled: false, // Disable in dev to avoid caching issues
+      },
+      manifest: false, // We already have a manifest in static/pwa/
+      injectRegister: "auto",
+      workbox: {
+        // Cache strategies for different asset types
+        globPatterns: [
+          "**/*.{js,css,html,ico,png,svg,woff2,woff,webp}",
+        ],
+        // Exclude large data files from precaching (they'll use runtime caching)
+        globIgnores: [
+          "**/data/*.json", // sequence-index.json is 8MB+
+          "**/chunks/**/twBRc9zZ.js", // Large chunk
+        ],
+        // Increase limit for larger chunks (3MB)
+        maximumFileSizeToCacheInBytes: 3 * 1024 * 1024,
+        // Don't cache API calls or Firebase
+        navigateFallbackDenylist: [
+          /^\/api\//,
+          /^\/auth\//,
+          /^\/firebase/,
+          /firestore\.googleapis\.com/,
+          /firebaseapp\.com/,
+        ],
+        runtimeCaching: [
+          {
+            // Cache Google Fonts
+            urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
+            handler: "CacheFirst",
+            options: {
+              cacheName: "google-fonts-cache",
+              expiration: {
+                maxEntries: 10,
+                maxAgeSeconds: 60 * 60 * 24 * 365, // 1 year
+              },
+              cacheableResponse: {
+                statuses: [0, 200],
+              },
+            },
+          },
+          {
+            // Cache static assets from Firebase Storage (thumbnails, images)
+            urlPattern: /^https:\/\/firebasestorage\.googleapis\.com\/.*/i,
+            handler: "CacheFirst",
+            options: {
+              cacheName: "firebase-storage-cache",
+              expiration: {
+                maxEntries: 500,
+                maxAgeSeconds: 60 * 60 * 24 * 30, // 30 days
+              },
+              cacheableResponse: {
+                statuses: [0, 200],
+              },
+            },
+          },
+          {
+            // Network-first for API calls (ensures fresh data)
+            urlPattern: /^https:\/\/.*\.googleapis\.com\/.*$/i,
+            handler: "NetworkFirst",
+            options: {
+              cacheName: "api-cache",
+              networkTimeoutSeconds: 10,
+              expiration: {
+                maxEntries: 50,
+                maxAgeSeconds: 60 * 5, // 5 minutes
+              },
+              cacheableResponse: {
+                statuses: [0, 200],
+              },
+            },
+          },
+        ],
       },
     }),
     dictionaryPlugin(),

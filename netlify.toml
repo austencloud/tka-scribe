@@ -193,6 +193,22 @@
     Cache-Control = "public, max-age=86400"
 
 # ============================================================================
+# DOMAIN REDIRECTS
+# ============================================================================
+# Redirect tkaflowarts.com to tkascribe.com (301 permanent)
+[[redirects]]
+  from = "https://tkaflowarts.com/*"
+  to = "https://tkascribe.com/:splat"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "https://www.tkaflowarts.com/*"
+  to = "https://tkascribe.com/:splat"
+  status = 301
+  force = true
+
+# ============================================================================
 # SPA ROUTING
 # ============================================================================
 # Redirects are defined in static/_redirects (required by @sveltejs/adapter-netlify)

@@ -72,10 +72,9 @@
     "noPropertyAccessFromIndexSignature": false // Disabled: too noisy for existing Record-based access patterns
   },
   "include": [
-    "global.d.ts",
     "src/**/*.ts",
+    "src/**/*.d.ts",
     "src/**/*.svelte"
-    // Removed duplicate entries
   ],
   "exclude": [
     "node_modules",

@@ -200,8 +200,8 @@ service cloud.firestore {
             && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['followerCount'])
             && request.resource.data.followerCount == resource.data.followerCount - 1);
 
-      // Users can delete their own profile (with caution)
-      allow delete: if isOwner(userId);
+      // Users can delete their own profile, admins can delete any user (for testing)
+      allow delete: if isOwner(userId) || isAdmin();
 
       // -------------------------------------------------------------------------
       // USER SETTINGS (Private - admin can read for impersonation preview)
@@ -209,15 +209,17 @@ service cloud.firestore {
       match /settings/{settingId} {
         // Admins can read any user's settings for impersonation/preview mode
         allow read: if isOwner(userId) || isAdmin();
-        // Only the owner can write their own settings
-        allow write: if isOwner(userId);
+        // Only the owner can write their own settings, admins can delete
+        allow create, update: if isOwner(userId);
+        allow delete: if isOwner(userId) || isAdmin();
       }
 
       // -------------------------------------------------------------------------
       // USER TAGS (Private)
       // -------------------------------------------------------------------------
       match /tags/{tagId} {
-        allow read, write: if isOwner(userId);
+        allow read, create, update: if isOwner(userId);
+        allow delete: if isOwner(userId) || isAdmin();
       }
 
       // -------------------------------------------------------------------------
@@ -227,62 +229,72 @@ service cloud.firestore {
       // User achievements - PUBLIC read for creator profiles in Discover
       match /achievements/{achievementId} {
         // Anyone can read achievements (for viewing creator profiles)
-        // Only owner can write
+        // Only owner can write, admins can delete
         allow read: if true;
-        allow write: if isOwner(userId);
+        allow create, update: if isOwner(userId);
+        allow delete: if isOwner(userId) || isAdmin();
       }
 
       // User XP (single document or subcollection)
       match /xp/{xpId} {
-        allow read, write: if isOwner(userId);
+        allow read, create, update: if isOwner(userId);
+        allow delete: if isOwner(userId) || isAdmin();
       }
 
-      // XP events log (append-only for users)
+      // XP events log (append-only for users, admins can delete for cleanup)
       match /xpEvents/{eventId} {
         allow read: if isOwner(userId);
         allow create: if isOwner(userId);
-        allow update, delete: if false; // Events are immutable
+        allow update: if false; // Events are immutable
+        allow delete: if isAdmin(); // Admins can clean up
       }
 
       // Challenge progress
       match /challengeProgress/{progressId} {
-        allow read, write: if isOwner(userId);
+        allow read, create, update: if isOwner(userId);
+        allow delete: if isOwner(userId) || isAdmin();
       }
 
       // User streak (single document or subcollection)
       match /streak/{streakId} {
-        allow read, write: if isOwner(userId);
+        allow read, create, update: if isOwner(userId);
+        allow delete: if isOwner(userId) || isAdmin();
       }
 
       // User notifications
       match /notifications/{notificationId} {
         // Admins can read for impersonation/preview mode
         allow read: if isOwner(userId) || isAdmin();
-        allow write: if isOwner(userId);
+        allow create, update: if isOwner(userId);
+        allow delete: if isOwner(userId) || isAdmin();
       }
 
       // Dismissed announcements - users can read/write their own dismissals
       match /dismissedAnnouncements/{announcementId} {
-        allow read, write: if isOwner(userId);
+        allow read, create, update: if isOwner(userId);
+        allow delete: if isOwner(userId) || isAdmin();
       }
 
       // Create module sessions - users can read/write their own sessions
       match /sessions/{sessionId} {
-        allow read, write: if isOwner(userId);
+        allow read, create, update: if isOwner(userId);
+        allow delete: if isOwner(userId) || isAdmin();
       }
 
       // -------------------------------------------------------------------------
       // ONBOARDING STATUS
       // -------------------------------------------------------------------------
       match /onboarding/{docId} {
-        allow read, write: if isOwner(userId);
+        allow read, create, update: if isOwner(userId);
+        allow delete: if isOwner(userId) || isAdmin();
       }
 
       // -------------------------------------------------------------------------
       // SEQUENCE DRAFTS (Autosave)
       // -------------------------------------------------------------------------
       match /drafts/{draftId} {
-        allow read, write: if isOwner(userId);
+        allow read, create, update: if isOwner(userId);
+        allow delete: if isOwner(userId) || isAdmin();
       }
 
       // -------------------------------------------------------------------------
@@ -295,8 +307,9 @@ service cloud.firestore {
       match /following/{followedUserId} {
         // Anyone can read follow relationships (for "is following" checks)
         allow read: if isAuthenticated();
-        // Only the owner can add/remove follows
-        allow write: if isOwner(userId);
+        // Only the owner can add/remove follows, admins can delete
+        allow create, update: if isOwner(userId);
+        allow delete: if isOwner(userId) || isAdmin();
       }
 
       // Followers list - who follows this user
@@ -305,8 +318,9 @@ service cloud.firestore {
         allow read: if isAuthenticated();
         // Written via transaction when someone follows/unfollows
         // The follower (followerUserId) writes to the target user's followers list
-        allow create, delete: if isAuthenticated() && request.auth.uid == followerUserId;
+        allow create: if isAuthenticated() && request.auth.uid == followerUserId;
         allow update: if false; // No updates needed
+        allow delete: if (isAuthenticated() && request.auth.uid == followerUserId) || isAdmin();
       }
 
       // -------------------------------------------------------------------------
@@ -317,23 +331,27 @@ service cloud.firestore {
       match /sequences/{sequenceId} {
         // Public sequences can be read by anyone, private only by owner
         allow read: if resource.data.visibility == 'public' || isOwner(userId);
-        // Only owner can write
-        allow write: if isOwner(userId);
+        // Only owner can create/update, admins can delete
+        allow create, update: if isOwner(userId);
+        allow delete: if isOwner(userId) || isAdmin();
       }
 
       // Weekly challenge progress
       match /weeklyProgress/{progressId} {
-        allow read, write: if isOwner(userId);
+        allow read, create, update: if isOwner(userId);
+        allow delete: if isOwner(userId) || isAdmin();
       }
 
       // Skill progression tracking
       match /skillProgress/{progressId} {
-        allow read, write: if isOwner(userId);
+        allow read, create, update: if isOwner(userId);
+        allow delete: if isOwner(userId) || isAdmin();
       }
 
       // Train challenge progress
       match /trainProgress/{progressId} {
-        allow read, write: if isOwner(userId);
+        allow read, create, update: if isOwner(userId);
+        allow delete: if isOwner(userId) || isAdmin();
       }
     }
 
@@ -473,11 +491,25 @@ service cloud.firestore {
     }
 
     // ============================================================================
+    // PRESENCE TRACKING
+    // ============================================================================
+
+    // Presence collection - tracks user online status
+    match /presence/{userId} {
+      // Anyone authenticated can read presence (for showing online status)
+      allow read: if isAuthenticated();
+      // Users can write their own presence
+      allow create, update: if isOwner(userId);
+      // Users can delete their own, admins can delete any (for user cleanup)
+      allow delete: if isOwner(userId) || isAdmin();
+    }
+
+    // ============================================================================
     // ACTIVITY LOGGING
     // ============================================================================
 
     // Activity log - users can read their own, admins can read all
-    // Events are append-only (no update/delete)
+    // Events are append-only (no update/delete by users, admins can delete for cleanup)
     match /users/{userId}/activityLog/{eventId} {
       // Users can read their own activity, admins can read anyone's
       allow read: if isOwner(userId) || isAdmin();
@@ -485,8 +517,9 @@ service cloud.firestore {
       // Only the owner can create events in their own log
       allow create: if isOwner(userId);
 
-      // Events are immutable - no updates or deletes
-      allow update, delete: if false;
+      // Events are immutable for users, but admins can delete for cleanup
+      allow update: if false;
+      allow delete: if isAdmin();
     }
 
     // ============================================================================

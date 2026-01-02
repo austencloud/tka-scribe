@@ -7,9 +7,18 @@
   "display": "standalone",
   "display_override": ["standalone", "fullscreen", "minimal-ui"],
   "orientation": "any",
-  "scope": "/",
-  "start_url": "/",
+  "scope": "/app",
+  "start_url": "/app",
   "id": "tka-kinetic-alphabet",
+  "related_applications": [
+    {
+      "platform": "webapp",
+      "url": "/pwa/manifest.webmanifest"
+    }
+  ],
+  "launch_handler": {
+    "client_mode": "focus-existing"
+  },
   "categories": ["entertainment", "education", "productivity"],
   "lang": "en-US",
   "dir": "ltr",
