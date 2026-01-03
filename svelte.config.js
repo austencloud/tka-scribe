@@ -56,6 +56,19 @@ const config = {
     // Svelte 5 runes mode is enabled by default
     // 2025: Runes provide better reactivity and performance
   },
+
+  // ============================================================================
+  // WARNING FILTER (Suppress intentional patterns)
+  // ============================================================================
+  // These warnings are for patterns we use intentionally:
+  // - state_referenced_locally: Capturing initial prop values for one-time init
+  onwarn: (warning, handler) => {
+    // Intentional pattern: initializing state/const from props for one-time capture
+    if (warning.code === "state_referenced_locally") return;
+
+    // Let all other warnings through
+    handler(warning);
+  },
 };
 
 export default config;
