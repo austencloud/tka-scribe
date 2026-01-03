@@ -1599,7 +1599,9 @@
       "Bash(src/lib/shared/settings/ )",
       "Bash(src/lib/shared/share-hub/ )",
       "Bash(src/lib/shared/share/ )",
-      "Bash(src/lib/shared/video-record/ )"
+      "Bash(src/lib/shared/video-record/ )",
+      "Bash(keytool:*)",
+      "Bash(./gradlew bundleRelease:*)"
     ],
     "deny": [],
     "ask": []

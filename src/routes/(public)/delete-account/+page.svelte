@@ -1,28 +1,31 @@
 <script lang="ts">
   const steps = [
-    'Sign in to TKA Scribe',
-    'Tap profile icon → Settings',
-    'Account → Delete Account',
-    'Confirm deletion'
+    "Sign in to TKA Scribe",
+    "Tap profile icon → Settings",
+    "Account → Delete Account",
+    "Confirm deletion",
   ];
 
   const deletedData = [
-    'Profile & account info',
-    'Library & collections',
-    'Settings & preferences',
-    'Achievements & XP'
+    "Profile & account info",
+    "Library & collections",
+    "Settings & preferences",
+    "Achievements & XP",
   ];
 
   const sequenceInfo = [
-    'Sequences stay in the gallery',
-    'Choose: Anonymize or keep your name',
-    'Protects community references'
+    "Sequences stay in the gallery",
+    "Choose: Anonymize or keep your name",
+    "Protects community references",
   ];
 </script>
 
 <svelte:head>
   <title>Delete Account - TKA Scribe</title>
-  <meta name="description" content="How to delete your TKA Scribe account and data" />
+  <meta
+    name="description"
+    content="How to delete your TKA Scribe account and data"
+  />
 </svelte:head>
 
 <div class="page">
@@ -67,12 +70,19 @@
 
     <div class="warning-banner">
       <span class="warning-icon">⚠️</span>
-      <span><strong>This action is permanent</strong> and cannot be undone. You'll be signed out immediately.</span>
+      <span
+        ><strong>This action is permanent</strong> and cannot be undone. You'll be
+        signed out immediately.</span
+      >
     </div>
 
     <footer>
       <a href="/app" class="button">Open TKA Scribe</a>
-      <p class="help">Need help? <a href="mailto:support@tkascribe.com">support@tkascribe.com</a></p>
+      <p class="help">
+        Need help? <a href="mailto:tkaflowarts@gmail.com"
+          >tkaflowarts@gmail.com</a
+        >
+      </p>
     </footer>
   </div>
 </div>
@@ -85,7 +95,10 @@
     align-items: center;
     justify-content: center;
     padding: 2rem;
-    font-family: system-ui, -apple-system, sans-serif;
+    font-family:
+      system-ui,
+      -apple-system,
+      sans-serif;
     color: #e5e5e5;
   }
 
@@ -136,7 +149,9 @@
     background: rgba(255, 255, 255, 0.03);
     border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 16px;
-    transition: transform 0.2s, border-color 0.2s;
+    transition:
+      transform 0.2s,
+      border-color 0.2s;
   }
 
   .card:hover {
@@ -158,7 +173,8 @@
     letter-spacing: 0.05em;
   }
 
-  ol, ul {
+  ol,
+  ul {
     padding-left: 1.25rem;
     margin: 0;
   }
@@ -180,7 +196,11 @@
   }
 
   .deleted {
-    background: linear-gradient(135deg, rgba(239, 68, 68, 0.08) 0%, rgba(239, 68, 68, 0.03) 100%);
+    background: linear-gradient(
+      135deg,
+      rgba(239, 68, 68, 0.08) 0%,
+      rgba(239, 68, 68, 0.03) 100%
+    );
     border-color: rgba(239, 68, 68, 0.15);
   }
 
@@ -193,7 +213,11 @@
   }
 
   .sequences {
-    background: linear-gradient(135deg, rgba(99, 102, 241, 0.08) 0%, rgba(99, 102, 241, 0.03) 100%);
+    background: linear-gradient(
+      135deg,
+      rgba(99, 102, 241, 0.08) 0%,
+      rgba(99, 102, 241, 0.03) 100%
+    );
     border-color: rgba(99, 102, 241, 0.15);
   }
 
@@ -240,7 +264,9 @@
     text-decoration: none;
     font-weight: 500;
     font-size: 1rem;
-    transition: transform 0.2s, box-shadow 0.2s;
+    transition:
+      transform 0.2s,
+      box-shadow 0.2s;
     box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
   }
 

@@ -56,11 +56,19 @@
   );
   const error = $derived(creatorsDataState.error);
 
-  // Filtered users based on search
+  // Accounts to hide from public view (test/system accounts)
+  const HIDDEN_ACCOUNTS = ['tkascribe.review@gmail.com'];
+
+  // Filtered users based on search (excludes hidden accounts)
   const filteredUsers = $derived.by(() => {
-    if (!searchQuery) return users;
+    // First filter out hidden accounts
+    const visibleUsers = users.filter(
+      (user) => !user.email || !HIDDEN_ACCOUNTS.includes(user.email)
+    );
+
+    if (!searchQuery) return visibleUsers;
     const query = searchQuery.toLowerCase();
-    return users.filter(
+    return visibleUsers.filter(
       (user) =>
         user.username.toLowerCase().includes(query) ||
         user.displayName.toLowerCase().includes(query)
