@@ -17,9 +17,15 @@
   ];
 
   const sequenceOptions = [
-    'Anonymize: Your sequences remain in the gallery but show "Anonymous" as creator',
-    'Delete: All your sequences are permanently removed from the gallery',
+    'Anonymize: Your sequences show "Anonymous" as the creator',
+    'Keep name: Your sequences continue to display your name',
     'You\'ll choose your preference during the deletion process'
+  ];
+
+  const whySequencesStay = [
+    'Sequences are part of the shared community knowledge base',
+    'Other users may have favorited, studied, or built upon your work',
+    'Removing sequences would break references and affect other accounts'
   ];
 </script>
 
@@ -55,11 +61,20 @@
     </section>
 
     <section class="choice">
-      <h2>Your Sequences</h2>
-      <p>You decide what happens to sequences you've created:</p>
+      <h2>Your Sequences Stay</h2>
+      <p>Sequences you created remain in the gallery. You choose how they're credited:</p>
       <ul>
         {#each sequenceOptions as option}
           <li>{option}</li>
+        {/each}
+      </ul>
+    </section>
+
+    <section class="info">
+      <h2>Why Sequences Aren't Deleted</h2>
+      <ul>
+        {#each whySequencesStay as reason}
+          <li>{reason}</li>
         {/each}
       </ul>
     </section>
@@ -190,6 +205,23 @@
 
   .choice li::marker {
     color: #818cf8;
+  }
+
+  .info {
+    background: rgba(148, 163, 184, 0.08);
+    border-color: rgba(148, 163, 184, 0.2);
+  }
+
+  .info h2 {
+    color: #94a3b8;
+  }
+
+  .info li {
+    color: #cbd5e1;
+  }
+
+  .info li::marker {
+    color: #64748b;
   }
 
   .warning {
