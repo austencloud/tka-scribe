@@ -50,9 +50,25 @@ def twaManifest = [
     orientation: 'any',
 ]
 
+def keystorePropertiesFile = rootProject.file("keystore.properties")
+def keystoreProperties = new Properties()
+if (keystorePropertiesFile.exists()) {
+    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+}
+
 android {
     compileSdkVersion 36
     namespace "com.tkascribe.app"
+
+    signingConfigs {
+        release {
+            storeFile file(keystoreProperties['storeFile'] ?: '../tka-scribe-keystore.jks')
+            storePassword keystoreProperties['storePassword'] ?: ''
+            keyAlias keystoreProperties['keyAlias'] ?: 'tka-scribe'
+            keyPassword keystoreProperties['keyPassword'] ?: ''
+        }
+    }
+
     defaultConfig {
         applicationId "com.tkascribe.app"
         minSdkVersion 21
@@ -153,6 +169,7 @@ android {
     buildTypes {
         release {
             minifyEnabled true
+            signingConfig signingConfigs.release
         }
     }
     compileOptions {
