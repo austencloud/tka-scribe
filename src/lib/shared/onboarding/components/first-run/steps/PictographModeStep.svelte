@@ -19,6 +19,7 @@
 
   const { initialValue, isFinalStep = false, onComplete, onBack, onSkip }: Props = $props();
 
+  // svelte-ignore state_referenced_locally
   let selectedMode = $state<"light" | "dark" | null>(initialValue ?? null);
 
   function handleSelect(mode: "light" | "dark") {
@@ -143,12 +144,6 @@
     margin: 0;
   }
 
-  .subtitle {
-    font-size: 0.95rem;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
-    margin: 0;
-  }
-
   .mode-options {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -219,11 +214,6 @@
     font-size: 1rem;
     font-weight: 700;
     color: var(--theme-text, white);
-  }
-
-  .mode-description {
-    font-size: 0.8rem;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
   }
 
   .selected-badge {
@@ -320,21 +310,6 @@
     border-color: color-mix(in srgb, #22c55e 80%, transparent);
   }
 
-  .skip-link {
-    padding: 10px 16px;
-    background: transparent;
-    border: none;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
-    font-size: 0.9rem;
-    cursor: pointer;
-    transition: color 0.2s ease;
-    margin-top: 4px;
-  }
-
-  .skip-link:hover {
-    color: var(--theme-text, rgba(255, 255, 255, 0.8));
-  }
-
   /* Mobile */
   @media (max-width: 480px) {
     .pictograph-mode-step {
@@ -362,18 +337,13 @@
     .mode-label {
       font-size: 0.9rem;
     }
-
-    .mode-description {
-      font-size: 0.75rem;
-    }
   }
 
   /* Reduced motion */
   @media (prefers-reduced-motion: reduce) {
     .mode-card,
     .back-button,
-    .next-button,
-    .skip-link {
+    .next-button {
       transition: none;
     }
 

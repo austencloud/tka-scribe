@@ -21,9 +21,8 @@
 
   const { initialValue, onNext, onBack, onSkip, onPreview }: Props = $props();
 
-  let selectedTheme = $state<BackgroundType>(
-    initialValue ?? BackgroundType.SNOWFALL
-  );
+  // svelte-ignore state_referenced_locally
+  let selectedTheme = $state<BackgroundType>(initialValue ?? BackgroundType.SNOWFALL);
 
   // Animated backgrounds for the main grid
   const animatedBackgrounds = $derived(

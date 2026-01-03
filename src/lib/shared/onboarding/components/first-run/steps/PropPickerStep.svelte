@@ -17,6 +17,7 @@
 
   const { initialValue, onNext, onBack, onSkip }: Props = $props();
 
+  // svelte-ignore state_referenced_locally
   let selectedProp = $state<PropType | null>(initialValue ?? null);
 
   // Curated list of 8 main prop types for first-run selection
@@ -78,7 +79,7 @@
   </div>
 
   <div class="button-row">
-    <button type="button" class="back-button" onclick={onBack}>
+    <button type="button" class="back-button" onclick={onBack} aria-label="Go back">
       <i class="fas fa-arrow-left" aria-hidden="true"></i>
     </button>
 

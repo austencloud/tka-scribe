@@ -36,6 +36,7 @@
   }: Props = $props();
 
   // Get content from config
+  // svelte-ignore state_referenced_locally
   const introContent = getTabIntroContent(moduleId, tabId);
   const pages = introContent?.pages ?? [];
   const icon = introContent?.icon ?? "fa-circle-info";
@@ -49,6 +50,7 @@
   );
 
   // Persistence key
+  // svelte-ignore state_referenced_locally
   const storageKey = `tabIntroSeen:${moduleId}:${tabId}`;
 
   // State

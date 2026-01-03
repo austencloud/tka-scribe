@@ -20,6 +20,7 @@
   const authDisplayName = $derived(authState.user?.displayName || "");
 
   // Pre-fill with auth name, or use any previously entered value
+  // svelte-ignore state_referenced_locally
   let displayName = $state(initialValue || authDisplayName);
   let isEditing = $state(false);
   let inputElement: HTMLInputElement | null = $state(null);
@@ -119,7 +120,7 @@
     <p class="hint">You can change this anytime in settings</p>
 
     <div class="button-row">
-      <button type="button" class="back-button" onclick={onBack}>
+      <button type="button" class="back-button" onclick={onBack} aria-label="Go back">
         <i class="fas fa-arrow-left" aria-hidden="true"></i>
       </button>
 
