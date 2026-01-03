@@ -175,18 +175,6 @@ Shows contextual action buttons based on current phase:
     transform: none !important;
   }
 
-  /* Secondary button (Undo) - themed */
-  .control-button.secondary {
-    flex: 0 0 auto;
-    background: var(--theme-card-bg, var(--theme-card-bg));
-    color: var(--theme-text-dim);
-  }
-
-  .control-button.secondary:hover:not(:disabled) {
-    background: var(--theme-card-hover-bg);
-    color: var(--theme-text);
-  }
-
   /* Primary button variants */
   .control-button.primary {
     flex: 1;

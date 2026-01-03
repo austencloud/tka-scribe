@@ -23,12 +23,14 @@ The hand overlay shows the current position and animates between positions.
     currentPosition,
     handColor = "blue",
     isSelectingStartPosition = false,
+    showEntranceAnimation = false,
     onPositionSelect,
   } = $props<{
     gridMode: GridMode;
     currentPosition: GridLocation | null;
     handColor?: "blue" | "red";
     isSelectingStartPosition?: boolean;
+    showEntranceAnimation?: boolean;
     onPositionSelect: (position: GridLocation) => void;
   }>();
 
@@ -144,6 +146,45 @@ The hand overlay shows the current position and animates between positions.
     return false;
   }
 
+  /**
+   * Clockwise entrance order for staggered animation
+   * Draws the user's eye around the grid naturally
+   */
+  const entranceOrder: Record<GridMode, GridLocation[]> = {
+    [GridMode.DIAMOND]: [
+      GridLocation.NORTH,
+      GridLocation.EAST,
+      GridLocation.SOUTH,
+      GridLocation.WEST,
+    ],
+    [GridMode.BOX]: [
+      GridLocation.NORTHEAST,
+      GridLocation.SOUTHEAST,
+      GridLocation.SOUTHWEST,
+      GridLocation.NORTHWEST,
+    ],
+    [GridMode.SKEWED]: [], // Not used in hand path assembly
+  };
+
+  /**
+   * Calculate entrance delay for staggered animation
+   * Returns 0 if animation is disabled or position is not enabled
+   */
+  function getEntranceDelay(position: GridLocation): number {
+    if (!showEntranceAnimation) return 0;
+    if (!isPositionEnabled(position)) return 0;
+
+    const order = entranceOrder[gridMode as GridMode] || [];
+    const index = order.indexOf(position);
+    if (index === -1) return 0;
+
+    // Initial delay lets the page transition settle before buttons start appearing
+    // Then rhythmic stagger: each position pops in sequence with musical timing
+    const initialDelay = 150;
+    const staggerInterval = 100;
+    return initialDelay + index * staggerInterval;
+  }
+
   // Measure container dimensions to create a square grid
   let containerWidth = $state(0);
   let containerHeight = $state(0);
@@ -178,6 +219,7 @@ The hand overlay shows the current position and animates between positions.
               ghostHandColor={handColor}
               isGhostFadingOut={isAnimatingGhostSelection && selectedGhostPosition !== position}
               isGhostFadingIn={isAnimatingGhostSelection && selectedGhostPosition === position}
+              entranceDelay={getEntranceDelay(position)}
               onSelect={handlePositionSelect}
             />
           {:else}

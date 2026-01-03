@@ -77,6 +77,9 @@ Integrates all Assembly components and manages state transitions.
   // Transition state for animated exit back to welcome
   let isExitingToWelcome = $state(false);
 
+  // Track if grid entrance animation should play (when just started building)
+  let showGridEntranceAnimation = $state(false);
+
   // Grid mode (managed locally)
   // Initialize with default - $effect syncs from prop
   let gridMode = $state(GridMode.DIAMOND);
@@ -217,6 +220,16 @@ Integrates all Assembly components and manages state transitions.
   // Handle starting from welcome screen
   function handleStart() {
     hasStarted = true;
+    triggerGridEntranceAnimation();
+  }
+
+  // Trigger the staggered grid entrance animation
+  function triggerGridEntranceAnimation() {
+    showGridEntranceAnimation = true;
+    // Reset after all animations complete (150ms initial + 4 positions * 100ms stagger + 500ms pop + 600ms pulse)
+    setTimeout(() => {
+      showGridEntranceAnimation = false;
+    }, 1650);
   }
 
   // Handle grid mode change (from welcome screen)
@@ -253,15 +266,17 @@ Integrates all Assembly components and manages state transitions.
       // If this was red's first position, update start position to include both hands
       if (isRedFirstPosition && onStartPositionSet) {
         const blueStartPosition = assemblyState.blueHandPath[0];
-        console.log("[HandPathOrchestrator] Red first position selected:", position);
-        console.log("[HandPathOrchestrator] Blue start position:", blueStartPosition);
-        const startPositionPictograph = createDualHandStartPositionPictograph(
-          blueStartPosition,
-          position,
-          assemblyState.gridMode
-        );
-        console.log("[HandPathOrchestrator] Dual hand pictograph motions:", startPositionPictograph.motions);
-        onStartPositionSet(startPositionPictograph);
+        if (blueStartPosition) {
+          console.log("[HandPathOrchestrator] Red first position selected:", position);
+          console.log("[HandPathOrchestrator] Blue start position:", blueStartPosition);
+          const startPositionPictograph = createDualHandStartPositionPictograph(
+            blueStartPosition,
+            position,
+            assemblyState.gridMode
+          );
+          console.log("[HandPathOrchestrator] Dual hand pictograph motions:", startPositionPictograph.motions);
+          onStartPositionSet(startPositionPictograph);
+        }
       }
 
       // Update workspace with current progress
@@ -372,6 +387,8 @@ Integrates all Assembly components and manages state transitions.
   function handleNextHand() {
     try {
       assemblyState.completeBlueHand();
+      // Trigger entrance animation for red hand phase
+      triggerGridEntranceAnimation();
     } catch (error) {
       console.error("Error completing blue hand:", error);
     }
@@ -466,6 +483,7 @@ Integrates all Assembly components and manages state transitions.
                 currentPosition={assemblyState.currentPosition}
                 handColor={currentPhase === "red" ? "red" : "blue"}
                 {isSelectingStartPosition}
+                showEntranceAnimation={showGridEntranceAnimation}
                 onPositionSelect={handlePositionSelect}
               />
             </div>

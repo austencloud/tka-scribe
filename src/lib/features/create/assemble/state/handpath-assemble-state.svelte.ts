@@ -180,7 +180,8 @@ export function createHandPathAssembleState(config: HandPathAssembleConfig) {
 
   /**
    * Get preview of current hand as pictographs
-   * IMPORTANT: When in red phase, overlays red hand on top of blue hand progressively
+   * IMPORTANT: When in red phase, shows ALL blue beats with red overlaid progressively.
+   * This ensures blue beats don't disappear while building the red hand.
    */
   function getCurrentHandPreview(): PictographData[] {
     if (currentPhase === "blue" && blueHandPath.length >= 2) {
@@ -191,32 +192,44 @@ export function createHandPathAssembleState(config: HandPathAssembleConfig) {
         RotationDirection.CLOCKWISE, // Temporary rotation for preview
         gridMode
       );
-    } else if (currentPhase === "red") {
-      // Overlay red hand on top of blue hand progressively
-      if (redHandPath.length >= 2 && blueHandPath.length >= 2) {
-        // Get the length to merge (min of both paths, up to current red hand progress)
-        const mergeLength = Math.min(blueHandPath.length, redHandPath.length);
+    } else if (currentPhase === "red" && blueHandPath.length >= 2) {
+      // Show ALL blue beats, with red overlaid where available
+      const allBlueBeats = converter.convertHandPathToPictographs(
+        blueHandPath,
+        MotionColor.BLUE,
+        RotationDirection.CLOCKWISE,
+        gridMode
+      );
 
-        // Truncate paths to merge length
-        const bluePath = blueHandPath.slice(0, mergeLength);
-        const redPath = redHandPath.slice(0, mergeLength);
-
-        // Merge and return dual-prop sequence
-        return converter.mergeToDualPropSequence(
-          bluePath,
-          redPath,
-          RotationDirection.CLOCKWISE, // Temporary rotation for preview
-          gridMode
-        );
-      } else if (blueHandPath.length >= 2) {
-        // Show only blue hand if red hand isn't ready yet
-        return converter.convertHandPathToPictographs(
-          blueHandPath,
-          MotionColor.BLUE,
+      if (redHandPath.length >= 2) {
+        // Convert red hand path to pictographs
+        const redBeats = converter.convertHandPathToPictographs(
+          redHandPath,
+          MotionColor.RED,
           RotationDirection.CLOCKWISE,
           gridMode
         );
+
+        // Merge red motions into blue pictographs progressively
+        return allBlueBeats.map((bluePictograph, index) => {
+          if (index < redBeats.length) {
+            const redPictograph = redBeats[index];
+            // Merge both hands into one pictograph
+            return {
+              ...bluePictograph,
+              motions: {
+                ...bluePictograph.motions,
+                [MotionColor.RED]: redPictograph?.motions?.[MotionColor.RED],
+              },
+            } as PictographData;
+          }
+          // Return blue-only for beats not yet constructed with red
+          return bluePictograph;
+        });
       }
+
+      // Show all blue beats while red hand is being started
+      return allBlueBeats;
     }
 
     return [];

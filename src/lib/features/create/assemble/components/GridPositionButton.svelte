@@ -18,6 +18,7 @@ Supports enabled/disabled states and highlights current position.
     ghostHandColor = "blue",
     isGhostFadingOut = false,
     isGhostFadingIn = false,
+    entranceDelay = 0,
     onSelect,
   } = $props<{
     position: GridLocation;
@@ -27,6 +28,7 @@ Supports enabled/disabled states and highlights current position.
     ghostHandColor?: "blue" | "red";
     isGhostFadingOut?: boolean;
     isGhostFadingIn?: boolean;
+    entranceDelay?: number;
     onSelect: (position: GridLocation) => void;
   }>();
 
@@ -67,6 +69,8 @@ Supports enabled/disabled states and highlights current position.
   class:disabled={!enabled}
   class:current={isCurrent}
   class:has-ghost={showGhostHand && enabled}
+  class:has-entrance={entranceDelay > 0}
+  style:--entrance-delay="{entranceDelay}ms"
   disabled={!enabled}
   onclick={handleClick}
   aria-label={`Position ${label}`}
@@ -164,6 +168,49 @@ Supports enabled/disabled states and highlights current position.
   .grid-position-button.enabled:active {
     transform: scale(0.95);
     transition: transform 0.1s ease;
+  }
+
+  /* Staggered entrance animation - pop in with attention pulse (enabled only) */
+  .grid-position-button.has-entrance.enabled {
+    animation:
+      button-pop-in 0.5s cubic-bezier(0.34, 1.3, 0.64, 1) both,
+      button-ready-pulse 0.6s ease-out 0.4s both;
+    animation-delay: var(--entrance-delay, 0ms);
+  }
+
+  /* Quick pop with slight overshoot */
+  @keyframes button-pop-in {
+    0% {
+      opacity: 0;
+      transform: scale(0.7);
+    }
+    70% {
+      opacity: 1;
+      transform: scale(1.05);
+    }
+    100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  /* Subtle "I'm ready" glow pulse after appearing */
+  @keyframes button-ready-pulse {
+    0% {
+      box-shadow:
+        0 0 0 0 var(--theme-accent),
+        0 0 12px var(--theme-shadow);
+    }
+    50% {
+      box-shadow:
+        0 0 0 4px var(--theme-accent),
+        0 0 20px var(--theme-accent);
+    }
+    100% {
+      box-shadow:
+        0 0 0 0 transparent,
+        0 0 12px var(--theme-shadow);
+    }
   }
 
   /* Label */
