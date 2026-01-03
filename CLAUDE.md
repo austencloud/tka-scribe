@@ -4,6 +4,55 @@
 
 ---
 
+## ⛔️⛔️⛔️ STOP: READ THIS BEFORE ANY GIT OPERATION ⛔️⛔️⛔️
+
+# CATASTROPHIC DATA LOSS PREVENTION
+
+**On January 2, 2026, Claude ran `git checkout -- .` and DESTROYED 8 HOURS OF USER WORK.**
+
+**The changes were UNRECOVERABLE. The user lost an entire day of development.**
+
+**This must NEVER happen again.**
+
+---
+
+## ABSOLUTE RULE: ASK BEFORE DISCARDING UNCOMMITTED CHANGES
+
+### 🚫 FORBIDDEN COMMANDS - NEVER RUN WITHOUT EXPLICIT USER CONFIRMATION:
+
+```
+git checkout -- .
+git checkout -- <any-file>
+git reset --hard
+git reset HEAD~
+git clean -fd
+git clean -f
+```
+
+### ✅ REQUIRED: ASK AND WAIT FOR CONFIRMATION
+
+Before running any command that discards uncommitted changes:
+
+1. **Tell the user exactly what you're about to do** and that it will discard their uncommitted work
+2. **Wait for explicit confirmation** - something clearly affirmative like "yes", "go for it", "sure", "do it", etc.
+3. **Do NOT run the command in the same message as asking** - wait for their response first
+
+### 🧠 MENTAL MODEL:
+
+**Every file in `git status` that shows as modified = HOURS OF USER WORK**
+
+Do not think: "These look like corrupted files, I'll restore them"
+Do think: "These are the user's precious uncommitted changes that may represent hours or days of work"
+
+### ⚠️ IF YOU ARE UNCERTAIN:
+
+**ASK THE USER. DO NOT GUESS. DO NOT ASSUME.**
+
+The cost of asking is 10 seconds.
+The cost of guessing wrong is 8 HOURS OF LOST WORK.
+
+---
+
 ## File Size & Composition Philosophy
 
 This project follows a **2025+ AI-assisted development approach**:
@@ -557,7 +606,7 @@ Unlike app feedback (problem → resolution), terminal items are work logs:
 
 ---
 
-_Last updated: 2025-12-30_
+_Last updated: 2026-01-02_
 
 ---
 
