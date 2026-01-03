@@ -289,10 +289,13 @@
 <!-- In-app browser / Non-Safari modal -->
 {#if showInAppBrowserModal}
   <div class="modal-overlay" transition:fade={{ duration: 200 }}>
-    <!-- svelte-ignore a11y_click_events_have_key_events a11y_no_static_element_interactions -->
     <div
       class="modal-backdrop"
       onclick={() => (showInAppBrowserModal = false)}
+      onkeydown={(e) => e.key === 'Escape' && (showInAppBrowserModal = false)}
+      role="button"
+      tabindex="-1"
+      aria-label="Close modal"
     ></div>
 
     <div

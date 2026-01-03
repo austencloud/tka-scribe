@@ -438,7 +438,7 @@
 		gap: 0.375rem;
 	}
 
-	.picker-group label {
+	.picker-group span {
 		font-size: var(--font-size-compact, 12px);
 		font-weight: 500;
 		color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
