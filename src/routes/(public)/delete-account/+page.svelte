@@ -1,31 +1,22 @@
 <script lang="ts">
   const steps = [
-    'Open TKA Scribe and sign in to your account',
-    'Tap your profile icon in the bottom navigation',
-    'Go to Settings (gear icon)',
-    'Scroll to "Account" section',
-    'Tap "Delete Account"',
-    'Confirm deletion when prompted'
+    'Sign in to TKA Scribe',
+    'Tap profile icon → Settings',
+    'Account → Delete Account',
+    'Confirm deletion'
   ];
 
   const deletedData = [
-    'Your profile information (name, email, profile picture)',
-    'Your library and personal collections',
-    'Settings and preferences',
-    'Achievement progress and XP',
-    'All associated activity data'
+    'Profile & account info',
+    'Library & collections',
+    'Settings & preferences',
+    'Achievements & XP'
   ];
 
-  const sequenceOptions = [
-    'Anonymize: Your sequences show "Anonymous" as the creator',
-    'Keep name: Your sequences continue to display your name',
-    'You\'ll choose your preference during the deletion process'
-  ];
-
-  const whySequencesStay = [
-    'Sequences are part of the shared community knowledge base',
-    'Other users may have favorited, studied, or built upon your work',
-    'Removing sequences would break references and affect other accounts'
+  const sequenceInfo = [
+    'Sequences stay in the gallery',
+    'Choose: Anonymize or keep your name',
+    'Protects community references'
   ];
 </script>
 
@@ -34,133 +25,137 @@
   <meta name="description" content="How to delete your TKA Scribe account and data" />
 </svelte:head>
 
-<div class="container">
-  <div class="header">
-    <h1>Delete Your Account</h1>
-    <p class="subtitle">TKA Scribe Account Deletion</p>
-  </div>
+<div class="page">
+  <div class="container">
+    <header>
+      <div class="logo">TKA</div>
+      <h1>Delete Your Account</h1>
+      <p class="subtitle">Account deletion for TKA Scribe</p>
+    </header>
 
-  <div class="content-grid">
-    <section class="full-width">
-      <h2>How to Delete Your Account</h2>
-      <ol>
-        {#each steps as step}
-          <li>{step}</li>
-        {/each}
-      </ol>
-    </section>
+    <div class="cards">
+      <section class="card steps">
+        <div class="card-icon">📋</div>
+        <h2>How to Delete</h2>
+        <ol>
+          {#each steps as step}
+            <li>{step}</li>
+          {/each}
+        </ol>
+      </section>
 
-    <section>
-      <h2>What Gets Deleted</h2>
-      <p>When you delete your account, the following data is permanently removed:</p>
-      <ul>
-        {#each deletedData as item}
-          <li>{item}</li>
-        {/each}
-      </ul>
-    </section>
+      <section class="card deleted">
+        <div class="card-icon">🗑️</div>
+        <h2>What's Deleted</h2>
+        <ul>
+          {#each deletedData as item}
+            <li>{item}</li>
+          {/each}
+        </ul>
+      </section>
 
-    <section class="choice">
-      <h2>Your Sequences Stay</h2>
-      <p>Sequences you created remain in the gallery. You choose how they're credited:</p>
-      <ul>
-        {#each sequenceOptions as option}
-          <li>{option}</li>
-        {/each}
-      </ul>
-    </section>
-
-    <section class="info">
-      <h2>Why Sequences Aren't Deleted</h2>
-      <ul>
-        {#each whySequencesStay as reason}
-          <li>{reason}</li>
-        {/each}
-      </ul>
-    </section>
-
-    <section class="warning full-width">
-      <h2>Important Information</h2>
-      <ul>
-        <li><strong>This action is permanent</strong> and cannot be undone</li>
-        <li>Data deletion is processed immediately</li>
-        <li>You will be signed out automatically after deletion</li>
-      </ul>
-    </section>
-
-    <section class="full-width">
-      <h2>Need Help?</h2>
-      <p>
-        If you're unable to access your account or need assistance with deletion,
-        contact us at <a href="mailto:support@tkascribe.com">support@tkascribe.com</a>
-      </p>
-    </section>
-
-    <div class="cta">
-      <a href="/app" class="button">Open TKA Scribe</a>
+      <section class="card sequences">
+        <div class="card-icon">✨</div>
+        <h2>Your Sequences</h2>
+        <ul>
+          {#each sequenceInfo as item}
+            <li>{item}</li>
+          {/each}
+        </ul>
+      </section>
     </div>
+
+    <div class="warning-banner">
+      <span class="warning-icon">⚠️</span>
+      <span><strong>This action is permanent</strong> and cannot be undone. You'll be signed out immediately.</span>
+    </div>
+
+    <footer>
+      <a href="/app" class="button">Open TKA Scribe</a>
+      <p class="help">Need help? <a href="mailto:support@tkascribe.com">support@tkascribe.com</a></p>
+    </footer>
   </div>
 </div>
 
 <style>
-  .container {
-    max-width: 900px;
-    margin: 0 auto;
-    padding: 2rem 1.5rem;
+  .page {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #0a0a0f 0%, #12121f 50%, #0a0a0f 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
     font-family: system-ui, -apple-system, sans-serif;
     color: #e5e5e5;
-    line-height: 1.7;
-    background: #0a0a0f;
-    min-height: 100vh;
   }
 
-  .header {
+  .container {
+    max-width: 1000px;
+    width: 100%;
+  }
+
+  header {
     text-align: center;
-    margin-bottom: 3rem;
+    margin-bottom: 2.5rem;
+  }
+
+  .logo {
+    display: inline-block;
+    font-size: 1rem;
+    font-weight: 700;
+    color: #6366f1;
+    background: rgba(99, 102, 241, 0.15);
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    letter-spacing: 0.1em;
   }
 
   h1 {
     font-size: 2.5rem;
-    margin-bottom: 0.5rem;
+    margin: 0 0 0.5rem;
     color: #ffffff;
     font-weight: 600;
   }
 
   .subtitle {
-    color: #888;
-    margin-bottom: 0;
-    font-size: 1.125rem;
+    color: #666;
+    margin: 0;
+    font-size: 1rem;
   }
 
-  .content-grid {
+  .cards {
     display: grid;
-    grid-template-columns: 1fr;
-    gap: 1.5rem;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.25rem;
+    margin-bottom: 1.5rem;
   }
 
-  @media (min-width: 768px) {
-    .content-grid {
-      grid-template-columns: 1fr 1fr;
-    }
-
-    .full-width {
-      grid-column: 1 / -1;
-    }
-  }
-
-  h2 {
-    font-size: 1.25rem;
-    margin-top: 0;
-    margin-bottom: 1rem;
-    color: #ffffff;
-    font-weight: 600;
-  }
-
-  section {
+  .card {
     padding: 1.5rem;
     background: rgba(255, 255, 255, 0.03);
     border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 12px;
+    border-radius: 16px;
+    transition: transform 0.2s, border-color 0.2s;
+  }
+
+  .card:hover {
+    transform: translateY(-2px);
+    border-color: rgba(255, 255, 255, 0.15);
+  }
+
+  .card-icon {
+    font-size: 1.5rem;
+    margin-bottom: 0.75rem;
+  }
+
+  h2 {
+    font-size: 1rem;
+    margin: 0 0 1rem;
+    color: #ffffff;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
   }
 
   ol, ul {
@@ -169,113 +164,119 @@
   }
 
   li {
-    margin-bottom: 0.6rem;
-    color: #c5c5c5;
+    margin-bottom: 0.5rem;
+    color: #a0a0a0;
+    font-size: 0.9rem;
+    line-height: 1.5;
   }
 
-  li::marker {
+  li:last-child {
+    margin-bottom: 0;
+  }
+
+  .steps li::marker {
     color: #6366f1;
-  }
-
-  p {
-    color: #b5b5b5;
-    margin-bottom: 1rem;
-  }
-
-  a {
-    color: #818cf8;
-  }
-
-  a:hover {
-    color: #a5b4fc;
-  }
-
-  .choice {
-    background: rgba(99, 102, 241, 0.08);
-    border-color: rgba(99, 102, 241, 0.2);
-  }
-
-  .choice h2 {
-    color: #a5b4fc;
-  }
-
-  .choice li {
-    color: #c7d2fe;
-  }
-
-  .choice li::marker {
-    color: #818cf8;
-  }
-
-  .info {
-    background: rgba(148, 163, 184, 0.08);
-    border-color: rgba(148, 163, 184, 0.2);
-  }
-
-  .info h2 {
-    color: #94a3b8;
-  }
-
-  .info li {
-    color: #cbd5e1;
-  }
-
-  .info li::marker {
-    color: #64748b;
-  }
-
-  .warning {
-    background: rgba(239, 68, 68, 0.1);
-    border-color: rgba(239, 68, 68, 0.2);
-  }
-
-  .warning li {
-    color: #fca5a5;
-  }
-
-  .warning h2 {
-    color: #f87171;
-  }
-
-  strong {
-    color: #f87171;
     font-weight: 600;
   }
 
-  .cta {
-    margin-top: 2rem;
+  .deleted {
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.08) 0%, rgba(239, 68, 68, 0.03) 100%);
+    border-color: rgba(239, 68, 68, 0.15);
+  }
+
+  .deleted h2 {
+    color: #f87171;
+  }
+
+  .deleted li::marker {
+    color: #ef4444;
+  }
+
+  .sequences {
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.08) 0%, rgba(99, 102, 241, 0.03) 100%);
+    border-color: rgba(99, 102, 241, 0.15);
+  }
+
+  .sequences h2 {
+    color: #a5b4fc;
+  }
+
+  .sequences li::marker {
+    color: #6366f1;
+  }
+
+  .warning-banner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    padding: 1rem 1.5rem;
+    background: rgba(251, 191, 36, 0.1);
+    border: 1px solid rgba(251, 191, 36, 0.2);
+    border-radius: 12px;
+    margin-bottom: 2rem;
+    font-size: 0.9rem;
+    color: #fcd34d;
+  }
+
+  .warning-icon {
+    font-size: 1.25rem;
+  }
+
+  .warning-banner strong {
+    color: #fbbf24;
+  }
+
+  footer {
     text-align: center;
-    grid-column: 1 / -1;
   }
 
   .button {
     display: inline-block;
-    background: #6366f1;
+    background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
     color: white;
-    padding: 1rem 3rem;
+    padding: 0.875rem 2.5rem;
     border-radius: 10px;
     text-decoration: none;
     font-weight: 500;
-    font-size: 1.125rem;
-    transition: background 0.2s;
+    font-size: 1rem;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
   }
 
   .button:hover {
-    background: #4f46e5;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
     color: white;
   }
 
-  @media (max-width: 767px) {
+  .help {
+    margin-top: 1rem;
+    font-size: 0.85rem;
+    color: #666;
+  }
+
+  .help a {
+    color: #818cf8;
+    text-decoration: none;
+  }
+
+  .help a:hover {
+    text-decoration: underline;
+  }
+
+  @media (max-width: 800px) {
+    .cards {
+      grid-template-columns: 1fr;
+    }
+
     h1 {
       font-size: 1.75rem;
     }
 
-    .container {
+    .page {
       padding: 1.5rem 1rem;
-    }
-
-    section {
-      padding: 1.25rem;
+      align-items: flex-start;
     }
   }
 </style>
