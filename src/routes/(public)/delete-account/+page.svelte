@@ -16,10 +16,10 @@
     'All associated activity data'
   ];
 
-  const preservedData = [
-    'Sequences you created will be anonymized and remain in the public gallery',
-    'Comments and interactions on public content will be anonymized',
-    'This helps preserve the community knowledge base while protecting your privacy'
+  const sequenceOptions = [
+    'Anonymize: Your sequences remain in the gallery but show "Anonymous" as creator',
+    'Delete: All your sequences are permanently removed from the gallery',
+    'You\'ll choose your preference during the deletion process'
   ];
 </script>
 
@@ -54,12 +54,12 @@
       </ul>
     </section>
 
-    <section class="preserved">
-      <h2>What Gets Preserved</h2>
-      <p>To maintain the community's shared knowledge, some content is anonymized:</p>
+    <section class="choice">
+      <h2>Your Sequences</h2>
+      <p>You decide what happens to sequences you've created:</p>
       <ul>
-        {#each preservedData as item}
-          <li>{item}</li>
+        {#each sequenceOptions as option}
+          <li>{option}</li>
         {/each}
       </ul>
     </section>
@@ -70,7 +70,6 @@
         <li><strong>This action is permanent</strong> and cannot be undone</li>
         <li>Data deletion is processed immediately</li>
         <li>You will be signed out automatically after deletion</li>
-        <li>Anonymized sequences will show "Anonymous" as the creator</li>
       </ul>
     </section>
 
@@ -176,21 +175,21 @@
     color: #a5b4fc;
   }
 
-  .preserved {
-    background: rgba(34, 197, 94, 0.08);
-    border-color: rgba(34, 197, 94, 0.2);
+  .choice {
+    background: rgba(99, 102, 241, 0.08);
+    border-color: rgba(99, 102, 241, 0.2);
   }
 
-  .preserved h2 {
-    color: #4ade80;
+  .choice h2 {
+    color: #a5b4fc;
   }
 
-  .preserved li {
-    color: #86efac;
+  .choice li {
+    color: #c7d2fe;
   }
 
-  .preserved li::marker {
-    color: #22c55e;
+  .choice li::marker {
+    color: #818cf8;
   }
 
   .warning {
