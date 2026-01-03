@@ -49,7 +49,7 @@
   <h3>Your Proportions</h3>
 
   <section class="input-section">
-    <label class="section-label">Height</label>
+    <span class="section-label">Height</span>
     <div class="current-value">{userProportionsState.heightDisplay}</div>
 
     {#if !useCustomHeight}
@@ -96,7 +96,7 @@
   </section>
 
   <section class="input-section">
-    <label class="section-label">Staff Length</label>
+    <span class="section-label">Staff Length</span>
     <div class="current-value">{userProportionsState.staffLengthDisplay}</div>
 
     {#if !useCustomStaff}

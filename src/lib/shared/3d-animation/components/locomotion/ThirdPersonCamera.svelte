@@ -60,13 +60,11 @@
 	const SENSITIVITY = 0.002;
 
 	// Smoothed camera position
-	let smoothedTarget = $state({
-		x: target.x,
-		y: target.y ?? 0,
-		z: target.z
-	});
+	// svelte-ignore state_referenced_locally
+	let smoothedTarget = $state({ x: target.x, y: target.y ?? 0, z: target.z });
 
 	// Camera position - computed each frame in useTask since refs don't trigger reactivity
+	// svelte-ignore state_referenced_locally
 	let cameraPosition = $state({ x: 0, y: height, z: -distance });
 
 	// Look-at point (slightly above avatar center)

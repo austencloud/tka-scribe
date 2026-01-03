@@ -34,6 +34,7 @@
   }: Props = $props();
 
   // Load the model
+  // svelte-ignore state_referenced_locally
   const gltf = useGltf(src);
 
   // Normalize scale to array

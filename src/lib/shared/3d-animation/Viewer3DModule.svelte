@@ -612,7 +612,7 @@
       <div class="browser-panel">
         <header class="browser-header">
           <h2>Load Sequence</h2>
-          <button class="close-browser-btn" onclick={() => (browserOpen = false)}>
+          <button class="close-browser-btn" onclick={() => (browserOpen = false)} aria-label="Close browser">
             <i class="fas fa-times" aria-hidden="true"></i>
           </button>
         </header>

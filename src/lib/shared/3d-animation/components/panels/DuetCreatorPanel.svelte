@@ -147,7 +147,7 @@
 		<!-- Sequence Selector Mode -->
 		<div class="sequence-selector">
 			<div class="selector-header">
-				<button class="back-btn" onclick={() => (activeSelector = null)}>
+				<button class="back-btn" onclick={() => (activeSelector = null)} aria-label="Go back">
 					<i class="fas fa-arrow-left" aria-hidden="true"></i>
 				</button>
 				<span>Select for Avatar {activeSelector === 'avatar1' ? '1' : '2'}</span>
@@ -225,7 +225,7 @@
 			<!-- Sequence Pickers -->
 			<div class="sequence-pickers">
 				<div class="picker-group">
-					<label>Avatar 1 Sequence</label>
+					<span class="picker-label">Avatar 1 Sequence</span>
 					<button
 						class="picker-btn"
 						class:has-selection={avatar1Sequence}
@@ -244,7 +244,7 @@
 				</div>
 
 				<div class="picker-group">
-					<label>Avatar 2 Sequence</label>
+					<span class="picker-label">Avatar 2 Sequence</span>
 					<button
 						class="picker-btn"
 						class:has-selection={avatar2Sequence}
@@ -265,12 +265,13 @@
 
 			<!-- Beat Offset -->
 			<div class="form-group">
-				<label>Beat Offset (Avatar 2)</label>
+				<span class="form-label">Beat Offset (Avatar 2)</span>
 				<div class="offset-control">
 					<button
 						class="offset-btn"
 						onclick={() => adjustOffset(-0.5)}
 						disabled={beatOffset <= -10}
+						aria-label="Decrease offset"
 					>
 						<i class="fas fa-minus" aria-hidden="true"></i>
 					</button>
@@ -281,6 +282,7 @@
 						class="offset-btn"
 						onclick={() => adjustOffset(0.5)}
 						disabled={beatOffset >= 10}
+						aria-label="Increase offset"
 					>
 						<i class="fas fa-plus" aria-hidden="true"></i>
 					</button>
@@ -292,7 +294,7 @@
 
 			<!-- Positioning -->
 			<div class="form-group">
-				<label>Positioning</label>
+				<span class="form-label">Positioning</span>
 				<div class="positioning-options">
 					<button
 						class="pos-btn"

@@ -42,6 +42,7 @@
   const colorLight = $derived(color === "blue" ? "#60a5fa" : "#f87171");
 
   // Track previous position internally
+  // svelte-ignore state_referenced_locally
   let previousPosition = $state(position.clone());
 
   // Update previous position when current position changes

@@ -38,6 +38,7 @@
 
   // Load texture using Threlte's useLoader
   const textureLoader = useLoader(TextureLoader);
+  // svelte-ignore state_referenced_locally
   const texture = textureLoader.load(diffuseMap);
 
   // Reference to material for direct manipulation
