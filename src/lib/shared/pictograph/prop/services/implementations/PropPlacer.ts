@@ -8,7 +8,7 @@
 
 import { TYPES } from "../../../../inversify/types";
 import { inject, injectable } from "inversify";
-import { GridMode } from "../../../grid/domain/enums/grid-enums";
+import { GridMode, GridLocation } from "../../../grid/domain/enums/grid-enums";
 import type { IGridModeDeriver } from "../../../grid/services/contracts/IGridModeDeriver";
 import {
   MotionColor,
@@ -121,6 +121,71 @@ export class PropPlacer implements IPropPlacer {
       return { x: 0, y: 0 };
     }
 
+    // SPECIAL CASE: HAND prop type direction-aware beta offset
+    // When both props are HAND type, we apply direction-aware positioning:
+    // - If blue comes from east and red from west → blue RIGHT, red LEFT
+    // - If blue comes from west and red from east → blue LEFT, red RIGHT
+    // - Default: blue LEFT, red RIGHT
+    const blueMotionIsHand = blueMotion.propType === "hand";
+    const redMotionIsHand = redMotion.propType === "hand";
+    const settings = getSettings();
+    const actualBluePropType = blueMotionIsHand
+      ? "hand"
+      : (settings.bluePropType ?? blueMotion.propType);
+    const actualRedPropType = redMotionIsHand
+      ? "hand"
+      : (settings.redPropType ?? redMotion.propType);
+    const bothAreHands =
+      actualBluePropType === "hand" && actualRedPropType === "hand";
+
+    if (bothAreHands) {
+      const distance = getBetaOffsetSize("hand", gridMode);
+
+      // Define east and west positions for direction detection
+      const eastPositions = [
+        GridLocation.EAST,
+        GridLocation.NORTHEAST,
+        GridLocation.SOUTHEAST,
+      ];
+      const westPositions = [
+        GridLocation.WEST,
+        GridLocation.NORTHWEST,
+        GridLocation.SOUTHWEST,
+      ];
+
+      const blueStartLoc = blueMotion.startLocation;
+      const redStartLoc = redMotion.startLocation;
+
+      const blueFromEast = eastPositions.includes(blueStartLoc as GridLocation);
+      const blueFromWest = westPositions.includes(blueStartLoc as GridLocation);
+      const redFromEast = eastPositions.includes(redStartLoc as GridLocation);
+      const redFromWest = westPositions.includes(redStartLoc as GridLocation);
+
+      // Direction-aware positioning
+      if (blueFromEast && redFromWest) {
+        // Blue approaching from east stays RIGHT, red from west stays LEFT
+        if (motionData.color === MotionColor.BLUE) {
+          return { x: distance, y: 0 }; // Blue goes RIGHT
+        } else {
+          return { x: -distance, y: 0 }; // Red goes LEFT
+        }
+      } else if (blueFromWest && redFromEast) {
+        // Blue approaching from west stays LEFT, red from east stays RIGHT
+        if (motionData.color === MotionColor.BLUE) {
+          return { x: -distance, y: 0 }; // Blue goes LEFT
+        } else {
+          return { x: distance, y: 0 }; // Red goes RIGHT
+        }
+      } else {
+        // Default: blue LEFT, red RIGHT
+        if (motionData.color === MotionColor.BLUE) {
+          return { x: -distance, y: 0 }; // Blue goes LEFT
+        } else {
+          return { x: distance, y: 0 }; // Red goes RIGHT
+        }
+      }
+    }
+
     // ORIENTATION-BASED BETA SKIP LOGIC (from desktop legacy)
     // Beta offset is applied when BOTH props share the same orientation TYPE:
     // - BOTH radial (IN/IN, IN/OUT, OUT/IN, OUT/OUT) → APPLY offset
@@ -170,9 +235,7 @@ export class PropPlacer implements IPropPlacer {
     //
     // IMPORTANT: We check settings prop type override, not stored motionData.propType,
     // because the user may have a sequence with "staff" stored but rendering as "buugeng".
-    const settings = getSettings();
-    const actualBluePropType = settings.bluePropType ?? blueMotion.propType;
-    const actualRedPropType = settings.redPropType ?? redMotion.propType;
+    // Note: settings/actualBluePropType/actualRedPropType already declared above for HAND logic
     const bothAreBuugengFamily =
       isBuugengFamilyProp(actualBluePropType) &&
       isBuugengFamilyProp(actualRedPropType);
