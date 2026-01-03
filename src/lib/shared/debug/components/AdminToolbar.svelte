@@ -89,9 +89,11 @@
   });
 
   // Check if current preview user is in quick access
-  const isCurrentUserInQuickAccess = $derived(
-    previewProfile?.uid && quickAccessPersister?.has(previewProfile.uid) || false
-  );
+  const isCurrentUserInQuickAccess = $derived.by(() => {
+    const uid = previewProfile?.uid;
+    if (!uid || !quickAccessPersister) return false;
+    return quickAccessPersister.has(uid);
+  });
 
   // Quick Access Functions
   function addToQuickAccess() {

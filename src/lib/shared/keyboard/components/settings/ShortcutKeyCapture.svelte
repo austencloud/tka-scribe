@@ -245,6 +245,7 @@
         onkeydown={(e) => e.stopPropagation()}
         role="dialog"
         aria-modal="true"
+        tabindex="-1"
       >
         <header class="capture-header">
           <h3 class="capture-title">Edit Shortcut</h3>

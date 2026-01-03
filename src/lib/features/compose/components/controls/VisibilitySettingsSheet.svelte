@@ -460,11 +460,6 @@
     gap: 8px;
   }
 
-  .empty-cell {
-    /* Invisible placeholder for grid alignment */
-    display: block;
-  }
-
   /* Chip Button Base - Text Only */
   .chip-btn {
     display: flex;

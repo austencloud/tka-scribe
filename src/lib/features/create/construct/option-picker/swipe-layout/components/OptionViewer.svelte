@@ -96,8 +96,8 @@ Orchestrates specialized components and services:
 
   const containerDimensions = createContainerDimensionTracker();
   const contentAreaDimensions = createContainerDimensionTracker();
-  let containerElement: HTMLElement;
-  let contentAreaElement: HTMLElement;
+  let containerElement: HTMLElement = $state(null!);
+  let contentAreaElement: HTMLElement = $state(null!);
 
   // Transition timing constants
   const FADE_OUT_DURATION = 250;

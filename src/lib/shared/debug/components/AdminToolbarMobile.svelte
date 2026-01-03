@@ -51,10 +51,8 @@
   }: Props = $props();
 
   // Swipe-to-dismiss gesture
-  const swipe = createSwipeDismiss({
-    threshold: 100,
-    onDismiss: onClose,
-  });
+  // svelte-ignore state_referenced_locally
+  const swipe = createSwipeDismiss({ threshold: 100, onDismiss: onClose });
 </script>
 
 <!-- svelte-ignore a11y_no_static_element_interactions -->
@@ -82,7 +80,7 @@
       <i class="fas fa-shield-alt" aria-hidden="true"></i>
       <span>Admin Tools</span>
     </div>
-    <button type="button" class="sheet-close" onclick={onClose}>
+    <button type="button" class="sheet-close" onclick={onClose} aria-label="Close admin tools">
       <i class="fas fa-times" aria-hidden="true"></i>
     </button>
   </div>

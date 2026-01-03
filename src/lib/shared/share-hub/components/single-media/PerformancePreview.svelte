@@ -293,6 +293,7 @@
       <!-- Upload Mode -->
       {#if uploadedVideoUrl}
         <div class="video-container">
+          <!-- svelte-ignore a11y_media_has_caption -->
           <video
             src={uploadedVideoUrl}
             controls

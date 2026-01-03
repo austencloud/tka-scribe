@@ -376,6 +376,7 @@
       var(--theme-panel-bg) 95%,
       transparent
     );
+    backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
   }
 

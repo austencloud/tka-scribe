@@ -210,6 +210,7 @@
     align-items: center;
     justify-content: center;
     background: color-mix(in srgb, var(--theme-panel-bg) 70%, transparent);
+    backdrop-filter: blur(4px);
     -webkit-backdrop-filter: blur(4px);
     color: var(--theme-text-dim);
     font-size: var(--font-size-2xl);

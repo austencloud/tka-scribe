@@ -330,6 +330,7 @@
       onkeydown={(e) => e.stopPropagation()}
       role="dialog"
       aria-modal="true"
+      tabindex="-1"
     >
       <p class="modal-message">{confirmAction.message}</p>
       <div class="modal-actions">

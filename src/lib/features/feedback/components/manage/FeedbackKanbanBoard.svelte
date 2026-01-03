@@ -153,6 +153,7 @@
           role="dialog"
           aria-modal="true"
           aria-labelledby="defer-dialog-title"
+          tabindex="-1"
         >
           <div class="dialog-header">
             <div class="dialog-icon">

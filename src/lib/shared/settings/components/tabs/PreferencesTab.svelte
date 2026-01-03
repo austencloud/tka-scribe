@@ -278,12 +278,6 @@
     color: var(--theme-text, #ffffff);
   }
 
-  .toggle-description {
-    font-size: var(--font-size-sm);
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
-    line-height: 1.4;
-  }
-
   /* Toggle Switch */
   .toggle-switch {
     width: 52px;

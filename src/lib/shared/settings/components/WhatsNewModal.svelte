@@ -92,6 +92,7 @@
 <svelte:window onkeydown={handleKeydown} />
 
 {#if isOpen && version}
+  <!-- svelte-ignore a11y_click_events_have_key_events -->
   <div
     class="modal-overlay"
     onclick={handleBackdropClick}
@@ -106,6 +107,7 @@
       role="dialog"
       aria-modal="true"
       aria-labelledby="whats-new-title"
+      tabindex="-1"
     >
       <!-- Header -->
       <header class="modal-header">

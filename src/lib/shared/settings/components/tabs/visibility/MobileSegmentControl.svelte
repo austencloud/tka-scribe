@@ -49,6 +49,7 @@
     gap: 6px;
     padding: 6px;
     background: var(--theme-card-bg);
+    backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     border-radius: 16px;
     border: 1px solid var(--theme-stroke);

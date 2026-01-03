@@ -48,7 +48,7 @@ Hybrid sync: saves locally first, then syncs to Firebase in background.
   const localStorage = getMLTrainingStorage();
 
   // State
-  let videoContainer: HTMLDivElement;
+  let videoContainer: HTMLDivElement = $state(null!);
   let videoElement: HTMLVideoElement | null = $state(null);
   let isInitialized = $state(false);
   let captureState = $state<CaptureState>({

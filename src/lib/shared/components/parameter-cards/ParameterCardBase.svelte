@@ -79,6 +79,7 @@ Used by both Generate and Discover for consistent Bento card styling
   }
 </script>
 
+<!-- svelte-ignore a11y_no_noninteractive_tabindex -->
 <div
   bind:this={cardElement}
   class="parameter-card"

@@ -25,6 +25,7 @@ StaffGridPoint - Single grid point with label and interactivity
 	}
 </script>
 
+<!-- svelte-ignore a11y_no_noninteractive_tabindex -->
 <g
 	class="grid-point"
 	class:clickable={interactive}

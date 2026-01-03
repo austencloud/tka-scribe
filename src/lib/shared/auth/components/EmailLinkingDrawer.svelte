@@ -178,6 +178,7 @@
     position: fixed;
     inset: 0;
     background: color-mix(in srgb, var(--theme-shadow) 70%, transparent);
+    backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
     z-index: 1000;
     animation: fadeIn 0.2s ease-out;

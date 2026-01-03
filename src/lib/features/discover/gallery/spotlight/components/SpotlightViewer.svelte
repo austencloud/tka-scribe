@@ -581,6 +581,7 @@
     align-items: center;
     justify-content: center;
     transition: all 0.2s ease;
+    backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     z-index: 10000;
     pointer-events: auto; /* Allow clicks on button */
@@ -617,6 +618,7 @@
     align-items: center;
     justify-content: center;
     transition: all 0.2s ease;
+    backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     z-index: 10000;
     pointer-events: auto;
@@ -657,6 +659,7 @@
     border: 1px solid var(--theme-stroke-strong);
     border-radius: 12px;
     padding: 8px;
+    backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     z-index: 10001;
     pointer-events: auto;

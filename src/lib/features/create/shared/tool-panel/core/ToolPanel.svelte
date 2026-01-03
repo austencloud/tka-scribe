@@ -484,22 +484,4 @@
       transform: rotate(360deg);
     }
   }
-
-  /* Coming Soon Panel Styles */
-  .coming-soon-panel {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100%;
-    padding: 2rem;
-    text-align: center;
-    color: rgba(255, 255, 255, 0.8);
-  }
-
-  .coming-soon-panel p {
-    font-size: 1rem;
-    color: var(--theme-text-dim);
-    margin-bottom: 0.5rem;
-  }
 </style>

@@ -86,6 +86,7 @@
 		overflow-y: auto;
 		animation: slideUp 0.3s ease;
 		box-shadow: var(--theme-shadow, 0 14px 36px rgba(0, 0, 0, 0.4));
+		backdrop-filter: blur(20px);
 		-webkit-backdrop-filter: blur(20px);
 	}
 

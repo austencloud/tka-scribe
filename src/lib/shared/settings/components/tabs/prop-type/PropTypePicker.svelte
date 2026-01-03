@@ -58,6 +58,7 @@
       aria-label="Select prop type"
       onclick={(e) => e.stopPropagation()}
       onkeydown={(e) => e.stopPropagation()}
+      tabindex="-1"
     >
       <!-- Header -->
       <div class="picker-header">

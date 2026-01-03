@@ -120,6 +120,7 @@
       aria-modal="true"
       aria-labelledby="error-title"
       aria-describedby="error-message"
+      tabindex="-1"
     >
       <div class="error-header">
         <div class="error-icon-wrapper">

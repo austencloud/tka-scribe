@@ -87,9 +87,8 @@
 >
   <!-- Background preview - animated or static -->
   {#if hasAnimatedPreview}
-    <svelte:component
-      this={previewComponents[background.type as keyof typeof previewComponents]}
-    />
+    {@const PreviewComponent = previewComponents[background.type as keyof typeof previewComponents]}
+    <PreviewComponent />
   {:else}
     <StaticGradientPreview
       color={background.color}

@@ -1,5 +1,6 @@
 <script lang="ts">
 	import LandingAnimationDemo from './LandingAnimationDemo.svelte';
+	import HeroInstallFlow from './HeroInstallFlow.svelte';
 </script>
 
 <section class="hero">
@@ -18,13 +19,7 @@
 			system for flow arts.
 		</p>
 
-		<div class="hero-cta">
-			<a href="/app" class="btn btn-primary">
-				Open TKA Scribe
-				<span class="arrow">→</span>
-			</a>
-			<a href="#features" class="btn btn-secondary"> Learn More </a>
-		</div>
+		<HeroInstallFlow />
 
 		<div class="hero-visual">
 			<LandingAnimationDemo />
@@ -121,56 +116,6 @@
 		margin: 0 auto 32px;
 	}
 
-	.hero-cta {
-		display: flex;
-		gap: 16px;
-		justify-content: center;
-		flex-wrap: wrap;
-		margin-bottom: 48px;
-	}
-
-	.btn {
-		display: inline-flex;
-		align-items: center;
-		gap: 8px;
-		padding: 14px 28px;
-		border-radius: 12px;
-		font-weight: 600;
-		font-size: 1rem;
-		text-decoration: none;
-		transition: all 0.2s ease;
-		cursor: pointer;
-	}
-
-	.btn-primary {
-		background: var(--primary, #6366f1);
-		color: white;
-	}
-
-	.btn-primary:hover {
-		background: var(--primary-light, #818cf8);
-		transform: translateY(-2px);
-		box-shadow: 0 8px 24px rgba(99, 102, 241, 0.3);
-	}
-
-	.btn-secondary {
-		background: var(--bg-card, rgba(255, 255, 255, 0.03));
-		color: var(--text, #ffffff);
-		border: 1px solid var(--border, rgba(255, 255, 255, 0.1));
-	}
-
-	.btn-secondary:hover {
-		background: var(--bg-card-hover, rgba(255, 255, 255, 0.06));
-		border-color: var(--border-strong, rgba(255, 255, 255, 0.2));
-	}
-
-	.arrow {
-		transition: transform 0.2s ease;
-	}
-
-	.btn:hover .arrow {
-		transform: translateX(4px);
-	}
 
 	.hero-visual {
 		margin-top: clamp(24px, 5vw, 48px);
@@ -179,27 +124,6 @@
 	@media (max-width: 768px) {
 		.hero {
 			padding: 60px 16px;
-		}
-
-		.hero-cta {
-			flex-direction: column;
-			align-items: center;
-		}
-
-		.btn {
-			width: 100%;
-			max-width: 300px;
-			justify-content: center;
-		}
-	}
-
-	@media (prefers-reduced-motion: reduce) {
-		.btn {
-			transition: none;
-		}
-
-		.btn:hover .arrow {
-			transform: none;
 		}
 	}
 </style>

@@ -135,6 +135,7 @@ that triggers the filter panel dropdown.
       rgba(255, 255, 255, 0.15) 0%,
       var(--theme-card-bg) 100%
     );
+    backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 12px;

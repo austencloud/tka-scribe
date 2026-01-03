@@ -212,6 +212,7 @@
 
     /* Use global theme system for elevated surface */
     background: var(--theme-panel-bg);
+    backdrop-filter: blur(24px);
     -webkit-backdrop-filter: blur(24px);
 
     border: 1px solid var(--theme-stroke, var(--theme-stroke));

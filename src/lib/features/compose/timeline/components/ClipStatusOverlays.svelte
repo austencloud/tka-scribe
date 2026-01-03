@@ -32,6 +32,7 @@
     justify-content: center;
     pointer-events: none;
     z-index: 5;
+    backdrop-filter: blur(4px);
     -webkit-backdrop-filter: blur(4px);
   }
 

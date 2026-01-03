@@ -176,6 +176,7 @@
 
   // Auto-focus when this cell becomes selected (e.g., after deleting another beat)
   // This enables continuous Delete key presses to delete beats one by one
+  // svelte-ignore state_referenced_locally
   let wasSelected = isSelected; // Initialize to current state to avoid focus on mount
   let hasMounted = false;
   onMount(() => {

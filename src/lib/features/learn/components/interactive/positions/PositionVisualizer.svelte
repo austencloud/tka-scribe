@@ -195,6 +195,7 @@ Visualizes Alpha (opposite), Beta (same), and Gamma (right angle) positions
       {@const isRightHand = key === rightHand}
       {@const isBothHands = isLeftHand && isRightHand}
 
+      <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
       <g
         class="grid-point"
         class:clickable={interactive}

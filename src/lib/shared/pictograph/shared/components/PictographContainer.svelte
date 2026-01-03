@@ -300,7 +300,7 @@ with pre-prepared data for better performance.
   {/if}
 </div>
 
-<script context="module">
+<script module>
   import { fade } from "svelte/transition";
 </script>
 

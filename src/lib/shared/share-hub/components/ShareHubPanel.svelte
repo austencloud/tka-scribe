@@ -258,24 +258,10 @@
     overflow: hidden;
   }
 
-  .mode-toggle-container {
-    flex-shrink: 0;
-    padding: 20px 20px 0 20px;
-    display: flex;
-    justify-content: center;
-  }
-
   .content-area {
     flex: 1;
     min-height: 0; /* Allow flex child to shrink */
     overflow-y: auto;
     overflow-x: hidden;
-  }
-
-  /* Mobile optimization */
-  @media (max-width: 600px) {
-    .mode-toggle-container {
-      padding: 16px 16px 0 16px;
-    }
   }
 </style>

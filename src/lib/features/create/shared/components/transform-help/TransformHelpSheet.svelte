@@ -151,6 +151,7 @@
       role="dialog"
       aria-modal="true"
       aria-labelledby="transform-help-title"
+      tabindex="-1"
     >
       <div class="help-header">
         <h3 id="transform-help-title">Transform Actions</h3>

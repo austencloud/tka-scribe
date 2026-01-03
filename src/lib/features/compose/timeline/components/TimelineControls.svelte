@@ -255,6 +255,7 @@
     background: var(--theme-panel-elevated-bg);
     border: 1px solid var(--theme-stroke);
     border-radius: 6px;
+    backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
   }
 

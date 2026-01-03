@@ -161,6 +161,7 @@
 		background: var(--theme-card-bg);
 		border-bottom: 1px solid var(--theme-stroke);
 		flex-shrink: 0;
+		backdrop-filter: blur(12px);
 		-webkit-backdrop-filter: blur(12px);
 	}
 

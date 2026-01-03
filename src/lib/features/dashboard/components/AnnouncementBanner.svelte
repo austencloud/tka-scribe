@@ -177,6 +177,7 @@
     border: 1px solid var(--severity-color, var(--theme-accent, var(--theme-accent)));
     border-left-width: 4px;
     border-radius: 16px;
+    backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
     box-shadow: 0 4px 24px rgba(0, 0, 0, 0.15);
   }

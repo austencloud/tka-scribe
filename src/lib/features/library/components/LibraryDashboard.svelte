@@ -348,7 +348,7 @@
     opacity: 0.5;
   }
 
-  .auth-required h3 {
+  .auth-required h2 {
     font-size: 1.5rem;
     font-weight: 600;
     margin-bottom: var(--spacing-md, 16px);
@@ -373,7 +373,7 @@
     color: rgba(239, 68, 68, 0.7);
   }
 
-  .error-state h3 {
+  .error-state h2 {
     font-size: 1.5rem;
     font-weight: 600;
     margin-bottom: var(--spacing-md, 16px);

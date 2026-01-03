@@ -585,7 +585,7 @@
     color: var(--theme-stroke-strong);
   }
 
-  .empty-state h3 {
+  .empty-state h2 {
     margin: 0;
     font-size: var(--font-size-lg);
     font-weight: 600;

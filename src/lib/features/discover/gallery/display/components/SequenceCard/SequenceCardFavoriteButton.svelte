@@ -59,6 +59,7 @@ Handles click events and accessibility.
       var(--theme-panel-bg) 70%,
       transparent
     );
+    backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     color: var(--theme-text, white);
     font-size: 1.25rem;

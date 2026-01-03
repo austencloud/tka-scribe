@@ -267,7 +267,7 @@
     color: rgba(255, 255, 255, 0.4);
   }
 
-  .empty-state h3 {
+  .empty-state h2 {
     margin: 0 0 0.5rem 0;
     font-size: 1.25rem;
     color: var(--theme-text);

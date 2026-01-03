@@ -32,6 +32,7 @@
 
   // Create state wrapper ONCE - do NOT use $derived as it recreates state on every item change
   // This was causing showDeleteConfirm to reset when real-time updates arrived
+  // svelte-ignore state_referenced_locally
   const detailState = createFeedbackDetailState(item, manageState, readOnly);
 
   // Mobile detection

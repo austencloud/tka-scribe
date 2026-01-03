@@ -85,6 +85,7 @@
       aria-labelledby="modal-title"
       onclick={(e) => e.stopPropagation()}
       onkeydown={(e) => e.stopPropagation()}
+      tabindex="-1"
     >
       <!-- Modal Header -->
       <div class="modal-header">

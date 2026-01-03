@@ -31,9 +31,9 @@
   onclick={handleClick}
   aria-label="Open Share Hub"
   aria-pressed={isActive}
-  title="Share"
+  title="Export"
 >
-  <i class="fas fa-share-alt" aria-hidden="true"></i>
+  <i class="fas fa-photo-film" aria-hidden="true"></i>
 </button>
 
 <style>

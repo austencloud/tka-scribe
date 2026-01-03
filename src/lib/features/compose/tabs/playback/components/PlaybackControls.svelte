@@ -162,6 +162,7 @@
     padding: 1rem 1.25rem;
     background: var(--theme-panel-bg);
     border-top: 1px solid var(--theme-stroke);
+    backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     position: sticky;
     bottom: 0;

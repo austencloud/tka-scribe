@@ -493,13 +493,6 @@ Used by both desktop side panel and mobile slide-up overlay.
     color: var(--theme-text-dim, var(--theme-text-dim));
   }
 
-  .tka-indicator {
-    color: var(--theme-accent);
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-  }
-
   .creator-link {
     display: inline-flex;
     align-items: center;

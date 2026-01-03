@@ -204,6 +204,7 @@
     border: 1px solid var(--theme-stroke);
     border-radius: 20px;
     overflow: hidden;
+    backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
     box-shadow: 0 4px 24px rgba(0, 0, 0, 0.15);
   }

@@ -312,6 +312,7 @@
         <div class="video-wrapper">
           <div class="square-crop">
             {#if recordedVideo}
+              <!-- svelte-ignore a11y_media_has_caption -->
               <video
                 bind:this={playbackVideoElement}
                 src={recordedVideo.blobUrl}

@@ -143,6 +143,7 @@
       role="dialog"
       aria-modal="true"
       aria-labelledby="passkey-modal-title"
+      tabindex="-1"
     >
       <header class="modal-header">
         <div class="header-icon">

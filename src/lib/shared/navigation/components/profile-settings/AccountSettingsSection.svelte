@@ -23,6 +23,7 @@
   let { user, hasPasswordProvider, onChangePassword, hapticService }: Props = $props();
 
   // Display name editing state
+  // svelte-ignore state_referenced_locally
   let editedName = $state(user.displayName || "");
   let isEditingName = $state(false);
   let isSavingName = $state(false);
@@ -168,7 +169,7 @@
   {#if hasPasswordProvider}
     <div class="divider"></div>
     <div class="section">
-      <label class="label">Password</label>
+      <span class="label">Password</span>
       {#if !uiState.showPasswordSection}
         <button class="button button--secondary" onclick={handlePasswordExpand}>
           <i class="fas fa-lock" aria-hidden="true"></i>

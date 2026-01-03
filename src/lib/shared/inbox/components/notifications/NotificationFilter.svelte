@@ -156,6 +156,7 @@
       role="dialog"
       aria-modal="true"
       aria-label="Select notification type"
+      tabindex="-1"
     >
       <div class="sheet-header">
         <h3>Notification Type</h3>

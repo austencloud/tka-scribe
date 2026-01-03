@@ -256,8 +256,7 @@
 
 <style>
   .preview-loading,
-  .preview-error,
-  .preview-placeholder {
+  .preview-error {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -266,16 +265,6 @@
     width: 100%;
     height: 100%;
     color: var(--theme-text-dim);
-  }
-
-  .preview-placeholder {
-    color: var(--theme-text, var(--theme-text-dim));
-  }
-
-  .preview-placeholder i {
-    font-size: var(--font-size-3xl);
-    color: var(--theme-accent, var(--theme-accent));
-    opacity: 0.8;
   }
 
   .preview-loading .spinner {

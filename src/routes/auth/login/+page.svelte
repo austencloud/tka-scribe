@@ -260,25 +260,6 @@
     margin: 0;
   }
 
-  .error-banner {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    padding: 1rem;
-    background: var(--semantic-error-dim);
-    border: 1px solid
-      color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 30%, transparent);
-    border-radius: 0.5rem;
-    color: var(--semantic-error, var(--semantic-error));
-    font-size: 0.875rem;
-    margin-bottom: 1.5rem;
-  }
-
-  .error-banner i {
-    font-size: 1.25rem;
-    flex-shrink: 0;
-  }
-
   .social-buttons {
     display: flex;
     flex-direction: column;

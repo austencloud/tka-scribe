@@ -57,7 +57,8 @@
 </script>
 
 <div class="redirect-overlay" transition:fade={{ duration: 200 }}>
-  <div class="backdrop" onclick={onDismiss}></div>
+  <!-- svelte-ignore a11y_click_events_have_key_events a11y_no_static_element_interactions -->
+  <div class="backdrop" onclick={onDismiss} aria-hidden="true"></div>
 
   <div
     class="redirect-card"

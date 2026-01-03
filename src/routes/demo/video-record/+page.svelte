@@ -29,6 +29,7 @@
       <p>Duration: {lastRecording.duration?.toFixed(2)}s</p>
       <p>Size: {(lastRecording.videoBlob?.size ?? 0 / 1024).toFixed(1)}KB</p>
       {#if lastRecording.blobUrl}
+        <!-- svelte-ignore a11y_media_has_caption -->
         <video
           src={lastRecording.blobUrl}
           controls

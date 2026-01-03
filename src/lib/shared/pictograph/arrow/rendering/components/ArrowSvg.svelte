@@ -308,6 +308,7 @@ Now with intelligent rotation animation matching prop behavior!
 </script>
 
 {#if showArrow}
+  <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
   <g
     class="arrow-svg {motionData.color}-arrow-svg"
     class:mirrored={shouldMirror}
