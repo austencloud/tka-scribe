@@ -435,8 +435,18 @@ export async function initializeAuthListener() {
             await getFirestoreInstance();
             await firstRunState.syncFromCloud();
           })
-          .catch((error) => {
+          .catch(async (error) => {
             console.warn("⚠️ [authState] First-run sync failed:", error);
+            // CRITICAL: Mark sync as complete even on failure to prevent stuck loading screen
+            // This allows new users to proceed to FirstRunWizard even if cloud sync fails
+            try {
+              const { firstRunState } = await import(
+                "$lib/shared/onboarding/state/first-run-state.svelte"
+              );
+              firstRunState.markCloudSyncComplete();
+            } catch {
+              // If even the import fails, app is in a very bad state - nothing more we can do
+            }
           });
 
         // Initialize onboarding Firebase sync (non-blocking)

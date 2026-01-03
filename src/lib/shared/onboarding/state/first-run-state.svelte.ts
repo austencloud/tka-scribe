@@ -164,6 +164,16 @@ function createFirstRunState() {
     },
 
     /**
+     * Mark cloud sync as complete (call when sync fails externally)
+     * This prevents the UI from getting stuck on "Loading preferences..." forever
+     * when Firebase/network errors occur before syncFromCloud() is called.
+     */
+    markCloudSyncComplete() {
+      state.cloudSynced = true;
+      state.syncInProgress = false;
+    },
+
+    /**
      * Check if first-run has been done (completed or skipped)
      */
     isDone(): boolean {
@@ -220,6 +230,23 @@ function createFirstRunState() {
               localStorage.setItem(FIRST_RUN_COMPLETED_AT_KEY, data.completedAt);
             }
           }
+        } else {
+          // CRITICAL FIX: Document doesn't exist - this is a brand new user!
+          // We must RESET local state to prevent inheriting previous user's first-run status
+          // (happens when multiple users share the same browser)
+          console.log("📱 [firstRunState] New user detected - resetting first-run status");
+          state.hasCompleted = false;
+          state.wasSkipped = false;
+          state.completedAt = null;
+
+          // Clear localStorage to match
+          localStorage.removeItem(FIRST_RUN_COMPLETED_KEY);
+          localStorage.removeItem(FIRST_RUN_COMPLETED_AT_KEY);
+          localStorage.removeItem(FIRST_RUN_SKIPPED_KEY);
+
+          // Also clear the module cache so new users start on default module (create)
+          // instead of inheriting previous user's last-visited module
+          localStorage.removeItem("tka-active-module-cache");
         }
 
         state.cloudSynced = true;
