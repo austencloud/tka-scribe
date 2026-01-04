@@ -1701,7 +1701,15 @@
       "Bash(\"src/lib/shared/settings/components/tabs/visibility/ImageExportPreview.svelte\" )",
       "Bash(\"src/lib/shared/pictograph/shared/services/implementations/StartPositionDeriver.ts\" )",
       "Bash(\"src/lib/shared/render/domain/models/SequenceExportOptions.ts\" )",
-      "Bash(\"src/lib/shared/render/utils/pictograph-to-svg.ts\")"
+      "Bash(\"src/lib/shared/render/utils/pictograph-to-svg.ts\")",
+      "Bash(src/lib/features/admin/components/TrainChallengeManager.svelte )",
+      "Bash(src/lib/features/dashboard/components/widgets/NotificationsWidget.svelte )",
+      "Bash(src/lib/features/premium/components/placeholders/social-proof/TrustBadges.svelte )",
+      "Bash(src/lib/shared/inbox/components/InboxButton.svelte )",
+      "Bash(src/lib/shared/navigation/components/profile-settings/DeveloperTab.svelte )",
+      "Bash(src/lib/shared/pictograph/shared/components/PictographContainer.svelte )",
+      "Bash(src/lib/shared/settings/components/tabs/visibility/ChipRow.svelte )",
+      "Bash(src/routes/landing/components/HeroSection.svelte)"
     ],
     "deny": [],
     "ask": []
