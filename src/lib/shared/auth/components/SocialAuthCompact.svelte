@@ -1,21 +1,21 @@
 <!--
-  SocialAuthCompact.svelte - Compact Social Authentication Buttons
+  SocialAuthCompact.svelte - Compact Social Authentication Buttons (FedCM-Ready 2028+)
 
   Side-by-side Google and Facebook auth buttons for sign-in/sign-up flows.
-  Google button uses One Tap for seamless authentication (no redirects).
+
+  Auth Flow Priority:
+  1. Google One Tap (FedCM-native, no redirects, preferred)
+  2. Redirect-based fallback (COOP-compatible, avoids popup issues)
+
+  Note: Popup-based auth removed due to COOP (Cross-Origin-Opener-Policy)
+  blocking window.closed polling in modern browsers.
 -->
 <script lang="ts">
-  import {
-    GoogleAuthProvider,
-    browserLocalPersistence,
-    indexedDBLocalPersistence,
-    setPersistence,
-    signInWithPopup,
-  } from "firebase/auth";
   import FacebookIcon from "./icons/FacebookIcon.svelte";
   import GoogleIcon from "./icons/GoogleIcon.svelte";
-  import { auth } from "../firebase";
-  import { isGoogleOneTapConfigured } from "../config/google-oauth";
+  import { resolve } from "../../inversify/di";
+  import { TYPES } from "../../inversify/types";
+  import type { IAuthenticator } from "../services/contracts/IAuthenticator";
 
   let { mode = "signin", onFacebookAuth } = $props<{
     mode: "signin" | "signup";
@@ -23,41 +23,31 @@
   }>();
 
   let googleError = $state<string | null>(null);
+  let isRedirecting = $state(false);
 
   async function handleGoogleClick() {
     googleError = null;
 
-    // Try One Tap first (seamless, no redirects)
-    if (isGoogleOneTapConfigured() && window.google?.accounts?.id) {
-      window.google.accounts.id.prompt((notification) => {
-        // If One Tap can't display, fall back to popup
-        if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
-          console.log("[SocialAuthCompact] One Tap unavailable, using popup fallback");
-          handleGooglePopupFallback();
-        }
-      });
-      return;
-    }
-
-    // Fallback to popup if One Tap not available
-    await handleGooglePopupFallback();
+    // Strategy: When user explicitly clicks Google button, always use redirect
+    // One Tap works automatically via GoogleOneTap.svelte on page load
+    // This ensures a reliable, consistent experience when user clicks the button
+    //
+    // FedCM Note: One Tap may fail silently (cooldown, disabled, etc.)
+    // Redirect-based auth is the robust fallback that always works
+    await handleGoogleRedirectFallback();
   }
 
-  async function handleGooglePopupFallback() {
+  async function handleGoogleRedirectFallback() {
     try {
-      try {
-        await setPersistence(auth, indexedDBLocalPersistence);
-      } catch {
-        await setPersistence(auth, browserLocalPersistence);
-      }
-
-      const provider = new GoogleAuthProvider();
-      provider.addScope("email");
-      provider.addScope("profile");
-      await signInWithPopup(auth, provider);
-    } catch (error: any) {
-      console.error("[SocialAuthCompact] Google sign-in error:", error);
-      googleError = error?.message || "Google sign-in failed";
+      isRedirecting = true;
+      const authService = await resolve<IAuthenticator>(TYPES.IAuthenticator);
+      // This will redirect away from the page
+      await authService.signInWithGoogleRedirect();
+    } catch (error: unknown) {
+      isRedirecting = false;
+      console.error("[SocialAuthCompact] Google redirect error:", error);
+      googleError =
+        error instanceof Error ? error.message : "Google sign-in failed";
     }
   }
 
@@ -74,12 +64,18 @@
     <button
       class="social-compact-button social-compact-button--google"
       onclick={handleGoogleClick}
+      disabled={isRedirecting}
       aria-label={mode === "signin"
         ? "Sign in with Google"
         : "Sign up with Google"}
     >
-      <GoogleIcon />
-      Google
+      {#if isRedirecting}
+        <span class="spinner"></span>
+        Redirecting...
+      {:else}
+        <GoogleIcon />
+        Google
+      {/if}
     </button>
     <button
       class="social-compact-button social-compact-button--facebook"
@@ -170,5 +166,20 @@
     margin: 0;
     font-size: var(--font-size-compact);
     color: var(--semantic-error, var(--semantic-error));
+  }
+
+  .spinner {
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(0, 0, 0, 0.2);
+    border-top-color: currentColor;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
   }
 </style>

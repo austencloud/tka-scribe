@@ -59,7 +59,11 @@
     error = null;
 
     // For Google, try One Tap first (seamless, no redirects)
-    if (provider === "google" && isGoogleOneTapConfigured() && window.google?.accounts?.id) {
+    if (
+      provider === "google" &&
+      isGoogleOneTapConfigured() &&
+      window.google?.accounts?.id
+    ) {
       window.google.accounts.id.prompt((notification) => {
         // If One Tap can't display, fall back to popup/redirect
         if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
@@ -86,13 +90,39 @@
 
       const authProvider = getProvider();
 
+      // Mobile always uses redirect (more reliable)
       if (isMobileDevice()) {
+        console.log("[SocialAuthButton] Mobile detected, using redirect flow");
         await signInWithRedirect(auth, authProvider);
         return;
       }
 
-      await signInWithPopup(auth, authProvider);
-      await goto("/app");
+      // Desktop: try popup first, fall back to redirect if it fails
+      try {
+        await signInWithPopup(auth, authProvider);
+        await goto("/app");
+      } catch (popupError: unknown) {
+        const errorCode = (popupError as { code?: string })?.code;
+        console.warn(
+          "[SocialAuthButton] Popup failed:",
+          errorCode,
+          "- falling back to redirect"
+        );
+
+        // Popup blocked, closed, or COOP issue - use redirect instead
+        if (
+          errorCode === "auth/popup-blocked" ||
+          errorCode === "auth/popup-closed-by-user" ||
+          errorCode === "auth/cancelled-popup-request" ||
+          errorCode === "auth/internal-error"
+        ) {
+          await signInWithRedirect(auth, authProvider);
+          return;
+        }
+
+        // Re-throw other errors (like auth/account-exists-with-different-credential)
+        throw popupError;
+      }
     } catch (e: unknown) {
       const message = e instanceof Error ? e.message : "Sign-in failed";
       error = message;

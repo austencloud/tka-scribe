@@ -87,6 +87,7 @@ const FEATURE_ROLE_OVERRIDES: Partial<Record<FeatureId, UserRole>> = {
   "module:premium": "admin", // Premium module is admin-only for now
   "module:word_card": "admin", // Word Card is admin-only for now
   "module:write": "admin", // Write module is admin-only for now
+  "module:mandala": "admin", // Mandala generator is admin-only for now
 
   // Modules - Tester access
   "module:feedback": "tester", // Feedback requires sign-in (tester access)

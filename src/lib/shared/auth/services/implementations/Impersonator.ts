@@ -14,6 +14,7 @@ import type {
 } from "../contracts/IImpersonator";
 import type { UserRole } from "../../domain/models/UserRole";
 import { isAdmin } from "../../state/authState.svelte";
+import { featureFlagService } from "../FeatureFlagService.svelte";
 
 @injectable()
 export class Impersonator implements IImpersonator {
@@ -51,12 +52,13 @@ export class Impersonator implements IImpersonator {
         role,
       };
 
+      // Sync impersonated role to feature flag service
+      // This ensures canAccessModule() respects the impersonated role
+      featureFlagService.setDebugRoleOverride(role);
+
       return this._impersonatedUser;
     } catch (error) {
-      console.error(
-        `❌ [Impersonator] Failed to start impersonation:`,
-        error
-      );
+      console.error(`❌ [Impersonator] Failed to start impersonation:`, error);
       throw error;
     }
   }
@@ -66,6 +68,8 @@ export class Impersonator implements IImpersonator {
    */
   stopImpersonation(): void {
     this._impersonatedUser = null;
+    // Clear the debug role override so feature flags use actual user role
+    featureFlagService.clearDebugRoleOverride();
   }
 
   /**

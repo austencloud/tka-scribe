@@ -1,6 +1,6 @@
 <script lang="ts">
   /**
-   * Google One Tap Component
+   * Google One Tap Component (FedCM-Ready for 2028+)
    *
    * Provides frictionless Google sign-in with a single tap.
    * No redirects - just a small popup that appears automatically.
@@ -9,7 +9,12 @@
    * - 90% increase in signups reported by implementers
    * - No page redirects - stays in context
    * - Works for both sign-in AND sign-up
-   * - FedCM-based - modern, no third-party cookie issues
+   * - FedCM-native - future-proof, no third-party cookie issues
+   *
+   * FedCM Migration Notes:
+   * - Deprecated status methods (isNotDisplayed, isSkippedMoment, etc.) removed
+   * - Uses FedCM-only flow - prompt() callback only fires on success or error
+   * - Users who dismiss can re-enable via browser address bar identity icon
    */
 
   import { onMount, onDestroy } from "svelte";
@@ -24,20 +29,26 @@
   interface Props {
     /** Called when sign-in succeeds */
     onSuccess?: () => void;
-    /** Called when sign-in fails */
+    /** Called when sign-in fails or user dismisses */
     onError?: (error: Error) => void;
+    /** Called when One Tap prompt is not available (FedCM disabled, cooldown, etc.) */
+    onUnavailable?: () => void;
     /** Show the One Tap prompt automatically on mount */
     autoPrompt?: boolean;
     /** Position of the One Tap prompt */
     promptParentId?: string;
   }
 
-  let { onSuccess, onError, autoPrompt = true, promptParentId }: Props = $props();
+  let {
+    onSuccess,
+    onError,
+    onUnavailable,
+    autoPrompt = true,
+    promptParentId,
+  }: Props = $props();
 
   let scriptLoaded = $state(false);
   let authService: IAuthenticator | null = null;
-
-  // Uses global types from app.d.ts (GoogleOneTapConfig, GooglePromptNotification, GoogleButtonConfig, Window.google)
 
   function loadGoogleScript(): Promise<void> {
     return new Promise((resolve, reject) => {
@@ -63,7 +74,8 @@
       script.async = true;
       script.defer = true;
       script.onload = () => resolve();
-      script.onerror = () => reject(new Error("Failed to load Google Identity Services"));
+      script.onerror = () =>
+        reject(new Error("Failed to load Google Identity Services"));
       document.head.appendChild(script);
     });
   }
@@ -76,7 +88,6 @@
         authService = await resolve<IAuthenticator>(TYPES.IAuthenticator);
       }
 
-      // Use the new credential-based sign-in
       await authService.signInWithGoogleCredential(response.credential);
 
       debug.success("Google One Tap sign-in successful!");
@@ -98,14 +109,14 @@
       return;
     }
 
+    // FedCM-only configuration (future-proof for 2028+)
     const config: GoogleOneTapConfig = {
       client_id: GOOGLE_CLIENT_ID,
       callback: handleCredentialResponse,
-      auto_select: true, // Auto-select if user has only one Google account
+      auto_select: true,
       cancel_on_tap_outside: false,
       context: "signin",
-      itp_support: true, // Intelligent Tracking Prevention support
-      // FedCM is mandatory - users who dismiss can re-enable via browser address bar icon
+      itp_support: true,
       use_fedcm_for_prompt: true,
     };
 
@@ -114,23 +125,22 @@
     }
 
     window.google.accounts.id.initialize(config);
-    debug.success("Google One Tap initialized");
+    debug.success("Google One Tap initialized (FedCM mode)");
 
     if (autoPrompt) {
       // Small delay to let the page settle
       setTimeout(() => {
-        window.google?.accounts.id.prompt((notification) => {
-          if (notification.isNotDisplayed()) {
-            debug.warn(
-              "One Tap not displayed:",
-              notification.getNotDisplayedReason()
-            );
-          } else if (notification.isSkippedMoment()) {
-            debug.info("One Tap skipped:", notification.getSkippedReason());
-          } else if (notification.isDismissedMoment()) {
-            debug.info("One Tap dismissed:", notification.getDismissedReason());
-          }
-        });
+        // FedCM-compatible: prompt() with no callback arguments
+        // In FedCM mode, success goes through handleCredentialResponse
+        // Failures are silent (user can retry via browser identity icon)
+        try {
+          window.google?.accounts.id.prompt();
+          debug.info("One Tap prompt requested");
+        } catch (error) {
+          // FedCM may throw if disabled or on cooldown
+          debug.warn("One Tap prompt unavailable:", error);
+          onUnavailable?.();
+        }
       }, 500);
     }
   }
@@ -156,7 +166,11 @@
    * Useful for showing it on button click if autoPrompt is false
    */
   export function showPrompt() {
-    window.google?.accounts.id.prompt();
+    try {
+      window.google?.accounts.id.prompt();
+    } catch {
+      onUnavailable?.();
+    }
   }
 </script>
 

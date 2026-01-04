@@ -16,6 +16,7 @@ import {
   GoogleAuthProvider,
   browserLocalPersistence,
   createUserWithEmailAndPassword,
+  getRedirectResult,
   indexedDBLocalPersistence,
   linkWithCredential,
   linkWithPopup,
@@ -24,6 +25,7 @@ import {
   signInWithCredential,
   signInWithEmailAndPassword,
   signInWithPopup,
+  signInWithRedirect,
   signOut as firebaseSignOut,
   unlink,
   updateProfile,
@@ -47,6 +49,31 @@ export class Authenticator implements IAuthenticator {
     const credential = GoogleAuthProvider.credential(idToken);
     // Sign in with the credential - no redirects!
     await signInWithCredential(auth, credential);
+  }
+
+  async signInWithGoogleRedirect(): Promise<void> {
+    await this.setPersistence();
+    const provider = new GoogleAuthProvider();
+    provider.addScope("email");
+    provider.addScope("profile");
+    // Redirect-based auth avoids COOP issues that break popup polling
+    // User will be redirected away, then back after auth
+    await signInWithRedirect(auth, provider);
+  }
+
+  async handleRedirectResult(): Promise<boolean> {
+    try {
+      const result = await getRedirectResult(auth);
+      if (result?.user) {
+        // Successfully signed in via redirect
+        return true;
+      }
+      return false;
+    } catch (error) {
+      // Log but don't throw - this runs on every page load
+      console.error("[Authenticator] Redirect result error:", error);
+      return false;
+    }
   }
 
   async signInWithFacebook(): Promise<void> {
