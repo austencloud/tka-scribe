@@ -59,6 +59,17 @@ select {
   font: inherit;
 }
 
+/* Global Focus Styles - Accessibility */
+:focus-visible {
+  outline: 2px solid var(--primary-color, #6366f1);
+  outline-offset: 2px;
+}
+
+/* Remove default focus outline when not using keyboard */
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
 /* Minimum touch target for primary interactive elements */
 button,
 [role="button"],

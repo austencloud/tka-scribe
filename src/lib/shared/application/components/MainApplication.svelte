@@ -20,7 +20,7 @@
   import { getContext, onMount } from "svelte";
   import MainInterface from "../../MainInterface.svelte";
   import AuthSheet from "../../navigation/components/AuthSheet.svelte";
-  import LegalSheet from "../../../../routes/landing/components/LegalSheet.svelte";
+  import LegalSheet from "../../legal/components/LegalSheet.svelte";
   import type {
     ISheetRouter,
     SheetType,

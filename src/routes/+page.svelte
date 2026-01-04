@@ -49,8 +49,8 @@
 
 	<!-- Twitter Card -->
 	<meta name="twitter:card" content="summary_large_image" />
-	<meta name="twitter:site" content="@kinetic_alphabet" />
-	<meta name="twitter:creator" content="@kinetic_alphabet" />
+	<meta name="twitter:site" content="@thekineticalphabet" />
+	<meta name="twitter:creator" content="@thekineticalphabet" />
 	<meta name="twitter:title" content="The Kinetic Alphabet - Digital Sheet Music for Flow Arts" />
 	<meta
 		name="twitter:description"
@@ -95,8 +95,8 @@
 		"description": "Creating the universal notation system for flow arts and prop manipulation",
 		"foundingDate": "2024",
 		"sameAs": [
-			"https://instagram.com/the_kinetic_alphabet",
-			"https://facebook.com/thekineticaphabet"
+			"https://instagram.com/thekineticalphabet",
+			"https://facebook.com/thekineticalphabet"
 		],
 		"contactPoint": {
 			"@type": "ContactPoint",
