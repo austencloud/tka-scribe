@@ -86,6 +86,7 @@
   class:sidebar-collapsed={isCollapsed}
   class:has-sections={hasSections}
   class:inside-glass={insideGlassContainer}
+  data-tour-module={module.id}
   onclick={handleClick}
   onmouseenter={handleMouseEnter}
   onfocus={handleMouseEnter}

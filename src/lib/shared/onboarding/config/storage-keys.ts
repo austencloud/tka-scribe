@@ -55,6 +55,57 @@ export const ONBOARDING_COMPLETED_AT_KEY = "tka-onboarding-completed-at";
 export const ONBOARDING_SKIPPED_KEY = "tka-onboarding-skipped";
 
 // ============================================================================
+// SIDEBAR TOUR (Desktop)
+// ============================================================================
+
+/** localStorage key for sidebar tour completion status */
+export const SIDEBAR_TOUR_COMPLETED_KEY = "tka-sidebar-tour-completed";
+
+/** localStorage key for sidebar tour skip (user chose "Explore on my own") */
+export const SIDEBAR_TOUR_SKIPPED_KEY = "tka-sidebar-tour-skipped";
+
+/**
+ * Check if sidebar tour has been completed or skipped
+ */
+export function hasCompletedSidebarTour(): boolean {
+  if (typeof localStorage === "undefined") return true; // SSR safety
+  return (
+    localStorage.getItem(SIDEBAR_TOUR_COMPLETED_KEY) === "true" ||
+    localStorage.getItem(SIDEBAR_TOUR_SKIPPED_KEY) === "true"
+  );
+}
+
+/**
+ * Mark sidebar tour as completed
+ */
+export function markSidebarTourCompleted(): void {
+  if (typeof localStorage === "undefined") return;
+  localStorage.setItem(SIDEBAR_TOUR_COMPLETED_KEY, "true");
+  localStorage.setItem(
+    `${SIDEBAR_TOUR_COMPLETED_KEY}-at`,
+    new Date().toISOString()
+  );
+}
+
+/**
+ * Mark sidebar tour as skipped (user chose "Explore on my own")
+ */
+export function markSidebarTourSkipped(): void {
+  if (typeof localStorage === "undefined") return;
+  localStorage.setItem(SIDEBAR_TOUR_SKIPPED_KEY, "true");
+}
+
+/**
+ * Reset sidebar tour (for testing/replaying)
+ */
+export function resetSidebarTour(): void {
+  if (typeof localStorage === "undefined") return;
+  localStorage.removeItem(SIDEBAR_TOUR_COMPLETED_KEY);
+  localStorage.removeItem(`${SIDEBAR_TOUR_COMPLETED_KEY}-at`);
+  localStorage.removeItem(SIDEBAR_TOUR_SKIPPED_KEY);
+}
+
+// ============================================================================
 // PER-MODULE ONBOARDING
 // ============================================================================
 

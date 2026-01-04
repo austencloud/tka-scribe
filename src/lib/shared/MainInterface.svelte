@@ -41,7 +41,11 @@
   import ModuleRenderer from "./modules/ModuleRenderer.svelte";
   import PWAInstallationManager from "./pwa/PWAInstallationManager.svelte";
     import SpotlightRouter from "./spotlight/SpotlightRouter.svelte";
-  import { desktopSidebarState } from "./layout/desktop-sidebar-state.svelte";
+  import {
+    desktopSidebarState,
+    setDesktopSidebarCollapsed,
+  } from "./layout/desktop-sidebar-state.svelte";
+  import SidebarTourOverlay from "./onboarding/components/sidebar-tour/SidebarTourOverlay.svelte";
   // Keyboard shortcuts
 
   import type { IDeepLinker } from "./navigation/services/contracts/IDeepLinker";
@@ -230,6 +234,12 @@
       modules={moduleDefinitions}
       onModuleChange={handleModuleChange}
       onSectionChange={handleSectionChange}
+    />
+    <!-- Sidebar Tour (desktop only, first-time users) -->
+    <SidebarTourOverlay
+      sidebarCollapsed={desktopSidebarState.isCollapsed}
+      onExpandSidebar={() => setDesktopSidebarCollapsed(false)}
+      onRestoreSidebar={(wasCollapsed) => setDesktopSidebarCollapsed(wasCollapsed)}
     />
   {/if}
 
