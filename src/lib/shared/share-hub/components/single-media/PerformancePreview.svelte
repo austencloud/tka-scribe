@@ -473,7 +473,7 @@
     border: 2px dashed var(--theme-stroke);
     border-radius: 8px;
     margin: 16px;
-    color: var(--theme-text-dim, var(--theme-text-dim));
+    color: var(--theme-text-dim);
     cursor: pointer;
     transition: all 0.2s ease;
   }
@@ -506,7 +506,7 @@
     flex-direction: column;
     align-items: center;
     gap: 12px;
-    color: var(--theme-text-dim, var(--theme-text-dim));
+    color: var(--theme-text-dim);
     padding: 32px;
   }
 
@@ -519,7 +519,7 @@
   .error-state i {
     font-size: var(--font-size-3xl);
     opacity: 0.5;
-    color: var(--semantic-warning, var(--semantic-warning));
+    color: var(--semantic-warning);
   }
 
   .spinner {
@@ -589,12 +589,13 @@
     align-items: center;
     gap: 8px;
     padding: 8px 16px;
+    min-height: 48px; /* WCAG 2.1 AA touch target */
     background: var(--theme-card-bg);
     border: 1px solid var(--theme-stroke);
     border-radius: 8px;
     font-size: var(--font-size-min);
     font-weight: 500;
-    color: var(--theme-text, white);
+    color: var(--theme-text);
     cursor: pointer;
     transition: all 0.2s ease;
     white-space: nowrap;

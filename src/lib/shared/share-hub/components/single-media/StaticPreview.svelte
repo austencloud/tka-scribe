@@ -241,7 +241,7 @@
     flex-direction: column;
     align-items: center;
     gap: 12px;
-    color: var(--theme-text-dim, var(--theme-text-dim));
+    color: var(--theme-text-dim);
   }
 
   .empty-state i,
@@ -252,7 +252,7 @@
   }
 
   .error-state i {
-    color: var(--semantic-error, var(--semantic-error));
+    color: var(--semantic-error);
     opacity: 0.7;
   }
 
@@ -285,7 +285,7 @@
     background: var(--theme-card-bg);
     border: 1px solid var(--theme-stroke);
     border-radius: 24px;
-    color: var(--theme-text-dim, var(--theme-text-dim));
+    color: var(--theme-text-dim);
     font-size: var(--font-size-min);
     font-weight: 500;
     cursor: pointer;

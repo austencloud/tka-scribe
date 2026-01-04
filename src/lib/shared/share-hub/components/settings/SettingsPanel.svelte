@@ -33,18 +33,53 @@
 
   let panelElement: HTMLDivElement | null = $state(null);
   let closeButtonElement: HTMLButtonElement | null = $state(null);
+  let previousActiveElement: Element | null = null;
 
-  // Auto-focus close button when panel opens
+  // Store the previously focused element and focus close button when panel opens
   $effect(() => {
     if (isOpen && closeButtonElement) {
+      previousActiveElement = document.activeElement;
       closeButtonElement.focus();
     }
   });
 
-  // Handle Escape key to close
+  // Return focus to previously focused element when panel closes
+  $effect(() => {
+    if (!isOpen && previousActiveElement instanceof HTMLElement) {
+      previousActiveElement.focus();
+      previousActiveElement = null;
+    }
+  });
+
+  // Get all focusable elements within the panel
+  function getFocusableElements(): HTMLElement[] {
+    if (!panelElement) return [];
+    const selector = 'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
+    return Array.from(panelElement.querySelectorAll<HTMLElement>(selector));
+  }
+
+  // Handle keyboard events (Escape to close, Tab for focus trap)
   function handleKeydown(event: KeyboardEvent) {
     if (event.key === 'Escape' && isOpen) {
       onClose?.();
+      return;
+    }
+
+    // Focus trap: cycle through focusable elements
+    if (event.key === 'Tab' && isOpen) {
+      const focusable = getFocusableElements();
+      if (focusable.length === 0) return;
+
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last?.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first?.focus();
+      }
     }
   }
 

@@ -223,6 +223,7 @@
     align-items: center;
     gap: 14px;
     padding: 16px;
+    min-height: 48px; /* WCAG 2.1 AA touch target */
     background: var(--theme-card-bg);
     border: 1.5px solid var(--theme-stroke);
     border-radius: 12px;
@@ -250,7 +251,7 @@
 
   .mode-description {
     font-size: var(--font-size-compact);
-    color: var(--theme-text-dim, var(--theme-text-dim));
+    color: var(--theme-text-dim);
   }
 
   .mode-option:hover {
@@ -270,7 +271,12 @@
 
   .mode-option.active i {
     opacity: 1;
-    color: var(--theme-accent);
+    color: white; /* Icon needs to be white on accent background, not accent on accent */
+  }
+
+  .mode-option.active .mode-title,
+  .mode-option.active .mode-description {
+    color: white;
   }
 
   .camera-select {
@@ -318,7 +324,7 @@
   .no-cameras-message p {
     margin: 0;
     font-size: var(--font-size-min);
-    color: var(--theme-text-dim, var(--theme-text-dim));
+    color: var(--theme-text-dim);
   }
 
   .permission-button {
@@ -326,6 +332,7 @@
     align-items: center;
     gap: 8px;
     padding: 10px 20px;
+    min-height: 48px; /* WCAG 2.1 AA touch target */
     background: var(--theme-accent);
     border: none;
     border-radius: 8px;
@@ -375,7 +382,7 @@
 
   .upload-hint {
     font-size: var(--font-size-compact);
-    color: var(--theme-text-dim, var(--theme-text-dim));
+    color: var(--theme-text-dim);
   }
 
   .uploaded-file-info {
@@ -408,7 +415,7 @@
   .file-size {
     margin: 0;
     font-size: var(--font-size-compact);
-    color: var(--theme-text-dim, var(--theme-text-dim));
+    color: var(--theme-text-dim);
   }
 
   /* Mobile optimization */

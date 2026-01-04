@@ -181,7 +181,7 @@
     flex-direction: column;
     align-items: center;
     gap: 8px;
-    color: var(--theme-text-dim, var(--theme-text-dim));
+    color: var(--theme-text-dim);
   }
 
   .placeholder-preview i {
