@@ -18,21 +18,29 @@
     userPreviewState,
     loadUserPreview,
     clearUserPreview,
+    initUserPreview,
   } from "$lib/shared/debug/state/user-preview-state.svelte";
   import { adminToolbarState } from "$lib/shared/debug/state/admin-toolbar-state.svelte";
   import { navigationState } from "$lib/shared/navigation/state/navigation-state.svelte";
   import { getTabIntroContent } from "$lib/shared/onboarding/config/tab-intro-content";
   import { firstRunState } from "$lib/shared/onboarding/state/first-run-state.svelte.ts";
+  import { sidebarTourState } from "$lib/shared/onboarding/state/sidebar-tour-state.svelte";
+  import { resetSidebarTour } from "$lib/shared/onboarding/config/storage-keys";
   import type { UserRole } from "$lib/shared/auth/domain/models/UserRole";
   import { container } from "$lib/shared/inversify/container";
   import { TYPES } from "$lib/shared/inversify/types";
-  import type { IQuickAccessPersister, QuickAccessUser } from "../services/contracts/IQuickAccessPersister";
+  import type {
+    IQuickAccessPersister,
+    QuickAccessUser,
+  } from "../services/contracts/IQuickAccessPersister";
   import AdminToolbarDesktop from "./AdminToolbarDesktop.svelte";
   import AdminToolbarMobile from "./AdminToolbarMobile.svelte";
 
   // Responsive breakpoint
   const MOBILE_BREAKPOINT = 768;
-  let windowWidth = $state(typeof window !== "undefined" ? window.innerWidth : 1024);
+  let windowWidth = $state(
+    typeof window !== "undefined" ? window.innerWidth : 1024
+  );
   const isMobile = $derived(windowWidth < MOBILE_BREAKPOINT);
 
   $effect(() => {
@@ -100,7 +108,8 @@
     if (!previewProfile || !quickAccessPersister) return;
     const newUser: QuickAccessUser = {
       uid: previewProfile.uid,
-      displayName: previewProfile.displayName || previewProfile.email || "Unknown",
+      displayName:
+        previewProfile.displayName || previewProfile.email || "Unknown",
       email: previewProfile.email || "",
       photoURL: previewProfile.photoURL,
     };
@@ -112,9 +121,15 @@
     quickAccessUsers = quickAccessPersister.remove(uid);
   }
 
-  async function selectUser(user: { uid: string; displayName: string; email: string }) {
+  async function selectUser(user: {
+    uid: string;
+    displayName: string;
+    email: string;
+  }) {
     await loadUserPreview(user.uid, true);
-    const previewedRole = userPreviewState.data.profile?.role as UserRole | undefined;
+    const previewedRole = userPreviewState.data.profile?.role as
+      | UserRole
+      | undefined;
     if (previewedRole) {
       featureFlagService.setDebugRoleOverride(previewedRole);
     }
@@ -144,6 +159,15 @@
     }, 2000);
   }
 
+  function previewSidebarTour() {
+    resetSidebarTour();
+    sidebarTourState.showPrompt();
+    introResetMessage = "Sidebar tour opened";
+    setTimeout(() => {
+      introResetMessage = null;
+    }, 2000);
+  }
+
   function handleClose() {
     adminToolbarState.close();
   }
@@ -153,10 +177,23 @@
   }
 
   onMount(() => {
+    // Restore preview state from localStorage if one was active
+    initUserPreview().then(() => {
+      // If preview was restored, also restore the role override
+      const previewedRole = userPreviewState.data.profile?.role as
+        | UserRole
+        | undefined;
+      if (userPreviewState.isActive && previewedRole) {
+        featureFlagService.setDebugRoleOverride(previewedRole);
+      }
+    });
+
     // Resolve the service after mount (admin module loads async in Tier 2)
     const tryResolve = () => {
       try {
-        quickAccessPersister = container.get<IQuickAccessPersister>(TYPES.IQuickAccessPersister);
+        quickAccessPersister = container.get<IQuickAccessPersister>(
+          TYPES.IQuickAccessPersister
+        );
         quickAccessUsers = quickAccessPersister.load();
         return true;
       } catch {
@@ -192,6 +229,7 @@
       onToggleSearch={handleToggleSearch}
       onResetTabIntro={resetTabIntro}
       onPreviewFirstRun={previewFirstRunWizard}
+      onPreviewSidebarTour={previewSidebarTour}
       onClose={handleClose}
     />
   {:else}
@@ -212,8 +250,8 @@
       onToggleSearch={handleToggleSearch}
       onResetTabIntro={resetTabIntro}
       onPreviewFirstRun={previewFirstRunWizard}
+      onPreviewSidebarTour={previewSidebarTour}
       onClose={handleClose}
     />
   {/if}
 {/if}
-

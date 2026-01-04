@@ -21,13 +21,18 @@
     introResetMessage: string | null;
     canResetIntro: boolean;
     isCurrentUserInQuickAccess: boolean;
-    onSelectUser: (user: { uid: string; displayName: string; email: string }) => void;
+    onSelectUser: (user: {
+      uid: string;
+      displayName: string;
+      email: string;
+    }) => void;
     onRemoveFromQuickAccess: (uid: string) => void;
     onAddToQuickAccess: () => void;
     onClearPreview: () => void;
     onToggleSearch: () => void;
     onResetTabIntro: () => void;
     onPreviewFirstRun: () => void;
+    onPreviewSidebarTour: () => void;
     onClose: () => void;
   }
 
@@ -47,6 +52,7 @@
     onToggleSearch,
     onResetTabIntro,
     onPreviewFirstRun,
+    onPreviewSidebarTour,
     onClose,
   }: Props = $props();
 
@@ -59,7 +65,9 @@
 <div
   class="mobile-backdrop"
   onclick={onClose}
-  onkeydown={(e) => { if (e.key === 'Escape') onClose(); }}
+  onkeydown={(e) => {
+    if (e.key === "Escape") onClose();
+  }}
   transition:fly={{ duration: 200, opacity: 0 }}
 ></div>
 
@@ -80,7 +88,12 @@
       <i class="fas fa-shield-alt" aria-hidden="true"></i>
       <span>Admin Tools</span>
     </div>
-    <button type="button" class="sheet-close" onclick={onClose} aria-label="Close admin tools">
+    <button
+      type="button"
+      class="sheet-close"
+      onclick={onClose}
+      aria-label="Close admin tools"
+    >
       <i class="fas fa-times" aria-hidden="true"></i>
     </button>
   </div>
@@ -89,7 +102,9 @@
   {#if isUserPreview && previewProfile}
     <div class="mobile-preview-banner">
       <i class="fas fa-eye" aria-hidden="true"></i>
-      <span>Previewing: {previewProfile.displayName || previewProfile.email}</span>
+      <span
+        >Previewing: {previewProfile.displayName || previewProfile.email}</span
+      >
       <button type="button" class="banner-action" onclick={onClearPreview}>
         <i class="fas fa-sign-out-alt" aria-hidden="true"></i>
         <span>Exit</span>
@@ -108,7 +123,9 @@
           role="button"
           tabindex="0"
           onclick={() => onSelectUser(user)}
-          onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') onSelectUser(user); }}
+          onkeydown={(e) => {
+            if (e.key === "Enter" || e.key === " ") onSelectUser(user);
+          }}
         >
           <RobustAvatar
             src={user.photoURL}
@@ -120,7 +137,10 @@
           <button
             type="button"
             class="mobile-chip-remove"
-            onclick={(e) => { e.stopPropagation(); onRemoveFromQuickAccess(user.uid); }}
+            onclick={(e) => {
+              e.stopPropagation();
+              onRemoveFromQuickAccess(user.uid);
+            }}
             aria-label="Remove {user.displayName}"
           >
             <i class="fas fa-times" aria-hidden="true"></i>
@@ -146,7 +166,9 @@
         <UserSearchInput
           onSelect={onSelectUser}
           selectedUserId={previewProfile?.uid || ""}
-          selectedUserDisplay={previewProfile?.displayName || previewProfile?.email || ""}
+          selectedUserDisplay={previewProfile?.displayName ||
+            previewProfile?.email ||
+            ""}
           placeholder="Search users to preview..."
           disabled={isLoading}
           autofocus={true}
@@ -172,6 +194,11 @@
       >
         <i class="fas fa-door-open" aria-hidden="true"></i>
         <span>Reset Tab Intro</span>
+      </button>
+
+      <button type="button" class="action-card" onclick={onPreviewSidebarTour}>
+        <i class="fas fa-route" aria-hidden="true"></i>
+        <span>Sidebar Tour</span>
       </button>
 
       {#if isUserPreview && previewProfile && !isCurrentUserInQuickAccess}
@@ -209,7 +236,11 @@
     left: 0;
     right: 0;
     z-index: 9998;
-    background: linear-gradient(180deg, rgba(20, 20, 30, 0.98) 0%, rgba(15, 15, 25, 0.99) 100%);
+    background: linear-gradient(
+      180deg,
+      rgba(20, 20, 30, 0.98) 0%,
+      rgba(15, 15, 25, 0.99) 100%
+    );
     border-top-left-radius: 20px;
     border-top-right-radius: 20px;
     box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.5);
@@ -487,7 +518,11 @@
   }
 
   @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
   }
 </style>

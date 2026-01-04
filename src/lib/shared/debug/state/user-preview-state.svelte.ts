@@ -147,7 +147,9 @@ interface UserPreviewState {
 // Helpers
 // ============================================================================
 
-function formatTimestamp(ts: Timestamp | Date | string | null | undefined): string | null {
+function formatTimestamp(
+  ts: Timestamp | Date | string | null | undefined
+): string | null {
   if (!ts) return null;
   if (typeof ts === "string") return ts;
   if (ts instanceof Date) return ts.toISOString();
@@ -155,6 +157,39 @@ function formatTimestamp(ts: Timestamp | Date | string | null | undefined): stri
     return (ts as Timestamp).toDate().toISOString();
   }
   return null;
+}
+
+// ============================================================================
+// Persistence
+// ============================================================================
+
+const PREVIEW_USER_ID_KEY = "tka-admin-preview-uid";
+
+function savePreviewUserId(userId: string): void {
+  if (!browser) return;
+  try {
+    localStorage.setItem(PREVIEW_USER_ID_KEY, userId);
+  } catch {
+    // localStorage may be unavailable
+  }
+}
+
+function clearPreviewUserId(): void {
+  if (!browser) return;
+  try {
+    localStorage.removeItem(PREVIEW_USER_ID_KEY);
+  } catch {
+    // localStorage may be unavailable
+  }
+}
+
+function getSavedPreviewUserId(): string | null {
+  if (!browser) return null;
+  try {
+    return localStorage.getItem(PREVIEW_USER_ID_KEY);
+  } catch {
+    return null;
+  }
 }
 
 // ============================================================================
@@ -186,7 +221,9 @@ export const userPreviewState = $state<UserPreviewState>({
 // Direct Firestore Fetchers
 // ============================================================================
 
-async function fetchProfile(userId: string): Promise<PreviewUserProfile | null> {
+async function fetchProfile(
+  userId: string
+): Promise<PreviewUserProfile | null> {
   try {
     const firestore = await getFirestoreInstance();
     const userDoc = await getDoc(doc(firestore, "users", userId));
@@ -219,7 +256,9 @@ async function fetchProfile(userId: string): Promise<PreviewUserProfile | null> 
   }
 }
 
-async function fetchGamification(userId: string): Promise<PreviewGamification | null> {
+async function fetchGamification(
+  userId: string
+): Promise<PreviewGamification | null> {
   try {
     const firestore = await getFirestoreInstance();
     const userDoc = await getDoc(doc(firestore, "users", userId));
@@ -296,7 +335,9 @@ async function fetchCollections(userId: string): Promise<PreviewCollection[]> {
   }
 }
 
-async function fetchAchievements(userId: string): Promise<PreviewAchievement[]> {
+async function fetchAchievements(
+  userId: string
+): Promise<PreviewAchievement[]> {
   try {
     const firestore = await getFirestoreInstance();
     const q = query(
@@ -322,7 +363,9 @@ async function fetchAchievements(userId: string): Promise<PreviewAchievement[]> 
   }
 }
 
-async function fetchNotifications(userId: string): Promise<PreviewNotification[]> {
+async function fetchNotifications(
+  userId: string
+): Promise<PreviewNotification[]> {
   try {
     const firestore = await getFirestoreInstance();
     const q = query(
@@ -352,7 +395,9 @@ async function fetchNotifications(userId: string): Promise<PreviewNotification[]
 async function fetchSettings(userId: string): Promise<AppSettings | null> {
   try {
     const firestore = await getFirestoreInstance();
-    const settingsDoc = await getDoc(doc(firestore, `users/${userId}/settings/preferences`));
+    const settingsDoc = await getDoc(
+      doc(firestore, `users/${userId}/settings/preferences`)
+    );
 
     if (!settingsDoc.exists()) {
       return null;
@@ -368,10 +413,14 @@ async function fetchSettings(userId: string): Promise<AppSettings | null> {
   }
 }
 
-async function fetchNotificationPreferences(userId: string): Promise<NotificationPreferences | null> {
+async function fetchNotificationPreferences(
+  userId: string
+): Promise<NotificationPreferences | null> {
   try {
     const firestore = await getFirestoreInstance();
-    const prefsDoc = await getDoc(doc(firestore, `users/${userId}/settings/notificationPreferences`));
+    const prefsDoc = await getDoc(
+      doc(firestore, `users/${userId}/settings/notificationPreferences`)
+    );
 
     if (!prefsDoc.exists()) {
       // Return defaults if no preferences doc exists
@@ -380,9 +429,15 @@ async function fetchNotificationPreferences(userId: string): Promise<Notificatio
 
     const data = prefsDoc.data();
     // Merge with defaults to ensure all fields are present
-    return { ...DEFAULT_NOTIFICATION_PREFERENCES, ...data } as NotificationPreferences;
+    return {
+      ...DEFAULT_NOTIFICATION_PREFERENCES,
+      ...data,
+    } as NotificationPreferences;
   } catch (err) {
-    console.error("[UserPreview] Failed to fetch notification preferences:", err);
+    console.error(
+      "[UserPreview] Failed to fetch notification preferences:",
+      err
+    );
     return null;
   }
 }
@@ -441,21 +496,33 @@ export async function loadUserPreview(
   userPreviewState.error = null;
   userPreviewState.loadedSections = new Set();
 
+  // Persist the preview user ID for page refresh
+  savePreviewUserId(userId);
+
   try {
     if (eager) {
       // Load all data in parallel
-      const [profile, gamification, sequences, collections, achievements, notifications, settings, authData, notificationPreferences] =
-        await Promise.all([
-          fetchProfile(userId),
-          fetchGamification(userId),
-          fetchSequences(userId),
-          fetchCollections(userId),
-          fetchAchievements(userId),
-          fetchNotifications(userId),
-          fetchSettings(userId),
-          fetchAuthData(userId),
-          fetchNotificationPreferences(userId),
-        ]);
+      const [
+        profile,
+        gamification,
+        sequences,
+        collections,
+        achievements,
+        notifications,
+        settings,
+        authData,
+        notificationPreferences,
+      ] = await Promise.all([
+        fetchProfile(userId),
+        fetchGamification(userId),
+        fetchSequences(userId),
+        fetchCollections(userId),
+        fetchAchievements(userId),
+        fetchNotifications(userId),
+        fetchSettings(userId),
+        fetchAuthData(userId),
+        fetchNotificationPreferences(userId),
+      ]);
 
       userPreviewState.data = {
         profile,
@@ -479,12 +546,13 @@ export async function loadUserPreview(
     } else {
       // Lazy mode: fetch profile, gamification, settings, and notification preferences initially
       // These are needed immediately for ProfileTab and NotificationsTab
-      const [profile, gamification, settings, notificationPreferences] = await Promise.all([
-        fetchProfile(userId),
-        fetchGamification(userId),
-        fetchSettings(userId),
-        fetchNotificationPreferences(userId),
-      ]);
+      const [profile, gamification, settings, notificationPreferences] =
+        await Promise.all([
+          fetchProfile(userId),
+          fetchGamification(userId),
+          fetchSettings(userId),
+          fetchNotificationPreferences(userId),
+        ]);
 
       userPreviewState.data = {
         profile,
@@ -541,7 +609,8 @@ export async function loadPreviewSection(section: LazySection): Promise<void> {
         userPreviewState.data.authData = await fetchAuthData(userId);
         break;
       case "notificationPreferences":
-        userPreviewState.data.notificationPreferences = await fetchNotificationPreferences(userId);
+        userPreviewState.data.notificationPreferences =
+          await fetchNotificationPreferences(userId);
         break;
     }
 
@@ -556,7 +625,9 @@ export async function loadPreviewSection(section: LazySection): Promise<void> {
 /**
  * Refresh a specific section of the preview data
  */
-export async function refreshPreviewSection(section: LazySection): Promise<void> {
+export async function refreshPreviewSection(
+  section: LazySection
+): Promise<void> {
   if (!browser || !userPreviewState.isActive || !userPreviewState.data.profile)
     return;
 
@@ -581,7 +652,8 @@ export async function refreshPreviewSection(section: LazySection): Promise<void>
         userPreviewState.data.authData = await fetchAuthData(userId);
         break;
       case "notificationPreferences":
-        userPreviewState.data.notificationPreferences = await fetchNotificationPreferences(userId);
+        userPreviewState.data.notificationPreferences =
+          await fetchNotificationPreferences(userId);
         break;
     }
   } catch (err) {
@@ -595,6 +667,7 @@ export async function refreshPreviewSection(section: LazySection): Promise<void>
  * Clear the user preview
  */
 export function clearUserPreview(): void {
+  clearPreviewUserId();
   userPreviewState.isActive = false;
   userPreviewState.isLoading = false;
   userPreviewState.loadingSection = null;
@@ -669,4 +742,17 @@ export function getPreviewSettings(): AppSettings | null {
 export function getPreviewNotificationPreferences(): NotificationPreferences | null {
   if (!userPreviewState.isActive) return null;
   return userPreviewState.data.notificationPreferences;
+}
+
+/**
+ * Initialize user preview from persisted state (call on app mount).
+ * Restores preview if one was active before page refresh.
+ */
+export async function initUserPreview(): Promise<void> {
+  if (!browser) return;
+
+  const savedUserId = getSavedPreviewUserId();
+  if (savedUserId && !userPreviewState.isActive) {
+    await loadUserPreview(savedUserId, true);
+  }
 }

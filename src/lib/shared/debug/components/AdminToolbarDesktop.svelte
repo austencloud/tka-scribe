@@ -26,13 +26,18 @@
     canResetIntro: boolean;
     currentIntroTitle: string | null;
     isCurrentUserInQuickAccess: boolean;
-    onSelectUser: (user: { uid: string; displayName: string; email: string }) => void;
+    onSelectUser: (user: {
+      uid: string;
+      displayName: string;
+      email: string;
+    }) => void;
     onRemoveFromQuickAccess: (uid: string) => void;
     onAddToQuickAccess: () => void;
     onClearPreview: () => void;
     onToggleSearch: () => void;
     onResetTabIntro: () => void;
     onPreviewFirstRun: () => void;
+    onPreviewSidebarTour: () => void;
     onClose: () => void;
   }
 
@@ -53,6 +58,7 @@
     onToggleSearch,
     onResetTabIntro,
     onPreviewFirstRun,
+    onPreviewSidebarTour,
     onClose,
   }: Props = $props();
 
@@ -73,10 +79,15 @@
     isActionsOpen = false;
   }
 
+  function handleSidebarTour() {
+    onPreviewSidebarTour();
+    isActionsOpen = false;
+  }
+
   // Close dropdown when clicking outside
   function handleClickOutside(event: MouseEvent) {
     const target = event.target as HTMLElement;
-    if (!target.closest('.actions-menu')) {
+    if (!target.closest(".actions-menu")) {
       isActionsOpen = false;
     }
   }
@@ -86,144 +97,166 @@
 
 <div class="admin-toolbar" transition:slide={{ duration: 150 }}>
   <div class="toolbar-row">
-    <!-- Branding -->
-    <div class="toolbar-branding">
-      <i class="fas fa-shield-alt" aria-hidden="true"></i>
-      <span class="branding-text">Admin</span>
-    </div>
-
-    <!-- Quick Access Users (horizontal scroll) -->
-    <div class="quick-access">
-      {#each quickAccessUsers as user (user.uid)}
-        <div
-          class="quick-chip"
-          class:active={previewProfile?.uid === user.uid}
-          role="button"
-          tabindex="0"
-          onclick={() => onSelectUser(user)}
-          onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') onSelectUser(user); }}
-          title={user.email}
-        >
-          <RobustAvatar
-            src={user.photoURL}
-            name={user.displayName}
-            customSize={28}
-            alt=""
-          />
-          <span class="chip-name">{user.displayName}</span>
-          <button
-            type="button"
-            class="chip-remove"
-            onclick={(e) => { e.stopPropagation(); onRemoveFromQuickAccess(user.uid); }}
-            onkeydown={(e) => e.stopPropagation()}
-            title="Remove"
-          >
-            <i class="fas fa-times" aria-hidden="true"></i>
-          </button>
-        </div>
-      {/each}
-
-      <!-- Search button -->
-      <button
-        type="button"
-        class="search-btn"
-        class:active={isSearchOpen}
-        onclick={onToggleSearch}
-        title="Search users"
-      >
-        <i class="fas fa-search" aria-hidden="true"></i>
-      </button>
-    </div>
-
-    <!-- Current preview indicator + actions -->
-    {#if isUserPreview && previewProfile}
-      <div class="preview-badge">
-        <i class="fas fa-eye" aria-hidden="true"></i>
-        <span class="preview-name">{previewProfile.displayName || previewProfile.email}</span>
-        {#if !isCurrentUserInQuickAccess}
-          <button
-            type="button"
-            class="badge-action"
-            onclick={onAddToQuickAccess}
-            title="Save to quick access"
-          >
-            <i class="far fa-bookmark" aria-hidden="true"></i>
-          </button>
-        {/if}
-        <button
-          type="button"
-          class="badge-action exit"
-          onclick={onClearPreview}
-          title="Exit preview"
-        >
-          <i class="fas fa-sign-out-alt" aria-hidden="true"></i>
-        </button>
+    <!-- LEFT SECTION -->
+    <div class="toolbar-left">
+      <!-- Branding -->
+      <div class="toolbar-branding">
+        <i class="fas fa-shield-alt" aria-hidden="true"></i>
+        <span class="branding-text">Admin</span>
       </div>
-    {/if}
 
-    <!-- Spacer -->
-    <div class="spacer"></div>
+      <!-- Quick Access (only shown when NOT previewing) -->
+      {#if !isUserPreview}
+        <div class="quick-access">
+          <span class="quick-access-label">Quick switch:</span>
+          {#each quickAccessUsers as user (user.uid)}
+            <button
+              type="button"
+              class="quick-chip"
+              onclick={() => onSelectUser(user)}
+              title="Preview as {user.displayName}"
+            >
+              <RobustAvatar
+                src={user.photoURL}
+                name={user.displayName}
+                customSize={26}
+                alt=""
+              />
+              <span class="chip-name">{user.displayName}</span>
+            </button>
+          {/each}
 
-    <!-- Debug Actions Dropdown -->
-    <div class="actions-menu">
-      <button
-        type="button"
-        class="actions-trigger"
-        class:active={isActionsOpen}
-        onclick={toggleActions}
-        title="Debug actions"
-      >
-        <i class="fas fa-wrench" aria-hidden="true"></i>
-        <span class="trigger-label">Debug</span>
-        <i class="fas fa-chevron-down chevron" class:open={isActionsOpen} aria-hidden="true"></i>
-      </button>
-
-      {#if isActionsOpen}
-        <div class="actions-dropdown" transition:fly={{ y: -8, duration: 150 }}>
+          <!-- Search button -->
           <button
             type="button"
-            class="dropdown-item"
-            onclick={handleFirstRun}
+            class="search-btn"
+            class:active={isSearchOpen}
+            onclick={onToggleSearch}
+            title="Search users"
           >
-            <i class="fas fa-wand-magic-sparkles" aria-hidden="true"></i>
-            <span>Preview First Run Wizard</span>
-          </button>
-
-          <button
-            type="button"
-            class="dropdown-item"
-            onclick={handleResetIntro}
-            disabled={!canResetIntro}
-          >
-            <i class="fas fa-door-open" aria-hidden="true"></i>
-            <span>
-              Reset Tab Intro
-              {#if currentIntroTitle}
-                <span class="intro-hint">({currentIntroTitle})</span>
-              {/if}
-            </span>
+            <i class="fas fa-search" aria-hidden="true"></i>
           </button>
         </div>
       {/if}
     </div>
 
-    <!-- Intro reset feedback toast -->
-    {#if introResetMessage}
-      <div class="toast" transition:fly={{ x: 20, duration: 200 }}>
-        <i class="fas fa-check" aria-hidden="true"></i>
-        {introResetMessage}
+    <!-- CENTER SECTION (preview indicator) -->
+    {#if isUserPreview && previewProfile}
+      <div class="toolbar-center">
+        <div class="preview-label">
+          <i class="fas fa-eye" aria-hidden="true"></i>
+          <span>Viewing as:</span>
+        </div>
+        <div class="preview-user">
+          <RobustAvatar
+            src={previewProfile.photoURL}
+            name={previewProfile.displayName || "User"}
+            customSize={32}
+            alt=""
+          />
+          <span class="preview-user-name"
+            >{previewProfile.displayName || previewProfile.email}</span
+          >
+          {#if !isCurrentUserInQuickAccess}
+            <button
+              type="button"
+              class="preview-action save"
+              onclick={onAddToQuickAccess}
+              title="Save to quick access"
+            >
+              <i class="far fa-bookmark" aria-hidden="true"></i>
+            </button>
+          {/if}
+        </div>
+        <button type="button" class="exit-preview-btn" onclick={onClearPreview}>
+          <i class="fas fa-times" aria-hidden="true"></i>
+          <span>Exit Preview</span>
+        </button>
       </div>
+    {:else}
+      <!-- Empty center when not previewing -->
+      <div class="toolbar-center"></div>
     {/if}
 
-    <!-- Close -->
-    <button
-      type="button"
-      class="close-btn"
-      onclick={onClose}
-      title="Close (F9)"
-    >
-      <i class="fas fa-times" aria-hidden="true"></i>
-    </button>
+    <!-- RIGHT SECTION -->
+    <div class="toolbar-right">
+      <!-- Debug Actions Dropdown -->
+      <div class="actions-menu">
+        <button
+          type="button"
+          class="actions-trigger"
+          class:active={isActionsOpen}
+          onclick={toggleActions}
+          title="Debug actions"
+        >
+          <i class="fas fa-wrench" aria-hidden="true"></i>
+          <span class="trigger-label">Debug</span>
+          <i
+            class="fas fa-chevron-down chevron"
+            class:open={isActionsOpen}
+            aria-hidden="true"
+          ></i>
+        </button>
+
+        {#if isActionsOpen}
+          <div
+            class="actions-dropdown"
+            transition:fly={{ y: -8, duration: 150 }}
+          >
+            <button
+              type="button"
+              class="dropdown-item"
+              onclick={handleFirstRun}
+            >
+              <i class="fas fa-wand-magic-sparkles" aria-hidden="true"></i>
+              <span>Preview First Run Wizard</span>
+            </button>
+
+            <button
+              type="button"
+              class="dropdown-item"
+              onclick={handleResetIntro}
+              disabled={!canResetIntro}
+            >
+              <i class="fas fa-door-open" aria-hidden="true"></i>
+              <span>
+                Reset Tab Intro
+                {#if currentIntroTitle}
+                  <span class="intro-hint">({currentIntroTitle})</span>
+                {/if}
+              </span>
+            </button>
+
+            <button
+              type="button"
+              class="dropdown-item"
+              onclick={handleSidebarTour}
+            >
+              <i class="fas fa-route" aria-hidden="true"></i>
+              <span>Preview Sidebar Tour</span>
+            </button>
+          </div>
+        {/if}
+      </div>
+
+      <!-- Intro reset feedback toast -->
+      {#if introResetMessage}
+        <div class="toast" transition:fly={{ x: 20, duration: 200 }}>
+          <i class="fas fa-check" aria-hidden="true"></i>
+          {introResetMessage}
+        </div>
+      {/if}
+
+      <!-- Close -->
+      <button
+        type="button"
+        class="close-btn"
+        onclick={onClose}
+        title="Close (F9)"
+      >
+        <i class="fas fa-times" aria-hidden="true"></i>
+      </button>
+    </div>
   </div>
 
   <!-- Search dropdown -->
@@ -232,7 +265,9 @@
       <UserSearchInput
         onSelect={onSelectUser}
         selectedUserId={previewProfile?.uid || ""}
-        selectedUserDisplay={previewProfile?.displayName || previewProfile?.email || ""}
+        selectedUserDisplay={previewProfile?.displayName ||
+          previewProfile?.email ||
+          ""}
         placeholder="Search users to preview..."
         disabled={isLoading}
         autofocus={true}
@@ -248,7 +283,11 @@
     left: 0;
     right: 0;
     z-index: 9998;
-    background: linear-gradient(180deg, rgba(15, 23, 42, 0.98) 0%, rgba(15, 23, 42, 0.95) 100%);
+    background: linear-gradient(
+      180deg,
+      rgba(15, 23, 42, 0.98) 0%,
+      rgba(15, 23, 42, 0.95) 100%
+    );
     border-bottom: 1px solid rgba(59, 130, 246, 0.3);
     box-shadow: 0 2px 12px var(--theme-shadow);
   }
@@ -258,7 +297,39 @@
     align-items: center;
     gap: 8px;
     padding: 4px 12px;
-    min-height: 56px;
+    height: 48px;
+    overflow: hidden;
+  }
+
+  /* Three-column layout: left and right flex equally, center is fixed content */
+  .toolbar-left {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+    justify-content: flex-start;
+    height: 40px;
+    overflow: hidden;
+  }
+
+  .toolbar-center {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    height: 40px;
+  }
+
+  .toolbar-right {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+    justify-content: flex-end;
+    height: 40px;
+    overflow: hidden;
   }
 
   .toolbar-branding {
@@ -271,18 +342,91 @@
     flex-shrink: 0;
   }
 
-  /* Quick Access - horizontal scroll, no wrap */
-  .quick-access {
+  .preview-label {
     display: flex;
     align-items: center;
     gap: 6px;
+    color: rgba(147, 197, 253, 0.8);
+    font-size: var(--font-size-compact);
+    font-weight: 500;
+  }
+
+  .preview-label i {
+    color: var(--semantic-info);
+  }
+
+  .preview-user {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .preview-user-name {
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    color: white;
+    max-width: 150px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .preview-action.save {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    background: transparent;
+    border: none;
+    border-radius: 4px;
+    color: rgba(255, 255, 255, 0.6);
+    font-size: var(--font-size-compact);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .preview-action.save:hover {
+    color: white;
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  .exit-preview-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    background: rgba(239, 68, 68, 0.2);
+    border: 1px solid rgba(239, 68, 68, 0.4);
+    border-radius: 6px;
+    color: #fca5a5;
+    font-size: var(--font-size-compact);
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .exit-preview-btn:hover {
+    background: rgba(239, 68, 68, 0.35);
+    border-color: rgba(239, 68, 68, 0.6);
+    color: white;
+  }
+
+  /* ============================================
+     QUICK ACCESS (when NOT previewing)
+     ============================================ */
+  .quick-access {
+    display: flex;
+    align-items: center;
+    gap: 8px;
     flex-shrink: 1;
     min-width: 0;
-    max-width: 500px;
+    max-width: 600px;
+    height: 40px;
     overflow-x: auto;
+    overflow-y: hidden;
     scrollbar-width: thin;
     scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
-    padding: 4px 0;
   }
 
   .quick-access::-webkit-scrollbar {
@@ -298,15 +442,22 @@
     border-radius: 2px;
   }
 
+  .quick-access-label {
+    font-size: var(--font-size-compact);
+    color: var(--theme-text-dim);
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
   .quick-chip {
     display: flex;
     align-items: center;
     gap: 6px;
-    height: 40px;
-    padding: 0 8px 0 6px;
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    border-radius: 20px;
+    height: 36px;
+    padding: 0 10px 0 5px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 18px;
     color: var(--theme-text);
     font-size: var(--font-size-compact);
     cursor: pointer;
@@ -315,13 +466,8 @@
   }
 
   .quick-chip:hover {
-    background: rgba(255, 255, 255, 0.12);
-    border-color: rgba(255, 255, 255, 0.25);
-  }
-
-  .quick-chip.active {
-    background: rgba(59, 130, 246, 0.3);
-    border-color: var(--semantic-info);
+    background: rgba(59, 130, 246, 0.2);
+    border-color: rgba(59, 130, 246, 0.4);
   }
 
   .chip-name {
@@ -331,35 +477,15 @@
     white-space: nowrap;
   }
 
-  .chip-remove {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 20px;
-    height: 20px;
-    background: transparent;
-    border: none;
-    border-radius: 50%;
-    color: var(--theme-text-dim);
-    font-size: 10px;
-    cursor: pointer;
-    transition: all 0.15s;
-  }
-
-  .chip-remove:hover {
-    background: rgba(239, 68, 68, 0.3);
-    color: white;
-  }
-
   .search-btn {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 40px;
-    height: 40px;
+    width: 36px;
+    height: 36px;
     background: rgba(255, 255, 255, 0.06);
     border: 1px solid var(--theme-stroke);
-    border-radius: 20px;
+    border-radius: 18px;
     color: var(--theme-text-dim);
     font-size: var(--font-size-sm);
     cursor: pointer;
@@ -378,59 +504,10 @@
     color: var(--semantic-info);
   }
 
-  .preview-badge {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 0 12px;
-    height: 40px;
-    background: rgba(59, 130, 246, 0.15);
-    border: 1px solid rgba(59, 130, 246, 0.3);
-    border-radius: 8px;
-    color: #93c5fd;
-    font-size: var(--font-size-compact);
-    flex-shrink: 0;
-  }
-
-  .preview-badge > i:first-child {
-    color: var(--semantic-info);
-  }
-
-  .preview-name {
-    max-width: 120px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
-  .badge-action {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  .search-btn.mini {
     width: 28px;
     height: 28px;
-    background: transparent;
-    border: none;
-    border-radius: 4px;
-    color: var(--theme-text-dim);
     font-size: var(--font-size-compact);
-    cursor: pointer;
-    transition: all 0.15s;
-  }
-
-  .badge-action:hover {
-    background: rgba(255, 255, 255, 0.1);
-    color: white;
-  }
-
-  .badge-action.exit:hover {
-    background: rgba(239, 68, 68, 0.2);
-    color: var(--semantic-error);
-  }
-
-  .spacer {
-    flex: 1;
-    min-width: 8px;
   }
 
   /* Debug Actions Dropdown */
