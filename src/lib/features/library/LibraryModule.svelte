@@ -12,7 +12,7 @@
   import SequencesView from "./components/SequencesView.svelte";
   import CollectionsView from "./components/CollectionsView.svelte";
   import CompositionsView from "./components/CompositionsView.svelte";
-  
+
   type LibraryTab = "sequences" | "collections" | "compositions";
 
   // Active tab synced with navigation state
@@ -56,23 +56,23 @@
 </script>
 
 <div class="library-module">
-    <div class="content-container">
-      <!-- Sequences Tab -->
-      <div class="tab-panel" class:active={isTabActive("sequences")}>
-        <SequencesView />
-      </div>
+  <div class="content-container">
+    <!-- Sequences Tab -->
+    <div class="tab-panel" class:active={isTabActive("sequences")}>
+      <SequencesView />
+    </div>
 
-      <!-- Collections Tab -->
-      <div class="tab-panel" class:active={isTabActive("collections")}>
-        <CollectionsView />
-      </div>
+    <!-- Collections Tab -->
+    <div class="tab-panel" class:active={isTabActive("collections")}>
+      <CollectionsView />
+    </div>
 
-      <!-- Compositions Tab -->
-      <div class="tab-panel" class:active={isTabActive("compositions")}>
-        <CompositionsView />
-      </div>
+    <!-- Compositions Tab -->
+    <div class="tab-panel" class:active={isTabActive("compositions")}>
+      <CompositionsView />
     </div>
   </div>
+</div>
 
 <style>
   .library-module {

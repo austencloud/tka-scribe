@@ -30,9 +30,7 @@
   let showStats = $state(false);
 
   onMount(() => {
-    detectionService = resolve<IPositionDetector>(
-      TYPES.IPositionDetector
-    );
+    detectionService = resolve<IPositionDetector>(TYPES.IPositionDetector);
 
     // Update performance stats every 500ms
     perfInterval = window.setInterval(() => {
@@ -177,7 +175,11 @@
   .status-item.active .status-dot {
     background: var(--semantic-success, var(--semantic-success));
     box-shadow: 0 0 8px
-      color-mix(in srgb, var(--semantic-success, var(--semantic-success)) 60%, transparent);
+      color-mix(
+        in srgb,
+        var(--semantic-success, var(--semantic-success)) 60%,
+        transparent
+      );
   }
 
   .status-label {

@@ -11,9 +11,7 @@ import type { ILOOPExplanationTextGenerator } from "../contracts/ILOOPExplanatio
  * Service for generating user-friendly explanation text for LOOP transformations
  */
 @injectable()
-export class LOOPExplanationTextGenerator
-  implements ILOOPExplanationTextGenerator
-{
+export class LOOPExplanationTextGenerator implements ILOOPExplanationTextGenerator {
   /**
    * Descriptions for each LOOP transformation type
    * Kept in the service layer as they're only used for explanation generation

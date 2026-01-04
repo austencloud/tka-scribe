@@ -142,7 +142,11 @@ Displays:
   {#if hasContent}
     <div class="content-area" id="creator-library-content-{profile.userId}">
       <!-- Content Tabs -->
-      <div class="content-tabs" role="tablist" aria-label="Creator content tabs">
+      <div
+        class="content-tabs"
+        role="tablist"
+        aria-label="Creator content tabs"
+      >
         <button
           type="button"
           role="tab"
@@ -518,13 +522,8 @@ Displays:
     justify-content: center;
     gap: 4px;
     aspect-ratio: 1;
-    background: color-mix(
-      in srgb,
-      var(--theme-accent) 15%,
-      transparent
-    );
-    border: 1px dashed
-      color-mix(in srgb, var(--theme-accent) 40%, transparent);
+    background: color-mix(in srgb, var(--theme-accent) 15%, transparent);
+    border: 1px dashed color-mix(in srgb, var(--theme-accent) 40%, transparent);
     border-radius: 8px;
     color: var(--theme-accent);
     cursor: pointer;
@@ -532,16 +531,8 @@ Displays:
   }
 
   .see-all-btn:hover {
-    background: color-mix(
-      in srgb,
-      var(--theme-accent) 25%,
-      transparent
-    );
-    border-color: color-mix(
-      in srgb,
-      var(--theme-accent) 60%,
-      transparent
-    );
+    background: color-mix(in srgb, var(--theme-accent) 25%, transparent);
+    border-color: color-mix(in srgb, var(--theme-accent) 60%, transparent);
   }
 
   .see-all-count {

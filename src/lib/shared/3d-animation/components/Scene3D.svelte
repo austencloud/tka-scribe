@@ -76,7 +76,10 @@
     /** Disable orbit controls (for object dragging) */
     disableOrbitControls?: boolean;
     /** Callback when a mesh is clicked (for performer selection/dragging) */
-    onMeshClick?: (meshName: string, point: { x: number; y: number; z: number }) => void;
+    onMeshClick?: (
+      meshName: string,
+      point: { x: number; y: number; z: number }
+    ) => void;
     /** Callback when pointer is released (for drag end) */
     onPointerUp?: () => void;
     /** Callback during drag with ground plane coordinates */
@@ -113,7 +116,7 @@
 
   // Handle mesh click from raycaster
   function handleMeshClick(mesh: THREE.Object3D, point: THREE.Vector3) {
-    const meshName = mesh.name || '';
+    const meshName = mesh.name || "";
     if (onMeshClick) {
       onMeshClick(meshName, { x: point.x, y: point.y, z: point.z });
     }
@@ -122,9 +125,7 @@
   // Grid positions match avatar positions - rotation pivot is at the avatar
   // The gridOffset prop on Grid3D handles the forward offset in body-local space
   const gridPositions = $derived(
-    avatarPositions.length > 0
-      ? avatarPositions
-      : [{ x: 0, y: 0, z: 0 }]
+    avatarPositions.length > 0 ? avatarPositions : [{ x: 0, y: 0, z: 0 }]
   );
 
   // Grid offset pushes the grid forward from avatar in body-local space
@@ -134,9 +135,9 @@
   // Determine if this is a night/dark environment that needs reduced lighting
   const isNightEnvironment = $derived(
     backgroundType === BackgroundType.FIREFLY_FOREST ||
-    backgroundType === BackgroundType.NIGHT_SKY ||
-    backgroundType === BackgroundType.AURORA ||
-    backgroundType === BackgroundType.DEEP_OCEAN
+      backgroundType === BackgroundType.NIGHT_SKY ||
+      backgroundType === BackgroundType.AURORA ||
+      backgroundType === BackgroundType.DEEP_OCEAN
   );
 
   // Environment-aware lighting intensities
@@ -159,8 +160,12 @@
   };
 
   // Use custom position if provided, otherwise use preset
-  let cameraPosition = $derived(customCameraPosition ?? cameraPositions[cameraPreset]);
-  let cameraTarget = $derived(customCameraTarget ?? [0, 0, 0] as [number, number, number]);
+  let cameraPosition = $derived(
+    customCameraPosition ?? cameraPositions[cameraPreset]
+  );
+  let cameraTarget = $derived(
+    customCameraTarget ?? ([0, 0, 0] as [number, number, number])
+  );
 
   // Track if we should use custom position (set to false when preset changes)
   let useCustom = $state(false);
@@ -194,7 +199,12 @@
 <div class="scene-container" role="application">
   <Canvas>
     <!-- Manual raycasting for click detection (bypasses broken Threlte interactivity) -->
-    <ManualRaycaster onMeshClick={handleMeshClick} {onPointerUp} {onDrag} {isDragging} />
+    <ManualRaycaster
+      onMeshClick={handleMeshClick}
+      {onPointerUp}
+      {onDrag}
+      {isDragging}
+    />
 
     <!-- Perspective Camera (disabled when locomotion mode provides its own) -->
     {#if !disableCamera}

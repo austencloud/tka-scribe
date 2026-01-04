@@ -29,7 +29,10 @@ import { PlatformDetector } from "../../mobile/services/implementations/Platform
 import { GestureHandler } from "../../mobile/services/implementations/GestureHandler";
 import { PWAEngagementTracker } from "../../mobile/services/implementations/PWAEngagementTracker";
 import { PWAInstallDismissalManager } from "../../mobile/services/implementations/PWAInstallDismissalManager";
-import { SettingsState, settingsService } from "../../settings/state/SettingsState.svelte";
+import {
+  SettingsState,
+  settingsService,
+} from "../../settings/state/SettingsState.svelte";
 import { FirebaseSettingsPersister } from "../../settings/services/implementations/FirebaseSettingsPersister";
 import { OnboardingPersister } from "../../onboarding/services/implementations/OnboardingPersister";
 import { TagManager } from "../../../features/library/services/implementations/TagManager";
@@ -40,9 +43,7 @@ export const coreModule = new ContainerModule(
     // === APPLICATION SERVICES ===
     options.bind(TYPES.IApplicationInitializer).to(ApplicationInitializer);
     options.bind(TYPES.IResourceTracker).to(ResourceTracker);
-    options
-      .bind(TYPES.IComponentManager)
-      .to(ComponentManager);
+    options.bind(TYPES.IComponentManager).to(ComponentManager);
     options.bind(TYPES.IErrorHandler).to(ErrorHandler);
     options.bind(TYPES.IHapticFeedback).to(HapticFeedback);
     options.bind(TYPES.IRippleEffect).to(RippleEffect);

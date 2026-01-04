@@ -106,7 +106,10 @@ class GalleryPersistence {
   /**
    * Load all stored images
    */
-  async loadAll(): Promise<{ images: RenderedImage[]; blobs: Map<string, Blob> }> {
+  async loadAll(): Promise<{
+    images: RenderedImage[];
+    blobs: Map<string, Blob>;
+  }> {
     await this.init();
     if (!this.db) return { images: [], blobs: new Map() };
 

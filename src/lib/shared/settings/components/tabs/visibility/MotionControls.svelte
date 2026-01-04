@@ -49,7 +49,11 @@
       transparent
     );
     border: 1px solid
-      color-mix(in srgb, var(--semantic-info, var(--semantic-info)) 20%, transparent);
+      color-mix(
+        in srgb,
+        var(--semantic-info, var(--semantic-info)) 20%,
+        transparent
+      );
     border-radius: 10px;
     padding: 16px;
   }

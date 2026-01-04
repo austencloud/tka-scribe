@@ -148,7 +148,9 @@
   }
 
   function toggleBothEnds() {
-    const newMode = isBothEnds ? TrackingMode.RIGHT_END : TrackingMode.BOTH_ENDS;
+    const newMode = isBothEnds
+      ? TrackingMode.RIGHT_END
+      : TrackingMode.BOTH_ENDS;
     animationSettings.setTrackingMode(newMode);
     updateCounter++;
   }
@@ -163,7 +165,8 @@
       onclick={toggleBlueMotion}
       type="button"
     >
-      <i class="fas fa-eye{getBlueMotion() ? '' : '-slash'}" aria-hidden="true"></i>
+      <i class="fas fa-eye{getBlueMotion() ? '' : '-slash'}" aria-hidden="true"
+      ></i>
       <span>Blue</span>
     </button>
     <button
@@ -172,7 +175,8 @@
       onclick={toggleRedMotion}
       type="button"
     >
-      <i class="fas fa-eye{getRedMotion() ? '' : '-slash'}" aria-hidden="true"></i>
+      <i class="fas fa-eye{getRedMotion() ? '' : '-slash'}" aria-hidden="true"
+      ></i>
       <span>Red</span>
     </button>
   </div>

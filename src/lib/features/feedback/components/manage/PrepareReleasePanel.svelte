@@ -174,14 +174,17 @@
               <div class="changelog-preview">
                 {#each versionState.generatedChangelog as entry (entry.text)}
                   <div class="changelog-entry {entry.category}">
-                    <i class="fas {getCategoryIcon(entry.category)}" aria-hidden="true"></i>
+                    <i
+                      class="fas {getCategoryIcon(entry.category)}"
+                      aria-hidden="true"
+                    ></i>
                     <span class="entry-text">{entry.text}</span>
                   </div>
                 {/each}
               </div>
               <p class="changelog-hint">
-                Generated from {versionState.completedFeedback.length} completed
-                feedback items
+                Generated from {versionState.completedFeedback.length} completed feedback
+                items
               </p>
             {:else}
               <div class="changelog-empty">
@@ -303,8 +306,16 @@
     border-bottom: 1px solid var(--theme-stroke, var(--theme-stroke));
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent-strong)) 15%, transparent),
-      color-mix(in srgb, var(--theme-accent, var(--semantic-info)) 10%, transparent)
+      color-mix(
+        in srgb,
+        var(--theme-accent-strong, var(--theme-accent-strong)) 15%,
+        transparent
+      ),
+      color-mix(
+        in srgb,
+        var(--theme-accent, var(--semantic-info)) 10%,
+        transparent
+      )
     );
   }
 
@@ -588,7 +599,11 @@
   .primary-btn:hover:not(:disabled) {
     transform: translateY(-1px);
     box-shadow: 0 4px 12px
-      color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent-strong)) 40%, transparent);
+      color-mix(
+        in srgb,
+        var(--theme-accent-strong, var(--theme-accent-strong)) 40%,
+        transparent
+      );
   }
 
   .primary-btn:disabled {
@@ -663,8 +678,16 @@
     justify-content: center;
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent-strong)) 20%, transparent),
-      color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent)) 10%, transparent)
+      color-mix(
+        in srgb,
+        var(--theme-accent-strong, var(--theme-accent-strong)) 20%,
+        transparent
+      ),
+      color-mix(
+        in srgb,
+        var(--theme-accent-strong, var(--theme-accent)) 10%,
+        transparent
+      )
     );
     border-radius: 50%;
     margin-bottom: 16px;

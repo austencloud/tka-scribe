@@ -185,12 +185,20 @@
   // Get prop types from SETTINGS (not sequence data)
   const bluePropType = $derived.by(() => {
     if (!settingsService) return null;
-    return settingsService.settings.bluePropType ?? settingsService.settings.propType ?? null;
+    return (
+      settingsService.settings.bluePropType ??
+      settingsService.settings.propType ??
+      null
+    );
   });
 
   const redPropType = $derived.by(() => {
     if (!settingsService) return null;
-    return settingsService.settings.redPropType ?? settingsService.settings.propType ?? null;
+    return (
+      settingsService.settings.redPropType ??
+      settingsService.settings.propType ??
+      null
+    );
   });
 
   const currentPropType = $derived.by(() => {
@@ -308,7 +316,6 @@
   {onStepPlaybackStepSizeChange}
   {onPlaybackToggle}
 />
-
 
 <style>
   /* Controls Panel Container */

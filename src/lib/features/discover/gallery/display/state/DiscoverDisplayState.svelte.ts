@@ -98,9 +98,7 @@ export function createGalleryDisplayStateService(): IDiscoverDisplayStateService
 }
 
 // For backward compatibility, export a class-like interface
-export class DiscoverDisplayStateService
-  implements IDiscoverDisplayStateService
-{
+export class DiscoverDisplayStateService implements IDiscoverDisplayStateService {
   private state = createGalleryDisplayStateService();
 
   get loadingState() {

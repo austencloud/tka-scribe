@@ -97,11 +97,16 @@ export function createConstructTabState(
   function loadPersistedContinuousFilter(): boolean {
     try {
       if (!filterPersister) {
-        filterPersister = resolve<IFilterPersister>(TYPES.IOptionPickerFilterPersister);
+        filterPersister = resolve<IFilterPersister>(
+          TYPES.IOptionPickerFilterPersister
+        );
       }
       return filterPersister.loadContinuousOnly();
     } catch (e) {
-      console.warn("⚠️ ConstructTabState: Failed to load continuous filter:", e);
+      console.warn(
+        "⚠️ ConstructTabState: Failed to load continuous filter:",
+        e
+      );
       return false;
     }
   }
@@ -437,11 +442,16 @@ export function createConstructTabState(
     // Persist the continuous filter setting
     try {
       if (!filterPersister) {
-        filterPersister = resolve<IFilterPersister>(TYPES.IOptionPickerFilterPersister);
+        filterPersister = resolve<IFilterPersister>(
+          TYPES.IOptionPickerFilterPersister
+        );
       }
       filterPersister.saveContinuousOnly(continuous);
     } catch (e) {
-      console.warn("⚠️ ConstructTabState: Failed to save continuous filter:", e);
+      console.warn(
+        "⚠️ ConstructTabState: Failed to save continuous filter:",
+        e
+      );
     }
   }
 

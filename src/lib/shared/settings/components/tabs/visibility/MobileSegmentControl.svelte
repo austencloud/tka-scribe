@@ -71,8 +71,8 @@
     color: var(--theme-text-dim);
     font-size: var(--font-size-sm);
     font-weight: 600;
-    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui,
-      sans-serif;
+    font-family:
+      -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
     cursor: pointer;
     transition: all 150ms ease;
     -webkit-tap-highlight-color: transparent;
@@ -103,9 +103,17 @@
     color: white;
     box-shadow:
       0 0 0 1px
-        color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 20%, transparent),
+        color-mix(
+          in srgb,
+          var(--theme-accent, var(--theme-accent)) 20%,
+          transparent
+        ),
       0 4px 16px
-        color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 30%, transparent);
+        color-mix(
+          in srgb,
+          var(--theme-accent, var(--theme-accent)) 30%,
+          transparent
+        );
   }
 
   .segment-btn.active i {
@@ -113,8 +121,7 @@
   }
 
   .segment-btn:focus-visible {
-    outline: 2px solid
-      color-mix(in srgb, var(--theme-accent) 50%, transparent);
+    outline: 2px solid color-mix(in srgb, var(--theme-accent) 50%, transparent);
     outline-offset: 2px;
   }
 

@@ -63,7 +63,6 @@ export enum LOOPComponent {
   INVERTED = "inverted",
 }
 
-
 /**
  * Display metadata for LOOP component UI
  * Visual representation only - descriptions handled by LOOPExplanationTextGenerator service

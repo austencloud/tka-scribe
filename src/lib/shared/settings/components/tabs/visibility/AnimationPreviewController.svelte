@@ -129,8 +129,11 @@
 
       // Create and apply 1,1 turn pattern to get visible trails
       // Use DI to resolve the service (container should be ready by the time user opens settings)
-      type ITurnPatternManager = import("$lib/features/create/shared/services/contracts/ITurnPatternManager").ITurnPatternManager;
-      const turnPatternManager = resolve<ITurnPatternManager>(TYPES.ITurnPatternManager);
+      type ITurnPatternManager =
+        import("$lib/features/create/shared/services/contracts/ITurnPatternManager").ITurnPatternManager;
+      const turnPatternManager = resolve<ITurnPatternManager>(
+        TYPES.ITurnPatternManager
+      );
       const turnPattern = createOneTurnPattern(baseSequence.beats.length);
       const result = turnPatternManager.applyPattern(turnPattern, baseSequence);
 
@@ -201,7 +204,8 @@
       const newGridVisible = visibilityManager.isGridVisible();
 
       // Track if critical playback settings changed that require restart
-      const playbackModeChanged = animationState.playbackMode !== newPlaybackMode;
+      const playbackModeChanged =
+        animationState.playbackMode !== newPlaybackMode;
       const speedChanged = animationState.speed !== newSpeed;
       const wasPlaying = animationState.isPlaying;
 
@@ -217,7 +221,11 @@
       }
 
       // Restart playback if critical settings changed while playing
-      if ((playbackModeChanged || speedChanged) && wasPlaying && playbackController) {
+      if (
+        (playbackModeChanged || speedChanged) &&
+        wasPlaying &&
+        playbackController
+      ) {
         playbackController.togglePlayback(); // Stop
         playbackController.togglePlayback(); // Start with new settings
       }

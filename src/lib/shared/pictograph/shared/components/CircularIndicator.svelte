@@ -58,15 +58,27 @@
     <defs>
       <!-- Golden gradient for star -->
       <radialGradient id="starGradient" cx="30%" cy="30%">
-        <stop offset="0%" style="stop-color:var(--semantic-warning);stop-opacity:1" />
-        <stop offset="50%" style="stop-color:var(--semantic-warning);stop-opacity:1" />
+        <stop
+          offset="0%"
+          style="stop-color:var(--semantic-warning);stop-opacity:1"
+        />
+        <stop
+          offset="50%"
+          style="stop-color:var(--semantic-warning);stop-opacity:1"
+        />
         <stop offset="100%" style="stop-color:#d97706;stop-opacity:1" />
       </radialGradient>
 
       <!-- Glow effect -->
       <radialGradient id="starGlow">
-        <stop offset="0%" style="stop-color:var(--semantic-warning);stop-opacity:0.8" />
-        <stop offset="100%" style="stop-color:var(--semantic-warning);stop-opacity:0" />
+        <stop
+          offset="0%"
+          style="stop-color:var(--semantic-warning);stop-opacity:0.8"
+        />
+        <stop
+          offset="100%"
+          style="stop-color:var(--semantic-warning);stop-opacity:0"
+        />
       </radialGradient>
     </defs>
   </g>

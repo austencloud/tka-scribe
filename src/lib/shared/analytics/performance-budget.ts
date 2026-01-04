@@ -143,7 +143,9 @@ class PerformanceBudgetChecker {
 
     // FCP (need to wait for paint entries)
     const paintEntries = performance.getEntriesByType("paint");
-    const fcpEntry = paintEntries.find((e) => e.name === "first-contentful-paint");
+    const fcpEntry = paintEntries.find(
+      (e) => e.name === "first-contentful-paint"
+    );
     if (fcpEntry) {
       this.check("fcp", fcpEntry.startTime);
     }
@@ -155,7 +157,9 @@ class PerformanceBudgetChecker {
   checkResources(): void {
     if (typeof window === "undefined") return;
 
-    const resources = performance.getEntriesByType("resource") as PerformanceResourceTiming[];
+    const resources = performance.getEntriesByType(
+      "resource"
+    ) as PerformanceResourceTiming[];
 
     let totalJS = 0;
     let totalCSS = 0;
@@ -168,7 +172,10 @@ class PerformanceBudgetChecker {
 
       if (resource.initiatorType === "script") {
         totalJS += size;
-      } else if (resource.initiatorType === "css" || resource.name.endsWith(".css")) {
+      } else if (
+        resource.initiatorType === "css" ||
+        resource.name.endsWith(".css")
+      ) {
         totalCSS += size;
       } else if (["img", "image"].includes(resource.initiatorType)) {
         totalImages += size;
@@ -250,5 +257,7 @@ if (typeof window !== "undefined") {
   }
 
   // Expose to window for debugging
-  (window as unknown as { budgetChecker: PerformanceBudgetChecker }).budgetChecker = budgetChecker;
+  (
+    window as unknown as { budgetChecker: PerformanceBudgetChecker }
+  ).budgetChecker = budgetChecker;
 }

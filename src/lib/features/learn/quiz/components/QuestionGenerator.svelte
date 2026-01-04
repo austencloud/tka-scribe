@@ -31,9 +31,7 @@
 
   // Initialize haptic service
   $effect(() => {
-    hapticService = resolve<IHapticFeedback>(
-      TYPES.IHapticFeedback
-    );
+    hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
   });
 
   // Type guards for type-safe access to questionData properties

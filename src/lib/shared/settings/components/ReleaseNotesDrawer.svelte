@@ -17,7 +17,9 @@
     try {
       const versions = await versionService.getVersions();
       // Find the current version in the list
-      const currentVersion = versions.find(v => v.version === __APP_VERSION__);
+      const currentVersion = versions.find(
+        (v) => v.version === __APP_VERSION__
+      );
       releaseNotesDrawerState.setVersion(currentVersion || null);
     } catch (err) {
       releaseNotesDrawerState.setError("Failed to load release notes");
@@ -41,7 +43,8 @@
 
   // Detect if user is on desktop (has mouse/keyboard)
   const isDesktop = $derived(
-    typeof window !== "undefined" && window.matchMedia("(hover: hover) and (pointer: fine)").matches
+    typeof window !== "undefined" &&
+      window.matchMedia("(hover: hover) and (pointer: fine)").matches
   );
 
   function handleClose() {
@@ -54,11 +57,14 @@
   const error = $derived(releaseNotesDrawerState.error);
 
   const groupedChangelog = $derived.by(() => {
-    if (!version?.changelogEntries) return { fixed: [], added: [], improved: [] };
+    if (!version?.changelogEntries)
+      return { fixed: [], added: [], improved: [] };
     return {
-      fixed: version.changelogEntries.filter(e => e.category === "fixed"),
-      added: version.changelogEntries.filter(e => e.category === "added"),
-      improved: version.changelogEntries.filter(e => e.category === "improved"),
+      fixed: version.changelogEntries.filter((e) => e.category === "fixed"),
+      added: version.changelogEntries.filter((e) => e.category === "added"),
+      improved: version.changelogEntries.filter(
+        (e) => e.category === "improved"
+      ),
     };
   });
 </script>
@@ -98,11 +104,7 @@
         {/if}
 
         {#if version.changelogEntries && version.changelogEntries.length > 0}
-          {#each [
-            { key: "added" as const, label: "Added", icon: "fa-plus", color: "var(--semantic-success)" },
-            { key: "improved" as const, label: "Improved", icon: "fa-arrow-up", color: "var(--semantic-info)" },
-            { key: "fixed" as const, label: "Fixed", icon: "fa-wrench", color: "var(--semantic-warning)" }
-          ] as cat}
+          {#each [{ key: "added" as const, label: "Added", icon: "fa-plus", color: "var(--semantic-success)" }, { key: "improved" as const, label: "Improved", icon: "fa-arrow-up", color: "var(--semantic-info)" }, { key: "fixed" as const, label: "Fixed", icon: "fa-wrench", color: "var(--semantic-warning)" }] as cat}
             {#if groupedChangelog[cat.key].length > 0}
               <section class="changelog-section">
                 <h3 style="--cat-color: {cat.color}">
@@ -118,7 +120,9 @@
             {/if}
           {/each}
         {:else}
-          <p class="no-changelog">No detailed changelog available for this version.</p>
+          <p class="no-changelog">
+            No detailed changelog available for this version.
+          </p>
         {/if}
       {:else}
         <p class="no-version">Version information not available.</p>
@@ -131,7 +135,9 @@
       </div>
       <div class="reminder-content">
         <p class="reminder-heading">Have ideas or found a bug?</p>
-        <p class="reminder-subtext">Your feedback shapes TKA Scribe. I read every submission!</p>
+        <p class="reminder-subtext">
+          Your feedback shapes TKA Scribe. I read every submission!
+        </p>
       </div>
       <button class="feedback-btn" onclick={handleSubmitFeedback}>
         Submit Feedback
@@ -257,7 +263,8 @@
     color: var(--theme-text);
   }
 
-  .no-changelog, .no-version {
+  .no-changelog,
+  .no-version {
     text-align: center;
     color: var(--theme-text-dim, var(--theme-text-dim));
     font-style: italic;
@@ -277,8 +284,13 @@
   }
 
   @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.5; }
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.5;
+    }
   }
 
   .error-state {

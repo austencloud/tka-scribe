@@ -18,11 +18,13 @@
 ## Current Path
 
 The PremiumShowcase component looks for:
+
 ```
 /images/austen.jpg
 ```
 
 Which maps to:
+
 ```
 F:\_THE KINETIC ALPHABET\_TKA-SCRIBE\static\images\austen.jpg
 ```
@@ -30,6 +32,7 @@ F:\_THE KINETIC ALPHABET\_TKA-SCRIBE\static\images\austen.jpg
 ## To Change the Filename
 
 Edit `PremiumShowcase.svelte` line 57:
+
 ```svelte
 <img
   src="/images/YOUR_FILENAME_HERE.jpg"

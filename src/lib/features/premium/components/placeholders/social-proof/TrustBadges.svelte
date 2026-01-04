@@ -16,8 +16,18 @@
   let { badges = [] }: Props = $props();
 
   const defaultBadges: Badge[] = [
-    { id: "stripe", type: "security", name: "Secure payments by Stripe", icon: "fa-lock" },
-    { id: "ssl", type: "security", name: "256-bit SSL encryption", icon: "fa-shield-alt" }
+    {
+      id: "stripe",
+      type: "security",
+      name: "Secure payments by Stripe",
+      icon: "fa-lock",
+    },
+    {
+      id: "ssl",
+      type: "security",
+      name: "256-bit SSL encryption",
+      icon: "fa-shield-alt",
+    },
     // Add festivals after collecting data
   ];
 
@@ -28,7 +38,12 @@
   <div class="badges-grid">
     {#each displayBadges as badge (badge.id)}
       {#if badge.link}
-        <a href={badge.link} target="_blank" rel="noopener noreferrer" class="badge">
+        <a
+          href={badge.link}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="badge"
+        >
           {#if badge.logoUrl}
             <img src={badge.logoUrl} alt={badge.name} />
           {:else if badge.icon}

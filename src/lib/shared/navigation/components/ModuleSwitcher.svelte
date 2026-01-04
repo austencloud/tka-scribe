@@ -57,9 +57,7 @@
   }
 
   onMount(() => {
-    hapticService = resolve<IHapticFeedback>(
-      TYPES.IHapticFeedback
-    );
+    hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
 
     // Resolve DeviceDetector service (same pattern as MobileNavigation)
     let deviceCleanup: (() => void) | undefined;
@@ -232,7 +230,11 @@
       90deg,
       transparent,
       color-mix(in srgb, var(--theme-accent) 30%, transparent),
-      color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent-strong)) 30%, transparent),
+      color-mix(
+        in srgb,
+        var(--theme-accent-strong, var(--theme-accent-strong)) 30%,
+        transparent
+      ),
       transparent
     );
   }
@@ -254,7 +256,9 @@
     display: flex;
     align-items: center;
     gap: 6px;
-    font-size: var(--font-size-sm); /* Increased from 12px for better mobile readability */
+    font-size: var(
+      --font-size-sm
+    ); /* Increased from 12px for better mobile readability */
     color: var(--theme-text-dim, var(--theme-text-dim));
   }
 
@@ -315,8 +319,7 @@
 
     /* Thin scrollbar */
     scrollbar-width: thin;
-    scrollbar-color: var(--theme-stroke-strong)
-      transparent;
+    scrollbar-color: var(--theme-stroke-strong) transparent;
   }
 
   .module-switcher-content::-webkit-scrollbar {
@@ -366,7 +369,9 @@
     }
 
     .module-switcher-header h2 {
-      font-size: var(--font-size-lg); /* Slightly smaller on very small screens */
+      font-size: var(
+        --font-size-lg
+      ); /* Slightly smaller on very small screens */
     }
 
     .current-location {

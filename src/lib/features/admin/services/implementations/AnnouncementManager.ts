@@ -105,7 +105,10 @@ export class AnnouncementManager implements IAnnouncementManager {
       await setDoc(newDoc, announcementData);
       return newDoc.id;
     } catch (error) {
-      console.error("[AnnouncementManager] Failed to create announcement:", error);
+      console.error(
+        "[AnnouncementManager] Failed to create announcement:",
+        error
+      );
       toast.error("Failed to create announcement. Please try again.");
       throw error;
     }
@@ -127,7 +130,8 @@ export class AnnouncementManager implements IAnnouncementManager {
 
       if (updates.title !== undefined) updateData.title = updates.title;
       if (updates.message !== undefined) updateData.message = updates.message;
-      if (updates.severity !== undefined) updateData.severity = updates.severity;
+      if (updates.severity !== undefined)
+        updateData.severity = updates.severity;
       if (updates.targetAudience !== undefined)
         updateData.targetAudience = updates.targetAudience;
       if (updates.showAsModal !== undefined)
@@ -147,7 +151,10 @@ export class AnnouncementManager implements IAnnouncementManager {
 
       await updateDoc(docRef, updateData);
     } catch (error) {
-      console.error("[AnnouncementManager] Failed to update announcement:", error);
+      console.error(
+        "[AnnouncementManager] Failed to update announcement:",
+        error
+      );
       toast.error("Failed to update announcement. Please try again.");
       throw error;
     }
@@ -162,7 +169,10 @@ export class AnnouncementManager implements IAnnouncementManager {
       const docRef = doc(firestore, this.ANNOUNCEMENTS_COLLECTION, id);
       await deleteDoc(docRef);
     } catch (error) {
-      console.error("[AnnouncementManager] Failed to delete announcement:", error);
+      console.error(
+        "[AnnouncementManager] Failed to delete announcement:",
+        error
+      );
       toast.error("Failed to delete announcement. Please try again.");
       throw error;
     }
@@ -183,7 +193,10 @@ export class AnnouncementManager implements IAnnouncementManager {
       const snapshot = await getDocs(q);
       return snapshot.docs.map((doc) => this.fromFirestore(doc.data(), doc.id));
     } catch (error) {
-      console.error("[AnnouncementManager] Failed to get announcements:", error);
+      console.error(
+        "[AnnouncementManager] Failed to get announcements:",
+        error
+      );
       toast.error("Failed to load announcements.");
       return [];
     }
@@ -241,7 +254,10 @@ export class AnnouncementManager implements IAnnouncementManager {
 
       return announcements;
     } catch (error) {
-      console.error("[AnnouncementManager] Failed to get active announcements:", error);
+      console.error(
+        "[AnnouncementManager] Failed to get active announcements:",
+        error
+      );
       toast.error("Failed to load announcements.");
       return [];
     }
@@ -263,7 +279,10 @@ export class AnnouncementManager implements IAnnouncementManager {
       const dismissalDoc = await getDoc(dismissalRef);
       return dismissalDoc.exists();
     } catch (error) {
-      console.error("[AnnouncementManager] Failed to check dismissal status:", error);
+      console.error(
+        "[AnnouncementManager] Failed to check dismissal status:",
+        error
+      );
       // Default to true (dismissed) on error to avoid showing broken announcements
       return true;
     }
@@ -288,7 +307,10 @@ export class AnnouncementManager implements IAnnouncementManager {
         dismissedAt: Timestamp.now(),
       });
     } catch (error) {
-      console.error("[AnnouncementManager] Failed to dismiss announcement:", error);
+      console.error(
+        "[AnnouncementManager] Failed to dismiss announcement:",
+        error
+      );
       toast.error("Failed to dismiss announcement.");
       throw error;
     }

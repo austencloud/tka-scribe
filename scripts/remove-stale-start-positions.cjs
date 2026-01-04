@@ -16,53 +16,69 @@
  *   node scripts/remove-stale-start-positions.cjs --confirm    # Apply changes
  */
 
-const fs = require('fs');
-const path = require('path');
+const fs = require("fs");
+const path = require("path");
 
-const SEQUENCE_INDEX_PATH = path.join(__dirname, '..', 'static', 'data', 'sequence-index.json');
+const SEQUENCE_INDEX_PATH = path.join(
+  __dirname,
+  "..",
+  "static",
+  "data",
+  "sequence-index.json"
+);
 
 // Main function
 async function main() {
-  const confirmMode = process.argv.includes('--confirm');
+  const confirmMode = process.argv.includes("--confirm");
 
-  console.log('='.repeat(60));
-  console.log('Remove Stale Start Position Script');
-  console.log('='.repeat(60));
+  console.log("=".repeat(60));
+  console.log("Remove Stale Start Position Script");
+  console.log("=".repeat(60));
   console.log();
 
   // Read sequence index
   if (!fs.existsSync(SEQUENCE_INDEX_PATH)) {
-    console.error(`Error: sequence-index.json not found at ${SEQUENCE_INDEX_PATH}`);
+    console.error(
+      `Error: sequence-index.json not found at ${SEQUENCE_INDEX_PATH}`
+    );
     process.exit(1);
   }
 
-  const data = JSON.parse(fs.readFileSync(SEQUENCE_INDEX_PATH, 'utf8'));
+  const data = JSON.parse(fs.readFileSync(SEQUENCE_INDEX_PATH, "utf8"));
   const sequences = data.sequences || [];
 
   console.log(`Total sequences: ${sequences.length}`);
   console.log();
 
   // Find sequences with startPosition fields
-  const withStartPos = sequences.filter(seq => seq.startPosition !== undefined);
-  const withOldFormat = sequences.filter(seq =>
-    seq.startPosition && (seq.startPosition.blueAttributes || seq.startPosition.redAttributes)
+  const withStartPos = sequences.filter(
+    (seq) => seq.startPosition !== undefined
+  );
+  const withOldFormat = sequences.filter(
+    (seq) =>
+      seq.startPosition &&
+      (seq.startPosition.blueAttributes || seq.startPosition.redAttributes)
   );
 
   console.log(`Sequences with startPosition field: ${withStartPos.length}`);
-  console.log(`Sequences with OLD format startPosition: ${withOldFormat.length}`);
+  console.log(
+    `Sequences with OLD format startPosition: ${withOldFormat.length}`
+  );
   console.log();
 
   if (withStartPos.length === 0) {
-    console.log('No startPosition fields found - nothing to remove.');
+    console.log("No startPosition fields found - nothing to remove.");
     return;
   }
 
   // Show examples
-  console.log('Examples of startPosition fields to remove:');
-  console.log('-'.repeat(40));
+  console.log("Examples of startPosition fields to remove:");
+  console.log("-".repeat(40));
   for (const seq of withStartPos.slice(0, 5)) {
     console.log(`  - ${seq.word || seq.name || seq.id}`);
-    console.log(`    Has blueAttributes: ${!!seq.startPosition?.blueAttributes}`);
+    console.log(
+      `    Has blueAttributes: ${!!seq.startPosition?.blueAttributes}`
+    );
     console.log(`    Has motions.blue: ${!!seq.startPosition?.motions?.blue}`);
   }
   if (withStartPos.length > 5) {
@@ -71,15 +87,15 @@ async function main() {
   console.log();
 
   if (!confirmMode) {
-    console.log('Preview mode - no changes made.');
-    console.log('Run with --confirm to remove startPosition fields.');
+    console.log("Preview mode - no changes made.");
+    console.log("Run with --confirm to remove startPosition fields.");
     return;
   }
 
   // Remove startPosition from all sequences
-  console.log('Removing startPosition fields...');
+  console.log("Removing startPosition fields...");
 
-  const cleanedSequences = sequences.map(seq => {
+  const cleanedSequences = sequences.map((seq) => {
     if (seq.startPosition !== undefined) {
       const { startPosition, startingPositionGroup, beats, ...rest } = seq;
       // Keep beats field (the normalized beats array)
@@ -92,7 +108,10 @@ async function main() {
   const outputData = { ...data, sequences: cleanedSequences };
 
   // Backup (different name from first backup)
-  const backupPath = SEQUENCE_INDEX_PATH.replace('.json', '.before-startpos-removal.json');
+  const backupPath = SEQUENCE_INDEX_PATH.replace(
+    ".json",
+    ".before-startpos-removal.json"
+  );
   fs.copyFileSync(SEQUENCE_INDEX_PATH, backupPath);
   console.log(`Backup created: ${backupPath}`);
 
@@ -102,7 +121,7 @@ async function main() {
   console.log(`Updated: ${SEQUENCE_INDEX_PATH}`);
 }
 
-main().catch(err => {
-  console.error('Error:', err);
+main().catch((err) => {
+  console.error("Error:", err);
   process.exit(1);
 });

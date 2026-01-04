@@ -102,7 +102,9 @@ export async function resolveAsync<T>(serviceIdentifier: symbol): Promise<T> {
 
   const container = globalThis.__TKA_CONTAINER__;
   if (!container) {
-    throw new Error("Container not initialized after ensureContainerInitialized()");
+    throw new Error(
+      "Container not initialized after ensureContainerInitialized()"
+    );
   }
 
   return container.get<T>(serviceIdentifier);
@@ -236,9 +238,8 @@ export async function loadAnimationModule(): Promise<void> {
     return; // Already loaded
   }
 
-  const { pixiModule } = await import(
-    "../../features/compose/inversify/PixiModule"
-  );
+  const { pixiModule } =
+    await import("../../features/compose/inversify/PixiModule");
   await container.load(pixiModule);
 }
 

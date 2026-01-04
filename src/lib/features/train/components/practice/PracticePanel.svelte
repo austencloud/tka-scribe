@@ -112,11 +112,23 @@
     padding: clamp(10px, 2.5cqh, 14px) clamp(12px, 3cqw, 18px);
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--semantic-warning, var(--semantic-warning)) 15%, transparent),
-      color-mix(in srgb, var(--semantic-warning, var(--semantic-warning)) 5%, transparent)
+      color-mix(
+        in srgb,
+        var(--semantic-warning, var(--semantic-warning)) 15%,
+        transparent
+      ),
+      color-mix(
+        in srgb,
+        var(--semantic-warning, var(--semantic-warning)) 5%,
+        transparent
+      )
     );
     border-bottom: 1px solid
-      color-mix(in srgb, var(--semantic-warning, var(--semantic-warning)) 30%, transparent);
+      color-mix(
+        in srgb,
+        var(--semantic-warning, var(--semantic-warning)) 30%,
+        transparent
+      );
     flex-shrink: 0;
   }
 

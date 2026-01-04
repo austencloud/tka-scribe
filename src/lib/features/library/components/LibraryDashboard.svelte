@@ -160,7 +160,12 @@
       <p>Please sign in to access your personal library.</p>
     </div>
   {:else if isLoading}
-    <div class="loading-state" role="status" aria-live="polite" aria-busy="true">
+    <div
+      class="loading-state"
+      role="status"
+      aria-live="polite"
+      aria-busy="true"
+    >
       <div class="spinner" aria-hidden="true"></div>
       <p>Loading your library...</p>
     </div>
@@ -266,7 +271,12 @@
           </div>
 
           {#if videosLoading}
-            <div class="videos-loading" role="status" aria-live="polite" aria-busy="true">
+            <div
+              class="videos-loading"
+              role="status"
+              aria-live="polite"
+              aria-busy="true"
+            >
               <div class="spinner small" aria-hidden="true"></div>
               <span>Loading videos...</span>
             </div>

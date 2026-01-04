@@ -28,7 +28,10 @@
     pendingConversationId?: string;
   }
 
-  let { isOpen = $bindable(false), pendingConversationId = $bindable("") }: Props = $props();
+  let {
+    isOpen = $bindable(false),
+    pendingConversationId = $bindable(""),
+  }: Props = $props();
 
   // Responsive placement
   let isMobile = $state(false);
@@ -47,9 +50,7 @@
   }
 
   onMount(() => {
-    hapticService = resolve<IHapticFeedback>(
-      TYPES.IHapticFeedback
-    );
+    hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
 
     mediaQuery = window.matchMedia("(max-width: 768px)");
     isMobile = mediaQuery.matches;

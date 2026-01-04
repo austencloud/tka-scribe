@@ -11,4 +11,4 @@
  * Domain: Share Hub - Single Media Format Selection
  */
 
-export type MediaFormat = 'animation' | 'static' | 'performance';
+export type MediaFormat = "animation" | "static" | "performance";

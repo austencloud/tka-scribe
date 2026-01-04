@@ -155,12 +155,26 @@ export function createPlaybackState(options: PlaybackOptions = {}) {
   }
 
   return {
-    get isPlaying() { return isPlaying; },
-    get progress() { return progress; },
-    get speed() { return speed; },
-    set speed(value: number) { speed = value; saveState(); },
-    get loop() { return loop; },
-    set loop(value: boolean) { loop = value; saveState(); },
+    get isPlaying() {
+      return isPlaying;
+    },
+    get progress() {
+      return progress;
+    },
+    get speed() {
+      return speed;
+    },
+    set speed(value: number) {
+      speed = value;
+      saveState();
+    },
+    get loop() {
+      return loop;
+    },
+    set loop(value: boolean) {
+      loop = value;
+      saveState();
+    },
 
     play,
     pause,

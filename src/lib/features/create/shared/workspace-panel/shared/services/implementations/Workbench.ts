@@ -20,7 +20,8 @@ import type { IWorkbench } from "../contracts/IWorkbench";
 @injectable()
 export class Workbench implements IWorkbench {
   constructor(
-    @inject(TYPES.ISequenceRepository) private sequenceService: ISequenceRepository,
+    @inject(TYPES.ISequenceRepository)
+    private sequenceService: ISequenceRepository,
     @inject(TYPES.IPersistenceService)
     private persistenceService: IPersistenceService
   ) {}

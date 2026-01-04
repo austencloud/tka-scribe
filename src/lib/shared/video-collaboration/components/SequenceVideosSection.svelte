@@ -43,9 +43,7 @@
     videoService = tryResolve<ICollaborativeVideoManager>(
       TYPES.ICollaborativeVideoManager
     );
-    hapticService = tryResolve<IHapticFeedback>(
-      TYPES.IHapticFeedback
-    );
+    hapticService = tryResolve<IHapticFeedback>(TYPES.IHapticFeedback);
     loadVideos();
   });
 

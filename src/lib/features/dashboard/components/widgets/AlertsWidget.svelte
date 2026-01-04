@@ -8,7 +8,10 @@
   import { inboxState } from "$lib/shared/inbox/state/inbox-state.svelte";
   import { authState } from "$lib/shared/auth/state/authState.svelte";
   import { notificationService } from "$lib/features/feedback/services/implementations/Notifier";
-  import type { UserNotification, FeedbackNotification } from "$lib/features/feedback/domain/models/notification-models";
+  import type {
+    UserNotification,
+    FeedbackNotification,
+  } from "$lib/features/feedback/domain/models/notification-models";
   import type { DashboardState } from "../../state/dashboard-state.svelte";
 
   interface Props {
@@ -21,12 +24,14 @@
   // Filter out system announcements - those go in the banner
   const alertNotifications = $derived(
     inboxState.notifications
-      .filter(n => n.type !== "system-announcement")
+      .filter((n) => n.type !== "system-announcement")
       .slice(0, 5)
   );
 
   const unreadCount = $derived(
-    inboxState.notifications.filter(n => !n.read && n.type !== "system-announcement").length
+    inboxState.notifications.filter(
+      (n) => !n.read && n.type !== "system-announcement"
+    ).length
   );
 
   async function handleClearAll() {
@@ -59,9 +64,8 @@
   async function loadAndOpenFeedback(feedbackId: string) {
     try {
       // Dynamically import feedback service to load the item
-      const { feedbackService } = await import(
-        "$lib/features/feedback/services/implementations/FeedbackRepository"
-      );
+      const { feedbackService } =
+        await import("$lib/features/feedback/services/implementations/FeedbackRepository");
 
       const feedbackItem = await feedbackService.getFeedback(feedbackId);
       if (feedbackItem) {
@@ -83,30 +87,49 @@
 
   function getNotificationIcon(type: UserNotification["type"]): string {
     switch (type) {
-      case "feedback-resolved": return "fa-check-circle";
-      case "feedback-in-progress": return "fa-spinner";
-      case "feedback-needs-info": return "fa-question-circle";
-      case "feedback-response": return "fa-comment";
-      case "sequence-liked": return "fa-heart";
-      case "user-followed": return "fa-user-plus";
-      case "achievement-unlocked": return "fa-trophy";
-      case "message-received": return "fa-envelope";
-      case "admin-new-user-signup": return "fa-user-plus";
-      default: return "fa-bell";
+      case "feedback-resolved":
+        return "fa-check-circle";
+      case "feedback-in-progress":
+        return "fa-spinner";
+      case "feedback-needs-info":
+        return "fa-question-circle";
+      case "feedback-response":
+        return "fa-comment";
+      case "sequence-liked":
+        return "fa-heart";
+      case "user-followed":
+        return "fa-user-plus";
+      case "achievement-unlocked":
+        return "fa-trophy";
+      case "message-received":
+        return "fa-envelope";
+      case "admin-new-user-signup":
+        return "fa-user-plus";
+      default:
+        return "fa-bell";
     }
   }
 
   function getNotificationColor(type: UserNotification["type"]): string {
     switch (type) {
-      case "feedback-resolved": return "var(--semantic-success)";
-      case "feedback-in-progress": return "var(--semantic-warning)";
-      case "feedback-needs-info": return "var(--theme-accent-strong)";
-      case "feedback-response": return "var(--semantic-info)";
-      case "sequence-liked": return "#ec4899";
-      case "user-followed": return "#06b6d4";
-      case "achievement-unlocked": return "var(--semantic-warning)";
-      case "message-received": return "var(--theme-accent-strong)";
-      default: return "#6366f1";
+      case "feedback-resolved":
+        return "var(--semantic-success)";
+      case "feedback-in-progress":
+        return "var(--semantic-warning)";
+      case "feedback-needs-info":
+        return "var(--theme-accent-strong)";
+      case "feedback-response":
+        return "var(--semantic-info)";
+      case "sequence-liked":
+        return "#ec4899";
+      case "user-followed":
+        return "#06b6d4";
+      case "achievement-unlocked":
+        return "var(--semantic-warning)";
+      case "message-received":
+        return "var(--theme-accent-strong)";
+      default:
+        return "#6366f1";
     }
   }
 
@@ -132,15 +155,22 @@
       <div class="header-icon">
         <i class="fas fa-bell" aria-hidden="true"></i>
         {#if unreadCount > 0}
-          <span class="header-badge" aria-label="{unreadCount} unread notifications">
-            {unreadCount > 99 ? '99+' : unreadCount}
+          <span
+            class="header-badge"
+            aria-label="{unreadCount} unread notifications"
+          >
+            {unreadCount > 99 ? "99+" : unreadCount}
           </span>
         {/if}
       </div>
       <h3>Alerts</h3>
     </div>
     {#if unreadCount > 0}
-      <button class="clear-all-btn" onclick={handleClearAll} aria-label="Clear all notifications">
+      <button
+        class="clear-all-btn"
+        onclick={handleClearAll}
+        aria-label="Clear all notifications"
+      >
         Clear All
       </button>
     {/if}
@@ -170,11 +200,16 @@
               class="alert-icon"
               style="--icon-color: {getNotificationColor(notification.type)}"
             >
-              <i class="fas {getNotificationIcon(notification.type)}" aria-hidden="true"></i>
+              <i
+                class="fas {getNotificationIcon(notification.type)}"
+                aria-hidden="true"
+              ></i>
             </div>
             <div class="alert-content">
               <span class="alert-message">{notification.message}</span>
-              <span class="alert-time">{formatTimeAgo(notification.createdAt)}</span>
+              <span class="alert-time"
+                >{formatTimeAgo(notification.createdAt)}</span
+              >
             </div>
             {#if !notification.read}
               <span class="unread-dot"></span>
@@ -230,7 +265,11 @@
     justify-content: center;
     width: 36px;
     height: 36px;
-    background: color-mix(in srgb, var(--semantic-info, var(--semantic-info)) 25%, var(--theme-card-bg));
+    background: color-mix(
+      in srgb,
+      var(--semantic-info, var(--semantic-info)) 25%,
+      var(--theme-card-bg)
+    );
     border-radius: 10px;
     color: var(--semantic-info, var(--semantic-info));
     font-size: var(--font-size-sm);
@@ -359,15 +398,27 @@
   }
 
   .alert-item.unread {
-    background: color-mix(in srgb, var(--semantic-info, var(--semantic-info)) 10%, var(--theme-card-bg));
-    border-color: color-mix(in srgb, var(--semantic-info, var(--semantic-info)) 20%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--semantic-info, var(--semantic-info)) 10%,
+      var(--theme-card-bg)
+    );
+    border-color: color-mix(
+      in srgb,
+      var(--semantic-info, var(--semantic-info)) 20%,
+      transparent
+    );
   }
 
   .alert-icon {
     width: 32px;
     height: 32px;
     border-radius: 8px;
-    background: color-mix(in srgb, var(--icon-color, var(--semantic-info)) 20%, var(--theme-card-bg));
+    background: color-mix(
+      in srgb,
+      var(--icon-color, var(--semantic-info)) 20%,
+      var(--theme-card-bg)
+    );
     display: flex;
     align-items: center;
     justify-content: center;

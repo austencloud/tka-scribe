@@ -20,9 +20,7 @@ import { TYPES } from "$lib/shared/inversify/types";
 import { inject, injectable } from "inversify";
 
 @injectable()
-export class WordCardImageGenerator
-  implements IWordCardImageGenerator
-{
+export class WordCardImageGenerator implements IWordCardImageGenerator {
   constructor(
     @inject(TYPES.IWordCardSVGComposer)
     private readonly svgCompositionService: IWordCardSVGComposer,

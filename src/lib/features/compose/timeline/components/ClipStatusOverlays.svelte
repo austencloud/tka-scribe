@@ -37,21 +37,13 @@
   }
 
   .status-overlay.muted {
-    background: color-mix(
-      in srgb,
-      var(--theme-panel-bg) 60%,
-      transparent
-    );
+    background: color-mix(in srgb, var(--theme-panel-bg) 60%, transparent);
     color: var(--theme-text-dim, var(--theme-text-dim));
     font-size: var(--font-size-base);
   }
 
   .status-overlay.locked {
-    background: color-mix(
-      in srgb,
-      var(--theme-panel-bg) 30%,
-      transparent
-    );
+    background: color-mix(in srgb, var(--theme-panel-bg) 30%, transparent);
     color: var(--theme-text-dim);
     font-size: var(--font-size-sm);
   }

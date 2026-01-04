@@ -150,7 +150,9 @@ function analyzeSequence(sequence) {
       const cycleCount = detectOrientationCycle(sequence);
       metadata.orientationCycleCount = cycleCount;
     } catch (error) {
-      console.warn(`   ⚠️  Failed to detect orientation cycle: ${error.message}`);
+      console.warn(
+        `   ⚠️  Failed to detect orientation cycle: ${error.message}`
+      );
     }
   }
 
@@ -158,8 +160,12 @@ function analyzeSequence(sequence) {
 }
 
 async function backfillInPages() {
-  console.log(`\n📦 Starting LOOP metadata backfill for ${targetCollection}...`);
-  console.log(`   Mode: ${isDryRun ? "DRY RUN (no changes)" : "LIVE UPDATE"}\n`);
+  console.log(
+    `\n📦 Starting LOOP metadata backfill for ${targetCollection}...`
+  );
+  console.log(
+    `   Mode: ${isDryRun ? "DRY RUN (no changes)" : "LIVE UPDATE"}\n`
+  );
 
   let lastDoc = null;
   let totalProcessed = 0;
@@ -207,7 +213,10 @@ async function backfillInPages() {
         totalProcessed++;
 
         // Skip if already has metadata
-        if (data.isCircular !== undefined && data.orientationCycleCount !== undefined) {
+        if (
+          data.isCircular !== undefined &&
+          data.orientationCycleCount !== undefined
+        ) {
           continue;
         }
 

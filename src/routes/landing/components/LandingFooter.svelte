@@ -1,247 +1,258 @@
 <script lang="ts">
-	import LegalSheet from '$lib/shared/legal/components/LegalSheet.svelte';
+  import LegalSheet from "$lib/shared/legal/components/LegalSheet.svelte";
 
-	const footerLinks = [
-		{ href: '/app', label: 'App' },
-		{ href: '#features', label: 'Features' },
-		{ href: '#notation', label: 'Notation' },
-		{ href: '#loops', label: 'LOOPs' }
-	];
+  const footerLinks = [
+    { href: "/app", label: "App" },
+    { href: "#features", label: "Features" },
+    { href: "#notation", label: "Notation" },
+    { href: "#loops", label: "LOOPs" },
+  ];
 
-	let sheetOpen = $state(false);
-	let sheetType = $state<'terms' | 'privacy'>('terms');
+  let sheetOpen = $state(false);
+  let sheetType = $state<"terms" | "privacy">("terms");
 
-	const MOBILE_BREAKPOINT = 768;
+  const MOBILE_BREAKPOINT = 768;
 
-	function handleLegalClick(e: MouseEvent, type: 'terms' | 'privacy') {
-		// On mobile, use sheet. On desktop, let link navigate normally.
-		if (window.innerWidth < MOBILE_BREAKPOINT) {
-			e.preventDefault();
-			sheetType = type;
-			sheetOpen = true;
-		}
-		// On desktop, don't prevent default - link navigates to /terms or /privacy
-	}
+  function handleLegalClick(e: MouseEvent, type: "terms" | "privacy") {
+    // On mobile, use sheet. On desktop, let link navigate normally.
+    if (window.innerWidth < MOBILE_BREAKPOINT) {
+      e.preventDefault();
+      sheetType = type;
+      sheetOpen = true;
+    }
+    // On desktop, don't prevent default - link navigates to /terms or /privacy
+  }
 
-	function closeSheet() {
-		sheetOpen = false;
-	}
+  function closeSheet() {
+    sheetOpen = false;
+  }
 </script>
 
 <section class="final-cta">
-	<div class="container">
-		<h2>Open & Free</h2>
-		<p><strong>TKA Scribe is free to use.</strong> No download required — it runs in your browser.</p>
-		<p class="small">
-			The underlying notation system is open. Create educational content, build tools, expand the
-			community.
-		</p>
+  <div class="container">
+    <h2>Open & Free</h2>
+    <p>
+      <strong>TKA Scribe is free to use.</strong> No download required — it runs in
+      your browser.
+    </p>
+    <p class="small">
+      The underlying notation system is open. Create educational content, build
+      tools, expand the community.
+    </p>
 
-		<a href="/app" class="btn btn-primary btn-large">
-			Open TKA Scribe
-			<span class="arrow">→</span>
-		</a>
-	</div>
+    <a href="/app" class="btn btn-primary btn-large">
+      Open TKA Scribe
+      <span class="arrow">→</span>
+    </a>
+  </div>
 </section>
 
 <footer class="footer">
-	<div class="container">
-		<div class="footer-content">
-			<div class="footer-brand">
-				<strong>The Kinetic Alphabet</strong>
-				<span>Digital Sheet Music for Flow Arts</span>
-			</div>
-			<div class="footer-links">
-				{#each footerLinks as link}
-					<a href={link.href}>{link.label}</a>
-				{/each}
-			</div>
-		</div>
-		<div class="footer-note">
-			<p>
-				TKA draws inspiration from Vulcan Tech Gospel (VTG), Siteswap juggling notation, and music
-				theory. It extends beyond VTG by supporting non-continuous patterns, static props, and
-				complex multi-beat sequences.
-			</p>
-		</div>
-		<div class="footer-legal">
-			<a href="/terms" onclick={(e) => handleLegalClick(e, 'terms')}>Terms of Service</a>
-			<a href="/privacy" onclick={(e) => handleLegalClick(e, 'privacy')}>Privacy Policy</a>
-		</div>
-	</div>
+  <div class="container">
+    <div class="footer-content">
+      <div class="footer-brand">
+        <strong>The Kinetic Alphabet</strong>
+        <span>Digital Sheet Music for Flow Arts</span>
+      </div>
+      <div class="footer-links">
+        {#each footerLinks as link}
+          <a href={link.href}>{link.label}</a>
+        {/each}
+      </div>
+    </div>
+    <div class="footer-note">
+      <p>
+        TKA draws inspiration from Vulcan Tech Gospel (VTG), Siteswap juggling
+        notation, and music theory. It extends beyond VTG by supporting
+        non-continuous patterns, static props, and complex multi-beat sequences.
+      </p>
+    </div>
+    <div class="footer-legal">
+      <a href="/terms" onclick={(e) => handleLegalClick(e, "terms")}
+        >Terms of Service</a
+      >
+      <a href="/privacy" onclick={(e) => handleLegalClick(e, "privacy")}
+        >Privacy Policy</a
+      >
+    </div>
+  </div>
 </footer>
 
 <LegalSheet isOpen={sheetOpen} type={sheetType} onClose={closeSheet} />
 
 <style>
-	.final-cta {
-		padding: 120px 24px;
-		text-align: center;
-		background: radial-gradient(ellipse at center, rgba(99, 102, 241, 0.15) 0%, transparent 70%);
-	}
+  .final-cta {
+    padding: 120px 24px;
+    text-align: center;
+    background: radial-gradient(
+      ellipse at center,
+      rgba(99, 102, 241, 0.15) 0%,
+      transparent 70%
+    );
+  }
 
-	.container {
-		max-width: 1200px;
-		margin: 0 auto;
-	}
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
 
-	h2 {
-		font-size: clamp(2rem, 5vw, 3rem);
-		margin-bottom: 1rem;
-		text-align: center;
-		font-weight: 600;
-		line-height: 1.2;
-	}
+  h2 {
+    font-size: clamp(2rem, 5vw, 3rem);
+    margin-bottom: 1rem;
+    text-align: center;
+    font-weight: 600;
+    line-height: 1.2;
+  }
 
-	.small {
-		color: var(--text-muted, rgba(255, 255, 255, 0.6));
-	}
+  .small {
+    color: var(--text-muted, rgba(255, 255, 255, 0.6));
+  }
 
-	.final-cta p {
-		font-size: 1.25rem;
-		margin-bottom: 16px;
-	}
+  .final-cta p {
+    font-size: 1.25rem;
+    margin-bottom: 16px;
+  }
 
-	.final-cta .small {
-		font-size: 1rem;
-		margin-bottom: 32px;
-	}
+  .final-cta .small {
+    font-size: 1rem;
+    margin-bottom: 32px;
+  }
 
-	/* Button styles */
-	.btn {
-		display: inline-flex;
-		align-items: center;
-		gap: 8px;
-		padding: 14px 28px;
-		border-radius: 12px;
-		font-weight: 600;
-		font-size: 1rem;
-		text-decoration: none;
-		transition: all 0.2s ease;
-		cursor: pointer;
-	}
+  /* Button styles */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 28px;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 1rem;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    cursor: pointer;
+  }
 
-	.btn-primary {
-		background: var(--primary, #6366f1);
-		color: white;
-	}
+  .btn-primary {
+    background: var(--primary, #6366f1);
+    color: white;
+  }
 
-	.btn-primary:hover {
-		background: var(--primary-light, #818cf8);
-		transform: translateY(-2px);
-		box-shadow: 0 8px 24px rgba(99, 102, 241, 0.3);
-	}
+  .btn-primary:hover {
+    background: var(--primary-light, #818cf8);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(99, 102, 241, 0.3);
+  }
 
-	.btn-large {
-		padding: 18px 36px;
-		font-size: 1.125rem;
-	}
+  .btn-large {
+    padding: 18px 36px;
+    font-size: 1.125rem;
+  }
 
-	.arrow {
-		transition: transform 0.2s ease;
-	}
+  .arrow {
+    transition: transform 0.2s ease;
+  }
 
-	.btn:hover .arrow {
-		transform: translateX(4px);
-	}
+  .btn:hover .arrow {
+    transform: translateX(4px);
+  }
 
-	.footer {
-		padding: 48px 24px;
-		border-top: 1px solid var(--border, rgba(255, 255, 255, 0.1));
-	}
+  .footer {
+    padding: 48px 24px;
+    border-top: 1px solid var(--border, rgba(255, 255, 255, 0.1));
+  }
 
-	.footer-content {
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-		flex-wrap: wrap;
-		gap: 24px;
-		margin-bottom: 24px;
-	}
+  .footer-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 24px;
+    margin-bottom: 24px;
+  }
 
-	.footer-brand {
-		display: flex;
-		flex-direction: column;
-		gap: 4px;
-	}
+  .footer-brand {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
 
-	.footer-brand span {
-		color: var(--text-muted, rgba(255, 255, 255, 0.6));
-		font-size: 0.875rem;
-	}
+  .footer-brand span {
+    color: var(--text-muted, rgba(255, 255, 255, 0.6));
+    font-size: 0.875rem;
+  }
 
-	.footer-links {
-		display: flex;
-		flex-wrap: wrap;
-		justify-content: center;
-		gap: 24px;
-	}
+  .footer-links {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 24px;
+  }
 
-	.footer-links a {
-		color: var(--text-muted, rgba(255, 255, 255, 0.6));
-		text-decoration: none;
-		font-size: 0.875rem;
-		transition: color 0.2s ease;
-	}
+  .footer-links a {
+    color: var(--text-muted, rgba(255, 255, 255, 0.6));
+    text-decoration: none;
+    font-size: 0.875rem;
+    transition: color 0.2s ease;
+  }
 
-	.footer-links a:hover {
-		color: var(--text, #ffffff);
-	}
+  .footer-links a:hover {
+    color: var(--text, #ffffff);
+  }
 
-	.footer-note {
-		padding-top: 24px;
-		border-top: 1px solid var(--border, rgba(255, 255, 255, 0.1));
-	}
+  .footer-note {
+    padding-top: 24px;
+    border-top: 1px solid var(--border, rgba(255, 255, 255, 0.1));
+  }
 
-	.footer-note p {
-		color: var(--text-muted, rgba(255, 255, 255, 0.6));
-		font-size: 0.875rem;
-		max-width: 700px;
-	}
+  .footer-note p {
+    color: var(--text-muted, rgba(255, 255, 255, 0.6));
+    font-size: 0.875rem;
+    max-width: 700px;
+  }
 
-	.footer-legal {
-		display: flex;
-		gap: 24px;
-		padding-top: 24px;
-		border-top: 1px solid var(--border, rgba(255, 255, 255, 0.1));
-		margin-top: 24px;
-	}
+  .footer-legal {
+    display: flex;
+    gap: 24px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border, rgba(255, 255, 255, 0.1));
+    margin-top: 24px;
+  }
 
-	.footer-legal a {
-		color: rgba(255, 255, 255, 0.7);
-		text-decoration: none;
-		font-size: var(--font-size-compact, 0.75rem);
-		padding: 8px 0;
-		transition: color 0.2s ease;
-	}
+  .footer-legal a {
+    color: rgba(255, 255, 255, 0.7);
+    text-decoration: none;
+    font-size: var(--font-size-compact, 0.75rem);
+    padding: 8px 0;
+    transition: color 0.2s ease;
+  }
 
-	.footer-legal a:hover {
-		color: var(--text, #ffffff);
-	}
+  .footer-legal a:hover {
+    color: var(--text, #ffffff);
+  }
 
-	@media (max-width: 768px) {
-		.footer-content {
-			flex-direction: column;
-			text-align: center;
-		}
+  @media (max-width: 768px) {
+    .footer-content {
+      flex-direction: column;
+      text-align: center;
+    }
 
-		.footer-legal {
-			justify-content: center;
-		}
-	}
+    .footer-legal {
+      justify-content: center;
+    }
+  }
 
-	@media (prefers-reduced-motion: reduce) {
-		.btn {
-			transition: none;
-		}
+  @media (prefers-reduced-motion: reduce) {
+    .btn {
+      transition: none;
+    }
 
-		.btn:hover .arrow {
-			transform: none;
-		}
+    .btn:hover .arrow {
+      transform: none;
+    }
 
-		.footer-links a,
-		.footer-legal a {
-			transition: none;
-		}
-	}
+    .footer-links a,
+    .footer-legal a {
+      transition: none;
+    }
+  }
 </style>

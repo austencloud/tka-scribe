@@ -138,9 +138,7 @@ Uses simplified stepper controls matching the single-beat edit pattern.
   });
 
   onMount(() => {
-    hapticService = resolve<IHapticFeedback>(
-      TYPES.IHapticFeedback
-    );
+    hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
   });
 </script>
 

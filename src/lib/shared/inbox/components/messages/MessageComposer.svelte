@@ -27,9 +27,7 @@
   let hapticService: IHapticFeedback | undefined;
 
   onMount(() => {
-    hapticService = resolve<IHapticFeedback>(
-      TYPES.IHapticFeedback
-    );
+    hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
   });
 
   // Auto-resize textarea
@@ -182,7 +180,11 @@
   }
 
   .send-button:hover:not(:disabled) {
-    background: color-mix(in srgb, var(--theme-accent, var(--semantic-info)) 85%, white);
+    background: color-mix(
+      in srgb,
+      var(--theme-accent, var(--semantic-info)) 85%,
+      white
+    );
     transform: scale(1.05);
     box-shadow: 0 4px 12px
       color-mix(in srgb, var(--theme-accent) 40%, transparent);

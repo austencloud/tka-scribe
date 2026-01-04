@@ -157,13 +157,21 @@ WordQuizCompleteSection - Score display and completion actions
   }
 
   .action-btn.primary {
-    background: linear-gradient(135deg, rgba(168, 85, 247, 0.3), rgba(236, 72, 153, 0.3));
+    background: linear-gradient(
+      135deg,
+      rgba(168, 85, 247, 0.3),
+      rgba(236, 72, 153, 0.3)
+    );
     border: 1px solid rgba(168, 85, 247, 0.4);
     color: white;
   }
 
   .action-btn.primary:hover {
-    background: linear-gradient(135deg, rgba(168, 85, 247, 0.4), rgba(236, 72, 153, 0.4));
+    background: linear-gradient(
+      135deg,
+      rgba(168, 85, 247, 0.4),
+      rgba(236, 72, 153, 0.4)
+    );
     border-color: rgba(168, 85, 247, 0.6);
     transform: translateY(-2px);
   }

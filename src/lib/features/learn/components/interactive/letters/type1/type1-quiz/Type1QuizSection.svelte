@@ -37,10 +37,7 @@ Type1QuizSection - Main quiz UI with letter, pictograph, and answers
 
   <Type1LetterDisplay letter={question.letter} />
 
-  <Type1PictographDisplay
-    isLoading={isLoadingPictograph}
-    {pictographData}
-  />
+  <Type1PictographDisplay isLoading={isLoadingPictograph} {pictographData} />
 
   <div class="answer-buttons">
     {#each patterns as pattern}

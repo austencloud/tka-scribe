@@ -19,7 +19,8 @@
  */
 
 // Check if we're in development mode (Vite serves source files directly)
-const IS_DEV = typeof import.meta !== "undefined" && import.meta.env?.DEV === true;
+const IS_DEV =
+  typeof import.meta !== "undefined" && import.meta.env?.DEV === true;
 
 /**
  * Navigation patterns: most likely next modules from each module
@@ -55,7 +56,8 @@ const NAVIGATION_PATTERNS: Record<string, string[]> = {
 const MODULE_PATHS: Record<string, string> = {
   dashboard: "/src/lib/features/dashboard/components/Dashboard.svelte",
   create: "/src/lib/features/create/shared/components/CreateModule.svelte",
-  discover: "/src/lib/features/discover/shared/components/DiscoverModule.svelte",
+  discover:
+    "/src/lib/features/discover/shared/components/DiscoverModule.svelte",
   compose: "/src/lib/features/compose/ComposeModule.svelte",
   library: "/src/lib/features/library/LibraryModule.svelte",
   learn: "/src/lib/features/learn/LearnTab.svelte",
@@ -91,10 +93,7 @@ function prefetchModule(moduleId: string): void {
 
   // Mark as prefetched before adding to DOM
   prefetchedModules.add(moduleId);
-
   document.head.appendChild(link);
-
-  console.log(`🔮 [Prefetch] Preloading module: ${moduleId}`);
 }
 
 /**
@@ -158,9 +157,6 @@ export function preloadCriticalModules(currentModuleId?: string): void {
   // Only prefetch from Dashboard - other modules should only load what they need
   // This prevents loading 150+ Create module files when user goes to Settings
   if (currentModuleId && currentModuleId !== "dashboard") {
-    console.log(
-      `🔮 [Prefetch] Skipping critical prefetch on ${currentModuleId} (not dashboard)`
-    );
     return;
   }
 

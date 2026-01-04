@@ -29,9 +29,7 @@ rotating, mirroring, and color-swapping pictographs.
   let hapticService: IHapticFeedback;
 
   onMount(() => {
-    hapticService = resolve<IHapticFeedback>(
-      TYPES.IHapticFeedback
-    );
+    hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
   });
 
   // Available orientations (matches desktop options)

@@ -24,9 +24,7 @@ import { feedbackDocumentMapper } from "./FeedbackDocumentMapper";
 
 const COLLECTION_NAME = "feedback";
 
-export class FeedbackSubscriptionService
-  implements IFeedbackSubscriptionService
-{
+export class FeedbackSubscriptionService implements IFeedbackSubscriptionService {
   constructor(
     private readonly mapper: IFeedbackDocumentMapper = feedbackDocumentMapper
   ) {}
@@ -77,7 +75,10 @@ export class FeedbackSubscriptionService
           }
         );
       } catch (error) {
-        console.error("[FeedbackSubscriber] Failed to initialize subscription:", error);
+        console.error(
+          "[FeedbackSubscriber] Failed to initialize subscription:",
+          error
+        );
         toast.error("Failed to connect to feedback.");
         onError?.(error instanceof Error ? error : new Error(String(error)));
       }
@@ -118,7 +119,10 @@ export class FeedbackSubscriptionService
             onUpdate(items);
           })
           .catch((error) => {
-            console.error("[FeedbackSubscriber] Initial user fetch error:", error);
+            console.error(
+              "[FeedbackSubscriber] Initial user fetch error:",
+              error
+            );
           });
 
         // Then set up the real-time listener
@@ -132,13 +136,19 @@ export class FeedbackSubscriptionService
             onUpdate(items);
           },
           (error) => {
-            console.error("[FeedbackSubscriber] User subscription error:", error);
+            console.error(
+              "[FeedbackSubscriber] User subscription error:",
+              error
+            );
             toast.error("Lost connection to your feedback. Please refresh.");
             onError?.(error);
           }
         );
       } catch (error) {
-        console.error("[FeedbackSubscriber] Failed to initialize user subscription:", error);
+        console.error(
+          "[FeedbackSubscriber] Failed to initialize user subscription:",
+          error
+        );
         toast.error("Failed to connect to your feedback.");
         onError?.(error instanceof Error ? error : new Error(String(error)));
       }
@@ -156,7 +166,10 @@ export class FeedbackSubscriptionService
     const items: FeedbackItem[] = [];
     snapshot.docs.forEach((docSnap) => {
       try {
-        const item = this.mapper.mapDocToFeedbackItem(docSnap.id, docSnap.data());
+        const item = this.mapper.mapDocToFeedbackItem(
+          docSnap.id,
+          docSnap.data()
+        );
         items.push(item);
       } catch (err) {
         console.error(`Failed to map feedback item ${docSnap.id}:`, err);

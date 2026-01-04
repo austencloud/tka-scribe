@@ -87,7 +87,10 @@
             }
           }
         } catch (loadErr) {
-          console.warn('[TrackLane] Could not load full sequence, using metadata:', loadErr);
+          console.warn(
+            "[TrackLane] Could not load full sequence, using metadata:",
+            loadErr
+          );
         }
       }
 
@@ -121,7 +124,10 @@
   class:empty={isEmpty}
   class:drag-over={isDragOver}
   style="height: {effectiveHeight}px"
-  ondrop={(e) => { isDragOver = false; handleDrop(e); }}
+  ondrop={(e) => {
+    isDragOver = false;
+    handleDrop(e);
+  }}
   ondragover={handleDragOver}
   ondragenter={handleDragEnter}
   ondragleave={handleDragLeave}
@@ -153,7 +159,10 @@
     position: relative;
     background: var(--theme-panel-bg);
     border-bottom: 1px solid var(--theme-stroke);
-    transition: height 0.2s ease, opacity 0.2s ease, background 0.2s ease;
+    transition:
+      height 0.2s ease,
+      opacity 0.2s ease,
+      background 0.2s ease;
   }
 
   /* Alternating track colors for visual distinction */
@@ -183,9 +192,14 @@
 
   /* Drag over state - show drop target highlight */
   .track-lane.drag-over {
-    background: color-mix(in srgb, var(--theme-accent) 15%, transparent) !important;
+    background: color-mix(
+      in srgb,
+      var(--theme-accent) 15%,
+      transparent
+    ) !important;
     border-color: var(--theme-accent);
-    box-shadow: inset 0 0 20px color-mix(in srgb, var(--theme-accent) 20%, transparent);
+    box-shadow: inset 0 0 20px
+      color-mix(in srgb, var(--theme-accent) 20%, transparent);
   }
 
   .grid-lines {

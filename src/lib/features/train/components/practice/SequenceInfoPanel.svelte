@@ -21,9 +21,7 @@
   let hapticService: IHapticFeedback | null = null;
 
   onMount(() => {
-    hapticService = tryResolve<IHapticFeedback>(
-      TYPES.IHapticFeedback
-    );
+    hapticService = tryResolve<IHapticFeedback>(TYPES.IHapticFeedback);
   });
 
   function handleClick() {
@@ -64,8 +62,18 @@
     padding: var(--space-2026-sm, 12px);
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--semantic-info, var(--semantic-info)) 12%, transparent) 0%,
-      color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 8%, transparent) 100%
+      color-mix(
+          in srgb,
+          var(--semantic-info, var(--semantic-info)) 12%,
+          transparent
+        )
+        0%,
+      color-mix(
+          in srgb,
+          var(--theme-accent, var(--theme-accent)) 8%,
+          transparent
+        )
+        100%
     );
     border: 1px solid var(--theme-stroke);
     border-radius: var(--radius-2026-md, 14px);
@@ -87,8 +95,18 @@
   .sequence-info-panel:hover {
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--semantic-info, var(--semantic-info)) 20%, transparent) 0%,
-      color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 15%, transparent) 100%
+      color-mix(
+          in srgb,
+          var(--semantic-info, var(--semantic-info)) 20%,
+          transparent
+        )
+        0%,
+      color-mix(
+          in srgb,
+          var(--theme-accent, var(--theme-accent)) 15%,
+          transparent
+        )
+        100%
     );
     border-color: color-mix(
       in srgb,
@@ -106,16 +124,36 @@
   .sequence-info-panel.has-sequence {
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--semantic-success, var(--semantic-success)) 12%, transparent) 0%,
-      color-mix(in srgb, var(--semantic-success, var(--semantic-success)) 8%, transparent) 100%
+      color-mix(
+          in srgb,
+          var(--semantic-success, var(--semantic-success)) 12%,
+          transparent
+        )
+        0%,
+      color-mix(
+          in srgb,
+          var(--semantic-success, var(--semantic-success)) 8%,
+          transparent
+        )
+        100%
     );
   }
 
   .sequence-info-panel.has-sequence:hover {
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--semantic-success, var(--semantic-success)) 20%, transparent) 0%,
-      color-mix(in srgb, var(--semantic-success, var(--semantic-success)) 15%, transparent) 100%
+      color-mix(
+          in srgb,
+          var(--semantic-success, var(--semantic-success)) 20%,
+          transparent
+        )
+        0%,
+      color-mix(
+          in srgb,
+          var(--semantic-success, var(--semantic-success)) 15%,
+          transparent
+        )
+        100%
     );
     border-color: color-mix(
       in srgb,

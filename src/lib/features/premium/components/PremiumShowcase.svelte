@@ -29,7 +29,8 @@
   let subscriptionService: ISubscriptionManager | null = $state(null);
   let isLoading = $state(false);
 
-  const PRICE_ID = import.meta.env.PUBLIC_STRIPE_PRICE_ID || "price_1SgbRTLZdzgHfpQbEp99bKp7";
+  const PRICE_ID =
+    import.meta.env.PUBLIC_STRIPE_PRICE_ID || "price_1SgbRTLZdzgHfpQbEp99bKp7";
 
   // Analytics tracking - sends to Firebase Analytics
   function trackEvent(event: string, properties?: Record<string, unknown>) {
@@ -39,12 +40,14 @@
   }
 
   $effect(() => {
-    subscriptionService = tryResolve<ISubscriptionManager>(TYPES.ISubscriptionManager);
+    subscriptionService = tryResolve<ISubscriptionManager>(
+      TYPES.ISubscriptionManager
+    );
 
     // Track page view
     trackEvent("premium_page_viewed", {
       priceId: PRICE_ID,
-      hasSubscriptionService: !!subscriptionService
+      hasSubscriptionService: !!subscriptionService,
     });
 
     return () => {
@@ -57,7 +60,7 @@
 
     trackEvent("premium_cta_clicked", {
       source,
-      priceId: PRICE_ID
+      priceId: PRICE_ID,
     });
 
     hapticService?.trigger("selection");
@@ -66,14 +69,15 @@
     try {
       trackEvent("checkout_initiated", {
         source,
-        priceId: PRICE_ID
+        priceId: PRICE_ID,
       });
 
-      const checkoutUrl = await subscriptionService.createCheckoutSession(PRICE_ID);
+      const checkoutUrl =
+        await subscriptionService.createCheckoutSession(PRICE_ID);
 
       trackEvent("checkout_redirect", {
         source,
-        checkoutUrl: checkoutUrl.substring(0, 50) + "..." // Truncate for privacy
+        checkoutUrl: checkoutUrl.substring(0, 50) + "...", // Truncate for privacy
       });
 
       window.location.href = checkoutUrl;
@@ -82,7 +86,7 @@
 
       trackEvent("checkout_error", {
         source,
-        error: error instanceof Error ? error.message : "Unknown error"
+        error: error instanceof Error ? error.message : "Unknown error",
       });
 
       hapticService?.trigger("error");
@@ -95,20 +99,20 @@
       name: "Sequence Generator",
       icon: "fa-wand-magic-sparkles",
       free: "Daily limit",
-      premium: "Unlimited"
+      premium: "Unlimited",
     },
     {
       name: "Compose Module",
       icon: "fa-photo-film",
       free: "Not available",
-      premium: "Full access"
+      premium: "Full access",
     },
     {
       name: "Train Module",
       icon: "fa-running",
       free: "Not available",
-      premium: "Full access"
-    }
+      premium: "Full access",
+    },
   ];
 </script>
 
@@ -133,14 +137,15 @@
   <section class="about-section">
     <InfoCard title="About TKA">
       <p>
-        The Kinetic Alphabet is a notation system for prop manipulation choreography. Like
-        musicians reading sheet music, flow artists can write sequences, jump between beats,
-        and share ideas without scrubbing through video. TKA Scribe is the digital version
-        of what started as a physical book distributed at flow festivals.
+        The Kinetic Alphabet is a notation system for prop manipulation
+        choreography. Like musicians reading sheet music, flow artists can write
+        sequences, jump between beats, and share ideas without scrubbing through
+        video. TKA Scribe is the digital version of what started as a physical
+        book distributed at flow festivals.
       </p>
       <p>
-        This is a work-in-progress and is continually growing. Your support plays an essential
-        role in this system's development.
+        This is a work-in-progress and is continually growing. Your support
+        plays an essential role in this system's development.
       </p>
     </InfoCard>
   </section>

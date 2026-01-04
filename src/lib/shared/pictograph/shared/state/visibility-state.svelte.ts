@@ -23,9 +23,8 @@ let settingsServiceInstance: any = null;
 async function getSettingsService() {
   if (!browser) return null;
   if (!settingsServiceInstance) {
-    const { settingsService } = await import(
-      "../../../settings/state/SettingsState.svelte"
-    );
+    const { settingsService } =
+      await import("../../../settings/state/SettingsState.svelte");
     settingsServiceInstance = settingsService;
   }
   return settingsServiceInstance;
@@ -115,10 +114,16 @@ export class VisibilityStateManager {
    * Call this before reading settings in async contexts (e.g., image export)
    */
   async ensureSettingsLoaded(): Promise<void> {
-    debug.log("ensureSettingsLoaded called, promise exists:", !!this.settingsLoadedPromise);
+    debug.log(
+      "ensureSettingsLoaded called, promise exists:",
+      !!this.settingsLoadedPromise
+    );
     if (this.settingsLoadedPromise) {
       await this.settingsLoadedPromise;
-      debug.log("ensureSettingsLoaded completed, current settings:", this.settings);
+      debug.log(
+        "ensureSettingsLoaded completed, current settings:",
+        this.settings
+      );
     }
   }
 
@@ -129,7 +134,10 @@ export class VisibilityStateManager {
     debug.log("loadPersistedSettings: Starting async load...");
     try {
       const service = await getSettingsService();
-      debug.log("loadPersistedSettings: Got settings service, visibility data:", service?.settings?.visibility);
+      debug.log(
+        "loadPersistedSettings: Got settings service, visibility data:",
+        service?.settings?.visibility
+      );
 
       if (service?.settings?.visibility) {
         const v = service.settings.visibility;
@@ -147,16 +155,24 @@ export class VisibilityStateManager {
         if (v.nonRadialPoints !== undefined)
           this.settings.nonRadialPoints = v.nonRadialPoints;
 
-        debug.log("loadPersistedSettings: Applied settings, result:", this.settings);
+        debug.log(
+          "loadPersistedSettings: Applied settings, result:",
+          this.settings
+        );
         // Notify observers that settings have been loaded
         this.notifyObservers(["all"]);
       } else {
-        debug.log("loadPersistedSettings: No visibility settings found in persistence, using defaults");
+        debug.log(
+          "loadPersistedSettings: No visibility settings found in persistence, using defaults"
+        );
       }
     } finally {
       // Always resolve the settings loaded promise, even if loading fails
       // This prevents blocking indefinitely on ensureSettingsLoaded()
-      debug.log("loadPersistedSettings: Resolving promise, final settings:", this.settings);
+      debug.log(
+        "loadPersistedSettings: Resolving promise, final settings:",
+        this.settings
+      );
       if (this.settingsLoadedResolve) {
         this.settingsLoadedResolve();
         this.settingsLoadedResolve = null;
@@ -432,9 +448,9 @@ export class VisibilityStateManager {
     try {
       // Dynamic import to avoid circular dependency
       // eslint-disable-next-line @typescript-eslint/no-require-imports
-      const { getAnimationVisibilityManager } = require(
-        "../../../animation-engine/state/animation-visibility-state.svelte"
-      );
+      const {
+        getAnimationVisibilityManager,
+      } = require("../../../animation-engine/state/animation-visibility-state.svelte");
       return getAnimationVisibilityManager().isLedMode();
     } catch {
       return false;

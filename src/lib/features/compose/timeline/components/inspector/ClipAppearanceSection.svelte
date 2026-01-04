@@ -55,7 +55,8 @@
   </div>
 
   <div class="field">
-    <label class="field-label" for="clip-rotation">Rotation ({rotation}°)</label>
+    <label class="field-label" for="clip-rotation">Rotation ({rotation}°)</label
+    >
     <input
       id="clip-rotation"
       type="range"
@@ -70,7 +71,9 @@
   </div>
 
   <div class="field">
-    <label class="field-label" for="clip-opacity">Opacity ({Math.round(opacity * 100)}%)</label>
+    <label class="field-label" for="clip-opacity"
+      >Opacity ({Math.round(opacity * 100)}%)</label
+    >
     <input
       id="clip-opacity"
       type="range"

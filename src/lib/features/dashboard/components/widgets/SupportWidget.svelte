@@ -39,9 +39,7 @@
 
   onMount(() => {
     try {
-      hapticService = resolve<IHapticFeedback>(
-        TYPES.IHapticFeedback
-      );
+      hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
     } catch {
       // Service may not be available
     }
@@ -142,9 +140,18 @@
     padding: 24px;
     background: linear-gradient(
       145deg,
-      color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent-strong)) 12%, transparent)
+      color-mix(
+          in srgb,
+          var(--theme-accent-strong, var(--theme-accent-strong)) 12%,
+          transparent
+        )
         0%,
-      color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 8%, transparent) 100%
+      color-mix(
+          in srgb,
+          var(--theme-accent, var(--theme-accent)) 8%,
+          transparent
+        )
+        100%
     );
     border: 1px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: 24px;

@@ -159,7 +159,7 @@
         "
         onclick={() => startEditing(region)}
         onkeydown={(e) => {
-          if (e.key === 'Enter' || e.key === ' ') {
+          if (e.key === "Enter" || e.key === " ") {
             e.preventDefault();
             startEditing(region);
           }

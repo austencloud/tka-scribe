@@ -112,7 +112,9 @@ export async function updateSettings(
 ): Promise<void> {
   // Block updates when viewing another user's settings
   if (isSettingsPreviewMode()) {
-    console.warn("Cannot update settings while in preview mode (viewing another user's configuration)");
+    console.warn(
+      "Cannot update settings while in preview mode (viewing another user's configuration)"
+    );
     return;
   }
 

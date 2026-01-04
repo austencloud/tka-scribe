@@ -189,7 +189,9 @@
   }
 
   function toggleBothEnds() {
-    const newMode = isBothEnds ? TrackingMode.RIGHT_END : TrackingMode.BOTH_ENDS;
+    const newMode = isBothEnds
+      ? TrackingMode.RIGHT_END
+      : TrackingMode.BOTH_ENDS;
     animationSettings.setTrackingMode(newMode);
     updateCounter++;
   }

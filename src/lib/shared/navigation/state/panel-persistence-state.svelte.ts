@@ -114,7 +114,9 @@ export function createPanelPersistenceState() {
 /**
  * Type for PanelPersistenceState
  */
-export type PanelPersistenceState = ReturnType<typeof createPanelPersistenceState>;
+export type PanelPersistenceState = ReturnType<
+  typeof createPanelPersistenceState
+>;
 
 // Global panel persistence state instance
 export const panelPersistenceState = createPanelPersistenceState();

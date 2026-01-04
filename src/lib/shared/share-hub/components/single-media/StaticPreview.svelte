@@ -13,12 +13,12 @@
   Domain: Share Hub - Single Media - Static Image Format
 -->
 <script lang="ts">
-  import { getShareHubState } from '../../state/share-hub-state.svelte';
-  import { loadSharedModules, tryResolve } from '$lib/shared/inversify/di';
-  import { TYPES } from '$lib/shared/inversify/types';
-  import type { ISequenceRenderer } from '$lib/shared/render/services/contracts/ISequenceRenderer';
-  import { getImageCompositionManager } from '$lib/shared/share/state/image-composition-state.svelte';
-  import { onMount } from 'svelte';
+  import { getShareHubState } from "../../state/share-hub-state.svelte";
+  import { loadSharedModules, tryResolve } from "$lib/shared/inversify/di";
+  import { TYPES } from "$lib/shared/inversify/types";
+  import type { ISequenceRenderer } from "$lib/shared/render/services/contracts/ISequenceRenderer";
+  import { getImageCompositionManager } from "$lib/shared/share/state/image-composition-state.svelte";
+  import { onMount } from "svelte";
 
   const hubState = getShareHubState();
   const imageSettings = getImageCompositionManager();
@@ -39,14 +39,18 @@
 
   // Load render service on mount
   $effect(() => {
-    loadSharedModules().then(() => {
-      renderService = tryResolve<ISequenceRenderer>(TYPES.ISequenceRenderer);
-      if (!renderService) {
-        console.warn('⚠️ ISequenceRenderer not available after loading shared modules');
-      }
-    }).catch((error) => {
-      console.error('Failed to load shared modules:', error);
-    });
+    loadSharedModules()
+      .then(() => {
+        renderService = tryResolve<ISequenceRenderer>(TYPES.ISequenceRenderer);
+        if (!renderService) {
+          console.warn(
+            "⚠️ ISequenceRenderer not available after loading shared modules"
+          );
+        }
+      })
+      .catch((error) => {
+        console.error("Failed to load shared modules:", error);
+      });
   });
 
   // Sync settings from manager and listen for changes
@@ -85,46 +89,48 @@
     isLoading = true;
     previewError = null;
 
-    service.generatePreview(sequence, {
-      backgroundColor: '#FFFFFF',
-      quality: 1.0,
-      beatScale: 1.0,
-      includeStartPosition: _start,
-      addBeatNumbers: _beats,
-      addWord: _word,
-      addUserInfo: _user,
-      addDifficultyLevel: _diff,
-    })
-    .then((dataUrl) => {
-      previewDataUrl = dataUrl;
-      isLoading = false;
-    })
-    .catch((error) => {
-      console.error('Preview generation failed:', error);
-      previewError = error instanceof Error ? error.message : 'Preview failed';
-      isLoading = false;
-    });
+    service
+      .generatePreview(sequence, {
+        backgroundColor: "#FFFFFF",
+        quality: 1.0,
+        beatScale: 1.0,
+        includeStartPosition: _start,
+        addBeatNumbers: _beats,
+        addWord: _word,
+        addUserInfo: _user,
+        addDifficultyLevel: _diff,
+      })
+      .then((dataUrl) => {
+        previewDataUrl = dataUrl;
+        isLoading = false;
+      })
+      .catch((error) => {
+        console.error("Preview generation failed:", error);
+        previewError =
+          error instanceof Error ? error.message : "Preview failed";
+        isLoading = false;
+      });
   });
 
   // Toggle handlers - update manager (which persists to localStorage)
   function toggleWord() {
-    imageSettings.toggle('addWord');
+    imageSettings.toggle("addWord");
   }
 
   function toggleBeatNumbers() {
-    imageSettings.toggle('addBeatNumbers');
+    imageSettings.toggle("addBeatNumbers");
   }
 
   function toggleStartPosition() {
-    imageSettings.toggle('includeStartPosition');
+    imageSettings.toggle("includeStartPosition");
   }
 
   function toggleDifficulty() {
-    imageSettings.toggle('addDifficultyLevel');
+    imageSettings.toggle("addDifficultyLevel");
   }
 
   function toggleUserInfo() {
-    imageSettings.toggle('addUserInfo');
+    imageSettings.toggle("addUserInfo");
   }
 </script>
 
@@ -147,11 +153,7 @@
         <p>{previewError}</p>
       </div>
     {:else if previewDataUrl}
-      <img
-        src={previewDataUrl}
-        alt="Sequence preview"
-        class="preview-image"
-      />
+      <img src={previewDataUrl} alt="Sequence preview" class="preview-image" />
     {:else}
       <div class="empty-state">
         <i class="fas fa-image" aria-hidden="true"></i>

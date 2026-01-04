@@ -57,9 +57,8 @@
     // This prevents stale cookies from breaking the login flow
     (async () => {
       try {
-        const { cleanupOldCookies } = await import(
-          "$lib/shared/auth/utils/cookieCleanup"
-        );
+        const { cleanupOldCookies } =
+          await import("$lib/shared/auth/utils/cookieCleanup");
         await cleanupOldCookies();
       } catch (error) {
         console.error("❌ [App Init] Cookie cleanup failed:", error);
@@ -71,9 +70,8 @@
     // This prevents race conditions when services try to use Firestore
     (async () => {
       try {
-        const { getFirestoreInstance } = await import(
-          "$lib/shared/auth/firebase"
-        );
+        const { getFirestoreInstance } =
+          await import("$lib/shared/auth/firebase");
         await getFirestoreInstance();
       } catch (error) {
         console.error("❌ [App Init] Firestore initialization failed:", error);
@@ -90,7 +88,8 @@
     // 📊 PERFORMANCE: Initialize Web Vitals tracking
     (async () => {
       try {
-        const { initWebVitals } = await import("$lib/shared/analytics/web-vitals");
+        const { initWebVitals } =
+          await import("$lib/shared/analytics/web-vitals");
         await initWebVitals();
       } catch (error) {
         console.warn("Web Vitals tracking failed to initialize:", error);

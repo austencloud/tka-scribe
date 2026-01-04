@@ -36,7 +36,7 @@
   }
 
   // Find selected index for indicator position
-  const selectedIndex = $derived(options.findIndex(o => o.value === value));
+  const selectedIndex = $derived(options.findIndex((o) => o.value === value));
 </script>
 
 <div

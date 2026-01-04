@@ -202,13 +202,25 @@
     border-radius: 10px;
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent-strong)) 25%, transparent)
+      color-mix(
+          in srgb,
+          var(--theme-accent-strong, var(--theme-accent-strong)) 25%,
+          transparent
+        )
         0%,
-      color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent-strong)) 25%, transparent)
+      color-mix(
+          in srgb,
+          var(--theme-accent-strong, var(--theme-accent-strong)) 25%,
+          transparent
+        )
         100%
     );
     border: 1px solid
-      color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent-strong)) 30%, transparent);
+      color-mix(
+        in srgb,
+        var(--theme-accent-strong, var(--theme-accent-strong)) 30%,
+        transparent
+      );
     color: var(--theme-accent-strong, var(--theme-accent-strong));
     font-size: var(--font-size-lg);
     flex-shrink: 0;
@@ -236,9 +248,17 @@
     gap: 6px;
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent-strong)) 90%, transparent)
+      color-mix(
+          in srgb,
+          var(--theme-accent-strong, var(--theme-accent-strong)) 90%,
+          transparent
+        )
         0%,
-      color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent-strong)) 90%, transparent)
+      color-mix(
+          in srgb,
+          var(--theme-accent-strong, var(--theme-accent-strong)) 90%,
+          transparent
+        )
         100%
     );
     color: white;
@@ -251,14 +271,22 @@
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     white-space: nowrap;
     box-shadow: 0 2px 8px
-      color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent-strong)) 30%, transparent);
+      color-mix(
+        in srgb,
+        var(--theme-accent-strong, var(--theme-accent-strong)) 30%,
+        transparent
+      );
   }
 
   .install-btn:hover,
   .learn-btn:hover {
     transform: translateY(-1px);
     box-shadow: 0 4px 16px
-      color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent-strong)) 40%, transparent);
+      color-mix(
+        in srgb,
+        var(--theme-accent-strong, var(--theme-accent-strong)) 40%,
+        transparent
+      );
     background: var(--theme-accent-strong, var(--theme-accent-strong));
   }
 
@@ -266,7 +294,11 @@
   .learn-btn:active {
     transform: translateY(0);
     box-shadow: 0 1px 4px
-      color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent-strong)) 30%, transparent);
+      color-mix(
+        in srgb,
+        var(--theme-accent-strong, var(--theme-accent-strong)) 30%,
+        transparent
+      );
   }
 
   .install-btn:disabled {

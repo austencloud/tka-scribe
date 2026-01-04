@@ -605,24 +605,24 @@
 {:else if CreateModuleState && constructTabState && services && CreateModuleState.isPersistenceInitialized}
   <div class="create-tab">
     <StandardWorkspaceLayout
-        {shouldUseSideBySideLayout}
-        {CreateModuleState}
-        {panelState}
-        {currentDisplayWord}
-        {currentLetterSources}
-        bind:animatingBeatNumber
-        bind:toolPanelRef
-        bind:buttonPanelElement
-        bind:toolPanelElement
-        onClearSequence={handleClearSequence}
-        onShareHub={handleOpenShareHubPanel}
-        onSequenceActionsClick={handleOpenSequenceActions}
-        onOptionSelected={handleOptionSelected}
-        onOpenFilters={handleOpenFilterPanel}
-        onCloseFilters={() => {
-          panelState.closeFilterPanel();
-        }}
-      />
+      {shouldUseSideBySideLayout}
+      {CreateModuleState}
+      {panelState}
+      {currentDisplayWord}
+      {currentLetterSources}
+      bind:animatingBeatNumber
+      bind:toolPanelRef
+      bind:buttonPanelElement
+      bind:toolPanelElement
+      onClearSequence={handleClearSequence}
+      onShareHub={handleOpenShareHubPanel}
+      onSequenceActionsClick={handleOpenSequenceActions}
+      onOptionSelected={handleOptionSelected}
+      onOpenFilters={handleOpenFilterPanel}
+      onCloseFilters={() => {
+        panelState.closeFilterPanel();
+      }}
+    />
   </div>
 
   <!-- Edit Coordinator -->

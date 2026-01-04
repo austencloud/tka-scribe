@@ -4,10 +4,16 @@
   import type { LOOPDetectionResult } from "../../services/contracts/ILOOPDetector";
   import type { BeatData } from "$lib/features/create/shared/domain/models/BeatData";
   import type { StartPositionData } from "$lib/features/create/shared/domain/models/StartPositionData";
-  import { createMotionData, type MotionData } from "$lib/shared/pictograph/shared/domain/models/MotionData";
+  import {
+    createMotionData,
+    type MotionData,
+  } from "$lib/shared/pictograph/shared/domain/models/MotionData";
   import BeatGrid from "$lib/features/create/shared/workspace-panel/sequence-display/components/BeatGrid.svelte";
   import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
-  import { MotionColor, Orientation } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
+  import {
+    MotionColor,
+    Orientation,
+  } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
   import FontAwesomeIcon from "$lib/shared/foundation/ui/FontAwesomeIcon.svelte";
   import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
@@ -69,7 +75,17 @@
   });
 
   // Helper to extract intervals from a designation/candidate
-  function getIntervalTypes(designation: { transformationIntervals?: { rotation?: string; swap?: string; mirror?: string; flip?: string; invert?: string } } | null): string[] {
+  function getIntervalTypes(
+    designation: {
+      transformationIntervals?: {
+        rotation?: string;
+        swap?: string;
+        mirror?: string;
+        flip?: string;
+        invert?: string;
+      };
+    } | null
+  ): string[] {
     if (!designation?.transformationIntervals) return [];
     const intervals = designation.transformationIntervals;
     return [
@@ -132,7 +148,8 @@
     if (length === 8) return 4;
     if (length % 4 === 0 && length / 4 >= 2) return length / 4;
     if (length % 3 === 0 && length / 3 >= 2) return length / 3;
-    if (length % 2 === 0 && length / 2 >= 2 && length / 2 <= 8) return length / 2;
+    if (length % 2 === 0 && length / 2 >= 2 && length / 2 <= 8)
+      return length / 2;
 
     return null;
   });
@@ -148,7 +165,9 @@
   let orientationCalculator: IOrientationCalculator | null = null;
   function getOrientationCalculator(): IOrientationCalculator {
     if (!orientationCalculator) {
-      orientationCalculator = resolve<IOrientationCalculator>(TYPES.IOrientationCalculator);
+      orientationCalculator = resolve<IOrientationCalculator>(
+        TYPES.IOrientationCalculator
+      );
     }
     return orientationCalculator;
   }
@@ -192,7 +211,10 @@
           startOrientation: blueOrientation,
         });
         // Use the canonical orientation calculator
-        const endOri = calculator.calculateEndOrientation(tempMotion, MotionColor.BLUE);
+        const endOri = calculator.calculateEndOrientation(
+          tempMotion,
+          MotionColor.BLUE
+        );
 
         const zeroTurnMotion: MotionData = {
           ...blueMotion,
@@ -214,7 +236,10 @@
           startOrientation: redOrientation,
         });
         // Use the canonical orientation calculator
-        const endOri = calculator.calculateEndOrientation(tempMotion, MotionColor.RED);
+        const endOri = calculator.calculateEndOrientation(
+          tempMotion,
+          MotionColor.RED
+        );
 
         const zeroTurnMotion: MotionData = {
           ...redMotion,
@@ -248,12 +273,20 @@
 
     <div class="header-actions">
       {#if currentLabel && onDeleteLabel}
-        <button class="action-btn danger" onclick={onDeleteLabel} title="Delete existing label">
+        <button
+          class="action-btn danger"
+          onclick={onDeleteLabel}
+          title="Delete existing label"
+        >
           <FontAwesomeIcon icon="trash" size="0.85em" />
         </button>
       {/if}
       {#if onCopyJson}
-        <button class="action-btn" onclick={onCopyJson} title="Copy sequence JSON">
+        <button
+          class="action-btn"
+          onclick={onCopyJson}
+          title="Copy sequence JSON"
+        >
           {#if copiedToast}
             <FontAwesomeIcon icon="check" size="0.85em" />
           {:else}
@@ -268,11 +301,17 @@
   {#if sequence}
     <div class="meta-row">
       <span class="meta-item">{sequence.sequenceLength} beats</span>
-      <span class="meta-item grid-mode" class:box={authoritativeGridMode === GridMode.BOX}>
+      <span
+        class="meta-item grid-mode"
+        class:box={authoritativeGridMode === GridMode.BOX}
+      >
         {authoritativeGridMode === GridMode.BOX ? "BOX" : "DIAMOND"}
       </span>
       {#if sequence.fullMetadata?.sequence?.[0]?.gridMode && sequence.fullMetadata.sequence[0].gridMode !== sequence.gridMode}
-        <span class="meta-item warning" title="Top-level gridMode differs from metadata">
+        <span
+          class="meta-item warning"
+          title="Top-level gridMode differs from metadata"
+        >
           Grid Mismatch
         </span>
       {/if}

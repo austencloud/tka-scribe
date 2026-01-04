@@ -23,9 +23,7 @@ import type { IMotionCalculator } from "../contracts/IMotionCalculator";
 import { ANIMATION_3D_TYPES } from "../../inversify/animation-3d.types";
 
 @injectable()
-export class PropStateInterpolator
-  implements IPropStateInterpolator
-{
+export class PropStateInterpolator implements IPropStateInterpolator {
   constructor(
     @inject(ANIMATION_3D_TYPES.IAngleMathCalculator)
     private angleMath: IAngleMathCalculator,

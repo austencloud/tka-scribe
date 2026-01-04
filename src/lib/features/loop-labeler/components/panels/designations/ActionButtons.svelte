@@ -31,9 +31,7 @@
     Freeform
   </button>
 
-  <button class="action-btn unknown" onclick={onMarkUnknown}>
-    Unknown
-  </button>
+  <button class="action-btn unknown" onclick={onMarkUnknown}> Unknown </button>
 
   <button class="action-btn save" onclick={onSaveAndNext} disabled={!canSave}>
     Save & Next

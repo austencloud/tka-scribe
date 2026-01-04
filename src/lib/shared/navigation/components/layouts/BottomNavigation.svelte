@@ -71,7 +71,9 @@
   const FIXED_BUTTONS_WIDTH = 112; // Module switcher + settings/back + gaps
 
   // Calculate required width - directly access sections.length for proper reactivity
-  let requiredWidth = $derived(sections.length * BUTTON_WIDTH + FIXED_BUTTONS_WIDTH);
+  let requiredWidth = $derived(
+    sections.length * BUTTON_WIDTH + FIXED_BUTTONS_WIDTH
+  );
 
   // Use overflow selector when tabs don't fit in available space
   let shouldUseOverflowSelector = $derived(
@@ -141,9 +143,7 @@
 
   onMount(() => {
     try {
-      hapticService = resolve<IHapticFeedback>(
-        TYPES.IHapticFeedback
-      );
+      hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
     } catch (error) {
       console.warn(
         "BottomNavigation: Failed to resolve IHapticFeedback",

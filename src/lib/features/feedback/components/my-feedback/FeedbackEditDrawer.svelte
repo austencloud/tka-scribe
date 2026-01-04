@@ -273,7 +273,10 @@
             <i class="fas fa-circle-notch fa-spin" aria-hidden="true"></i>
             <span>Saving...</span>
           {:else}
-            <i class="fas {appendMode ? 'fa-plus' : 'fa-check'}" aria-hidden="true"></i>
+            <i
+              class="fas {appendMode ? 'fa-plus' : 'fa-check'}"
+              aria-hidden="true"
+            ></i>
             <span>{appendMode ? "Add Notes" : "Save Changes"}</span>
           {/if}
         </button>
@@ -377,7 +380,11 @@
       transparent
     );
     border: 1px solid
-      color-mix(in srgb, var(--theme-accent, var(--semantic-info)) 25%, transparent);
+      color-mix(
+        in srgb,
+        var(--theme-accent, var(--semantic-info)) 25%,
+        transparent
+      );
     border-radius: 10px;
     font-size: 0.875rem;
     color: var(--theme-text);
@@ -569,7 +576,11 @@
       transparent
     );
     border: 1px solid
-      color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 30%, transparent);
+      color-mix(
+        in srgb,
+        var(--semantic-error, var(--semantic-error)) 30%,
+        transparent
+      );
     border-radius: 8px;
     color: var(--semantic-error, var(--semantic-error));
     font-size: 0.875rem;

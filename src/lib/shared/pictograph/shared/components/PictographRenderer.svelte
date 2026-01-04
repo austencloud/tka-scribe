@@ -21,7 +21,9 @@ Usage:
   import GridSvg from "../../grid/components/GridSvg.svelte";
   import PropSvg from "../../prop/components/PropSvg.svelte";
   import ArrowSvg from "../../arrow/rendering/components/ArrowSvg.svelte";
-  import TKAGlyph, { getLetterDimensions } from "../../tka-glyph/components/TKAGlyph.svelte";
+  import TKAGlyph, {
+    getLetterDimensions,
+  } from "../../tka-glyph/components/TKAGlyph.svelte";
   import TurnsColumn from "../../tka-glyph/components/TurnsColumn.svelte";
   import DirectionDot from "../../tka-glyph/components/DirectionDot.svelte";
   import { parseTurnsTuple } from "../../tka-glyph/utils/turn-tuple-parser";
@@ -94,7 +96,9 @@ Usage:
 
   // Derived beat context
   const isStartPosition = $derived(beatNumber === 0);
-  const shouldShowBeatNumber = $derived(showBeatNumber && beatNumber !== null && !isStartPosition);
+  const shouldShowBeatNumber = $derived(
+    showBeatNumber && beatNumber !== null && !isStartPosition
+  );
 
   // Derive grid mode from override, pre-calculated, or motions
   const gridMode = $derived(
@@ -151,7 +155,9 @@ Usage:
       return "(s, 0, 0)";
     }
     try {
-      const generator = tryResolve<ITurnsTupleGenerator>(TYPES.ITurnsTupleGenerator);
+      const generator = tryResolve<ITurnsTupleGenerator>(
+        TYPES.ITurnsTupleGenerator
+      );
       if (!generator) return "(s, 0, 0)";
       return generator.generateTurnsTuple(pictograph);
     } catch {
@@ -160,7 +166,9 @@ Usage:
   });
 
   // Check if we have valid data for glyphs
-  const hasValidData = $derived(!!pictograph?.motions?.blue || !!pictograph?.motions?.red);
+  const hasValidData = $derived(
+    !!pictograph?.motions?.blue || !!pictograph?.motions?.red
+  );
 
   // Get letter dimensions for direction dot positioning
   // NOTE: For dash letters (Type3/Type5), getLetterDimensions returns the BASE letter dimensions
@@ -192,7 +200,7 @@ Usage:
       {previewMode}
       onLoaded={() => {}}
       onError={() => {}}
-      onToggleNonRadial={onToggleNonRadial}
+      {onToggleNonRadial}
     />
 
     <!-- Props -->

@@ -52,9 +52,7 @@
   };
 
   onMount(async () => {
-    hapticService = tryResolve<IHapticFeedback>(
-      TYPES.IHapticFeedback
-    );
+    hapticService = tryResolve<IHapticFeedback>(TYPES.IHapticFeedback);
 
     // Ensure animations are loaded
     if (browseState.animations.length === 0) {

@@ -54,17 +54,17 @@ export interface EffectConfig {
  * Which prop end(s) to track for trails
  */
 export enum TrackingMode {
-  LEFT_END = "left_end",     // Track only left end (base)
-  RIGHT_END = "right_end",   // Track only right end (tip)
-  BOTH_ENDS = "both_ends",   // Track both ends
+  LEFT_END = "left_end", // Track only left end (base)
+  RIGHT_END = "right_end", // Track only right end (tip)
+  BOTH_ENDS = "both_ends", // Track both ends
 }
 
 /**
  * Trail rendering style
  */
 export enum TrailStyle {
-  RIBBON = "ribbon",         // Physics-based ribbon (default)
-  TUBE = "tube",             // Simple tube geometry (legacy)
+  RIBBON = "ribbon", // Physics-based ribbon (default)
+  TUBE = "tube", // Simple tube geometry (legacy)
 }
 
 /**
@@ -97,8 +97,8 @@ export interface TrailConfig extends EffectConfig {
 export const DEFAULT_TRAIL_CONFIG: TrailConfig = {
   enabled: false,
   intensity: 1,
-  length: 12,  // Ribbon segments
-  width: 3,    // Appropriate for 3D scene scale
+  length: 12, // Ribbon segments
+  width: 3, // Appropriate for 3D scene scale
   color: "rainbow",
   fadeOut: true,
   opacity: 0.85,

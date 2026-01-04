@@ -45,10 +45,7 @@ export class SequencePersister implements ISequencePersister {
       // Ensure the persistence service is initialized
       await this.persistenceService.initialize();
     } catch (error) {
-      console.error(
-        "❌ SequencePersister: Failed to initialize:",
-        error
-      );
+      console.error("❌ SequencePersister: Failed to initialize:", error);
       throw error;
     }
   }

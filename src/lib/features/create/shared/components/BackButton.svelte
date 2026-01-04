@@ -24,9 +24,7 @@
   let hapticService: IHapticFeedback;
 
   onMount(async () => {
-    hapticService = await resolve<IHapticFeedback>(
-      TYPES.IHapticFeedback
-    );
+    hapticService = await resolve<IHapticFeedback>(TYPES.IHapticFeedback);
   });
 
   function handleBack() {
@@ -98,7 +96,11 @@
     box-shadow:
       0 0 0 2px var(--theme-stroke-strong),
       0 6px 16px
-        color-mix(in srgb, var(--theme-accent, var(--semantic-info)) 30%, transparent),
+        color-mix(
+          in srgb,
+          var(--theme-accent, var(--semantic-info)) 30%,
+          transparent
+        ),
       0 4px 12px var(--theme-shadow),
       inset 0 1px 0 rgba(255, 255, 255, 0.2);
   }

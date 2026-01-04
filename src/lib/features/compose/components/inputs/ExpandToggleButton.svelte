@@ -20,7 +20,10 @@
   aria-label={isExpanded ? "Collapse controls" : "Expand controls"}
   type="button"
 >
-  <i class="fas {isExpanded ? 'fa-chevron-down' : 'fa-chevron-up'}" aria-hidden="true"></i>
+  <i
+    class="fas {isExpanded ? 'fa-chevron-down' : 'fa-chevron-up'}"
+    aria-hidden="true"
+  ></i>
 </button>
 
 <style>

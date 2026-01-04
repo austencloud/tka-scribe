@@ -194,12 +194,7 @@
     background: linear-gradient(
       to top,
       var(--theme-panel-bg) 0%,
-      color-mix(
-          in srgb,
-          var(--theme-panel-bg) 95%,
-          transparent
-        )
-        50%,
+      color-mix(in srgb, var(--theme-panel-bg) 95%, transparent) 50%,
       transparent 100%
     );
     border-top: 1px solid var(--theme-stroke);
@@ -478,7 +473,11 @@
     );
     color: white;
     box-shadow: 0 2px 8px
-      color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 30%, transparent);
+      color-mix(
+        in srgb,
+        var(--theme-accent, var(--theme-accent)) 30%,
+        transparent
+      );
   }
 
   :global(.button--primary:hover:not(:disabled)) {
@@ -489,7 +488,11 @@
     );
     transform: translateY(-2px);
     box-shadow: 0 4px 12px
-      color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 40%, transparent);
+      color-mix(
+        in srgb,
+        var(--theme-accent, var(--theme-accent)) 40%,
+        transparent
+      );
   }
 
   :global(.button:active:not(:disabled)) {
@@ -504,7 +507,11 @@
 
   :global(.button--link) {
     background: transparent;
-    color: color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 90%, transparent);
+    color: color-mix(
+      in srgb,
+      var(--theme-accent, var(--theme-accent)) 90%,
+      transparent
+    );
     box-shadow: none;
     padding: clamp(8px, 1.2vh, 10px) 0;
     min-height: auto;
@@ -547,14 +554,12 @@
 
   /* Accessibility - Focus Indicators */
   :global(.input:focus-visible) {
-    outline: 3px solid
-      color-mix(in srgb, var(--theme-accent) 90%, transparent);
+    outline: 3px solid color-mix(in srgb, var(--theme-accent) 90%, transparent);
     outline-offset: 2px;
   }
 
   :global(.button:focus-visible) {
-    outline: 3px solid
-      color-mix(in srgb, var(--theme-accent) 90%, transparent);
+    outline: 3px solid color-mix(in srgb, var(--theme-accent) 90%, transparent);
     outline-offset: 2px;
   }
 

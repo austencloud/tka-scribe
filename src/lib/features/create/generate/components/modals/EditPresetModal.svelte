@@ -32,9 +32,7 @@ Provides a beautiful, unified experience for customizing presets
   });
 
   onMount(() => {
-    hapticService = resolve<IHapticFeedback>(
-      TYPES.IHapticFeedback
-    );
+    hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
 
     // Focus the name input
     nameInput?.focus();
@@ -137,11 +135,7 @@ Provides a beautiful, unified experience for customizing presets
     height: 100vh;
     height: 100dvh;
     height: var(--actual-vh, 100vh);
-    background: color-mix(
-      in srgb,
-      var(--theme-panel-bg) 85%,
-      transparent
-    );
+    background: color-mix(in srgb, var(--theme-panel-bg) 85%, transparent);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -270,7 +264,11 @@ Provides a beautiful, unified experience for customizing presets
     );
     box-shadow:
       0 0 0 3px
-        color-mix(in srgb, var(--theme-accent, var(--semantic-info)) 20%, transparent),
+        color-mix(
+          in srgb,
+          var(--theme-accent, var(--semantic-info)) 20%,
+          transparent
+        ),
       0 2px 8px var(--theme-shadow, var(--theme-shadow)) inset;
   }
 

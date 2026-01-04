@@ -85,8 +85,17 @@
     <i class="fas fa-undo" aria-hidden="true"></i>
   </button>
 
-  <button class="play-btn primary" onclick={onTogglePlay} aria-label={isPlaying ? "Pause" : "Play"}>
-    <i class="fas" class:fa-pause={isPlaying} class:fa-play={!isPlaying} aria-hidden="true"></i>
+  <button
+    class="play-btn primary"
+    onclick={onTogglePlay}
+    aria-label={isPlaying ? "Pause" : "Play"}
+  >
+    <i
+      class="fas"
+      class:fa-pause={isPlaying}
+      class:fa-play={!isPlaying}
+      aria-hidden="true"
+    ></i>
   </button>
 
   <input

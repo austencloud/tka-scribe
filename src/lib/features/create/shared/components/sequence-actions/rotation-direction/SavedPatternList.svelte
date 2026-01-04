@@ -14,13 +14,14 @@
     onDelete: (pattern: RotationDirectionPattern) => void;
   }
 
-  let { patterns, currentBeatCount, applying, onApply, onDelete }: Props = $props();
+  let { patterns, currentBeatCount, applying, onApply, onDelete }: Props =
+    $props();
 </script>
 
 {#if patterns.length === 0}
   <p class="empty-message">
-    No saved patterns yet. Save a pattern from the current sequence or
-    try a template above.
+    No saved patterns yet. Save a pattern from the current sequence or try a
+    template above.
   </p>
 {:else}
   <div class="saved-patterns-section">

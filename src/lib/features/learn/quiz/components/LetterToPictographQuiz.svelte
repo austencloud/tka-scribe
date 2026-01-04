@@ -37,7 +37,8 @@ Letter to Pictograph Quiz - Shows a letter, asks user to identify the correct pi
   let questionLetter = $derived(questionData?.questionContent as string);
   let isCorrectAnswer = $derived(
     selectedAnswerId
-      ? (questionData?.answerOptions.find((o) => o.id === selectedAnswerId)?.isCorrect ?? false)
+      ? (questionData?.answerOptions.find((o) => o.id === selectedAnswerId)
+          ?.isCorrect ?? false)
       : false
   );
 
@@ -50,7 +51,9 @@ Letter to Pictograph Quiz - Shows a letter, asks user to identify the correct pi
     isLoading = true;
     error = null;
     try {
-      questionData = await QuestionGeneratorService.generateQuestion(QuizType.LETTER_TO_PICTOGRAPH);
+      questionData = await QuestionGeneratorService.generateQuestion(
+        QuizType.LETTER_TO_PICTOGRAPH
+      );
       questionKey++;
     } catch (err) {
       console.error("Failed to load question:", err);
@@ -83,7 +86,10 @@ Letter to Pictograph Quiz - Shows a letter, asks user to identify the correct pi
     onNextQuestion?.();
   }
 
-  function getButtonState(optionId: string, isCorrect: boolean): "default" | "correct" | "incorrect" | "dimmed" {
+  function getButtonState(
+    optionId: string,
+    isCorrect: boolean
+  ): "default" | "correct" | "incorrect" | "dimmed" {
     if (!isAnswered) return "default";
     if (isCorrect) return "correct";
     if (selectedAnswerId === optionId) return "incorrect";

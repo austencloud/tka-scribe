@@ -16,7 +16,12 @@
     onColumnCountChanged: (count: number) => void;
   }
 
-  let { selectedLength, columnCount, onLengthSelected, onColumnCountChanged }: Props = $props();
+  let {
+    selectedLength,
+    columnCount,
+    onLengthSelected,
+    onColumnCountChanged,
+  }: Props = $props();
 
   let hapticService: IHapticFeedback;
 

@@ -40,7 +40,9 @@
   // Determine if we should use virtualization
   // Only virtualize flat grids (not sections) with many items
   const useVirtualization = $derived(
-    !showSections && sequences.length > VIRTUALIZATION_THRESHOLD && viewMode === "grid"
+    !showSections &&
+      sequences.length > VIRTUALIZATION_THRESHOLD &&
+      viewMode === "grid"
   );
 
   // Get user's prop settings for prop-aware thumbnails
@@ -181,11 +183,7 @@
 
 {#if useVirtualization}
   <!-- 🚀 VIRTUALIZED: Large flat list with 50+ items -->
-  <VirtualizedSequenceGrid
-    {sequences}
-    {thumbnailService}
-    {onAction}
-  />
+  <VirtualizedSequenceGrid {sequences} {thumbnailService} {onAction} />
 {:else if showSections && sections.length > 0}
   <!-- Section-based organization (desktop app style) -->
   <div class="sections-container">

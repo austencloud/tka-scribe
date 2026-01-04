@@ -10,7 +10,10 @@
 
 import type { ISvgColorTransformer as IArrowSvgColorTransformer } from "../contracts/IArrowSvgColorTransformer";
 import { MotionColor } from "../../../../shared/domain/enums/pictograph-enums";
-import { getMotionColor, type ThemeMode } from "../../../../../utils/svg-color-utils";
+import {
+  getMotionColor,
+  type ThemeMode,
+} from "../../../../../utils/svg-color-utils";
 import { injectable } from "inversify";
 import { getAnimationVisibilityManager } from "../../../../../animation-engine/state/animation-visibility-state.svelte";
 
@@ -18,7 +21,7 @@ import { getAnimationVisibilityManager } from "../../../../../animation-engine/s
 export class ArrowSvgColorTransformer implements IArrowSvgColorTransformer {
   /**
    * Get the current theme mode based on dark mode setting
-   * Dark mode (Lights Off) = "dark" theme, Light mode = "light" theme
+   * Dark mode (Dark Mode) = "dark" theme, Light mode = "light" theme
    */
   private getCurrentThemeMode(): ThemeMode {
     try {

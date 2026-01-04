@@ -49,11 +49,16 @@ export class WordSequenceGenerator implements IWordSequenceGenerator {
     private sequenceExtender: ISequenceExtender
   ) {}
 
-  async generateFromWord(options: SpellGenerationOptions): Promise<SpellResult> {
+  async generateFromWord(
+    options: SpellGenerationOptions
+  ): Promise<SpellResult> {
     // Validate word
     const validation = this.validateWord(options.word);
     if (!validation.valid) {
-      return this.createErrorResult(options.word, validation.error || "Invalid word");
+      return this.createErrorResult(
+        options.word,
+        validation.error || "Invalid word"
+      );
     }
 
     // Parse word into letters
@@ -322,7 +327,10 @@ export class WordSequenceGenerator implements IWordSequenceGenerator {
 
     const parseResult = this.parseWord(word);
     if (!parseResult || parseResult.error) {
-      return { valid: false, error: parseResult?.error || "Invalid characters" };
+      return {
+        valid: false,
+        error: parseResult?.error || "Invalid characters",
+      };
     }
 
     if (parseResult.letters.length === 0) {
@@ -466,7 +474,11 @@ export class WordSequenceGenerator implements IWordSequenceGenerator {
       }
 
       // Convert to beat
-      const beat = this.beatConverter.convertToBeat(pictograph, i + 1, gridMode);
+      const beat = this.beatConverter.convertToBeat(
+        pictograph,
+        i + 1,
+        gridMode
+      );
       beats.push(beat);
       lastPictograph = pictograph;
     }
@@ -545,7 +557,9 @@ export class WordSequenceGenerator implements IWordSequenceGenerator {
       isCircular,
       isFavorite: false,
       thumbnails: [],
-      tags: isCircular ? ["generated", "spell", "loop"] : ["generated", "spell"],
+      tags: isCircular
+        ? ["generated", "spell", "loop"]
+        : ["generated", "spell"],
       metadata: {
         createdAt: new Date().toISOString(),
         source: "spell",
@@ -704,7 +718,8 @@ export class WordSequenceGenerator implements IWordSequenceGenerator {
 
     // Find a pictograph variation that starts at the last beat's end position
     const bridgeVariations = allPictographs.filter(
-      (p) => p.letter === bridgeLetter && p.startPosition === lastBeat.endPosition
+      (p) =>
+        p.letter === bridgeLetter && p.startPosition === lastBeat.endPosition
     );
 
     if (bridgeVariations.length === 0) {
@@ -719,7 +734,11 @@ export class WordSequenceGenerator implements IWordSequenceGenerator {
     const randomIndex = Math.floor(Math.random() * bridgeVariations.length);
     const bridgeVariation = bridgeVariations[randomIndex];
     if (!bridgeVariation) {
-      return { success: false, sequence, error: "Failed to select bridge variation" };
+      return {
+        success: false,
+        sequence,
+        error: "Failed to select bridge variation",
+      };
     }
 
     // Convert to beat and append

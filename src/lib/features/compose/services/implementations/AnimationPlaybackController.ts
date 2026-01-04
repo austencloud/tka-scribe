@@ -18,9 +18,7 @@ import type { ISequenceAnimationOrchestrator } from "../contracts/ISequenceAnima
 import type { ISequenceLoopabilityChecker } from "../contracts/ISequenceLoopabilityChecker";
 
 @injectable()
-export class AnimationPlaybackController
-  implements IAnimationPlaybackController
-{
+export class AnimationPlaybackController implements IAnimationPlaybackController {
   private state: AnimationPanelState | null = null;
   private sequenceData: SequenceData | null = null;
   private isSeamlesslyLoopable: boolean = false;

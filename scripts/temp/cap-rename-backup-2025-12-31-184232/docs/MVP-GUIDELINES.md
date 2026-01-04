@@ -16,28 +16,28 @@ The MVP enables users to **create, save, navigate, and share sequences** in anim
 
 ### What Regular Users See
 
-| Module | Status | Tabs/Features |
-|--------|--------|---------------|
-| **Dashboard** | ✅ In MVP | Landing page, navigation hub |
-| **Create** | ✅ In MVP | Assemble, Construct, Generate (no Spell) |
-| **Discover** | ✅ In MVP | Gallery, Collections, Creators |
-| **Premium** | ✅ In MVP | Upsell page for non-premium users |
+| Module        | Status    | Tabs/Features                            |
+| ------------- | --------- | ---------------------------------------- |
+| **Dashboard** | ✅ In MVP | Landing page, navigation hub             |
+| **Create**    | ✅ In MVP | Assemble, Construct, Generate (no Spell) |
+| **Discover**  | ✅ In MVP | Gallery, Collections, Creators           |
+| **Premium**   | ✅ In MVP | Upsell page for non-premium users        |
 
 ### What's Hidden from Regular Users (Admin/Tester Only)
 
-| Module | Role Required | Reason |
-|--------|---------------|--------|
-| Learn | Admin | Not production ready |
-| Compose | Admin | Advanced animation editing |
-| Train | Admin | Prop detection training |
-| Library | Admin | Being prepared for next release |
-| Feedback | Tester+ | Internal feedback system |
-| ML Training | Tester | Data collection tool |
-| Admin | Admin | System management |
-| 3D Viewer | Admin | Experimental |
-| Word Card | Admin | Internal tool |
-| Write | Admin | Internal tool |
-| Spell Tab | Admin | Create tab not ready for users |
+| Module      | Role Required | Reason                          |
+| ----------- | ------------- | ------------------------------- |
+| Learn       | Admin         | Not production ready            |
+| Compose     | Admin         | Advanced animation editing      |
+| Train       | Admin         | Prop detection training         |
+| Library     | Admin         | Being prepared for next release |
+| Feedback    | Tester+       | Internal feedback system        |
+| ML Training | Tester        | Data collection tool            |
+| Admin       | Admin         | System management               |
+| 3D Viewer   | Admin         | Experimental                    |
+| Word Card   | Admin         | Internal tool                   |
+| Write       | Admin         | Internal tool                   |
+| Spell Tab   | Admin         | Create tab not ready for users  |
 
 ---
 
@@ -50,15 +50,18 @@ User opens Create → Picks method (Assemble/Construct/Generate) → Builds sequ
 ```
 
 **Entry Points:**
+
 - Dashboard → Create module
 - Bottom nav (mobile) / Sidebar (desktop)
 
 **Methods Available:**
+
 1. **Assemble** - Beginner-friendly, 6 choices per hand, step-by-step
 2. **Construct** - Full option picker, step-by-step beat building
 3. **Generate** - Parameter-based auto-generation (length, level, LOOP type)
 
 **Exit Criteria:**
+
 - User has a visible sequence in the workspace
 - Beat grid shows all created beats
 - Undo/redo works
@@ -74,10 +77,12 @@ User creates sequence → Clicks Save → Enters metadata → Sequence saved to 
 **Current State:** ⚠️ PARTIAL - Component exists, trigger button missing
 
 **Required Fix:**
+
 - Add "Save to Library" button to ButtonPanel
 - Wire button to `panelState.openSaveToLibraryPanel()`
 
 **Save Panel Features:**
+
 - Name input (auto-populated from display word)
 - Visibility toggle (public/private)
 - Tags input
@@ -95,6 +100,7 @@ User views sequence → Taps/clicks beats → Selected beat highlighted → Can 
 **Current State:** ✅ WORKING
 
 **Features:**
+
 - Beat grid with tap-to-select
 - Scroll state managed
 - Selected beat visually highlighted
@@ -111,11 +117,13 @@ User creates sequence → Opens Share Hub → Selects format → Exports/shares
 **Current State:** ⚠️ CRITICAL GAPS
 
 **What Works:**
+
 - Share Hub drawer opens
 - Format selection UI (Animation/Static/Performance)
 - Settings panels render
 
 **What's Broken:**
+
 - Sequence data not syncing to Share Hub (infinite loop bug)
 - Export callback not implemented in Create module
 - Performance video completely unimplemented
@@ -134,28 +142,28 @@ User creates sequence → Opens Share Hub → Selects format → Exports/shares
 
 ### P0 - Must Fix Before Release
 
-| Issue | Location | Impact | Effort |
-|-------|----------|--------|--------|
-| **Save button missing** | `ButtonPanel.svelte` | Users can't save sequences | 10 min |
-| **Share Hub sequence sync** | `ShareHubPanel.svelte:53-69` | Share Hub has no data to export | 30 min |
-| **Static image export** | `SingleMediaView.svelte` | No actual export happens | 2 hrs |
-| **Performance video removal** | `ShareHubPanel.svelte` | Shows broken feature | 15 min |
+| Issue                         | Location                     | Impact                          | Effort |
+| ----------------------------- | ---------------------------- | ------------------------------- | ------ |
+| **Save button missing**       | `ButtonPanel.svelte`         | Users can't save sequences      | 10 min |
+| **Share Hub sequence sync**   | `ShareHubPanel.svelte:53-69` | Share Hub has no data to export | 30 min |
+| **Static image export**       | `SingleMediaView.svelte`     | No actual export happens        | 2 hrs  |
+| **Performance video removal** | `ShareHubPanel.svelte`       | Shows broken feature            | 15 min |
 
 ### P1 - Should Fix Before Release
 
-| Issue | Location | Impact | Effort |
-|-------|----------|--------|--------|
-| Console.logs in DiscoverFilter | `DiscoverFilter.ts:217-278` | Debug noise in production | 5 min |
-| Edit button discoverability | `ButtonPanel.svelte` | Users don't know editing exists | 15 min |
-| Filter result count | `HybridFilterPanel.svelte` | Users can't see filter impact | 30 min |
+| Issue                          | Location                    | Impact                          | Effort |
+| ------------------------------ | --------------------------- | ------------------------------- | ------ |
+| Console.logs in DiscoverFilter | `DiscoverFilter.ts:217-278` | Debug noise in production       | 5 min  |
+| Edit button discoverability    | `ButtonPanel.svelte`        | Users don't know editing exists | 15 min |
+| Filter result count            | `HybridFilterPanel.svelte`  | Users can't see filter impact   | 30 min |
 
 ### P2 - Nice to Have
 
-| Issue | Location | Impact | Effort |
-|-------|----------|--------|--------|
-| Animation MP4 export | Compose services | Full share workflow | 4 hrs |
-| Sort direction in service | `DiscoverSorter.ts` | Clean architecture | 30 min |
-| Favorites toggle toast | `SequenceCard.svelte` | User feedback | 15 min |
+| Issue                     | Location              | Impact              | Effort |
+| ------------------------- | --------------------- | ------------------- | ------ |
+| Animation MP4 export      | Compose services      | Full share workflow | 4 hrs  |
+| Sort direction in service | `DiscoverSorter.ts`   | Clean architecture  | 30 min |
+| Favorites toggle toast    | `SequenceCard.svelte` | User feedback       | 15 min |
 
 ---
 
@@ -163,12 +171,12 @@ User creates sequence → Opens Share Hub → Selects format → Exports/shares
 
 ### CREATE Module: ✅ MVP Ready
 
-| Tab | Status | Notes |
-|-----|--------|-------|
-| Assemble | ✅ Ready | Beginner-friendly, step-by-step |
-| Construct | ✅ Ready | Full option picker working |
-| Generate | ✅ Ready | All parameters functional |
-| Spell | ❌ Hidden | Admin-only, not ready |
+| Tab       | Status    | Notes                           |
+| --------- | --------- | ------------------------------- |
+| Assemble  | ✅ Ready  | Beginner-friendly, step-by-step |
+| Construct | ✅ Ready  | Full option picker working      |
+| Generate  | ✅ Ready  | All parameters functional       |
+| Spell     | ❌ Hidden | Admin-only, not ready           |
 
 **Post-Creation Features:**
 | Feature | Status | Fix Required |
@@ -182,11 +190,11 @@ User creates sequence → Opens Share Hub → Selects format → Exports/shares
 
 ### DISCOVER Module: ✅ MVP Ready
 
-| Tab | Status | Notes |
-|-----|--------|-------|
-| Gallery | ✅ Ready | Virtualized, responsive |
-| Collections | ✅ Ready | Curated playlists |
-| Creators | ✅ Ready | Community profiles |
+| Tab         | Status   | Notes                   |
+| ----------- | -------- | ----------------------- |
+| Gallery     | ✅ Ready | Virtualized, responsive |
+| Collections | ✅ Ready | Curated playlists       |
+| Creators    | ✅ Ready | Community profiles      |
 
 **Features:**
 | Feature | Status | Notes |
@@ -202,14 +210,15 @@ User creates sequence → Opens Share Hub → Selects format → Exports/shares
 
 ### SHARE Functionality: ⚠️ Needs Work
 
-| Format | Status | MVP Decision |
-|--------|--------|--------------|
-| Static PNG | ⚠️ Broken | **Must fix** |
-| Animation MP4 | ⚠️ Partial | Stretch goal |
-| Performance Video | ❌ Broken | **Cut from MVP** |
-| Composite | ❌ Stub | **Cut from MVP** |
+| Format            | Status     | MVP Decision     |
+| ----------------- | ---------- | ---------------- |
+| Static PNG        | ⚠️ Broken  | **Must fix**     |
+| Animation MP4     | ⚠️ Partial | Stretch goal     |
+| Performance Video | ❌ Broken  | **Cut from MVP** |
+| Composite         | ❌ Stub    | **Cut from MVP** |
 
 **Critical Path:**
+
 1. Fix sequence sync bug in ShareHubPanel
 2. Implement static image export callback
 3. Hide/disable Performance and Composite modes
@@ -220,17 +229,21 @@ User creates sequence → Opens Share Hub → Selects format → Exports/shares
 ## 5. User Roles & Access
 
 ### Regular User (MVP Target)
+
 - Dashboard, Create (3 tabs), Discover (3 tabs)
 - PNG export (when fixed)
 - Social sharing via Web Share API
 
 ### Premium User
+
 - Same as regular + advanced filters
 
 ### Tester
+
 - Same as premium + Feedback module + video/GIF export
 
 ### Admin
+
 - Everything visible for testing
 
 ---
@@ -302,13 +315,13 @@ User creates sequence → Opens Share Hub → Selects format → Exports/shares
 
 ## 7. Performance Benchmarks
 
-| Metric | Target | Current |
-|--------|--------|---------|
-| Gallery load (50 sequences) | < 2s | ✅ OK |
-| Sequence generation | < 1s | ✅ OK |
-| Option picker scroll | 60fps | ✅ OK |
-| Share Hub open | < 500ms | ⚠️ Untested |
-| Image export | < 5s | ⚠️ Untested |
+| Metric                      | Target  | Current     |
+| --------------------------- | ------- | ----------- |
+| Gallery load (50 sequences) | < 2s    | ✅ OK       |
+| Sequence generation         | < 1s    | ✅ OK       |
+| Option picker scroll        | 60fps   | ✅ OK       |
+| Share Hub open              | < 500ms | ⚠️ Untested |
+| Image export                | < 5s    | ⚠️ Untested |
 
 ---
 
@@ -328,16 +341,19 @@ These issues are acceptable for MVP:
 ## 9. Post-MVP Roadmap
 
 ### v0.8.1 - Library Integration
+
 - [ ] Library module for regular users
 - [ ] Save sequences to collections
 - [ ] Manage saved sequences
 
 ### v0.8.2 - Enhanced Sharing
+
 - [ ] Animation MP4 export
 - [ ] GIF export
 - [ ] Social media presets
 
 ### v0.9.0 - Advanced Features
+
 - [ ] Performance video recording
 - [ ] Composite exports
 - [ ] Spell tab for users
@@ -371,6 +387,7 @@ These issues are acceptable for MVP:
 ## Quick Reference
 
 ### Commands
+
 ```bash
 # Run dev server
 npm run dev
@@ -387,14 +404,14 @@ npx tsc --noEmit
 
 ### Key Files to Edit for Fixes
 
-| Fix | File |
-|-----|------|
-| Save button | `src/lib/features/create/shared/workspace-panel/shared/components/ButtonPanel.svelte` |
-| Share Hub sync | `src/lib/shared/share-hub/components/ShareHubPanel.svelte` |
-| Static export | `src/lib/shared/share-hub/components/single-media/SingleMediaView.svelte` |
-| Hide Performance | `src/lib/shared/share-hub/state/share-hub-state.svelte.ts` |
-| Console.logs | `src/lib/features/discover/gallery/display/services/implementations/DiscoverFilter.ts` |
+| Fix              | File                                                                                   |
+| ---------------- | -------------------------------------------------------------------------------------- |
+| Save button      | `src/lib/features/create/shared/workspace-panel/shared/components/ButtonPanel.svelte`  |
+| Share Hub sync   | `src/lib/shared/share-hub/components/ShareHubPanel.svelte`                             |
+| Static export    | `src/lib/shared/share-hub/components/single-media/SingleMediaView.svelte`              |
+| Hide Performance | `src/lib/shared/share-hub/state/share-hub-state.svelte.ts`                             |
+| Console.logs     | `src/lib/features/discover/gallery/display/services/implementations/DiscoverFilter.ts` |
 
 ---
 
-*This document is the source of truth for MVP scope. When in doubt, refer here.*
+_This document is the source of truth for MVP scope. When in doubt, refer here._

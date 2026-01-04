@@ -287,7 +287,8 @@
               </span>
             </div>
             {#if hasAnimation(selectedSequence)}
-              <i class="fas fa-chevron-right option-arrow" aria-hidden="true"></i>
+              <i class="fas fa-chevron-right option-arrow" aria-hidden="true"
+              ></i>
             {/if}
           </button>
 
@@ -312,7 +313,8 @@
               </span>
             </div>
             {#if hasImage(selectedSequence)}
-              <i class="fas fa-chevron-right option-arrow" aria-hidden="true"></i>
+              <i class="fas fa-chevron-right option-arrow" aria-hidden="true"
+              ></i>
             {/if}
           </button>
 
@@ -338,7 +340,8 @@
               </span>
             </div>
             {#if hasRecording(selectedSequence)}
-              <i class="fas fa-chevron-right option-arrow" aria-hidden="true"></i>
+              <i class="fas fa-chevron-right option-arrow" aria-hidden="true"
+              ></i>
             {/if}
           </button>
         </div>

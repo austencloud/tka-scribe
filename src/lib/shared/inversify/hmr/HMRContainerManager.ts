@@ -76,7 +76,8 @@ export class HMRContainerManager {
   private deferredQueue: DeferredResolution[] = [];
   private singletonCache: Map<symbol, SingletonCacheEntry> = new Map();
   private loadedModules: Set<string> = new Set();
-  private moduleLoaders: Map<string, () => Promise<ContainerModule>> = new Map();
+  private moduleLoaders: Map<string, () => Promise<ContainerModule>> =
+    new Map();
   private tier1Modules: ContainerModule[] = [];
   private tier2Modules: ContainerModule[] = [];
 
@@ -100,7 +101,9 @@ export class HMRContainerManager {
   /**
    * Get the singleton instance of HMRContainerManager
    */
-  static getInstance(config?: Partial<HMRContainerConfig>): HMRContainerManager {
+  static getInstance(
+    config?: Partial<HMRContainerConfig>
+  ): HMRContainerManager {
     if (!HMRContainerManager.instance) {
       HMRContainerManager.instance = new HMRContainerManager(config);
     }
@@ -154,7 +157,9 @@ export class HMRContainerManager {
         // Try singleton cache as fallback
         const cached = this.getCachedSingleton<T>(serviceIdentifier);
         if (cached !== null) {
-          this.log(`Using cached singleton for ${serviceIdentifier.toString()}`);
+          this.log(
+            `Using cached singleton for ${serviceIdentifier.toString()}`
+          );
           return cached;
         }
         throw error;
@@ -229,7 +234,10 @@ export class HMRContainerManager {
   /**
    * Register a feature module loader
    */
-  registerFeatureModule(name: string, loader: () => Promise<ContainerModule>): void {
+  registerFeatureModule(
+    name: string,
+    loader: () => Promise<ContainerModule>
+  ): void {
     this.moduleLoaders.set(name, loader);
   }
 
@@ -329,7 +337,10 @@ export class HMRContainerManager {
       try {
         await oldContainer.unbindAll();
       } catch (error) {
-        this.log(`Old container unbind failed (non-critical): ${error}`, "warn");
+        this.log(
+          `Old container unbind failed (non-critical): ${error}`,
+          "warn"
+        );
       }
 
       // Restore cached singletons
@@ -344,9 +355,10 @@ export class HMRContainerManager {
       this.state.rebuildPromise = null;
       this.syncToGlobal();
 
-      const duration = this.state.startTime ? Date.now() - this.state.startTime : 0;
+      const duration = this.state.startTime
+        ? Date.now() - this.state.startTime
+        : 0;
       this.log(`HMR complete in ${duration}ms`);
-
     } catch (error) {
       this.log(`HMR rebuild failed: ${error}`, "error");
 
@@ -389,7 +401,9 @@ export class HMRContainerManager {
     // 1. Try singleton cache
     const cached = this.getCachedSingleton<T>(serviceIdentifier);
     if (cached !== null) {
-      this.log(`Using cached singleton during HMR: ${serviceIdentifier.toString()}`);
+      this.log(
+        `Using cached singleton during HMR: ${serviceIdentifier.toString()}`
+      );
       return cached;
     }
 
@@ -412,7 +426,7 @@ export class HMRContainerManager {
     // 4. Throw with helpful message
     throw new Error(
       `Service ${serviceIdentifier.toString()} not available during HMR. ` +
-      `Phase: ${this.state.phase}. Use resolveAsync() for deferred resolution.`
+        `Phase: ${this.state.phase}. Use resolveAsync() for deferred resolution.`
     );
   }
 
@@ -440,10 +454,12 @@ export class HMRContainerManager {
         const index = this.deferredQueue.indexOf(entry);
         if (index !== -1) {
           this.deferredQueue.splice(index, 1);
-          reject(new Error(
-            `Deferred resolution timeout for ${serviceIdentifier.toString()} ` +
-            `after ${this.config.resolutionTimeout}ms`
-          ));
+          reject(
+            new Error(
+              `Deferred resolution timeout for ${serviceIdentifier.toString()} ` +
+                `after ${this.config.resolutionTimeout}ms`
+            )
+          );
         }
       }, this.config.resolutionTimeout);
     });
@@ -463,7 +479,10 @@ export class HMRContainerManager {
         this.log(`Resolved deferred: ${entry.serviceIdentifier.toString()}`);
       } catch (error) {
         entry.reject(error as Error);
-        this.log(`Failed deferred: ${entry.serviceIdentifier.toString()}`, "error");
+        this.log(
+          `Failed deferred: ${entry.serviceIdentifier.toString()}`,
+          "error"
+        );
       }
     }
   }
@@ -506,7 +525,10 @@ export class HMRContainerManager {
           const module = await loader();
           await this.state.shadowContainer.load(module);
         } catch (error) {
-          this.log(`Failed to reload feature module ${moduleName}: ${error}`, "warn");
+          this.log(
+            `Failed to reload feature module ${moduleName}: ${error}`,
+            "warn"
+          );
         }
       }
     }

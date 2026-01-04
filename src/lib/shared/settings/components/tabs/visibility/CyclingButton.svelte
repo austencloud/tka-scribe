@@ -102,17 +102,21 @@
     color: white;
     box-shadow:
       0 0 0 1px
-        color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 15%, transparent),
+        color-mix(
+          in srgb,
+          var(--theme-accent, var(--theme-accent)) 15%,
+          transparent
+        ),
       0 4px 12px
-        color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 25%, transparent);
+        color-mix(
+          in srgb,
+          var(--theme-accent, var(--theme-accent)) 25%,
+          transparent
+        );
   }
 
   .cycling-btn.active:hover {
-    background: color-mix(
-      in srgb,
-      var(--theme-accent) 35%,
-      transparent
-    );
+    background: color-mix(in srgb, var(--theme-accent) 35%, transparent);
     border-color: color-mix(
       in srgb,
       var(--theme-accent, var(--theme-accent)) 55%,
@@ -120,9 +124,17 @@
     );
     box-shadow:
       0 0 0 1px
-        color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 20%, transparent),
+        color-mix(
+          in srgb,
+          var(--theme-accent, var(--theme-accent)) 20%,
+          transparent
+        ),
       0 4px 16px
-        color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 35%, transparent);
+        color-mix(
+          in srgb,
+          var(--theme-accent, var(--theme-accent)) 35%,
+          transparent
+        );
   }
 
   .label {
@@ -149,13 +161,16 @@
     background: var(--theme-accent, var(--theme-accent));
     opacity: 1;
     box-shadow: 0 0 8px
-      color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 50%, transparent);
+      color-mix(
+        in srgb,
+        var(--theme-accent, var(--theme-accent)) 50%,
+        transparent
+      );
   }
 
   /* Focus state */
   .cycling-btn:focus-visible {
-    outline: 2px solid
-      color-mix(in srgb, var(--theme-accent) 50%, transparent);
+    outline: 2px solid color-mix(in srgb, var(--theme-accent) 50%, transparent);
     outline-offset: 2px;
   }
 

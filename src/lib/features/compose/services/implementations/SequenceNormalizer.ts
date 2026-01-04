@@ -15,9 +15,7 @@ import type {
 import { isStartPosition } from "../../../create/shared/domain/type-guards/pictograph-type-guards";
 
 @injectable()
-export class SequenceNormalizer
-  implements ISequenceNormalizer
-{
+export class SequenceNormalizer implements ISequenceNormalizer {
   /**
    * Normalize sequence data by separating start position from beats array.
    *

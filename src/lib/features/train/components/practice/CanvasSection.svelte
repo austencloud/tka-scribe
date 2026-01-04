@@ -287,7 +287,11 @@
       var(--semantic-error, var(--semantic-error)) 10%,
       transparent
     );
-    color: color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 80%, transparent);
+    color: color-mix(
+      in srgb,
+      var(--semantic-error, var(--semantic-error)) 80%,
+      transparent
+    );
     font-size: 0.875rem;
   }
 
@@ -319,17 +323,25 @@
     height: var(--min-touch-target);
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent-strong)) 15%, transparent),
-      color-mix(in srgb, var(--semantic-info, var(--semantic-info)) 15%, transparent)
+      color-mix(
+        in srgb,
+        var(--theme-accent-strong, var(--theme-accent-strong)) 15%,
+        transparent
+      ),
+      color-mix(
+        in srgb,
+        var(--semantic-info, var(--semantic-info)) 15%,
+        transparent
+      )
     );
     border: 1px solid
-      color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent-strong)) 25%, transparent);
+      color-mix(
+        in srgb,
+        var(--theme-accent-strong, var(--theme-accent-strong)) 25%,
+        transparent
+      );
     border-radius: 12px;
-    color: color-mix(
-      in srgb,
-      var(--theme-accent-strong) 80%,
-      transparent
-    );
+    color: color-mix(in srgb, var(--theme-accent-strong) 80%, transparent);
     font-size: 1.25rem;
   }
 
@@ -347,17 +359,25 @@
     padding: 0.5rem 1rem;
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent-strong)) 20%, transparent),
-      color-mix(in srgb, var(--semantic-info, var(--semantic-info)) 20%, transparent)
+      color-mix(
+        in srgb,
+        var(--theme-accent-strong, var(--theme-accent-strong)) 20%,
+        transparent
+      ),
+      color-mix(
+        in srgb,
+        var(--semantic-info, var(--semantic-info)) 20%,
+        transparent
+      )
     );
     border: 1px solid
-      color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent-strong)) 30%, transparent);
+      color-mix(
+        in srgb,
+        var(--theme-accent-strong, var(--theme-accent-strong)) 30%,
+        transparent
+      );
     border-radius: 8px;
-    color: color-mix(
-      in srgb,
-      var(--theme-accent-strong) 90%,
-      transparent
-    );
+    color: color-mix(in srgb, var(--theme-accent-strong) 90%, transparent);
     font-size: 0.8125rem;
     font-weight: 500;
     cursor: pointer;
@@ -367,8 +387,16 @@
   .browse-btn:hover {
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent-strong)) 30%, transparent),
-      color-mix(in srgb, var(--semantic-info, var(--semantic-info)) 30%, transparent)
+      color-mix(
+        in srgb,
+        var(--theme-accent-strong, var(--theme-accent-strong)) 30%,
+        transparent
+      ),
+      color-mix(
+        in srgb,
+        var(--semantic-info, var(--semantic-info)) 30%,
+        transparent
+      )
     );
     border-color: color-mix(
       in srgb,

@@ -193,9 +193,21 @@ export class Canvas2DTrailRenderer {
 
       // Use smooth curves if enabled, otherwise line segments
       if (settings.style === TrailStyle.SMOOTH_LINE) {
-        this.renderSmoothTrail(ctx, pointSet, colorString, settings, currentTime);
+        this.renderSmoothTrail(
+          ctx,
+          pointSet,
+          colorString,
+          settings,
+          currentTime
+        );
       } else {
-        this.renderSegmentedTrail(ctx, pointSet, colorString, settings, currentTime);
+        this.renderSegmentedTrail(
+          ctx,
+          pointSet,
+          colorString,
+          settings,
+          currentTime
+        );
       }
     }
   }
@@ -269,7 +281,9 @@ export class Canvas2DTrailRenderer {
     }
 
     // Apply effect based on settings
-    const effect = settings.effect ?? (settings.glowEnabled ? TrailEffect.GLOW : TrailEffect.NONE);
+    const effect =
+      settings.effect ??
+      (settings.glowEnabled ? TrailEffect.GLOW : TrailEffect.NONE);
 
     if (effect === TrailEffect.NEON) {
       // NEON: Multi-layer LED ribbon effect
@@ -332,7 +346,9 @@ export class Canvas2DTrailRenderer {
     ctx.lineJoin = "round";
 
     // Determine effect
-    const effect = settings.effect ?? (settings.glowEnabled ? TrailEffect.GLOW : TrailEffect.NONE);
+    const effect =
+      settings.effect ??
+      (settings.glowEnabled ? TrailEffect.GLOW : TrailEffect.NONE);
 
     // Apply glow/shadow if using glow effect
     if (effect === TrailEffect.GLOW) {

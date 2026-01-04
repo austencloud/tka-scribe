@@ -28,9 +28,7 @@
   let hapticService: IHapticFeedback;
 
   onMount(async () => {
-    hapticService = await resolve<IHapticFeedback>(
-      TYPES.IHapticFeedback
-    );
+    hapticService = await resolve<IHapticFeedback>(TYPES.IHapticFeedback);
   });
 
   // Handle share button click - ONLY share, don't download

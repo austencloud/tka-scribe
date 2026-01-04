@@ -173,7 +173,7 @@
   {@const pos = getGridPointPosition(location, outerPointRadius)}
   <T.Mesh position={pos}>
     <T.SphereGeometry args={[OUTER_POINT_SIZE, 12, 12]} />
-    <T.MeshBasicMaterial color={color} opacity={0.6} transparent />
+    <T.MeshBasicMaterial {color} opacity={0.6} transparent />
   </T.Mesh>
 
   {#if showLabels}

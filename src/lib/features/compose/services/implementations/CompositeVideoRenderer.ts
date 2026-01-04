@@ -9,17 +9,17 @@
  * - Each frame only composites cached grid + current animation + highlight
  */
 
-import { injectable, inject } from 'inversify';
+import { injectable, inject } from "inversify";
 import type {
   ICompositeVideoRenderer,
   CompositeDimensions,
   CompositeLayoutOptions,
   BeatGridPosition,
-} from '../contracts/ICompositeVideoRenderer';
-import type { SequenceData } from '$lib/shared/foundation/domain/models/SequenceData';
-import type { IImageComposer } from '$lib/shared/render/services/contracts/IImageComposer';
-import type { IDimensionCalculator } from '$lib/shared/render/services/contracts/IDimensionCalculator';
-import { TYPES } from '$lib/shared/inversify/types';
+} from "../contracts/ICompositeVideoRenderer";
+import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
+import type { IImageComposer } from "$lib/shared/render/services/contracts/IImageComposer";
+import type { IDimensionCalculator } from "$lib/shared/render/services/contracts/IDimensionCalculator";
+import { TYPES } from "$lib/shared/inversify/types";
 
 @injectable()
 export class CompositeVideoRenderer implements ICompositeVideoRenderer {
@@ -57,17 +57,23 @@ export class CompositeVideoRenderer implements ICompositeVideoRenderer {
     };
 
     // Calculate composite dimensions based on orientation
-    if (options.orientation === 'horizontal') {
+    if (options.orientation === "horizontal") {
       // Side-by-side: [animation | grid]
       // Use 1:1 aspect ratio for each pane
-      const paneSize = Math.max(this.gridDimensions.width, this.gridDimensions.height);
+      const paneSize = Math.max(
+        this.gridDimensions.width,
+        this.gridDimensions.height
+      );
       this.dimensions = {
         width: paneSize * 2, // Two panes
         height: paneSize,
       };
     } else {
       // Stacked: [animation] / [grid]
-      const paneSize = Math.max(this.gridDimensions.width, this.gridDimensions.height);
+      const paneSize = Math.max(
+        this.gridDimensions.width,
+        this.gridDimensions.height
+      );
       this.dimensions = {
         width: paneSize,
         height: paneSize * 2, // Two panes
@@ -77,11 +83,11 @@ export class CompositeVideoRenderer implements ICompositeVideoRenderer {
 
   async cacheStaticGrid(): Promise<void> {
     if (!this.sequence || !this.options || !this.gridDimensions) {
-      throw new Error('CompositeVideoRenderer not initialized');
+      throw new Error("CompositeVideoRenderer not initialized");
     }
 
     // Create offscreen canvas for grid
-    this.cachedGridCanvas = document.createElement('canvas');
+    this.cachedGridCanvas = document.createElement("canvas");
     this.cachedGridCanvas.width = this.gridDimensions.width;
     this.cachedGridCanvas.height = this.gridDimensions.height;
 
@@ -103,8 +109,8 @@ export class CompositeVideoRenderer implements ICompositeVideoRenderer {
     );
 
     // Copy to cached canvas
-    const ctx = this.cachedGridCanvas.getContext('2d');
-    if (!ctx) throw new Error('Failed to get 2D context');
+    const ctx = this.cachedGridCanvas.getContext("2d");
+    if (!ctx) throw new Error("Failed to get 2D context");
 
     ctx.drawImage(renderedGrid, 0, 0);
   }
@@ -115,25 +121,34 @@ export class CompositeVideoRenderer implements ICompositeVideoRenderer {
     targetCanvas: HTMLCanvasElement
   ): void {
     if (!this.cachedGridCanvas || !this.dimensions || !this.options) {
-      throw new Error('CompositeVideoRenderer not initialized or grid not cached');
+      throw new Error(
+        "CompositeVideoRenderer not initialized or grid not cached"
+      );
     }
 
-    const ctx = targetCanvas.getContext('2d');
-    if (!ctx) throw new Error('Failed to get 2D context');
+    const ctx = targetCanvas.getContext("2d");
+    if (!ctx) throw new Error("Failed to get 2D context");
 
     // Clear target canvas
     ctx.clearRect(0, 0, targetCanvas.width, targetCanvas.height);
 
     // Set black background
-    ctx.fillStyle = '#000000';
+    ctx.fillStyle = "#000000";
     ctx.fillRect(0, 0, targetCanvas.width, targetCanvas.height);
 
-    if (this.options.orientation === 'horizontal') {
+    if (this.options.orientation === "horizontal") {
       // Horizontal layout: [animation | grid]
       const halfWidth = this.dimensions.width / 2;
 
       // Draw animation on left half (centered and scaled to fit)
-      this.drawCenteredImage(ctx, animationCanvas, 0, 0, halfWidth, this.dimensions.height);
+      this.drawCenteredImage(
+        ctx,
+        animationCanvas,
+        0,
+        0,
+        halfWidth,
+        this.dimensions.height
+      );
 
       // Draw grid on right half
       this.drawCenteredImage(
@@ -153,7 +168,14 @@ export class CompositeVideoRenderer implements ICompositeVideoRenderer {
       const halfHeight = this.dimensions.height / 2;
 
       // Draw animation on top half
-      this.drawCenteredImage(ctx, animationCanvas, 0, 0, this.dimensions.width, halfHeight);
+      this.drawCenteredImage(
+        ctx,
+        animationCanvas,
+        0,
+        0,
+        this.dimensions.width,
+        halfHeight
+      );
 
       // Draw grid on bottom half
       this.drawCenteredImage(
@@ -173,7 +195,7 @@ export class CompositeVideoRenderer implements ICompositeVideoRenderer {
 
   getBeatGridPosition(beatIndex: number): BeatGridPosition {
     if (!this.sequence || !this.options || !this.gridDimensions) {
-      throw new Error('CompositeVideoRenderer not initialized');
+      throw new Error("CompositeVideoRenderer not initialized");
     }
 
     const beatCount = this.sequence.beats.length;
@@ -206,7 +228,7 @@ export class CompositeVideoRenderer implements ICompositeVideoRenderer {
 
   getCompositeDimensions(): CompositeDimensions {
     if (!this.dimensions) {
-      throw new Error('CompositeVideoRenderer not initialized');
+      throw new Error("CompositeVideoRenderer not initialized");
     }
     return { ...this.dimensions };
   }
@@ -257,12 +279,14 @@ export class CompositeVideoRenderer implements ICompositeVideoRenderer {
     if (!this.gridDimensions || !this.dimensions) return;
 
     // Calculate scale factor for grid within composite pane
-    const paneWidth = this.options!.orientation === 'horizontal'
-      ? this.dimensions.width / 2
-      : this.dimensions.width;
-    const paneHeight = this.options!.orientation === 'horizontal'
-      ? this.dimensions.height
-      : this.dimensions.height / 2;
+    const paneWidth =
+      this.options!.orientation === "horizontal"
+        ? this.dimensions.width / 2
+        : this.dimensions.width;
+    const paneHeight =
+      this.options!.orientation === "horizontal"
+        ? this.dimensions.height
+        : this.dimensions.height / 2;
 
     const scale = Math.min(
       paneWidth / this.gridDimensions.width,
@@ -270,8 +294,10 @@ export class CompositeVideoRenderer implements ICompositeVideoRenderer {
     );
 
     // Center offset for scaled grid
-    const gridOffsetX = offsetX + (paneWidth - this.gridDimensions.width * scale) / 2;
-    const gridOffsetY = offsetY + (paneHeight - this.gridDimensions.height * scale) / 2;
+    const gridOffsetX =
+      offsetX + (paneWidth - this.gridDimensions.width * scale) / 2;
+    const gridOffsetY =
+      offsetY + (paneHeight - this.gridDimensions.height * scale) / 2;
 
     // Calculate highlight position and size
     const highlightX = gridOffsetX + beatPos.x * scale;
@@ -280,7 +306,7 @@ export class CompositeVideoRenderer implements ICompositeVideoRenderer {
     const highlightHeight = beatPos.height * scale;
 
     // Gold highlight (matching workspace style)
-    const goldColor = '#FFD700'; // Gold
+    const goldColor = "#FFD700"; // Gold
     const padding = 4;
 
     // Draw subtle fill

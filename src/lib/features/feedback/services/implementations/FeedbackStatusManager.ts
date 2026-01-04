@@ -120,7 +120,9 @@ export class FeedbackStatusService implements IFeedbackStatusService {
 
   async updateFeedback(
     feedbackId: string,
-    updates: Partial<Pick<FeedbackItem, "type" | "title" | "description" | "priority">>
+    updates: Partial<
+      Pick<FeedbackItem, "type" | "title" | "description" | "priority">
+    >
   ): Promise<void> {
     const firestore = await getFirestoreInstance();
     const docRef = doc(firestore, COLLECTION_NAME, feedbackId);
@@ -161,11 +163,15 @@ export class FeedbackStatusService implements IFeedbackStatusService {
 
     const editableStatuses = ["new", "in-progress", "in-review"];
     if (!editableStatuses.includes(feedback.status)) {
-      throw new Error("Cannot edit feedback that has been completed or archived");
+      throw new Error(
+        "Cannot edit feedback that has been completed or archived"
+      );
     }
 
     if (feedback.status !== "new" && !appendMode) {
-      throw new Error("Can only add notes to feedback that is already being processed");
+      throw new Error(
+        "Can only add notes to feedback that is already being processed"
+      );
     }
 
     const docRef = doc(firestore, COLLECTION_NAME, feedbackId);
@@ -179,9 +185,10 @@ export class FeedbackStatusService implements IFeedbackStatusService {
       }
       if (updates.description !== undefined) {
         updateData["description"] = updates.description;
-        updateData["title"] = this.submissionService.generateTitleFromDescription(
-          updates.description
-        );
+        updateData["title"] =
+          this.submissionService.generateTitleFromDescription(
+            updates.description
+          );
       }
     } else {
       if (updates.description !== undefined && updates.description.trim()) {

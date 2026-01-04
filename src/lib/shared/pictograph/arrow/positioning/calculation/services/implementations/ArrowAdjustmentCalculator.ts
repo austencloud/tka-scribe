@@ -248,13 +248,12 @@ export class ArrowAdjustmentCalculator implements IArrowAdjustmentCalculator {
      * IDENTICAL to ArrowAdjustmentLookup.lookupSpecialPlacement()
      */
     try {
-      const adjustment =
-        await this.SpecialPlacer.getSpecialAdjustment(
-          motionData,
-          pictographData,
-          arrowColor,
-          attributeKey
-        );
+      const adjustment = await this.SpecialPlacer.getSpecialAdjustment(
+        motionData,
+        pictographData,
+        arrowColor,
+        attributeKey
+      );
 
       if (adjustment) {
         return new Point(adjustment.x, adjustment.y);
@@ -310,13 +309,12 @@ export class ArrowAdjustmentCalculator implements IArrowAdjustmentCalculator {
       );
       // console.log("🔑 Generated placement key:", placementKey);
 
-      const adjustmentPoint =
-        await this.DefaultPlacer.getDefaultAdjustment(
-          placementKey,
-          motionData.turns || 0,
-          motionData.motionType as MotionType,
-          gridMode as GridMode
-        );
+      const adjustmentPoint = await this.DefaultPlacer.getDefaultAdjustment(
+        placementKey,
+        motionData.turns || 0,
+        motionData.motionType as MotionType,
+        gridMode as GridMode
+      );
 
       // console.log("✅ Default adjustment result:", adjustmentPoint);
       return new Point(adjustmentPoint.x, adjustmentPoint.y);

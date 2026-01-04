@@ -94,7 +94,9 @@ export class PresenceTracker implements IPresenceTracker {
     // Verify user document exists in Firestore before setting up presence
     const userExists = await this.checkUserExists(userId);
     if (!userExists) {
-      console.log("[PresenceTracker] User document not found, skipping presence setup");
+      console.log(
+        "[PresenceTracker] User document not found, skipping presence setup"
+      );
       await this.cleanupDeletedUser();
       return;
     }

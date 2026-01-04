@@ -77,7 +77,11 @@
 <!-- Full screen overlay -->
 <div class="ios-guide-overlay" transition:fade={{ duration: 200 }}>
   <!-- Backdrop with tap-through hole at the bottom for Share button -->
-  <div class="backdrop" class:step-1={currentStep === 1} class:step-2={currentStep === 2}>
+  <div
+    class="backdrop"
+    class:step-1={currentStep === 1}
+    class:step-2={currentStep === 2}
+  >
     <!-- Cutout highlight for Safari UI (step 1 only) -->
     {#if currentStep === 1}
       <div class="safari-highlight" transition:fade={{ duration: 300 }}>
@@ -120,7 +124,10 @@
       <div class="step-content">
         {#if currentStep === 3}
           <!-- Celebration state -->
-          <div class="celebration" transition:scale={{ duration: 400, easing: elasticOut }}>
+          <div
+            class="celebration"
+            transition:scale={{ duration: 400, easing: elasticOut }}
+          >
             <div class="celebration-icon">
               <i class="fas fa-check-circle"></i>
             </div>
@@ -156,7 +163,10 @@
 
   <!-- Bouncing arrow pointing to Safari Share button (step 1) -->
   {#if currentStep === 1 && arrowBouncing}
-    <div class="bouncing-arrow bottom-arrow" transition:fade={{ duration: 200 }}>
+    <div
+      class="bouncing-arrow bottom-arrow"
+      transition:fade={{ duration: 200 }}
+    >
       <div class="arrow-container">
         <i class="fas fa-arrow-down"></i>
       </div>
@@ -227,7 +237,8 @@
   }
 
   @keyframes pulse-glow {
-    0%, 100% {
+    0%,
+    100% {
       transform: scale(1);
       opacity: 0.8;
     }
@@ -477,7 +488,8 @@
   }
 
   @keyframes bounce-arrow {
-    0%, 100% {
+    0%,
+    100% {
       transform: translateY(0);
     }
     50% {
@@ -494,7 +506,8 @@
   }
 
   @keyframes fade-pulse {
-    0%, 100% {
+    0%,
+    100% {
       opacity: 1;
     }
     50% {
@@ -525,7 +538,8 @@
   }
 
   @keyframes gentle-pulse {
-    0%, 100% {
+    0%,
+    100% {
       border-color: rgba(99, 102, 241, 0.4);
       transform: scale(1);
     }

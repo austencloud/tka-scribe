@@ -220,9 +220,12 @@ export function createEffectsConfigState(
 
   function getTrackingModeLabel(): "left" | "right" | "both" {
     switch (config.trails.trackingMode) {
-      case "left_end": return "left";
-      case "right_end": return "right";
-      default: return "both";
+      case "left_end":
+        return "left";
+      case "right_end":
+        return "right";
+      default:
+        return "both";
     }
   }
 

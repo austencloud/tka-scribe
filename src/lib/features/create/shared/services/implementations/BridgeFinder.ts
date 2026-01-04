@@ -162,7 +162,10 @@ export class BridgeFinder implements IBridgeFinder {
    */
   private groupByLetterAndPosition(
     candidates: PictographData[]
-  ): Map<string, { letter: Letter; endPosition: string; pictographData: PictographData }> {
+  ): Map<
+    string,
+    { letter: Letter; endPosition: string; pictographData: PictographData }
+  > {
     const uniqueMap = new Map<
       string,
       { letter: Letter; endPosition: string; pictographData: PictographData }
@@ -189,7 +192,10 @@ export class BridgeFinder implements IBridgeFinder {
   private getAvailableLOOPs(
     startPosition: GridPosition,
     newEndPosition: GridPosition
-  ): { available: import("../contracts/ISequenceExtender").LOOPOption[]; sliceSize: SliceSize } {
+  ): {
+    available: import("../contracts/ISequenceExtender").LOOPOption[];
+    sliceSize: SliceSize;
+  } {
     const positionPair = `${startPosition},${newEndPosition}`;
     const isHalvedValid = HALVED_LOOPS.has(positionPair);
     const isQuarteredValid = QUARTERED_LOOPS.has(positionPair);
@@ -220,7 +226,10 @@ export class BridgeFinder implements IBridgeFinder {
    */
   private analyzeBridgeCandidates(
     sequence: SequenceData,
-    uniqueBridges: Map<string, { letter: Letter; endPosition: string; pictographData: PictographData }>,
+    uniqueBridges: Map<
+      string,
+      { letter: Letter; endPosition: string; pictographData: PictographData }
+    >,
     startPosition: GridPosition,
     _currentEndPosition: GridPosition,
     excludeRewound: boolean
@@ -263,11 +272,12 @@ export class BridgeFinder implements IBridgeFinder {
           repetitionsNeeded = orientationAlignment?.repetitionsNeeded || 1;
         }
 
-        const resultingLength = this.orientationCalculator.calculateResultingLength(
-          currentLength,
-          rotationRelation,
-          repetitionsNeeded
-        );
+        const resultingLength =
+          this.orientationCalculator.calculateResultingLength(
+            currentLength,
+            rotationRelation,
+            repetitionsNeeded
+          );
 
         options.push({
           bridgeLetters: [bridge.letter],

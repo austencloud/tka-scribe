@@ -110,11 +110,23 @@
     padding: 0.75rem 1.5rem;
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--semantic-info, var(--semantic-info)) 20%, transparent),
-      color-mix(in srgb, var(--theme-accent, var(--theme-accent-strong)) 20%, transparent)
+      color-mix(
+        in srgb,
+        var(--semantic-info, var(--semantic-info)) 20%,
+        transparent
+      ),
+      color-mix(
+        in srgb,
+        var(--theme-accent, var(--theme-accent-strong)) 20%,
+        transparent
+      )
     );
     border: 2px solid
-      color-mix(in srgb, var(--semantic-info, var(--semantic-info)) 40%, transparent);
+      color-mix(
+        in srgb,
+        var(--semantic-info, var(--semantic-info)) 40%,
+        transparent
+      );
     border-radius: 8px;
     animation: pulse-combo 0.5s ease-in-out;
   }
@@ -123,13 +135,13 @@
     background: linear-gradient(
       135deg,
       color-mix(in srgb, var(--semantic-warning) 20%, transparent),
-      color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 20%, transparent)
+      color-mix(
+        in srgb,
+        var(--semantic-error, var(--semantic-error)) 20%,
+        transparent
+      )
     );
-    border-color: color-mix(
-      in srgb,
-      var(--semantic-warning) 60%,
-      transparent
-    );
+    border-color: color-mix(in srgb, var(--semantic-warning) 60%, transparent);
     animation: pulse-high-combo 0.5s ease-in-out;
   }
 
@@ -173,25 +185,53 @@
   .feedback-popup.hit {
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--semantic-success, var(--semantic-success)) 30%, transparent),
+      color-mix(
+        in srgb,
+        var(--semantic-success, var(--semantic-success)) 30%,
+        transparent
+      ),
       color-mix(in srgb, var(--semantic-success) 30%, transparent)
     );
     border: 3px solid
-      color-mix(in srgb, var(--semantic-success, var(--semantic-success)) 80%, transparent);
+      color-mix(
+        in srgb,
+        var(--semantic-success, var(--semantic-success)) 80%,
+        transparent
+      );
     box-shadow: 0 0 30px
-      color-mix(in srgb, var(--semantic-success, var(--semantic-success)) 40%, transparent);
+      color-mix(
+        in srgb,
+        var(--semantic-success, var(--semantic-success)) 40%,
+        transparent
+      );
   }
 
   .feedback-popup.miss {
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 30%, transparent),
-      color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 30%, transparent)
+      color-mix(
+        in srgb,
+        var(--semantic-error, var(--semantic-error)) 30%,
+        transparent
+      ),
+      color-mix(
+        in srgb,
+        var(--semantic-error, var(--semantic-error)) 30%,
+        transparent
+      )
     );
     border: 3px solid
-      color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 80%, transparent);
+      color-mix(
+        in srgb,
+        var(--semantic-error, var(--semantic-error)) 80%,
+        transparent
+      );
     box-shadow: 0 0 30px
-      color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 40%, transparent);
+      color-mix(
+        in srgb,
+        var(--semantic-error, var(--semantic-error)) 40%,
+        transparent
+      );
   }
 
   .hit-text,
@@ -205,13 +245,21 @@
   .hit-text {
     color: var(--semantic-success, var(--semantic-success));
     text-shadow: 0 0 20px
-      color-mix(in srgb, var(--semantic-success, var(--semantic-success)) 60%, transparent);
+      color-mix(
+        in srgb,
+        var(--semantic-success, var(--semantic-success)) 60%,
+        transparent
+      );
   }
 
   .miss-text {
     color: var(--semantic-error, var(--semantic-error));
     text-shadow: 0 0 20px
-      color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 60%, transparent);
+      color-mix(
+        in srgb,
+        var(--semantic-error, var(--semantic-error)) 60%,
+        transparent
+      );
   }
 
   .points-text {

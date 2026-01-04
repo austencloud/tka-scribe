@@ -69,12 +69,10 @@
       );
 
       // Subscribe to all users (Firestore + presence data merged)
-      unsubscribe = userActivityService.subscribeToAllUsers(
-        (allUsers) => {
-          users = allUsers;
-          isLoading = false;
-        }
-      );
+      unsubscribe = userActivityService.subscribeToAllUsers((allUsers) => {
+        users = allUsers;
+        isLoading = false;
+      });
     } catch (e) {
       console.error("Failed to initialize user activity service:", e);
       error = "Failed to load user data";
@@ -106,7 +104,10 @@
           await loadFeatureModule("community");
           communityModuleLoaded = true;
         } catch (err) {
-          console.error("[ActiveUsersPanel] Failed to load community module:", err);
+          console.error(
+            "[ActiveUsersPanel] Failed to load community module:",
+            err
+          );
         }
       }
     }
@@ -219,7 +220,10 @@
     ariaLabel="User Profile"
   >
     {#if selectedUserId && communityModuleLoaded}
-      <UserProfilePanel userId={selectedUserId} onUserDeleted={handleUserDeleted} />
+      <UserProfilePanel
+        userId={selectedUserId}
+        onUserDeleted={handleUserDeleted}
+      />
     {:else if selectedUserId}
       <div class="loading-profile">
         <div class="spinner" aria-hidden="true"></div>

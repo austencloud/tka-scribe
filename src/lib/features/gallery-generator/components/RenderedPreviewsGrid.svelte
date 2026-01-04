@@ -54,7 +54,11 @@
 
 <!-- Simple lightbox for full-size image viewing -->
 {#if state.viewingImage}
-  <button class="lightbox-overlay" on:click={closeLightbox} aria-label="Close lightbox">
+  <button
+    class="lightbox-overlay"
+    on:click={closeLightbox}
+    aria-label="Close lightbox"
+  >
     <div class="lightbox-content" on:click|stopPropagation role="presentation">
       <img src={state.viewingImage.url} alt={state.viewingImage.name} />
       <p class="lightbox-title">{state.viewingImage.name}</p>

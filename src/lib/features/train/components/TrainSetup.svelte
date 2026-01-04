@@ -157,12 +157,24 @@
     justify-content: center;
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--semantic-info, var(--semantic-info)) 20%, transparent),
-      color-mix(in srgb, var(--theme-accent, var(--theme-accent-strong)) 20%, transparent)
+      color-mix(
+        in srgb,
+        var(--semantic-info, var(--semantic-info)) 20%,
+        transparent
+      ),
+      color-mix(
+        in srgb,
+        var(--theme-accent, var(--theme-accent-strong)) 20%,
+        transparent
+      )
     );
     border-radius: 20px;
     border: 2px solid
-      color-mix(in srgb, var(--semantic-info, var(--semantic-info)) 30%, transparent);
+      color-mix(
+        in srgb,
+        var(--semantic-info, var(--semantic-info)) 30%,
+        transparent
+      );
   }
 
   .icon-container i {
@@ -254,13 +266,21 @@
     gap: 0.75rem;
     transition: all 0.2s;
     box-shadow: 0 4px 12px
-      color-mix(in srgb, var(--semantic-info, var(--semantic-info)) 30%, transparent);
+      color-mix(
+        in srgb,
+        var(--semantic-info, var(--semantic-info)) 30%,
+        transparent
+      );
   }
 
   .select-sequence-button:hover {
     transform: translateY(-2px);
     box-shadow: 0 6px 16px
-      color-mix(in srgb, var(--semantic-info, var(--semantic-info)) 40%, transparent);
+      color-mix(
+        in srgb,
+        var(--semantic-info, var(--semantic-info)) 40%,
+        transparent
+      );
   }
 
   .select-sequence-button i {

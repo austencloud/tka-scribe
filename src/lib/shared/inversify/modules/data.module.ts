@@ -47,9 +47,7 @@ export const dataModule = new ContainerModule(
     options.bind(TYPES.IReversalDetector).to(ReversalDetector);
     options.bind(TYPES.ISequenceImporter).to(SequenceImporter);
     // ISequenceNormalizer moved here - required by ISequenceRepository
-    options
-      .bind(TYPES.ISequenceNormalizer)
-      .to(SequenceNormalizer);
+    options.bind(TYPES.ISequenceNormalizer).to(SequenceNormalizer);
 
     // === BACKGROUND SERVICES ===
     options.bind(TYPES.IBackgroundManager).to(BackgroundManager);

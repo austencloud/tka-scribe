@@ -13,9 +13,7 @@
   let hapticService: IHapticFeedback;
 
   onMount(async () => {
-    hapticService = await resolve<IHapticFeedback>(
-      TYPES.IHapticFeedback
-    );
+    hapticService = await resolve<IHapticFeedback>(TYPES.IHapticFeedback);
   });
 
   // Handle retry with haptic feedback

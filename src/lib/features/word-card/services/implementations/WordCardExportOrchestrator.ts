@@ -107,7 +107,6 @@ export class WordCardExportOrchestrator implements IWordCardExportOrchestrator {
     const sequenceId = sequence.id || sequence.name || "unknown";
 
     try {
-
       // Check cache first
       const cachedBlob = this.cacheService.retrieveImage(sequenceId);
       if (cachedBlob) {
@@ -175,7 +174,6 @@ export class WordCardExportOrchestrator implements IWordCardExportOrchestrator {
     this.currentOperationId = operationId;
 
     try {
-
       // Start progress tracking
       this.progressTracker.startTracking(operationId, sequences.length);
 

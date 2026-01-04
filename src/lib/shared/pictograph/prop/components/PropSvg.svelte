@@ -75,13 +75,16 @@ Now with smooth transitions when position or orientation changes!
       motionData.propType === PropType.HAND
         ? PropType.HAND
         : motionData.color === MotionColor.BLUE
-          ? settings.bluePropType ?? motionData.propType
+          ? (settings.bluePropType ?? motionData.propType)
           : motionData.color === MotionColor.RED
-            ? settings.redPropType ?? motionData.propType
+            ? (settings.redPropType ?? motionData.propType)
             : motionData.propType;
 
     // Red hand is always mirrored
-    if (actualPropType === PropType.HAND && motionData.color === MotionColor.RED) {
+    if (
+      actualPropType === PropType.HAND &&
+      motionData.color === MotionColor.RED
+    ) {
       return true;
     }
 

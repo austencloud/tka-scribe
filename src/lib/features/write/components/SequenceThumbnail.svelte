@@ -19,9 +19,7 @@
   let hapticService: IHapticFeedback;
 
   onMount(() => {
-    hapticService = resolve<IHapticFeedback>(
-      TYPES.IHapticFeedback
-    );
+    hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
   });
 
   // Handle sequence click
@@ -139,7 +137,11 @@
     min-width: 20px;
     text-align: center;
     box-shadow: 0 2px 8px
-      color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 30%, transparent);
+      color-mix(
+        in srgb,
+        var(--theme-accent, var(--theme-accent)) 30%,
+        transparent
+      );
   }
 
   .remove-button {

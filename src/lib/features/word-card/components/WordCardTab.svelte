@@ -57,11 +57,11 @@
   // Shorter sequences = more rows fit, longer = fewer rows
   function getSequencesPerPage(beatCount: number): number {
     // 2 columns, rows depend on sequence height
-    if (beatCount <= 3) return 10;  // 5 rows
-    if (beatCount <= 4) return 8;   // 4 rows
-    if (beatCount <= 6) return 6;   // 3 rows
-    if (beatCount <= 10) return 4;  // 2 rows
-    return 4;                        // 2 rows for 12-16 beats
+    if (beatCount <= 3) return 10; // 5 rows
+    if (beatCount <= 4) return 8; // 4 rows
+    if (beatCount <= 6) return 6; // 3 rows
+    if (beatCount <= 10) return 4; // 2 rows
+    return 4; // 2 rows for 12-16 beats
   }
 
   // Create pages from filtered sequences (dynamic per page based on beat length)
@@ -71,9 +71,8 @@
     }
 
     // When "All" is selected, use a conservative estimate
-    const sequencesPerPage = selectedLength === 0
-      ? 6
-      : getSequencesPerPage(selectedLength);
+    const sequencesPerPage =
+      selectedLength === 0 ? 6 : getSequencesPerPage(selectedLength);
 
     const result: PrintPreviewPage[] = [];
 
@@ -104,7 +103,8 @@
 
     const pageCount = pages.length;
     const seqCount = filteredSequences.length;
-    const lengthLabel = selectedLength === 0 ? "all lengths" : `${selectedLength}-beat`;
+    const lengthLabel =
+      selectedLength === 0 ? "all lengths" : `${selectedLength}-beat`;
     return `${seqCount} sequence${seqCount !== 1 ? "s" : ""} (${lengthLabel}) · ${pageCount} page${pageCount !== 1 ? "s" : ""}`;
   });
 

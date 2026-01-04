@@ -22,9 +22,7 @@ Displays a single preset with icon, name, summary, and action buttons
   let hapticService: IHapticFeedback;
 
   onMount(async () => {
-    hapticService = await resolve<IHapticFeedback>(
-      TYPES.IHapticFeedback
-    );
+    hapticService = await resolve<IHapticFeedback>(TYPES.IHapticFeedback);
   });
 
   function handleSelect() {
@@ -74,7 +72,8 @@ Displays a single preset with icon, name, summary, and action buttons
       config.gridMode.charAt(0).toUpperCase() + config.gridMode.slice(1);
     const mode = config.mode.charAt(0).toUpperCase() + config.mode.slice(1);
 
-    const loopLabel = LOOP_TYPE_LABELS[config.loopType as LOOPType] || config.loopType;
+    const loopLabel =
+      LOOP_TYPE_LABELS[config.loopType as LOOPType] || config.loopType;
 
     const parts = [`${config.length} beats`, gridMode, mode, loopLabel];
 
@@ -319,12 +318,28 @@ Displays a single preset with icon, name, summary, and action buttons
   .edit-button {
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--semantic-info, var(--semantic-info)) 15%, transparent),
-      color-mix(in srgb, var(--semantic-info, var(--semantic-info)) 8%, transparent)
+      color-mix(
+        in srgb,
+        var(--semantic-info, var(--semantic-info)) 15%,
+        transparent
+      ),
+      color-mix(
+        in srgb,
+        var(--semantic-info, var(--semantic-info)) 8%,
+        transparent
+      )
     );
     border: 1px solid
-      color-mix(in srgb, var(--semantic-info, var(--semantic-info)) 30%, transparent);
-    color: color-mix(in srgb, var(--semantic-info, var(--semantic-info)) 90%, white);
+      color-mix(
+        in srgb,
+        var(--semantic-info, var(--semantic-info)) 30%,
+        transparent
+      );
+    color: color-mix(
+      in srgb,
+      var(--semantic-info, var(--semantic-info)) 90%,
+      white
+    );
     cursor: pointer;
     padding: 10px;
     border-radius: 8px;
@@ -340,8 +355,16 @@ Displays a single preset with icon, name, summary, and action buttons
   .edit-button:hover {
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--semantic-info, var(--semantic-info)) 25%, transparent),
-      color-mix(in srgb, var(--semantic-info, var(--semantic-info)) 15%, transparent)
+      color-mix(
+        in srgb,
+        var(--semantic-info, var(--semantic-info)) 25%,
+        transparent
+      ),
+      color-mix(
+        in srgb,
+        var(--semantic-info, var(--semantic-info)) 15%,
+        transparent
+      )
     );
     border-color: color-mix(
       in srgb,
@@ -351,7 +374,11 @@ Displays a single preset with icon, name, summary, and action buttons
     color: var(--semantic-info, var(--semantic-info));
     transform: translateY(-1px);
     box-shadow: 0 2px 8px
-      color-mix(in srgb, var(--semantic-info, var(--semantic-info)) 20%, transparent);
+      color-mix(
+        in srgb,
+        var(--semantic-info, var(--semantic-info)) 20%,
+        transparent
+      );
   }
 
   .edit-button svg {
@@ -362,12 +389,28 @@ Displays a single preset with icon, name, summary, and action buttons
   .delete-button {
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 15%, transparent),
-      color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 8%, transparent)
+      color-mix(
+        in srgb,
+        var(--semantic-error, var(--semantic-error)) 15%,
+        transparent
+      ),
+      color-mix(
+        in srgb,
+        var(--semantic-error, var(--semantic-error)) 8%,
+        transparent
+      )
     );
     border: 1px solid
-      color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 30%, transparent);
-    color: color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 90%, white);
+      color-mix(
+        in srgb,
+        var(--semantic-error, var(--semantic-error)) 30%,
+        transparent
+      );
+    color: color-mix(
+      in srgb,
+      var(--semantic-error, var(--semantic-error)) 90%,
+      white
+    );
     cursor: pointer;
     padding: 10px;
     border-radius: 8px;
@@ -383,8 +426,16 @@ Displays a single preset with icon, name, summary, and action buttons
   .delete-button:hover {
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 25%, transparent),
-      color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 15%, transparent)
+      color-mix(
+        in srgb,
+        var(--semantic-error, var(--semantic-error)) 25%,
+        transparent
+      ),
+      color-mix(
+        in srgb,
+        var(--semantic-error, var(--semantic-error)) 15%,
+        transparent
+      )
     );
     border-color: color-mix(
       in srgb,
@@ -394,7 +445,11 @@ Displays a single preset with icon, name, summary, and action buttons
     color: var(--semantic-error, var(--semantic-error));
     transform: translateY(-1px);
     box-shadow: 0 2px 8px
-      color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 20%, transparent);
+      color-mix(
+        in srgb,
+        var(--semantic-error, var(--semantic-error)) 20%,
+        transparent
+      );
   }
 
   .delete-button svg {

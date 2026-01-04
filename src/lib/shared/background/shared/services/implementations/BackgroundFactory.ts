@@ -70,9 +70,8 @@ export class BackgroundFactory {
       return; // Already loaded
     }
 
-    const { nightSkyBackgroundModule } = await import(
-      "../../../night-sky/inversify/NightSkyModule"
-    );
+    const { nightSkyBackgroundModule } =
+      await import("../../../night-sky/inversify/NightSkyModule");
     await container.load(nightSkyBackgroundModule);
     nightSkyModuleLoaded = true;
   }
@@ -85,9 +84,8 @@ export class BackgroundFactory {
     // Use container.isBound() as the source of truth (survives code-splitting)
     const container = await getContainerInstance();
     if (!container.isBound(TYPES.IBubblePhysics)) {
-      const { deepOceanBackgroundModule } = await import(
-        "../../../deep-ocean/inversify/DeepOceanModule"
-      );
+      const { deepOceanBackgroundModule } =
+        await import("../../../deep-ocean/inversify/DeepOceanModule");
       await container.load(deepOceanBackgroundModule);
       deepOceanModuleLoaded = true;
     }

@@ -14,9 +14,21 @@
 import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 import type { BeatData } from "$lib/features/create/shared/domain/models/BeatData";
 import type { StartPositionData } from "$lib/features/create/shared/domain/models/StartPositionData";
-import { GridLocation, GridMode, GridPosition } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
-import { MotionType, RotationDirection, Orientation, MotionColor } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
-import { createMotionData, type MotionData } from "$lib/shared/pictograph/shared/domain/models/MotionData";
+import {
+  GridLocation,
+  GridMode,
+  GridPosition,
+} from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
+import {
+  MotionType,
+  RotationDirection,
+  Orientation,
+  MotionColor,
+} from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
+import {
+  createMotionData,
+  type MotionData,
+} from "$lib/shared/pictograph/shared/domain/models/MotionData";
 import { PropType } from "$lib/shared/pictograph/prop/domain/enums/PropType";
 import { Letter } from "$lib/shared/foundation/domain/models/Letter";
 import type { IMotionQueryHandler } from "$lib/shared/foundation/services/contracts/data/data-contracts";
@@ -55,27 +67,27 @@ const CCW_ORIENTATION_CYCLE: Orientation[] = [
 
 // Float orientation follows the orbit path
 const CW_FLOAT_ORIENTATION_CYCLE: Orientation[] = [
-  Orientation.IN,      // S - pointing inward
-  Orientation.CLOCK,   // W - pointing clockwise
-  Orientation.OUT,     // N - pointing outward
+  Orientation.IN, // S - pointing inward
+  Orientation.CLOCK, // W - pointing clockwise
+  Orientation.OUT, // N - pointing outward
   Orientation.COUNTER, // E - pointing counter
 ];
 
 const CCW_FLOAT_ORIENTATION_CYCLE: Orientation[] = [
-  Orientation.IN,      // S - pointing inward
+  Orientation.IN, // S - pointing inward
   Orientation.COUNTER, // E - pointing counter
-  Orientation.OUT,     // N - pointing outward
-  Orientation.CLOCK,   // W - pointing clockwise
+  Orientation.OUT, // N - pointing outward
+  Orientation.CLOCK, // W - pointing clockwise
 ];
 
 // Grid position mapping for start/end positions
 const POSITION_MAP: Record<string, GridPosition> = {
-  "beta_s": GridPosition.BETA5,
-  "gamma_sw": GridPosition.GAMMA7,
-  "alpha_n": GridPosition.ALPHA1,
-  "gamma_ne": GridPosition.GAMMA11,
-  "gamma_se": GridPosition.GAMMA13,
-  "gamma_nw": GridPosition.GAMMA9,
+  beta_s: GridPosition.BETA5,
+  gamma_sw: GridPosition.GAMMA7,
+  alpha_n: GridPosition.ALPHA1,
+  gamma_ne: GridPosition.GAMMA11,
+  gamma_se: GridPosition.GAMMA13,
+  gamma_nw: GridPosition.GAMMA9,
 };
 
 export interface ChooChooConfig {
@@ -115,9 +127,18 @@ export async function generateChooChoo(
 ): Promise<SequenceData> {
   const fullConfig: ChooChooConfig = { ...DEFAULT_CONFIG, ...config };
 
-  const orbit = fullConfig.orbitDirection === "cw" ? CLOCKWISE_ORBIT : COUNTER_CLOCKWISE_ORBIT;
-  const rotationCycle = fullConfig.rotationDirection === "cw" ? CW_ORIENTATION_CYCLE : CCW_ORIENTATION_CYCLE;
-  const floatOrientationCycle = fullConfig.orbitDirection === "cw" ? CW_FLOAT_ORIENTATION_CYCLE : CCW_FLOAT_ORIENTATION_CYCLE;
+  const orbit =
+    fullConfig.orbitDirection === "cw"
+      ? CLOCKWISE_ORBIT
+      : COUNTER_CLOCKWISE_ORBIT;
+  const rotationCycle =
+    fullConfig.rotationDirection === "cw"
+      ? CW_ORIENTATION_CYCLE
+      : CCW_ORIENTATION_CYCLE;
+  const floatOrientationCycle =
+    fullConfig.orbitDirection === "cw"
+      ? CW_FLOAT_ORIENTATION_CYCLE
+      : CCW_FLOAT_ORIENTATION_CYCLE;
 
   // Find starting index in orbit based on floatStartLocation
   const startIndex = orbit.indexOf(fullConfig.floatStartLocation);
@@ -145,7 +166,7 @@ export async function generateChooChoo(
 
   // Generate sequence
   const sequenceId = crypto.randomUUID();
-  const word = beats.map(b => b.letter || "?").join("");
+  const word = beats.map((b) => b.letter || "?").join("");
 
   return {
     id: sequenceId,
@@ -156,14 +177,20 @@ export async function generateChooChoo(
     thumbnails: [],
     isFavorite: false,
     isCircular: fullConfig.beats === 4,
-    tags: ["choo-choo", fullConfig.beats === 4 ? "full-choo-choo" : "half-choo-choo"],
+    tags: [
+      "choo-choo",
+      fullConfig.beats === 4 ? "full-choo-choo" : "half-choo-choo",
+    ],
     metadata: { generatedBy: "ChooChooGenerator", config: fullConfig },
     gridMode: GridMode.DIAMOND,
     propType: PropType.STAFF,
   };
 }
 
-function createStartPosition(config: ChooChooConfig, floatLocation: GridLocation): StartPositionData {
+function createStartPosition(
+  config: ChooChooConfig,
+  floatLocation: GridLocation
+): StartPositionData {
   const staticMotion = createMotionData({
     motionType: MotionType.STATIC,
     rotationDirection: RotationDirection.NO_ROTATION,
@@ -199,8 +226,10 @@ function createStartPosition(config: ChooChooConfig, floatLocation: GridLocation
     startPosition: GridPosition.BETA5,
     endPosition: GridPosition.BETA5,
     motions: {
-      [MotionColor.BLUE]: config.staticProp === "blue" ? staticMotion : floatMotion,
-      [MotionColor.RED]: config.staticProp === "red" ? staticMotion : floatMotion,
+      [MotionColor.BLUE]:
+        config.staticProp === "blue" ? staticMotion : floatMotion,
+      [MotionColor.RED]:
+        config.staticProp === "red" ? staticMotion : floatMotion,
     },
   };
 }
@@ -223,16 +252,23 @@ async function createBeat(
   const floatEnd = orbit[nextOrbitIndex] ?? GridLocation.WEST;
 
   // Calculate orientations
-  const staticStartOri = rotationCycle[beatIndex % rotationCycle.length] ?? Orientation.IN;
-  const staticEndOri = rotationCycle[(beatIndex + 1) % rotationCycle.length] ?? Orientation.COUNTER;
+  const staticStartOri =
+    rotationCycle[beatIndex % rotationCycle.length] ?? Orientation.IN;
+  const staticEndOri =
+    rotationCycle[(beatIndex + 1) % rotationCycle.length] ??
+    Orientation.COUNTER;
 
   const floatStartOri = floatOrientationCycle[orbitIndex] ?? Orientation.IN;
-  const floatEndOri = floatOrientationCycle[nextOrbitIndex] ?? Orientation.CLOCK;
+  const floatEndOri =
+    floatOrientationCycle[nextOrbitIndex] ?? Orientation.CLOCK;
 
   // Create static motion (rotates in place)
   const staticMotion = createMotionData({
     motionType: MotionType.STATIC,
-    rotationDirection: config.rotationDirection === "cw" ? RotationDirection.CLOCKWISE : RotationDirection.COUNTER_CLOCKWISE,
+    rotationDirection:
+      config.rotationDirection === "cw"
+        ? RotationDirection.CLOCKWISE
+        : RotationDirection.COUNTER_CLOCKWISE,
     startLocation: config.staticLocation,
     endLocation: config.staticLocation,
     turns: config.turnsPerBeat,
@@ -269,16 +305,19 @@ async function createBeat(
   let letter: Letter = Letter.THETA; // Fallback
   if (motionQueryHandler) {
     try {
-      const derivedLetter = await motionQueryHandler.findLetterByMotionConfiguration(
-        blueMotion,
-        redMotion,
-        GridMode.DIAMOND
-      );
+      const derivedLetter =
+        await motionQueryHandler.findLetterByMotionConfiguration(
+          blueMotion,
+          redMotion,
+          GridMode.DIAMOND
+        );
       if (derivedLetter) {
         // Convert string to Letter enum
         letter = derivedLetter as Letter;
       } else {
-        console.warn(`⚠️ No letter found for beat ${beatNumber}, using fallback`);
+        console.warn(
+          `⚠️ No letter found for beat ${beatNumber}, using fallback`
+        );
       }
     } catch (error) {
       console.warn(`⚠️ Error deriving letter for beat ${beatNumber}:`, error);
@@ -311,7 +350,10 @@ async function createBeat(
  * Get grid position based on float location and static location
  * This is a simplified mapping - real implementation would be more complex
  */
-function getGridPosition(floatLoc: GridLocation, staticLoc: GridLocation): GridPosition {
+function getGridPosition(
+  floatLoc: GridLocation,
+  staticLoc: GridLocation
+): GridPosition {
   // Simplified mapping for demonstration
   const positionMap: Record<string, GridPosition> = {
     [`${GridLocation.SOUTH}_${GridLocation.SOUTH}`]: GridPosition.BETA5,
@@ -332,53 +374,83 @@ export async function generateChooChooVariations(
   const variations: SequenceData[] = [];
 
   // Full Choo Choo - Blue static, CW rotation, CW orbit
-  variations.push(await generateChooChoo({
-    staticProp: "blue",
-    rotationDirection: "cw",
-    orbitDirection: "cw",
-    beats: 4,
-  }, motionQueryHandler));
+  variations.push(
+    await generateChooChoo(
+      {
+        staticProp: "blue",
+        rotationDirection: "cw",
+        orbitDirection: "cw",
+        beats: 4,
+      },
+      motionQueryHandler
+    )
+  );
 
   // Full Choo Choo - Red static, CW rotation, CW orbit
-  variations.push(await generateChooChoo({
-    staticProp: "red",
-    rotationDirection: "cw",
-    orbitDirection: "cw",
-    beats: 4,
-  }, motionQueryHandler));
+  variations.push(
+    await generateChooChoo(
+      {
+        staticProp: "red",
+        rotationDirection: "cw",
+        orbitDirection: "cw",
+        beats: 4,
+      },
+      motionQueryHandler
+    )
+  );
 
   // Full Choo Choo - Blue static, CCW rotation, CCW orbit
-  variations.push(await generateChooChoo({
-    staticProp: "blue",
-    rotationDirection: "ccw",
-    orbitDirection: "ccw",
-    beats: 4,
-  }, motionQueryHandler));
+  variations.push(
+    await generateChooChoo(
+      {
+        staticProp: "blue",
+        rotationDirection: "ccw",
+        orbitDirection: "ccw",
+        beats: 4,
+      },
+      motionQueryHandler
+    )
+  );
 
   // Half Choo Choo - Blue static, CW rotation, CW orbit
-  variations.push(await generateChooChoo({
-    staticProp: "blue",
-    rotationDirection: "cw",
-    orbitDirection: "cw",
-    beats: 2,
-  }, motionQueryHandler));
+  variations.push(
+    await generateChooChoo(
+      {
+        staticProp: "blue",
+        rotationDirection: "cw",
+        orbitDirection: "cw",
+        beats: 2,
+      },
+      motionQueryHandler
+    )
+  );
 
   // Half Choo Choo - Red static, CCW rotation, CW orbit
-  variations.push(await generateChooChoo({
-    staticProp: "red",
-    rotationDirection: "ccw",
-    orbitDirection: "cw",
-    beats: 2,
-  }, motionQueryHandler));
+  variations.push(
+    await generateChooChoo(
+      {
+        staticProp: "red",
+        rotationDirection: "ccw",
+        orbitDirection: "cw",
+        beats: 2,
+      },
+      motionQueryHandler
+    )
+  );
 
   // Full Choo Choo with 1 turn per beat
-  variations.push(await generateChooChoo({
-    staticProp: "blue",
-    rotationDirection: "cw",
-    orbitDirection: "cw",
-    beats: 4,
-    turnsPerBeat: 1,
-  }, motionQueryHandler));
+  variations.push(
+    await generateChooChoo(
+      {
+        staticProp: "blue",
+        rotationDirection: "cw",
+        orbitDirection: "cw",
+        beats: 4,
+        turnsPerBeat: 1,
+      },
+      motionQueryHandler
+    )
+  );
 
   return variations;
 }
@@ -408,7 +480,10 @@ export function detectChooChoo(sequence: SequenceData): {
   return { hasChooChoo: false, type: "none" };
 }
 
-function checkChooChooStartingAt(beats: BeatData[], startIndex: number): {
+function checkChooChooStartingAt(
+  beats: BeatData[],
+  startIndex: number
+): {
   hasChooChoo: boolean;
   type: "full" | "half" | "none";
   startBeat?: number;
@@ -434,13 +509,19 @@ function checkChooChooStartingAt(beats: BeatData[], startIndex: number): {
   // Determine which prop is static (with rotation) and which is float
   let staticProp: "blue" | "red" | null = null;
 
-  if (blueMotion.motionType === MotionType.STATIC &&
-      typeof blueMotion.turns === "number" && blueMotion.turns > 0 &&
-      redMotion.motionType === MotionType.FLOAT) {
+  if (
+    blueMotion.motionType === MotionType.STATIC &&
+    typeof blueMotion.turns === "number" &&
+    blueMotion.turns > 0 &&
+    redMotion.motionType === MotionType.FLOAT
+  ) {
     staticProp = "blue";
-  } else if (redMotion.motionType === MotionType.STATIC &&
-             typeof redMotion.turns === "number" && redMotion.turns > 0 &&
-             blueMotion.motionType === MotionType.FLOAT) {
+  } else if (
+    redMotion.motionType === MotionType.STATIC &&
+    typeof redMotion.turns === "number" &&
+    redMotion.turns > 0 &&
+    blueMotion.motionType === MotionType.FLOAT
+  ) {
     staticProp = "red";
   }
 
@@ -451,7 +532,7 @@ function checkChooChooStartingAt(beats: BeatData[], startIndex: number): {
   // Check subsequent beats maintain the pattern
   let consecutiveBeats = 1;
   const floatLocations: GridLocation[] = [
-    staticProp === "blue" ? redMotion.startLocation : blueMotion.startLocation
+    staticProp === "blue" ? redMotion.startLocation : blueMotion.startLocation,
   ];
 
   for (let i = startIndex + 1; i < beats.length && i < startIndex + 4; i++) {
@@ -467,8 +548,11 @@ function checkChooChooStartingAt(beats: BeatData[], startIndex: number): {
     const floatM = staticProp === "blue" ? rMotion : bMotion;
 
     // Verify static prop stays static with rotation
-    if (staticM.motionType !== MotionType.STATIC ||
-        typeof staticM.turns !== "number" || staticM.turns <= 0) {
+    if (
+      staticM.motionType !== MotionType.STATIC ||
+      typeof staticM.turns !== "number" ||
+      staticM.turns <= 0
+    ) {
       break;
     }
 
@@ -507,8 +591,12 @@ function isValidOrbitPath(locations: GridLocation[]): boolean {
   if (locations.length < 4) return false;
 
   // Check if locations follow clockwise or counter-clockwise pattern
-  const cwValid = locations.slice(0, 4).every((loc, i) => loc === CLOCKWISE_ORBIT[i]);
-  const ccwValid = locations.slice(0, 4).every((loc, i) => loc === COUNTER_CLOCKWISE_ORBIT[i]);
+  const cwValid = locations
+    .slice(0, 4)
+    .every((loc, i) => loc === CLOCKWISE_ORBIT[i]);
+  const ccwValid = locations
+    .slice(0, 4)
+    .every((loc, i) => loc === COUNTER_CLOCKWISE_ORBIT[i]);
 
   return cwValid || ccwValid;
 }

@@ -146,14 +146,15 @@
   .tour-tooltip {
     position: fixed;
     transform: translateY(-50%);
-    background: var(--theme-panel-bg, rgba(18, 18, 28, 0.98));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: rgba(15, 15, 25, 0.98);
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.15));
     border-radius: 12px;
     padding: 1rem;
     width: 280px;
     z-index: 9999;
     animation: tooltipIn 0.2s ease-out;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(12px);
   }
 
   .tooltip-arrow {
@@ -165,7 +166,7 @@
     height: 0;
     border-top: 8px solid transparent;
     border-bottom: 8px solid transparent;
-    border-right: 8px solid var(--theme-panel-bg, rgba(18, 18, 28, 0.98));
+    border-right: 8px solid rgba(15, 15, 25, 0.98);
   }
 
   .tooltip-close {

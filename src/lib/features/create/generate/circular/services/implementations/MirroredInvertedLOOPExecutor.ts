@@ -175,15 +175,12 @@ export class MirroredInvertedLOOPExecutor {
     };
 
     // Update orientations
-    const beatWithStartOri =
-      this.OrientationCalculator.updateStartOrientations(
-        newBeat,
-        previousBeat
-      );
+    const beatWithStartOri = this.OrientationCalculator.updateStartOrientations(
+      newBeat,
+      previousBeat
+    );
     const finalBeat =
-      this.OrientationCalculator.updateEndOrientations(
-        beatWithStartOri
-      );
+      this.OrientationCalculator.updateEndOrientations(beatWithStartOri);
 
     return finalBeat;
   }

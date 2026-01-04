@@ -47,7 +47,9 @@ export interface SwipeDismissState {
   reset: () => void;
 }
 
-export function createSwipeDismiss(options: SwipeDismissOptions): SwipeDismissState {
+export function createSwipeDismiss(
+  options: SwipeDismissOptions
+): SwipeDismissState {
   const threshold = options.threshold ?? 100;
 
   let element = $state<HTMLElement | null>(null);
@@ -56,7 +58,9 @@ export function createSwipeDismiss(options: SwipeDismissOptions): SwipeDismissSt
   let isDragging = $state(false);
 
   const deltaY = $derived(Math.max(0, touchCurrentY - touchStartY));
-  const transform = $derived(isDragging && deltaY > 0 ? `translateY(${deltaY}px)` : "");
+  const transform = $derived(
+    isDragging && deltaY > 0 ? `translateY(${deltaY}px)` : ""
+  );
 
   function handleTouchStart(e: TouchEvent) {
     const touch = e.touches[0];

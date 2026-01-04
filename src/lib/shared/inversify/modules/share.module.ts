@@ -21,12 +21,8 @@ export const shareModule = new ContainerModule(
     options.bind(TYPES.ISharer).to(Sharer);
     options.bind(TYPES.IInstagramLinker).to(InstagramLinker);
     options.bind(TYPES.IMediaBundler).to(MediaBundler);
-    options
-      .bind(TYPES.IFirebaseVideoUploader)
-      .to(FirebaseVideoUploader);
-    options
-      .bind(TYPES.IRecordingPersister)
-      .to(RecordingPersister);
+    options.bind(TYPES.IFirebaseVideoUploader).to(FirebaseVideoUploader);
+    options.bind(TYPES.IRecordingPersister).to(RecordingPersister);
     options
       .bind(TYPES.ICollaborativeVideoManager)
       .to(CollaborativeVideoManager);

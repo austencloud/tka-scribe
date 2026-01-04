@@ -175,13 +175,20 @@ export class LOOPLabelsFirebaseRepository implements ILOOPLabelsFirebaseReposito
    * Delete a sequence from the publicSequences collection
    * Also deletes the associated LOOP label
    */
-  async deleteSequenceFromDatabase(sequenceId: string, word: string): Promise<{ success: boolean; error?: string }> {
+  async deleteSequenceFromDatabase(
+    sequenceId: string,
+    word: string
+  ): Promise<{ success: boolean; error?: string }> {
     try {
       const firestore = await this.ensureFirestore();
       this.syncStatus = "syncing";
 
       // Check if sequence exists in publicSequences
-      const sequenceRef = doc(firestore, PUBLIC_SEQUENCES_COLLECTION, sequenceId);
+      const sequenceRef = doc(
+        firestore,
+        PUBLIC_SEQUENCES_COLLECTION,
+        sequenceId
+      );
       const sequenceSnap = await getDoc(sequenceRef);
 
       if (!sequenceSnap.exists()) {
@@ -206,7 +213,8 @@ export class LOOPLabelsFirebaseRepository implements ILOOPLabelsFirebaseReposito
       this.syncStatus = "error";
       return {
         success: false,
-        error: error instanceof Error ? error.message : "Unknown error occurred"
+        error:
+          error instanceof Error ? error.message : "Unknown error occurred",
       };
     }
   }

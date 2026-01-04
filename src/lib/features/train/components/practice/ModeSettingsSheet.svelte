@@ -178,11 +178,7 @@
     margin-bottom: 20px;
     position: sticky;
     top: 0;
-    background: color-mix(
-      in srgb,
-      var(--theme-panel-bg) 98%,
-      transparent
-    );
+    background: color-mix(in srgb, var(--theme-panel-bg) 98%, transparent);
     z-index: 1;
   }
 
@@ -198,7 +194,11 @@
       transparent
     );
     border: 1px solid
-      color-mix(in srgb, var(--semantic-info, var(--semantic-info)) 30%, transparent);
+      color-mix(
+        in srgb,
+        var(--semantic-info, var(--semantic-info)) 30%,
+        transparent
+      );
     border-radius: 12px;
     flex-shrink: 0;
   }
@@ -264,7 +264,11 @@
   /* Focus states */
   .close-btn:focus-visible {
     outline: 2px solid
-      color-mix(in srgb, var(--semantic-info, var(--semantic-info)) 80%, transparent);
+      color-mix(
+        in srgb,
+        var(--semantic-info, var(--semantic-info)) 80%,
+        transparent
+      );
     outline-offset: 2px;
   }
 

@@ -62,7 +62,9 @@ export interface IFollowingFeedProvider {
    * @param options Feed options (limit, days, event types, userId for preview)
    * @returns Array of feed items sorted by timestamp (newest first)
    */
-  getFollowingFeed(options?: FollowingFeedOptions): Promise<FollowingFeedItem[]>;
+  getFollowingFeed(
+    options?: FollowingFeedOptions
+  ): Promise<FollowingFeedItem[]>;
 
   /**
    * Check if a user follows anyone

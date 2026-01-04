@@ -154,11 +154,7 @@
 
     /* ===== COLORS ===== */
     --kc-text: var(--theme-text);
-    --kc-text-muted: color-mix(
-      in srgb,
-      var(--theme-text) 75%,
-      transparent
-    );
+    --kc-text-muted: color-mix(in srgb, var(--theme-text) 75%, transparent);
     --kc-text-subtle: var(--theme-text-dim);
 
     /* ===== TRANSITIONS ===== */

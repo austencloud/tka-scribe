@@ -24,9 +24,7 @@ Clean design with:
     onStart?: (concept: LearnConcept) => void;
   } = $props();
 
-  const hapticService = resolve<IHapticFeedback>(
-    TYPES.IHapticFeedback
-  );
+  const hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
 
   const category = $derived(CONCEPT_CATEGORIES[concept.category]);
   const isAvailable = $derived(

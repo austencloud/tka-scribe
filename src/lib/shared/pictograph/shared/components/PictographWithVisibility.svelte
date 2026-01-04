@@ -37,7 +37,9 @@ Handles the forceShowAll logic for showing all glyphs in settings panel.
   // - forceShowAll + previewMode: undefined (use global state, previewMode handles dimming)
   // - forceShowAll + !previewMode: true (force everything visible)
   // - !forceShowAll: undefined (use global settings)
-  const visibilityOverride = $derived(forceShowAll && !previewMode ? true : undefined);
+  const visibilityOverride = $derived(
+    forceShowAll && !previewMode ? true : undefined
+  );
 
   // Use pictographData or extract from beatData
   const effectiveData = $derived(pictographData || beatData);

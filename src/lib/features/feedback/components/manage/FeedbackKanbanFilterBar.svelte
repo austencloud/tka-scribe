@@ -168,7 +168,11 @@
     background: var(--theme-card-hover-bg, var(--theme-card-hover-bg));
     border-color: var(--semantic-success, var(--semantic-success));
     box-shadow: 0 0 0 3px
-      color-mix(in srgb, var(--semantic-success, var(--semantic-success)) 15%, transparent);
+      color-mix(
+        in srgb,
+        var(--semantic-success, var(--semantic-success)) 15%,
+        transparent
+      );
   }
 
   .search-clear {

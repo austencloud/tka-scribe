@@ -103,11 +103,7 @@
     /* Module-colored background with subtle sheen */
     background: linear-gradient(
       90deg,
-      color-mix(
-          in srgb,
-          var(--module-color, #667eea) 12%,
-          var(--theme-card-bg)
-        )
+      color-mix(in srgb, var(--module-color, #667eea) 12%, var(--theme-card-bg))
         0%,
       color-mix(
           in srgb,

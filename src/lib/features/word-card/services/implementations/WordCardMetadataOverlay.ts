@@ -44,7 +44,6 @@ export class WordCardMetadataOverlay {
     dimensions: WordCardDimensions
   ): string {
     try {
-
       let modifiedSVG = svg;
 
       // Add background and borders first

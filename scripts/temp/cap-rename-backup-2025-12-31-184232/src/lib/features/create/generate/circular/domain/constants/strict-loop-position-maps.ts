@@ -509,7 +509,8 @@ export const SWAPPED_LOOP_VALIDATION_SET = new Set<string>(
 export const MIRRORED_SWAPPED_VALIDATION_SET = new Set<string>(
   Object.entries(VERTICAL_MIRROR_POSITION_MAP).map(([start, mirroredEnd]) => {
     // Compose: first mirror, then swap
-    const swappedMirroredEnd = SWAPPED_POSITION_MAP[mirroredEnd as GridPosition];
+    const swappedMirroredEnd =
+      SWAPPED_POSITION_MAP[mirroredEnd as GridPosition];
     return `${start},${swappedMirroredEnd}`;
   })
 );

@@ -98,8 +98,7 @@
     color: var(--semantic-error);
     filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.6))
       drop-shadow(
-        0 0 6px
-          color-mix(in srgb, var(--semantic-error) 50%, transparent)
+        0 0 6px color-mix(in srgb, var(--semantic-error) 50%, transparent)
       );
     transition: all 0.2s ease;
   }
@@ -109,8 +108,7 @@
     transform: translateX(-50%) scale(1.3);
     filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.7))
       drop-shadow(
-        0 0 12px
-          color-mix(in srgb, var(--semantic-error) 70%, transparent)
+        0 0 12px color-mix(in srgb, var(--semantic-error) 70%, transparent)
       );
   }
 
@@ -122,19 +120,15 @@
     height: 100%;
     background: var(--semantic-error);
     box-shadow:
-      0 0 6px
-        color-mix(in srgb, var(--semantic-error) 50%, transparent),
-      0 0 12px
-        color-mix(in srgb, var(--semantic-error) 30%, transparent);
+      0 0 6px color-mix(in srgb, var(--semantic-error) 50%, transparent),
+      0 0 12px color-mix(in srgb, var(--semantic-error) 30%, transparent);
   }
 
   .playhead.dragging .playhead-line {
     width: 2px;
     left: -0.5px;
     box-shadow:
-      0 0 8px
-        color-mix(in srgb, var(--semantic-error) 60%, transparent),
-      0 0 16px
-        color-mix(in srgb, var(--semantic-error) 40%, transparent);
+      0 0 8px color-mix(in srgb, var(--semantic-error) 60%, transparent),
+      0 0 16px color-mix(in srgb, var(--semantic-error) 40%, transparent);
   }
 </style>

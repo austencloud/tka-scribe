@@ -224,7 +224,9 @@ export class LibraryRepository implements ILibraryRepository {
         // Write sequence document
         transaction.set(sequenceDocRef, {
           ...libSeq,
-          createdAt: existingDoc.exists() ? libSeq.createdAt : serverTimestamp(),
+          createdAt: existingDoc.exists()
+            ? libSeq.createdAt
+            : serverTimestamp(),
           updatedAt: serverTimestamp(),
         });
 
@@ -328,7 +330,11 @@ export class LibraryRepository implements ILibraryRepository {
     } catch (error) {
       console.error("[LibraryRepository] Failed to update sequence:", error);
       toast.error("Failed to update sequence. Please try again.");
-      throw new LibraryError("Failed to update sequence", "NETWORK", sequenceId);
+      throw new LibraryError(
+        "Failed to update sequence",
+        "NETWORK",
+        sequenceId
+      );
     }
 
     // Handle visibility changes
@@ -357,7 +363,10 @@ export class LibraryRepository implements ILibraryRepository {
       try {
         await this.publicIndexSyncer.removeFromPublicIndex(sequenceId);
       } catch (error) {
-        console.warn("[LibraryRepository] Failed to remove from public index:", error);
+        console.warn(
+          "[LibraryRepository] Failed to remove from public index:",
+          error
+        );
         // Continue with deletion - public index sync can be fixed later
       }
     }
@@ -368,7 +377,11 @@ export class LibraryRepository implements ILibraryRepository {
     } catch (error) {
       console.error("[LibraryRepository] Failed to delete sequence:", error);
       toast.error("Failed to delete sequence. Please try again.");
-      throw new LibraryError("Failed to delete sequence", "NETWORK", sequenceId);
+      throw new LibraryError(
+        "Failed to delete sequence",
+        "NETWORK",
+        sequenceId
+      );
     }
 
     // Decrement user's sequenceCount
@@ -512,7 +525,10 @@ export class LibraryRepository implements ILibraryRepository {
     // Initialize subscription asynchronously
     getFirestoreInstance()
       .then((firestore) => {
-        const sequencesRef = collection(firestore, getUserSequencesPath(userId));
+        const sequencesRef = collection(
+          firestore,
+          getUserSequencesPath(userId)
+        );
 
         let q = query(sequencesRef, orderBy("updatedAt", "desc"));
 
@@ -536,7 +552,10 @@ export class LibraryRepository implements ILibraryRepository {
         );
       })
       .catch((error) => {
-        console.error("[LibraryRepository] Failed to initialize library subscription:", error);
+        console.error(
+          "[LibraryRepository] Failed to initialize library subscription:",
+          error
+        );
         toast.error("Failed to connect to library.");
       });
 
@@ -564,19 +583,27 @@ export class LibraryRepository implements ILibraryRepository {
           docRef,
           (docSnap) => {
             if (docSnap.exists()) {
-              callback(this.mapDocToLibrarySequence(docSnap.data(), sequenceId));
+              callback(
+                this.mapDocToLibrarySequence(docSnap.data(), sequenceId)
+              );
             } else {
               callback(null);
             }
           },
           (error) => {
-            console.error("[LibraryRepository] Sequence subscription error:", error);
+            console.error(
+              "[LibraryRepository] Sequence subscription error:",
+              error
+            );
             toast.error("Failed to sync sequence updates.");
           }
         );
       })
       .catch((error) => {
-        console.error("[LibraryRepository] Failed to initialize sequence subscription:", error);
+        console.error(
+          "[LibraryRepository] Failed to initialize sequence subscription:",
+          error
+        );
       });
 
     // Return cleanup function
@@ -686,7 +713,6 @@ export class LibraryRepository implements ILibraryRepository {
       toast.error("Failed to delete sequences. Please try again.");
       throw new LibraryError("Failed to delete sequences", "NETWORK");
     }
-
   }
 
   async moveToCollection(
@@ -711,7 +737,10 @@ export class LibraryRepository implements ILibraryRepository {
     } catch (error) {
       console.error("[LibraryRepository] Failed to move to collection:", error);
       toast.error("Failed to move sequences. Please try again.");
-      throw new LibraryError("Failed to move sequences to collection", "NETWORK");
+      throw new LibraryError(
+        "Failed to move sequences to collection",
+        "NETWORK"
+      );
     }
   }
 
@@ -766,7 +795,10 @@ export class LibraryRepository implements ILibraryRepository {
       const batchSnapshot = await getDocs(batchQuery);
 
       for (const docSnap of batchSnapshot.docs) {
-        const existing = this.mapDocToLibrarySequence(docSnap.data(), docSnap.id);
+        const existing = this.mapDocToLibrarySequence(
+          docSnap.data(),
+          docSnap.id
+        );
         const docRef = doc(firestore, getUserSequencePath(userId, docSnap.id));
 
         // Update visibility in batch
@@ -779,7 +811,10 @@ export class LibraryRepository implements ILibraryRepository {
         // Track public index changes
         if (visibility === "public" && existing.visibility !== "public") {
           toPublish.push({ ...existing, visibility });
-        } else if (visibility !== "public" && existing.visibility === "public") {
+        } else if (
+          visibility !== "public" &&
+          existing.visibility === "public"
+        ) {
           toUnpublish.push(docSnap.id);
         }
       }
@@ -834,5 +869,4 @@ export class LibraryRepository implements ILibraryRepository {
       sortDirection: "desc",
     });
   }
-
 }

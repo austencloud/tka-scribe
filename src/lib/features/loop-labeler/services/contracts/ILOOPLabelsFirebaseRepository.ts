@@ -1,8 +1,5 @@
 import type { BeatPairRelationship } from "./IBeatPairAnalyzer";
-import type {
-  LOOPDesignation,
-  SectionDesignation,
-} from "./ILOOPDesignator";
+import type { LOOPDesignation, SectionDesignation } from "./ILOOPDesignator";
 
 /**
  * Labeled sequence data

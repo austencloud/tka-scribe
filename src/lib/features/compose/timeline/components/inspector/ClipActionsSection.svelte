@@ -30,12 +30,18 @@
 
   <div class="action-buttons">
     <button class="action-btn" class:active={locked} onclick={onToggleLock}>
-      <i class="fa-solid {locked ? 'fa-lock' : 'fa-lock-open'}" aria-hidden="true"></i>
+      <i
+        class="fa-solid {locked ? 'fa-lock' : 'fa-lock-open'}"
+        aria-hidden="true"
+      ></i>
       {locked ? "Unlock" : "Lock"}
     </button>
 
     <button class="action-btn" class:active={muted} onclick={onToggleMute}>
-      <i class="fa-solid {muted ? 'fa-volume-xmark' : 'fa-volume-high'}" aria-hidden="true"></i>
+      <i
+        class="fa-solid {muted ? 'fa-volume-xmark' : 'fa-volume-high'}"
+        aria-hidden="true"
+      ></i>
       {muted ? "Unmute" : "Mute"}
     </button>
   </div>

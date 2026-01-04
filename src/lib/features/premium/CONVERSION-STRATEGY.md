@@ -8,20 +8,21 @@
 
 ### 6 Principles of Persuasion (Cialdini)
 
-| Principle | Current Implementation | Missing Elements | Priority |
-|-----------|----------------------|------------------|----------|
-| **Social Proof** | ❌ None | User count, testimonials, trust badges | 🔴 Critical |
-| **Authority** | ⚠️ Partial (developer name) | "Adopted at flow festivals", credentials | 🟡 Medium |
-| **Scarcity** | ❌ None | "Early access - limited slots" | 🟢 Low |
-| **Urgency** | ❌ None | "Lock in launch pricing" | 🟢 Low |
-| **Reciprocity** | ✅ Free tier exists | Highlight free features users already love | 🟡 Medium |
-| **Commitment** | ❌ None | Email capture, progressive disclosure | 🟡 Medium |
+| Principle        | Current Implementation      | Missing Elements                           | Priority    |
+| ---------------- | --------------------------- | ------------------------------------------ | ----------- |
+| **Social Proof** | ❌ None                     | User count, testimonials, trust badges     | 🔴 Critical |
+| **Authority**    | ⚠️ Partial (developer name) | "Adopted at flow festivals", credentials   | 🟡 Medium   |
+| **Scarcity**     | ❌ None                     | "Early access - limited slots"             | 🟢 Low      |
+| **Urgency**      | ❌ None                     | "Lock in launch pricing"                   | 🟢 Low      |
+| **Reciprocity**  | ✅ Free tier exists         | Highlight free features users already love | 🟡 Medium   |
+| **Commitment**   | ❌ None                     | Email capture, progressive disclosure      | 🟡 Medium   |
 
 ## Missing Components Roadmap
 
 ### Phase 1: Foundation (Before Public Launch)
 
 **Social Proof Components** - Trust is conversion driver #1
+
 ```
 components/social-proof/
 ├── Testimonials.svelte          # User quotes with photos/names
@@ -31,6 +32,7 @@ components/social-proof/
 ```
 
 **Risk Reversal Components** - Remove purchase anxiety
+
 ```
 components/risk-reversal/
 ├── FAQ.svelte                   # Address common objections
@@ -40,6 +42,7 @@ components/risk-reversal/
 ```
 
 **Value Communication** - Show don't tell
+
 ```
 components/value-communication/
 ├── BenefitsHighlight.svelte     # Emotional benefits, not features
@@ -51,6 +54,7 @@ components/value-communication/
 ### Phase 2: Optimization (Post-Launch)
 
 **Analytics Infrastructure**
+
 ```
 components/analytics/
 ├── ConversionTracker.svelte     # Event tracking wrapper
@@ -59,6 +63,7 @@ components/analytics/
 ```
 
 **A/B Testing Components**
+
 ```
 components/experiments/
 ├── VariantContainer.svelte      # A/B test wrapper
@@ -67,6 +72,7 @@ components/experiments/
 ```
 
 **Advanced Conversion**
+
 ```
 components/advanced/
 ├── EmailCapture.svelte          # Capture email before checkout
@@ -78,6 +84,7 @@ components/advanced/
 ### Phase 3: Retention (Post-Launch)
 
 **Checkout Flow UX**
+
 ```
 components/checkout/
 ├── CheckoutLoading.svelte       # Encouraging micro-copy during wait
@@ -91,26 +98,29 @@ components/checkout/
 ### Current CTA Copy Issues
 
 **Current:** "Go Premium"
+
 - Feature-focused, not benefit-focused
 - Generic, could be any product
 - No emotional connection
 
 **Better Alternatives:**
 
-| Context | Copy | Why It Works |
-|---------|------|--------------|
-| Hero CTA | "Unlock Unlimited Creation" | Benefit-focused, aspirational |
-| Sticky CTA | "Start Creating Freely" | Action-oriented, freedom-focused |
+| Context     | Copy                                  | Why It Works                           |
+| ----------- | ------------------------------------- | -------------------------------------- |
+| Hero CTA    | "Unlock Unlimited Creation"           | Benefit-focused, aspirational          |
+| Sticky CTA  | "Start Creating Freely"               | Action-oriented, freedom-focused       |
 | Desktop CTA | "Support TKA & Create Without Limits" | Dual benefit: altruism + personal gain |
-| FAQ CTA | "Join the Community" | Social connection angle |
+| FAQ CTA     | "Join the Community"                  | Social connection angle                |
 
 ### Headline Strategy
 
 **Current:** "Support TKA Development"
+
 - Charity angle (weak motivator)
 - About the developer, not the user
 
 **Better:**
+
 - "Create Without Limits" (benefit)
 - "Take Your Flow to the Next Level" (transformation)
 - "Join 1,000+ Flow Artists Creating Freely" (social proof + benefit)
@@ -119,40 +129,44 @@ components/checkout/
 
 **Current feature table is feature-focused:**
 
-| Feature | Why Users Don't Care |
-|---------|---------------------|
-| "Sequence Generator - Unlimited" | What does unlimited GET me? |
-| "Compose Module - Full Access" | What can I DO with it? |
-| "Train Module - Full Access" | How does this improve MY flow? |
+| Feature                          | Why Users Don't Care           |
+| -------------------------------- | ------------------------------ |
+| "Sequence Generator - Unlimited" | What does unlimited GET me?    |
+| "Compose Module - Full Access"   | What can I DO with it?         |
+| "Train Module - Full Access"     | How does this improve MY flow? |
 
 **Better format:**
 
-| What You Get | Why It Matters | Free | Premium |
-|--------------|----------------|------|---------|
-| **Unlimited Sequence Creation** | Explore every idea without daily limits | 5/day | Unlimited |
-| **Video Composition Tools** | Share your choreography with the world | ❌ | ✅ |
-| **AI-Powered Training** | Master new moves faster with personalized feedback | ❌ | ✅ |
+| What You Get                    | Why It Matters                                     | Free  | Premium   |
+| ------------------------------- | -------------------------------------------------- | ----- | --------- |
+| **Unlimited Sequence Creation** | Explore every idea without daily limits            | 5/day | Unlimited |
+| **Video Composition Tools**     | Share your choreography with the world             | ❌    | ✅        |
+| **AI-Powered Training**         | Master new moves faster with personalized feedback | ❌    | ✅        |
 
 ## Analytics Event Tracking
 
 ### Critical Events to Track
 
 **Awareness:**
+
 - `premium_page_viewed` - User lands on premium page
 - `hero_scrolled_past` - Scroll depth tracking
 - `features_viewed` - Feature table viewed
 
 **Interest:**
+
 - `cta_hovered` - Mouse over CTA (desktop)
 - `cta_scrolled_into_view` - CTA becomes visible
 - `price_clicked` - User interacts with pricing
 
 **Decision:**
+
 - `cta_clicked` - User clicks subscribe button
 - `checkout_initiated` - Stripe session created
 - `checkout_abandoned` - User returns without subscribing
 
 **Action:**
+
 - `checkout_completed` - Successful subscription
 - `subscription_cancelled` - User cancels later
 
@@ -187,6 +201,7 @@ Land on Premium → Scroll → Click CTA → Redirect to Stripe → Subscribe
 ```
 
 **Leak Points:**
+
 1. **Land on Premium** - No social proof = immediate distrust
 2. **Scroll** - No sticky CTA on mobile (FIXED)
 3. **Click CTA** - Generic copy, no urgency
@@ -212,18 +227,20 @@ Land on Premium
 
 Industry standard conversion rates:
 
-| Metric | Poor | Average | Good | Excellent |
-|--------|------|---------|------|-----------|
-| Landing → Checkout | <1% | 2-5% | 5-10% | 10%+ |
-| Checkout → Subscribe | <20% | 40-60% | 60-80% | 80%+ |
-| Overall Conversion | <0.5% | 1-3% | 3-7% | 7%+ |
+| Metric               | Poor  | Average | Good   | Excellent |
+| -------------------- | ----- | ------- | ------ | --------- |
+| Landing → Checkout   | <1%   | 2-5%    | 5-10%  | 10%+      |
+| Checkout → Subscribe | <20%  | 40-60%  | 60-80% | 80%+      |
+| Overall Conversion   | <0.5% | 1-3%    | 3-7%   | 7%+       |
 
 **TKA Targets (Phase 1):**
+
 - Landing → Checkout: 5% (with social proof + FAQ)
 - Checkout → Subscribe: 60% (Stripe hosted, should be high)
 - Overall: 3%
 
 **TKA Targets (Phase 2 - Optimized):**
+
 - Landing → Checkout: 10%
 - Checkout → Subscribe: 70%
 - Overall: 7%
@@ -263,6 +280,7 @@ Before public launch, collect:
 ## Implementation Priority
 
 **Before Public Launch (Critical):**
+
 1. ✅ Mobile sticky CTA (DONE)
 2. ✅ Responsive layout (DONE)
 3. ⬜ Social proof components (placeholder created)
@@ -272,6 +290,7 @@ Before public launch, collect:
 7. ⬜ Checkout flow UX
 
 **Post-Launch (Optimization):**
+
 1. Testimonials (need to collect)
 2. Feature demo videos (need to create)
 3. A/B testing infrastructure
@@ -280,6 +299,7 @@ Before public launch, collect:
 6. Conversion funnel analytics
 
 **Nice to Have:**
+
 1. Scarcity messaging
 2. Urgency countdowns
 3. Tiered pricing options
@@ -288,6 +308,7 @@ Before public launch, collect:
 ## Success Metrics
 
 Track weekly:
+
 - Premium page views (from admin)
 - CTA click rate
 - Checkout initiation rate

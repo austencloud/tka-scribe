@@ -32,12 +32,8 @@
   let hapticService = $state<IHapticFeedback>();
 
   onMount(() => {
-    instagramService = resolve(
-      TYPES.IInstagramLinker
-    ) as IInstagramLinker;
-    hapticService = resolve(
-      TYPES.IHapticFeedback
-    ) as IHapticFeedback;
+    instagramService = resolve(TYPES.IInstagramLinker) as IInstagramLinker;
+    hapticService = resolve(TYPES.IHapticFeedback) as IHapticFeedback;
   });
 
   // Form state

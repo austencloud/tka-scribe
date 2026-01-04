@@ -128,7 +128,11 @@ Allows natural language queries to find sequences, users, and collections.
   </div>
 
   <!-- Search input -->
-  <div class="search-input-container" role="search" aria-label="Search sequences, users, and collections">
+  <div
+    class="search-input-container"
+    role="search"
+    aria-label="Search sequences, users, and collections"
+  >
     <i class="fas fa-search search-icon" aria-hidden="true"></i>
     <input
       type="text"
@@ -190,7 +194,7 @@ Allows natural language queries to find sequences, users, and collections.
     {#if isSearching}
       Searching...
     {:else if hasSearched && filteredResults.length > 0}
-      {filteredResults.length} result{filteredResults.length === 1 ? '' : 's'} found
+      {filteredResults.length} result{filteredResults.length === 1 ? "" : "s"} found
     {:else if hasSearched && filteredResults.length === 0}
       No results found
     {/if}
@@ -228,7 +232,12 @@ Allows natural language queries to find sequences, users, and collections.
       </div>
     {:else if isSearching}
       <!-- Loading state -->
-      <div class="loading-state" role="status" aria-live="polite" aria-busy="true">
+      <div
+        class="loading-state"
+        role="status"
+        aria-live="polite"
+        aria-busy="true"
+      >
         <i class="fas fa-spinner fa-spin" aria-hidden="true"></i>
         <p>Searching...</p>
       </div>
@@ -247,7 +256,8 @@ Allows natural language queries to find sequences, users, and collections.
         {#each filteredResults as result (result.id)}
           <button class="result-item" onclick={() => handleResultClick(result)}>
             <div class="result-icon">
-              <i class="fas {getResultIcon(result.type)}" aria-hidden="true"></i>
+              <i class="fas {getResultIcon(result.type)}" aria-hidden="true"
+              ></i>
             </div>
             <div class="result-content">
               <div class="result-header">
@@ -354,11 +364,7 @@ Allows natural language queries to find sequences, users, and collections.
   .search-input:focus {
     outline: none;
     background: var(--theme-card-hover-bg);
-    border-color: color-mix(
-      in srgb,
-      var(--semantic-info) 50%,
-      transparent
-    );
+    border-color: color-mix(in srgb, var(--semantic-info) 50%, transparent);
     box-shadow: 0 0 0 4px
       color-mix(in srgb, var(--semantic-info) 10%, transparent);
   }
@@ -371,13 +377,8 @@ Allows natural language queries to find sequences, users, and collections.
     min-width: var(--min-touch-target);
     min-height: var(--min-touch-target);
     padding: 14px 20px;
-    background: color-mix(
-      in srgb,
-      var(--semantic-info) 20%,
-      transparent
-    );
-    border: 2px solid
-      color-mix(in srgb, var(--semantic-info) 40%, transparent);
+    background: color-mix(in srgb, var(--semantic-info) 20%, transparent);
+    border: 2px solid color-mix(in srgb, var(--semantic-info) 40%, transparent);
     border-radius: 12px;
     color: var(--semantic-info);
     font-size: var(--font-size-base);
@@ -386,16 +387,8 @@ Allows natural language queries to find sequences, users, and collections.
   }
 
   .search-button:hover:not(:disabled) {
-    background: color-mix(
-      in srgb,
-      var(--semantic-info) 30%,
-      transparent
-    );
-    border-color: color-mix(
-      in srgb,
-      var(--semantic-info) 60%,
-      transparent
-    );
+    background: color-mix(in srgb, var(--semantic-info) 30%, transparent);
+    border-color: color-mix(in srgb, var(--semantic-info) 60%, transparent);
     transform: translateX(2px);
   }
 
@@ -437,16 +430,8 @@ Allows natural language queries to find sequences, users, and collections.
   }
 
   .filter-tab.active {
-    background: color-mix(
-      in srgb,
-      var(--semantic-info) 20%,
-      transparent
-    );
-    border-color: color-mix(
-      in srgb,
-      var(--semantic-info) 40%,
-      transparent
-    );
+    background: color-mix(in srgb, var(--semantic-info) 20%, transparent);
+    border-color: color-mix(in srgb, var(--semantic-info) 40%, transparent);
     color: var(--theme-text, white);
   }
 

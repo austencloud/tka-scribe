@@ -75,7 +75,10 @@ export class CloudThumbnailCache implements ICloudThumbnailCache {
         return null;
       }
       // For other errors, don't cache - might be transient
-      console.warn(`CloudThumbnailCache: Error getting URL for ${cacheKey}:`, error);
+      console.warn(
+        `CloudThumbnailCache: Error getting URL for ${cacheKey}:`,
+        error
+      );
       return null;
     }
   }
@@ -151,9 +154,8 @@ export class CloudThumbnailCache implements ICloudThumbnailCache {
     key: CloudThumbnailKey,
     blob: Blob
   ): Promise<string> {
-    const { ref, uploadBytes, getDownloadURL } = await import(
-      "firebase/storage"
-    );
+    const { ref, uploadBytes, getDownloadURL } =
+      await import("firebase/storage");
     const storage = await getStorageInstance();
     const storagePath = this.getStoragePath(key);
     const storageRef = ref(storage, storagePath);

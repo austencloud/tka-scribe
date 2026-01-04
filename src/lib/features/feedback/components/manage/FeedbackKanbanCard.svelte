@@ -275,7 +275,8 @@
   class:priority-medium={item.priority === "medium"}
   class:priority-low={item.priority === "low" || !item.priority}
   style="--type-color: {typeConfig?.color ??
-    'var(--theme-accent)'}; --priority-color: {priorityConfig?.color || '#6b7280'}"
+    'var(--theme-accent)'}; --priority-color: {priorityConfig?.color ||
+    '#6b7280'}"
   draggable={!disableDrag}
   ondragstart={disableDrag ? undefined : handleDragStart}
   ondragend={disableDrag ? undefined : handleDragEnd}
@@ -361,11 +362,7 @@
     --kc-radius-md: clamp(12px, 3cqi, 18px);
 
     --kc-text: var(--theme-text);
-    --kc-text-muted: color-mix(
-      in srgb,
-      var(--theme-text) 75%,
-      transparent
-    );
+    --kc-text-muted: color-mix(in srgb, var(--theme-text) 75%, transparent);
     --kc-text-subtle: var(--theme-text-dim);
 
     --spring-smooth: cubic-bezier(0.4, 0, 0.2, 1);
@@ -460,7 +457,11 @@
       color-mix(in srgb, var(--semantic-error) 12%, rgba(30, 30, 40, 0.95)) 0%,
       color-mix(in srgb, var(--semantic-error) 5%, rgba(25, 25, 35, 0.98)) 100%
     );
-    border-color: color-mix(in srgb, var(--semantic-error) 30%, rgba(255, 255, 255, 0.08));
+    border-color: color-mix(
+      in srgb,
+      var(--semantic-error) 30%,
+      rgba(255, 255, 255, 0.08)
+    );
   }
 
   .kanban-card.priority-high {
@@ -631,7 +632,11 @@
     outline: none;
     border-color: var(--semantic-success, var(--semantic-success));
     box-shadow: 0 0 0 3px
-      color-mix(in srgb, var(--semantic-success, var(--semantic-success)) 20%, transparent);
+      color-mix(
+        in srgb,
+        var(--semantic-success, var(--semantic-success)) 20%,
+        transparent
+      );
   }
 
   /* ===== Mobile optimizations ===== */

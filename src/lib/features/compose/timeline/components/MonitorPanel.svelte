@@ -18,7 +18,11 @@
   );
 </script>
 
-<div class="monitor-panel" class:source={type === "source"} class:program={type === "program"}>
+<div
+  class="monitor-panel"
+  class:source={type === "source"}
+  class:program={type === "program"}
+>
   <div class="monitor-label">
     <i class="fas {config.icon}" aria-hidden="true"></i>
     <span>{config.label}</span>
@@ -64,7 +68,8 @@
   .program .monitor-label {
     color: var(--theme-accent);
     border-left: 3px solid var(--theme-accent);
-    text-shadow: 0 0 8px color-mix(in srgb, var(--theme-accent) 30%, transparent);
+    text-shadow: 0 0 8px
+      color-mix(in srgb, var(--theme-accent) 30%, transparent);
   }
 
   .monitor-label i {

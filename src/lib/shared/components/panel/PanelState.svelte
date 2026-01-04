@@ -42,7 +42,11 @@
   const resolvedTitle = $derived(title ?? defaultTitles[type]);
 </script>
 
-<div class="panel-state" class:panel-state--error={type === "error"} role={type === "error" ? "alert" : undefined}>
+<div
+  class="panel-state"
+  class:panel-state--error={type === "error"}
+  role={type === "error" ? "alert" : undefined}
+>
   {#if type === "loading"}
     <PanelSpinner />
   {:else if resolvedIcon}
@@ -114,11 +118,7 @@
   }
 
   .panel-state__retry:hover {
-    background: color-mix(
-      in srgb,
-      var(--theme-accent) 25%,
-      transparent
-    );
+    background: color-mix(in srgb, var(--theme-accent) 25%, transparent);
     border-color: var(--theme-stroke-strong);
   }
 

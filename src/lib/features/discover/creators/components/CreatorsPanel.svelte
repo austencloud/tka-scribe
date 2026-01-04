@@ -57,7 +57,7 @@
   const error = $derived(creatorsDataState.error);
 
   // Accounts to hide from public view (test/system accounts)
-  const HIDDEN_ACCOUNTS = ['tkascribe.review@gmail.com'];
+  const HIDDEN_ACCOUNTS = ["tkascribe.review@gmail.com"];
 
   // Filtered users based on search (excludes hidden accounts)
   const filteredUsers = $derived.by(() => {
@@ -82,9 +82,7 @@
 
       // Resolve services from DI container
       userService = resolve<IUserRepository>(TYPES.IUserRepository);
-      hapticService = resolve<IHapticFeedback>(
-        TYPES.IHapticFeedback
-      );
+      hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
 
       // Load creators data (uses cache if already loaded)
       await creatorsDataState.loadCreators(userService, currentUserId);
@@ -263,7 +261,11 @@
                       )}
                   />
                   <!-- Fallback placeholder (shown if image fails to load) -->
-                  <div class="avatar-placeholder" style="display: none;" aria-hidden="true">
+                  <div
+                    class="avatar-placeholder"
+                    style="display: none;"
+                    aria-hidden="true"
+                  >
                     <i class="fas fa-user" aria-hidden="true"></i>
                   </div>
                 {:else}

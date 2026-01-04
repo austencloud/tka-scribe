@@ -23,11 +23,15 @@
   <div class="compound-details">
     <div class="interval-row">
       <span class="interval-badge quartered">¼</span>
-      <span class="interval-label">{compoundPattern.quarteredTransformations.join(" + ")}</span>
+      <span class="interval-label"
+        >{compoundPattern.quarteredTransformations.join(" + ")}</span
+      >
     </div>
     <div class="interval-row">
       <span class="interval-badge halved">½</span>
-      <span class="interval-label">{compoundPattern.halvedTransformations.join(" + ")}</span>
+      <span class="interval-label"
+        >{compoundPattern.halvedTransformations.join(" + ")}</span
+      >
     </div>
   </div>
 </div>
@@ -38,7 +42,11 @@
     flex-direction: column;
     gap: var(--spacing-sm);
     padding: var(--spacing-sm) var(--spacing-md);
-    background: linear-gradient(135deg, rgba(59, 130, 246, 0.12) 0%, rgba(99, 102, 241, 0.06) 100%);
+    background: linear-gradient(
+      135deg,
+      rgba(59, 130, 246, 0.12) 0%,
+      rgba(99, 102, 241, 0.06) 100%
+    );
     border: 1px solid rgba(59, 130, 246, 0.25);
     border-radius: 10px;
     margin-bottom: var(--spacing-xs);

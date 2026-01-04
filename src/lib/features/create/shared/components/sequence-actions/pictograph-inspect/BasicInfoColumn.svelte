@@ -25,7 +25,14 @@
     onCopy: (text: string, section: string) => void;
   }
 
-  let { displayData, blueMotion, redMotion, lookupKeys, copiedSection, onCopy }: Props = $props();
+  let {
+    displayData,
+    blueMotion,
+    redMotion,
+    lookupKeys,
+    copiedSection,
+    onCopy,
+  }: Props = $props();
 
   function formatLookupKeysText(): string {
     if (!lookupKeys) return "";
@@ -38,11 +45,13 @@
     <h3>Basic Info</h3>
     <button
       class="copy-btn"
-      onclick={() => onCopy(formatBasicInfo(displayData, blueMotion, redMotion), "basic")}
+      onclick={() =>
+        onCopy(formatBasicInfo(displayData, blueMotion, redMotion), "basic")}
       title="Copy Basic Info"
     >
       <i class="fas fa-copy" aria-hidden="true"></i>
-      {#if copiedSection === "basic"}<span class="copied-label">Copied!</span>{/if}
+      {#if copiedSection === "basic"}<span class="copied-label">Copied!</span
+        >{/if}
     </button>
   </div>
 
@@ -57,11 +66,15 @@
     </div>
     <div class="data-row">
       <span class="key">Grid Mode</span>
-      <span class="val">{blueMotion?.gridMode ?? redMotion?.gridMode ?? "N/A"}</span>
+      <span class="val"
+        >{blueMotion?.gridMode ?? redMotion?.gridMode ?? "N/A"}</span
+      >
     </div>
     <div class="data-row">
       <span class="key">Prop Type</span>
-      <span class="val">{blueMotion?.propType ?? redMotion?.propType ?? "N/A"}</span>
+      <span class="val"
+        >{blueMotion?.propType ?? redMotion?.propType ?? "N/A"}</span
+      >
     </div>
     <div class="data-row">
       <span class="key">Start Pos</span>
@@ -118,13 +131,17 @@
         {#if lookupKeys.blueRotationOverrideKey}
           <div class="data-row key-row blue-key">
             <span class="key">Blue Rot Key</span>
-            <span class="val mono key-val">{lookupKeys.blueRotationOverrideKey}</span>
+            <span class="val mono key-val"
+              >{lookupKeys.blueRotationOverrideKey}</span
+            >
           </div>
         {/if}
         {#if lookupKeys.redRotationOverrideKey}
           <div class="data-row key-row red-key">
             <span class="key">Red Rot Key</span>
-            <span class="val mono key-val">{lookupKeys.redRotationOverrideKey}</span>
+            <span class="val mono key-val"
+              >{lookupKeys.redRotationOverrideKey}</span
+            >
           </div>
         {/if}
       </div>

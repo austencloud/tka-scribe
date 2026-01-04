@@ -6,7 +6,10 @@ MotionTypePage - Displays a single motion type with visualizer
   import MotionTypeHeader from "./MotionTypeHeader.svelte";
   import MotionKeyPoint from "./MotionKeyPoint.svelte";
   import MotionTypeSummary from "./MotionTypeSummary.svelte";
-  import type { MotionExample, MotionInfo } from "../../../../domain/constants/motion-experience-data";
+  import type {
+    MotionExample,
+    MotionInfo,
+  } from "../../../../domain/constants/motion-experience-data";
 
   let {
     typeNum,

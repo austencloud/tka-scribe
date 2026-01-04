@@ -9,6 +9,7 @@
 **NEVER manually construct MotionData, BeatData, or SequenceData by hand.**
 
 The pictograph system has complex interdependencies:
+
 - Orientations must be calculated based on motion type, turns, and rotation direction
 - Each beat's startOrientation must match the previous beat's endOrientation
 - Arrow locations depend on motion type, turns, and positions
@@ -56,8 +57,8 @@ const pattern: TurnPattern = {
   beatCount: baseSequence.beats.length,
   entries: baseSequence.beats.map((_, i) => ({
     beatIndex: i,
-    blue: 1,  // 1 turn for blue
-    red: 1,   // 1 turn for red
+    blue: 1, // 1 turn for blue
+    red: 1, // 1 turn for red
   })),
 };
 
@@ -85,25 +86,27 @@ import { StrictInvertedLOOPExecutor } from "$lib/features/create/generate/circul
 
 A valid MotionData requires these fields to be **consistent**:
 
-| Field | Description | Calculation |
-|-------|-------------|-------------|
-| motionType | PRO, ANTI, FLOAT, DASH, STATIC | User choice |
-| rotationDirection | CW, CCW, NO_ROTATION | User choice (must match motion type) |
-| startLocation | N, S, E, W, NE, NW, SE, SW | User choice |
-| endLocation | N, S, E, W, NE, NW, SE, SW | Depends on motion type & rotation |
-| turns | 0, 0.5, 1, 1.5, 2, ... or "fl" | User choice |
-| startOrientation | IN, OUT, CLOCK, COUNTER | From previous beat's end |
-| **endOrientation** | IN, OUT, CLOCK, COUNTER | **CALCULATED by OrientationCalculator** |
-| arrowLocation | N, S, E, W, NE, NW, SE, SW | **CALCULATED based on motion** |
-| gridMode | DIAMOND, BOX | From sequence settings |
+| Field              | Description                    | Calculation                             |
+| ------------------ | ------------------------------ | --------------------------------------- |
+| motionType         | PRO, ANTI, FLOAT, DASH, STATIC | User choice                             |
+| rotationDirection  | CW, CCW, NO_ROTATION           | User choice (must match motion type)    |
+| startLocation      | N, S, E, W, NE, NW, SE, SW     | User choice                             |
+| endLocation        | N, S, E, W, NE, NW, SE, SW     | Depends on motion type & rotation       |
+| turns              | 0, 0.5, 1, 1.5, 2, ... or "fl" | User choice                             |
+| startOrientation   | IN, OUT, CLOCK, COUNTER        | From previous beat's end                |
+| **endOrientation** | IN, OUT, CLOCK, COUNTER        | **CALCULATED by OrientationCalculator** |
+| arrowLocation      | N, S, E, W, NE, NW, SE, SW     | **CALCULATED based on motion**          |
+| gridMode           | DIAMOND, BOX                   | From sequence settings                  |
 
 ### Orientation Calculation Rules
 
 For **ANTI** motions:
+
 - Even turns (0, 2, 4...): endOrientation **switches** (IN→OUT, OUT→IN)
 - Odd turns (1, 3, 5...): endOrientation **stays same** as start
 
 For **PRO** motions:
+
 - Even turns (0, 2, 4...): endOrientation **stays same** as start
 - Odd turns (1, 3, 5...): endOrientation **switches**
 
@@ -119,14 +122,14 @@ createMotionData({
   motionType: MotionType.ANTI,
   turns: 1,
   rotationDirection: RotationDirection.NO_ROTATION, // BUG!
-})
+});
 
 // CORRECT - use CW or CCW
 createMotionData({
   motionType: MotionType.ANTI,
   turns: 1,
   rotationDirection: RotationDirection.CCW,
-})
+});
 ```
 
 ### Mistake 2: Not propagating orientations
@@ -135,8 +138,8 @@ createMotionData({
 // WRONG - beat 2's startOrientation doesn't match beat 1's endOrientation
 const beats = [
   { motions: { blue: { startOrientation: IN, endOrientation: OUT } } },
-  { motions: { blue: { startOrientation: IN, /* wrong! */ } } },
-]
+  { motions: { blue: { startOrientation: IN /* wrong! */ } } },
+];
 
 // CORRECT - use TurnPatternService which handles propagation
 ```
@@ -144,6 +147,7 @@ const beats = [
 ### Mistake 3: Hand-coding sequences instead of using infrastructure
 
 If you need sequence data for tests, previews, or examples:
+
 1. Load a real sequence from the database
 2. Modify it using TurnPatternService if needed
 3. NEVER try to construct BeatData/MotionData manually

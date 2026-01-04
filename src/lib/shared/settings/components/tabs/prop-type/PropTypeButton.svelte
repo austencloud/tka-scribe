@@ -266,33 +266,18 @@
 
   /* Selected - Uses theme accent */
   .prop-button.selected {
-    background: color-mix(
-      in srgb,
-      var(--theme-accent) 15%,
-      transparent
-    );
-    border-color: color-mix(
-      in srgb,
-      var(--theme-accent) 50%,
-      transparent
-    );
+    background: color-mix(in srgb, var(--theme-accent) 15%, transparent);
+    border-color: color-mix(in srgb, var(--theme-accent) 50%, transparent);
     color: var(--theme-text);
     transform: scale(1.02); /* Slightly larger when selected */
     box-shadow:
-      0 6px 20px
-        color-mix(in srgb, var(--theme-accent) 25%, transparent),
-      0 2px 6px
-        color-mix(in srgb, var(--theme-accent) 15%, transparent),
-      inset 0 0 0 1px
-        color-mix(in srgb, var(--theme-accent) 20%, transparent);
+      0 6px 20px color-mix(in srgb, var(--theme-accent) 25%, transparent),
+      0 2px 6px color-mix(in srgb, var(--theme-accent) 15%, transparent),
+      inset 0 0 0 1px color-mix(in srgb, var(--theme-accent) 20%, transparent);
   }
 
   .prop-button.selected:hover {
-    background: color-mix(
-      in srgb,
-      var(--theme-accent) 20%,
-      transparent
-    );
+    background: color-mix(in srgb, var(--theme-accent) 20%, transparent);
     transform: translateY(-1px) scale(1.03);
   }
 
@@ -448,11 +433,7 @@
 
     .prop-button.selected {
       border: 2px solid var(--theme-accent);
-      background: color-mix(
-        in srgb,
-        var(--theme-accent) 15%,
-        transparent
-      );
+      background: color-mix(in srgb, var(--theme-accent) 15%, transparent);
     }
   }
 

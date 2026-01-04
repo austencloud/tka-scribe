@@ -130,12 +130,7 @@ Container-aware and aspect-ratio responsive
   .loop-component-button.multi-select:hover {
     background: linear-gradient(
       135deg,
-      color-mix(
-          in srgb,
-          var(--component-color) 25%,
-          var(--theme-shadow)
-        )
-        0%,
+      color-mix(in srgb, var(--component-color) 25%, var(--theme-shadow)) 0%,
       var(--theme-shadow) 100%
     );
     border-color: color-mix(

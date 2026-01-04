@@ -26,9 +26,7 @@ Visualizes Alpha (opposite), Beta (same), and Gamma (right angle) positions
     onPositionChange?: (left: HandPosition, right: HandPosition) => void;
   }>();
 
-  const hapticService = resolve<IHapticFeedback>(
-    TYPES.IHapticFeedback
-  );
+  const hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
 
   // Grid point coordinates (8-point grid)
   const GRID_POINTS: Record<
@@ -199,10 +197,14 @@ Visualizes Alpha (opposite), Beta (same), and Gamma (right angle) positions
       <g
         class="grid-point"
         class:clickable={interactive}
-        onclick={interactive ? () => handlePointClick(key as HandPosition) : undefined}
-        onkeydown={interactive ? (e) =>
-          (e.key === "Enter" || e.key === " ") &&
-          handlePointClick(key as HandPosition) : undefined}
+        onclick={interactive
+          ? () => handlePointClick(key as HandPosition)
+          : undefined}
+        onkeydown={interactive
+          ? (e) =>
+              (e.key === "Enter" || e.key === " ") &&
+              handlePointClick(key as HandPosition)
+          : undefined}
         role={interactive ? "button" : undefined}
         tabindex={interactive ? 0 : undefined}
         aria-label={interactive ? point.label : undefined}

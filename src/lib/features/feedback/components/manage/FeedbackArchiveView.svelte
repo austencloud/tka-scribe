@@ -229,11 +229,7 @@
     display: flex;
     flex-direction: column;
     height: 100%;
-    background: color-mix(
-      in srgb,
-      var(--theme-panel-bg) 80%,
-      transparent
-    );
+    background: color-mix(in srgb, var(--theme-panel-bg) 80%, transparent);
   }
 
   .archive-header {
@@ -242,11 +238,7 @@
     gap: 16px;
     padding: 16px 20px;
     border-bottom: 1px solid var(--theme-stroke);
-    background: color-mix(
-      in srgb,
-      var(--theme-panel-bg) 90%,
-      transparent
-    );
+    background: color-mix(in srgb, var(--theme-panel-bg) 90%, transparent);
   }
 
   .header-top {

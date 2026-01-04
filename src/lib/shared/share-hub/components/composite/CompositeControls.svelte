@@ -14,22 +14,24 @@
   Domain: Share Hub - Composite Mode - Controls
 -->
 <script lang="ts">
-  import { getShareHubState } from '../../state/share-hub-state.svelte';
+  import { getShareHubState } from "../../state/share-hub-state.svelte";
 
   // FIX: Use 'hubState' instead of 'state' to avoid collision with $state rune
   const hubState = getShareHubState();
 
   function toggleOrientation() {
     const newOrientation =
-      hubState.compositeLayout.orientation === 'horizontal' ? 'vertical' : 'horizontal';
+      hubState.compositeLayout.orientation === "horizontal"
+        ? "vertical"
+        : "horizontal";
     hubState.compositeLayout.orientation = newOrientation;
   }
 
-  function handlePiece1Change(format: 'animation' | 'static') {
+  function handlePiece1Change(format: "animation" | "static") {
     hubState.compositeLayout.piece1 = format;
   }
 
-  function handlePiece2Change(format: 'grid' | 'performance') {
+  function handlePiece2Change(format: "grid" | "performance") {
     hubState.compositeLayout.piece2 = format;
   }
 </script>
@@ -41,8 +43,12 @@
       <i class="fas fa-arrows-alt" aria-hidden="true"></i>
       Layout
     </span>
-    <button class="orientation-toggle" onclick={toggleOrientation} aria-label="Toggle orientation">
-      {#if hubState.compositeLayout.orientation === 'horizontal'}
+    <button
+      class="orientation-toggle"
+      onclick={toggleOrientation}
+      aria-label="Toggle orientation"
+    >
+      {#if hubState.compositeLayout.orientation === "horizontal"}
         <i class="fas fa-grip-horizontal" aria-hidden="true"></i>
         <span>Horizontal</span>
       {:else}
@@ -61,18 +67,18 @@
     <div class="piece-selector" role="group" aria-label="Piece 1 format">
       <button
         class="piece-option"
-        class:active={hubState.compositeLayout.piece1 === 'animation'}
-        onclick={() => handlePiece1Change('animation')}
-        aria-pressed={hubState.compositeLayout.piece1 === 'animation'}
+        class:active={hubState.compositeLayout.piece1 === "animation"}
+        onclick={() => handlePiece1Change("animation")}
+        aria-pressed={hubState.compositeLayout.piece1 === "animation"}
       >
         <i class="fas fa-play-circle" aria-hidden="true"></i>
         <span>Animation</span>
       </button>
       <button
         class="piece-option"
-        class:active={hubState.compositeLayout.piece1 === 'static'}
-        onclick={() => handlePiece1Change('static')}
-        aria-pressed={hubState.compositeLayout.piece1 === 'static'}
+        class:active={hubState.compositeLayout.piece1 === "static"}
+        onclick={() => handlePiece1Change("static")}
+        aria-pressed={hubState.compositeLayout.piece1 === "static"}
       >
         <i class="fas fa-image" aria-hidden="true"></i>
         <span>Static</span>
@@ -89,18 +95,18 @@
     <div class="piece-selector" role="group" aria-label="Piece 2 format">
       <button
         class="piece-option"
-        class:active={hubState.compositeLayout.piece2 === 'grid'}
-        onclick={() => handlePiece2Change('grid')}
-        aria-pressed={hubState.compositeLayout.piece2 === 'grid'}
+        class:active={hubState.compositeLayout.piece2 === "grid"}
+        onclick={() => handlePiece2Change("grid")}
+        aria-pressed={hubState.compositeLayout.piece2 === "grid"}
       >
         <i class="fas fa-th" aria-hidden="true"></i>
         <span>Grid</span>
       </button>
       <button
         class="piece-option"
-        class:active={hubState.compositeLayout.piece2 === 'performance'}
-        onclick={() => handlePiece2Change('performance')}
-        aria-pressed={hubState.compositeLayout.piece2 === 'performance'}
+        class:active={hubState.compositeLayout.piece2 === "performance"}
+        onclick={() => handlePiece2Change("performance")}
+        aria-pressed={hubState.compositeLayout.piece2 === "performance"}
       >
         <i class="fas fa-video" aria-hidden="true"></i>
         <span>Performance</span>

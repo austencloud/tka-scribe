@@ -48,9 +48,7 @@
 
   onMount(async () => {
     try {
-      hapticService = await resolve<IHapticFeedback>(
-        TYPES.IHapticFeedback
-      );
+      hapticService = await resolve<IHapticFeedback>(TYPES.IHapticFeedback);
       authService = await resolve<IAuthenticator>(TYPES.IAuthenticator);
     } catch {
       // Services may not be available in all contexts
@@ -140,7 +138,9 @@
           <span class="profile-email">{effectiveEmail || "Signed In"}</span>
         </div>
         {#if !preview.isActive}
-          <i class="fas fa-chevron-down dropdown-icon" aria-hidden="true"
+          <i
+            class="fas fa-chevron-down dropdown-icon"
+            aria-hidden="true"
             class:open={showAuthOptions}
           ></i>
         {/if}
@@ -302,7 +302,11 @@
     border-radius: 50%;
     overflow: hidden;
     border: 2px solid
-      color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 20%, transparent);
+      color-mix(
+        in srgb,
+        var(--theme-accent, var(--theme-accent)) 20%,
+        transparent
+      );
     flex-shrink: 0;
   }
 
@@ -425,11 +429,7 @@
   }
 
   .stat-item:hover {
-    background: color-mix(
-      in srgb,
-      var(--theme-accent) 8%,
-      transparent
-    );
+    background: color-mix(in srgb, var(--theme-accent) 8%, transparent);
     border-color: color-mix(
       in srgb,
       var(--theme-accent, var(--theme-accent)) 15%,
@@ -611,7 +611,11 @@
   }
 
   .guest-note i {
-    color: color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 60%, transparent);
+    color: color-mix(
+      in srgb,
+      var(--theme-accent, var(--theme-accent)) 60%,
+      transparent
+    );
   }
 
   /* Responsive - 2026 */

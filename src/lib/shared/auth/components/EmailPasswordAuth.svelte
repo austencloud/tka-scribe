@@ -209,7 +209,10 @@
           onclick={() => (showPassword = !showPassword)}
           aria-label={showPassword ? "Hide password" : "Show password"}
         >
-          <i class="fas {showPassword ? 'fa-eye-slash' : 'fa-eye'}" aria-hidden="true"></i>
+          <i
+            class="fas {showPassword ? 'fa-eye-slash' : 'fa-eye'}"
+            aria-hidden="true"
+          ></i>
         </button>
       </div>
     </label>

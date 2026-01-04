@@ -121,7 +121,10 @@
       style="--severity-color: {getSeverityColor(announcement.severity)};"
     >
       <div class="header-icon">
-        <i class="fas {getSeverityIcon(announcement.severity)}" aria-hidden="true"></i>
+        <i
+          class="fas {getSeverityIcon(announcement.severity)}"
+          aria-hidden="true"
+        ></i>
       </div>
       <button class="close-button" onclick={handleDismiss} aria-label="Close">
         <i class="fas fa-times" aria-hidden="true"></i>
@@ -338,7 +341,8 @@
   .action-button.primary {
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 120%, white) 0%,
+      color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 120%, white)
+        0%,
       var(--theme-accent, var(--theme-accent)) 100%
     );
     border: none;
@@ -348,7 +352,11 @@
   .action-button.primary:hover {
     transform: translateY(-2px);
     box-shadow: 0 8px 20px
-      color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 40%, transparent);
+      color-mix(
+        in srgb,
+        var(--theme-accent, var(--theme-accent)) 40%,
+        transparent
+      );
   }
 
   .action-button.secondary {

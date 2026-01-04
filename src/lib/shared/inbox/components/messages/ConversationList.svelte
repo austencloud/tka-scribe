@@ -31,9 +31,7 @@
   let hapticService: IHapticFeedback | undefined;
 
   onMount(() => {
-    hapticService = resolve<IHapticFeedback>(
-      TYPES.IHapticFeedback
-    );
+    hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
   });
 
   // Check if there are any unread messages
@@ -147,7 +145,11 @@
   }
 
   .new-message-btn:hover {
-    background: color-mix(in srgb, var(--theme-accent, var(--semantic-info)) 85%, white);
+    background: color-mix(
+      in srgb,
+      var(--theme-accent, var(--semantic-info)) 85%,
+      white
+    );
     box-shadow: 0 4px 12px
       color-mix(in srgb, var(--theme-accent) 30%, transparent);
   }

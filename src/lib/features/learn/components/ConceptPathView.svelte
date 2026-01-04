@@ -156,7 +156,9 @@ Shows:
   <!-- View All Toggle -->
   <button class="view-all-toggle" onclick={toggleShowAll}>
     <span>{showAllConcepts ? "Hide learning path" : "View learning path"}</span>
-    <i class="fa-solid {showAllConcepts ? 'fa-chevron-up' : 'fa-chevron-down'}" aria-hidden="true"
+    <i
+      class="fa-solid {showAllConcepts ? 'fa-chevron-up' : 'fa-chevron-down'}"
+      aria-hidden="true"
     ></i>
   </button>
 
@@ -182,7 +184,6 @@ Shows:
             {/each}
           </div>
         </section>
-
       {/each}
     </div>
   {/if}

@@ -155,7 +155,6 @@
       }
     }
   });
-
 </script>
 
 <div class="sequences-view">
@@ -207,10 +206,12 @@
               >
                 <span>{option.label}</span>
                 {#if libraryState.filters.sortBy === option.field}
-                  <i class="fas fa-arrow-{libraryState.filters.sortDirection ===
+                  <i
+                    class="fas fa-arrow-{libraryState.filters.sortDirection ===
                     'asc'
                       ? 'up'
-                      : 'down'}" aria-hidden="true"
+                      : 'down'}"
+                    aria-hidden="true"
                   ></i>
                 {/if}
               </button>
@@ -246,9 +247,9 @@
   <div class="filter-bar">
     <div class="sequence-count">
       {#if showOnlyFavorites}
-        <span>{favoritesCount} favorite{favoritesCount !== 1 ? 's' : ''}</span>
+        <span>{favoritesCount} favorite{favoritesCount !== 1 ? "s" : ""}</span>
       {:else}
-        <span>{totalCount} sequence{totalCount !== 1 ? 's' : ''}</span>
+        <span>{totalCount} sequence{totalCount !== 1 ? "s" : ""}</span>
       {/if}
     </div>
 
@@ -259,7 +260,7 @@
         onclick={() => (showOnlyFavorites = !showOnlyFavorites)}
       >
         <i class="fas fa-star" aria-hidden="true"></i>
-        <span>{showOnlyFavorites ? 'Show All' : 'Favorites'}</span>
+        <span>{showOnlyFavorites ? "Show All" : "Favorites"}</span>
       </button>
     {/if}
   </div>
@@ -318,7 +319,12 @@
         <p>Please sign in to access your library.</p>
       </div>
     {:else if isLoading}
-      <div class="loading-state" role="status" aria-live="polite" aria-busy="true">
+      <div
+        class="loading-state"
+        role="status"
+        aria-live="polite"
+        aria-busy="true"
+      >
         <div class="spinner" aria-hidden="true"></div>
         <p>Loading your library...</p>
       </div>

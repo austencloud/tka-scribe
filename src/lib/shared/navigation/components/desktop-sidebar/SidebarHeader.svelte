@@ -16,7 +16,8 @@
     aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
     title={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
   >
-    <i class="fas fa-{isCollapsed ? 'indent' : 'outdent'}" aria-hidden="true"></i>
+    <i class="fas fa-{isCollapsed ? 'indent' : 'outdent'}" aria-hidden="true"
+    ></i>
   </button>
 </div>
 
@@ -28,8 +29,17 @@
     border-bottom: 1px solid var(--theme-stroke);
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 10%, transparent) 0%,
-      color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent-strong)) 8%, transparent)
+      color-mix(
+          in srgb,
+          var(--theme-accent, var(--theme-accent)) 10%,
+          transparent
+        )
+        0%,
+      color-mix(
+          in srgb,
+          var(--theme-accent-strong, var(--theme-accent-strong)) 8%,
+          transparent
+        )
         50%,
       rgba(236, 72, 153, 0.06) 100%
     );
@@ -50,7 +60,11 @@
       90deg,
       transparent,
       color-mix(in srgb, var(--theme-accent) 40%, transparent),
-      color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent-strong)) 40%, transparent),
+      color-mix(
+        in srgb,
+        var(--theme-accent-strong, var(--theme-accent-strong)) 40%,
+        transparent
+      ),
       transparent
     );
   }

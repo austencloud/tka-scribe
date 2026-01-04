@@ -35,12 +35,18 @@ export interface ISequenceConverter {
    * Convert an entire sequence to an array of beat motion configs
    * Filters out beat 0 (start position)
    */
-  sequenceToMotionConfigs(sequence: SequenceData, plane?: Plane): BeatMotionConfigs[];
+  sequenceToMotionConfigs(
+    sequence: SequenceData,
+    plane?: Plane
+  ): BeatMotionConfigs[];
 
   /**
    * Get start position configs from sequence
    */
-  getStartPositionConfigs(sequence: SequenceData, plane?: Plane): BeatMotionConfigs | null;
+  getStartPositionConfigs(
+    sequence: SequenceData,
+    plane?: Plane
+  ): BeatMotionConfigs | null;
 
   /**
    * Create default motion config

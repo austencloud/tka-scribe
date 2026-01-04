@@ -199,10 +199,12 @@
       if (i === 0) {
         tangent = particles[1]!.clone().sub(curr).normalize();
       } else if (i === particles.length - 1) {
-        tangent = curr.clone().sub(particles[i - 1]!).normalize();
-      } else {
-        tangent = particles[i + 1]!
+        tangent = curr
           .clone()
+          .sub(particles[i - 1]!)
+          .normalize();
+      } else {
+        tangent = particles[i + 1]!.clone()
           .sub(particles[i - 1]!)
           .normalize();
       }
@@ -214,7 +216,9 @@
 
       // If tangent is parallel to up, use different reference
       if (normal.lengthSq() < 0.001) {
-        normal = new Vector3().crossVectors(tangent, new Vector3(1, 0, 0)).normalize();
+        normal = new Vector3()
+          .crossVectors(tangent, new Vector3(1, 0, 0))
+          .normalize();
       }
 
       // Scale by width (taper toward end)

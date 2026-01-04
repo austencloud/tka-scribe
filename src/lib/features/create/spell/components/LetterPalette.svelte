@@ -53,8 +53,14 @@ Clicking a letter inserts it into the word input.
 
   <div class="categories" role="group" aria-label="Greek letter categories">
     {#each categories as category}
-      <div class="category" role="group" aria-labelledby="category-{category.key}">
-        <h5 id="category-{category.key}" class="category-label">{category.label}</h5>
+      <div
+        class="category"
+        role="group"
+        aria-labelledby="category-{category.key}"
+      >
+        <h5 id="category-{category.key}" class="category-label">
+          {category.label}
+        </h5>
         <div class="letter-grid">
           {#each category.letters as letter}
             <button

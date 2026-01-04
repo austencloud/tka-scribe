@@ -174,13 +174,13 @@ Delegates all rendering to child components.
       );
       sizerService = resolve<IOptionSizer>(TYPES.IOptionPickerSizingService);
       preparer = resolve<IPictographPreparer>(TYPES.IPictographPreparer);
-      hapticService = resolve<IHapticFeedback>(
-        TYPES.IHapticFeedback
-      );
+      hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
 
       // Subscribe to LED mode changes for prop color updates
       try {
-        lightsOffProvider = resolve<ILightsOffProvider>(TYPES.ILightsOffProvider);
+        lightsOffProvider = resolve<ILightsOffProvider>(
+          TYPES.ILightsOffProvider
+        );
         lightsOffUnsubscribe = lightsOffProvider.subscribe((value) => {
           ledMode = value;
         });

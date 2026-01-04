@@ -202,7 +202,10 @@ export class CollaborativeVideoManager implements ICollaborativeVideoManager {
 
       console.log(`✅ Saved collaborative video: ${video.id}`);
     } catch (error) {
-      console.error("❌ [CollaborativeVideoManager] Failed to save video:", error);
+      console.error(
+        "❌ [CollaborativeVideoManager] Failed to save video:",
+        error
+      );
       toast.error("Failed to save video.");
       throw error;
     }
@@ -220,7 +223,10 @@ export class CollaborativeVideoManager implements ICollaborativeVideoManager {
 
       return this.docToVideo(docSnap.data(), videoId);
     } catch (error) {
-      console.error("❌ [CollaborativeVideoManager] Failed to get video:", error);
+      console.error(
+        "❌ [CollaborativeVideoManager] Failed to get video:",
+        error
+      );
       return null;
     }
   }
@@ -244,7 +250,10 @@ export class CollaborativeVideoManager implements ICollaborativeVideoManager {
 
       console.log(`🗑️ Deleted collaborative video: ${videoId}`);
     } catch (error) {
-      console.error("❌ [CollaborativeVideoManager] Failed to delete video:", error);
+      console.error(
+        "❌ [CollaborativeVideoManager] Failed to delete video:",
+        error
+      );
       toast.error("Failed to delete video.");
       throw error;
     }
@@ -276,7 +285,10 @@ export class CollaborativeVideoManager implements ICollaborativeVideoManager {
 
       console.log(`📝 Updated collaborative video: ${videoId}`);
     } catch (error) {
-      console.error("❌ [CollaborativeVideoManager] Failed to update video:", error);
+      console.error(
+        "❌ [CollaborativeVideoManager] Failed to update video:",
+        error
+      );
       toast.error("Failed to update video.");
       throw error;
     }
@@ -346,7 +358,10 @@ export class CollaborativeVideoManager implements ICollaborativeVideoManager {
 
       console.log(`📨 Invited ${userId} to collaborate on video ${videoId}`);
     } catch (error) {
-      console.error("❌ [CollaborativeVideoManager] Failed to invite collaborator:", error);
+      console.error(
+        "❌ [CollaborativeVideoManager] Failed to invite collaborator:",
+        error
+      );
       toast.error("Failed to send collaboration invite.");
       throw error;
     }
@@ -414,7 +429,10 @@ export class CollaborativeVideoManager implements ICollaborativeVideoManager {
         `✅ ${userInfo.uid} accepted collaboration on video ${videoId}`
       );
     } catch (error) {
-      console.error("❌ [CollaborativeVideoManager] Failed to accept invite:", error);
+      console.error(
+        "❌ [CollaborativeVideoManager] Failed to accept invite:",
+        error
+      );
       toast.error("Failed to accept collaboration invite.");
       throw error;
     }
@@ -461,7 +479,10 @@ export class CollaborativeVideoManager implements ICollaborativeVideoManager {
 
       console.log(`❌ ${userId} declined collaboration on video ${videoId}`);
     } catch (error) {
-      console.error("❌ [CollaborativeVideoManager] Failed to decline invite:", error);
+      console.error(
+        "❌ [CollaborativeVideoManager] Failed to decline invite:",
+        error
+      );
       toast.error("Failed to decline collaboration invite.");
       throw error;
     }
@@ -511,7 +532,10 @@ export class CollaborativeVideoManager implements ICollaborativeVideoManager {
 
       console.log(`🚪 Removed ${userId} from video ${videoId}`);
     } catch (error) {
-      console.error("❌ [CollaborativeVideoManager] Failed to remove collaborator:", error);
+      console.error(
+        "❌ [CollaborativeVideoManager] Failed to remove collaborator:",
+        error
+      );
       toast.error("Failed to remove collaborator.");
       throw error;
     }
@@ -536,7 +560,10 @@ export class CollaborativeVideoManager implements ICollaborativeVideoManager {
       const snapshot = await getDocs(q);
       return snapshot.docs.map((doc) => this.docToVideo(doc.data(), doc.id));
     } catch (error) {
-      console.error("❌ [CollaborativeVideoManager] Failed to get videos for sequence:", error);
+      console.error(
+        "❌ [CollaborativeVideoManager] Failed to get videos for sequence:",
+        error
+      );
       return [];
     }
   }
@@ -579,7 +606,10 @@ export class CollaborativeVideoManager implements ICollaborativeVideoManager {
 
       return { created, collaborations, pendingInvites };
     } catch (error) {
-      console.error("❌ [CollaborativeVideoManager] Failed to get user video library:", error);
+      console.error(
+        "❌ [CollaborativeVideoManager] Failed to get user video library:",
+        error
+      );
       toast.error("Failed to load your video library.");
       return { created: [], collaborations: [], pendingInvites: [] };
     }
@@ -599,7 +629,10 @@ export class CollaborativeVideoManager implements ICollaborativeVideoManager {
       const snapshot = await getDocs(q);
       return snapshot.docs.map((doc) => this.docToVideo(doc.data(), doc.id));
     } catch (error) {
-      console.error("❌ [CollaborativeVideoManager] Failed to get pending invites:", error);
+      console.error(
+        "❌ [CollaborativeVideoManager] Failed to get pending invites:",
+        error
+      );
       return [];
     }
   }
@@ -619,7 +652,10 @@ export class CollaborativeVideoManager implements ICollaborativeVideoManager {
       const snapshot = await getDocs(q);
       return snapshot.docs.map((doc) => this.docToVideo(doc.data(), doc.id));
     } catch (error) {
-      console.error("❌ [CollaborativeVideoManager] Failed to get public videos:", error);
+      console.error(
+        "❌ [CollaborativeVideoManager] Failed to get public videos:",
+        error
+      );
       return [];
     }
   }

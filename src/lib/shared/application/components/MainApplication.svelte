@@ -93,7 +93,6 @@
   let feedbackDetailItem = $derived(myFeedbackDetailState.selectedItem);
   let showFeedbackDetail = $derived(myFeedbackDetailState.isOpen);
 
-
   // Resolve services when container is available
   $effect(() => {
     const container = getContainer?.();
@@ -206,9 +205,8 @@
         ThemeService.initialize();
 
         // Apply background-based theme colors on startup
-        const { applyThemeForBackground } = await import(
-          "../../settings/utils/background-theme-calculator"
-        );
+        const { applyThemeForBackground } =
+          await import("../../settings/utils/background-theme-calculator");
         const bgType = settingsService.currentSettings?.backgroundType;
         if (bgType) {
           applyThemeForBackground(bgType);
@@ -216,9 +214,8 @@
 
         // Initialize gamification system
         try {
-          const { initializeGamification } = await import(
-            "../../gamification/init/gamification-initializer"
-          );
+          const { initializeGamification } =
+            await import("../../gamification/init/gamification-initializer");
           await initializeGamification();
         } catch (gamError) {
           console.error(
@@ -336,7 +333,7 @@
 </script>
 
 <svelte:head>
-  <title>TKA Scribe - Flow Arts Choreography Tool</title>
+  <title>TKA Scribe - The Flow Arts Choreography Toolbox</title>
   <meta
     name="description"
     content="TKA Scribe is a revolutionary flow arts choreography toolbox for staffs, fans, and other flow arts. Create, learn, and share movement sequences using The Kinetic Alphabet notation system."

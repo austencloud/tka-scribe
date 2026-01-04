@@ -63,9 +63,7 @@
 
   // Filter out auth step if already authenticated (user came from LandingPage signup)
   const STEPS = $derived(
-    isAuthenticated
-      ? ALL_STEPS.filter((step) => step !== "auth")
-      : ALL_STEPS
+    isAuthenticated ? ALL_STEPS.filter((step) => step !== "auth") : ALL_STEPS
   );
 
   // Icons for each step
@@ -146,9 +144,8 @@
     try {
       await settingsService.updateSetting("backgroundType", theme);
       // Also update theme colors
-      const { applyThemeForBackground } = await import(
-        "$lib/shared/settings/utils/background-theme-calculator"
-      );
+      const { applyThemeForBackground } =
+        await import("$lib/shared/settings/utils/background-theme-calculator");
       applyThemeForBackground(theme);
     } catch (error) {
       console.error("Failed to preview theme:", error);
@@ -327,10 +324,7 @@
         onSkip={handleModeSkip}
       />
     {:else if currentStep === "auth"}
-      <AuthStep
-        onComplete={handleAuthComplete}
-        onBack={handleBack}
-      />
+      <AuthStep onComplete={handleAuthComplete} onBack={handleBack} />
     {/if}
   </div>
 
@@ -474,7 +468,11 @@
   }
 
   .dot.active {
-    background: color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 30%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--theme-accent-strong, #8b5cf6) 30%,
+      transparent
+    );
     border-color: var(--theme-accent-strong, #8b5cf6);
     color: var(--theme-accent-strong, #8b5cf6);
     transform: scale(1.1);

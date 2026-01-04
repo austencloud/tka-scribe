@@ -10,7 +10,13 @@
     onSubscribe: () => void;
   }
 
-  let { price, period, isLoading = false, disabled = false, onSubscribe }: Props = $props();
+  let {
+    price,
+    period,
+    isLoading = false,
+    disabled = false,
+    onSubscribe,
+  }: Props = $props();
 </script>
 
 <div class="cta">
@@ -18,7 +24,11 @@
     <span class="amount">${price}</span>
     <span class="period">/{period}</span>
   </div>
-  <button class="subscribe-button" onclick={onSubscribe} disabled={isLoading || disabled}>
+  <button
+    class="subscribe-button"
+    onclick={onSubscribe}
+    disabled={isLoading || disabled}
+  >
     {#if isLoading}
       <i class="fas fa-spinner fa-spin" aria-hidden="true"></i>
       <span>Processing...</span>
@@ -34,7 +44,14 @@
   .cta {
     text-align: center;
     padding: var(--spacing-xl, 32px) var(--spacing-lg, 24px);
-    background: var(--gradient-primary, linear-gradient(135deg, var(--theme-accent) 0%, var(--theme-accent-strong) 100%));
+    background: var(
+      --gradient-primary,
+      linear-gradient(
+        135deg,
+        var(--theme-accent) 0%,
+        var(--theme-accent-strong) 100%
+      )
+    );
     border-radius: 16px;
   }
 

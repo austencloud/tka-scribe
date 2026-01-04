@@ -60,7 +60,11 @@ export class CreateModuleEventHandler implements ICreateModuleEventHandler {
     );
 
     // Only mark as initialized if at least one service resolved
-    if (this.constructCoordinator || this.OrientationCalculator || this.ReversalDetector) {
+    if (
+      this.constructCoordinator ||
+      this.OrientationCalculator ||
+      this.ReversalDetector
+    ) {
       this.initialized = true;
     }
   }
@@ -155,10 +159,7 @@ export class CreateModuleEventHandler implements ICreateModuleEventHandler {
       performance.mark("beat-data-created");
 
       // 🔄 OPTIMIZATION: Calculate orientations BEFORE UI update to batch into single update
-      if (
-        currentSequence.beats.length > 0 &&
-        this.OrientationCalculator
-      ) {
+      if (currentSequence.beats.length > 0 && this.OrientationCalculator) {
         const lastBeat =
           currentSequence.beats[currentSequence.beats.length - 1];
 
@@ -166,18 +167,15 @@ export class CreateModuleEventHandler implements ICreateModuleEventHandler {
         if (lastBeat && !lastBeat.isBlank && !beatData.isBlank) {
           try {
             // Update start orientations from the last beat's end orientations
-            beatData =
-              this.OrientationCalculator.updateStartOrientations(
-                beatData,
-                lastBeat
-              );
+            beatData = this.OrientationCalculator.updateStartOrientations(
+              beatData,
+              lastBeat
+            );
             performance.mark("start-orientations-complete");
 
             // Update end orientations based on the motion calculations
             beatData =
-              this.OrientationCalculator.updateEndOrientations(
-                beatData
-              );
+              this.OrientationCalculator.updateEndOrientations(beatData);
             performance.mark("end-orientations-complete");
           } catch (orientationError) {
             console.warn(

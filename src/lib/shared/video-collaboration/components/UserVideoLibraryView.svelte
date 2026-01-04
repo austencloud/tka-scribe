@@ -241,7 +241,11 @@
   }
 
   .tab .count.pending {
-    background: linear-gradient(135deg, var(--semantic-info) 0%, var(--theme-accent-strong) 100%);
+    background: linear-gradient(
+      135deg,
+      var(--semantic-info) 0%,
+      var(--theme-accent-strong) 100%
+    );
     color: white;
   }
 

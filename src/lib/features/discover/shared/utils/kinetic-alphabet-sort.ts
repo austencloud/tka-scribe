@@ -10,7 +10,7 @@
  * Types 1-5: UPPERCASE, Type 6: Static letters (α, β, Γ, etc.)
  */
 const KINETIC_ALPHABET_ORDER = [
-  // Type 1: Dual-Shift 
+  // Type 1: Dual-Shift
   "A",
   "B",
   "C",
@@ -66,7 +66,7 @@ const KINETIC_ALPHABET_ORDER = [
   "α",
   "β",
   "Γ",
-  // Advanced Type 6s 
+  // Advanced Type 6s
   "ζ",
   "η",
   "τ",

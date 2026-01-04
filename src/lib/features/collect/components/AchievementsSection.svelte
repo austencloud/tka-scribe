@@ -69,9 +69,7 @@
 
   // Initialize services
   onMount(async () => {
-    hapticService = resolve<IHapticFeedback>(
-      TYPES.IHapticFeedback
-    );
+    hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
     try {
       achievementService = await resolve<IAchievementManager>(
         TYPES.IAchievementManager
@@ -187,7 +185,9 @@
     <!-- Stats Grid -->
     <div class="stats-grid" class:compact={isCompact}>
       <div class="stat-card glass-surface">
-        <div class="stat-icon"><i class="fas fa-star" aria-hidden="true"></i></div>
+        <div class="stat-icon">
+          <i class="fas fa-star" aria-hidden="true"></i>
+        </div>
         <div class="stat-content">
           <div class="stat-value">{stats?.currentLevel || 0}</div>
           <div class="stat-label">Level</div>
@@ -195,7 +195,9 @@
       </div>
 
       <div class="stat-card glass-surface">
-        <div class="stat-icon"><i class="fas fa-magic-wand-sparkles" aria-hidden="true"></i></div>
+        <div class="stat-icon">
+          <i class="fas fa-magic-wand-sparkles" aria-hidden="true"></i>
+        </div>
         <div class="stat-content">
           <div class="stat-value">{stats?.totalXP.toLocaleString() || 0}</div>
           <div class="stat-label">Total XP</div>
@@ -203,7 +205,9 @@
       </div>
 
       <div class="stat-card glass-surface">
-        <div class="stat-icon"><i class="fas fa-trophy" aria-hidden="true"></i></div>
+        <div class="stat-icon">
+          <i class="fas fa-trophy" aria-hidden="true"></i>
+        </div>
         <div class="stat-content">
           <div class="stat-value">
             {stats?.achievementsUnlocked || 0}/{stats?.totalAchievements || 0}
@@ -213,7 +217,9 @@
       </div>
 
       <div class="stat-card glass-surface">
-        <div class="stat-icon"><i class="fas fa-fire" aria-hidden="true"></i></div>
+        <div class="stat-icon">
+          <i class="fas fa-fire" aria-hidden="true"></i>
+        </div>
         <div class="stat-content">
           <div class="stat-value">{currentStreak}</div>
           <div class="stat-label">Day Streak</div>
@@ -225,7 +231,9 @@
     {#if hasRanks}
       <div class="rankings-section">
         <div class="section-header">
-          <h3><i class="fas fa-chart-line" aria-hidden="true"></i> Your Rankings</h3>
+          <h3>
+            <i class="fas fa-chart-line" aria-hidden="true"></i> Your Rankings
+          </h3>
         </div>
         <div class="rankings-grid" class:compact={isCompact}>
           {#if userRanks.xp !== null}
@@ -263,7 +271,9 @@
     {:else if isLoadingRanks}
       <div class="rankings-section">
         <div class="section-header">
-          <h3><i class="fas fa-chart-line" aria-hidden="true"></i> Your Rankings</h3>
+          <h3>
+            <i class="fas fa-chart-line" aria-hidden="true"></i> Your Rankings
+          </h3>
         </div>
         <div class="rankings-loading">
           <span>Loading rankings...</span>
@@ -274,7 +284,9 @@
     <!-- Recent Achievements -->
     <div class="recent-section">
       <div class="section-header">
-        <h3><i class="fas fa-trophy" aria-hidden="true"></i> Recent Achievements</h3>
+        <h3>
+          <i class="fas fa-trophy" aria-hidden="true"></i> Recent Achievements
+        </h3>
         <button class="view-all-button" onclick={openBrowser}>
           View All <i class="fas fa-arrow-right" aria-hidden="true"></i>
         </button>

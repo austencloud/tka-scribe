@@ -211,7 +211,10 @@ export class SequencePersister {
       const snapshot = await getDocs(q);
       return snapshot.docs.map((doc) => doc.data() as SavedSequence);
     } catch (error) {
-      console.error("[SequencePersister] Failed to get recent sequences:", error);
+      console.error(
+        "[SequencePersister] Failed to get recent sequences:",
+        error
+      );
       toast.error("Failed to load recent sequences.");
       return [];
     }
@@ -254,7 +257,10 @@ export class SequencePersister {
 
       return snapshot.exists();
     } catch (error) {
-      console.error("[SequencePersister] Failed to check if sequence saved:", error);
+      console.error(
+        "[SequencePersister] Failed to check if sequence saved:",
+        error
+      );
       return false;
     }
   }

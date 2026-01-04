@@ -28,9 +28,7 @@ export function createFeedbackDetailState(
   readOnly: boolean = false
 ) {
   // Resolve services via DI
-  const editingService = tryResolve<IFeedbackEditor>(
-    TYPES.IFeedbackEditor
-  );
+  const editingService = tryResolve<IFeedbackEditor>(TYPES.IFeedbackEditor);
   const formattingService = tryResolve<IFeedbackFormatter>(
     TYPES.IFeedbackFormatter
   );

@@ -11,9 +11,7 @@ import type { ModuleDefinition, ModuleId, Section } from "../../domain/types";
 import { MODULE_DEFINITIONS } from "../../config/module-definitions";
 
 @injectable()
-export class NavigationValidator
-  implements INavigationValidator
-{
+export class NavigationValidator implements INavigationValidator {
   /**
    * Check if a module ID is valid
    */

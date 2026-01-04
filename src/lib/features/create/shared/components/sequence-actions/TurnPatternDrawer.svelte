@@ -40,7 +40,13 @@
     }) => void;
   }
 
-  let { isOpen = $bindable(), sequence, toolPanelWidth = 0, onClose, onApply }: Props = $props();
+  let {
+    isOpen = $bindable(),
+    sequence,
+    toolPanelWidth = 0,
+    onClose,
+    onApply,
+  }: Props = $props();
 
   // Build inline style for drawer width when we have a valid measurement
   const drawerStyle = $derived(
@@ -54,7 +60,9 @@
   let errorMessage = $state<string | null>(null);
   let complexityFilter = $state<PatternComplexity | "all">("simple"); // Default to "simple" for mobile-first
 
-  const turnPatternManager = resolve<ITurnPatternManager>(TYPES.ITurnPatternManager);
+  const turnPatternManager = resolve<ITurnPatternManager>(
+    TYPES.ITurnPatternManager
+  );
 
   // Load patterns when drawer opens and set appropriate default filter
   $effect(() => {
@@ -125,323 +133,344 @@
 </script>
 
 <div style={drawerStyle}>
-<Drawer
-  bind:isOpen
-  placement="right"
-  onclose={handleClose}
-  showHandle={false}
-  respectLayoutMode={true}
-  class="turn-pattern-drawer"
-  backdropClass="turn-pattern-backdrop"
->
-  <div class="turn-pattern-drawer-content">
-    <header class="drawer-header">
-      <h2>Turn Patterns</h2>
-      <button class="close-btn" onclick={handleClose} aria-label="Close">
-        <i class="fas fa-times" aria-hidden="true"></i>
-      </button>
-    </header>
+  <Drawer
+    bind:isOpen
+    placement="right"
+    onclose={handleClose}
+    showHandle={false}
+    respectLayoutMode={true}
+    class="turn-pattern-drawer"
+    backdropClass="turn-pattern-backdrop"
+  >
+    <div class="turn-pattern-drawer-content">
+      <header class="drawer-header">
+        <h2>Turn Patterns</h2>
+        <button class="close-btn" onclick={handleClose} aria-label="Close">
+          <i class="fas fa-times" aria-hidden="true"></i>
+        </button>
+      </header>
 
-    <!-- Mode tabs -->
-    <div class="mode-tabs">
-      <button
-        class="tab"
-        class:active={mode === "apply"}
-        onclick={() => (mode = "apply")}
-      >
-        Apply
-      </button>
-      <button
-        class="tab"
-        class:active={mode === "save"}
-        onclick={() => (mode = "save")}
-      >
-        Save Current
-      </button>
-    </div>
-
-    {#if errorMessage}
-      <div class="error-message">
-        <i class="fas fa-exclamation-circle" aria-hidden="true"></i>
-        {errorMessage}
+      <!-- Mode tabs -->
+      <div class="mode-tabs">
+        <button
+          class="tab"
+          class:active={mode === "apply"}
+          onclick={() => (mode = "apply")}
+        >
+          Apply
+        </button>
+        <button
+          class="tab"
+          class:active={mode === "save"}
+          onclick={() => (mode = "save")}
+        >
+          Save Current
+        </button>
       </div>
-    {/if}
 
-    {#if mode === "save"}
-      <!-- Save mode -->
-      <div class="save-section">
-        {#if !sequence || sequence.beats.length === 0}
-          <p class="empty-message">No sequence to save pattern from</p>
-        {:else}
-          <div class="pattern-preview">
-            <h3>Current Pattern ({sequence.beats.length} beats)</h3>
-            <div class="preview-grid">
-              {#each sequence.beats as beat, i}
-                <div class="preview-beat">
-                  <span class="beat-num">{i + 1}</span>
-                  <div class="turn-pair">
-                    <span class="turn-value blue">
-                      {formatTurnValue(beat.motions?.blue?.turns ?? null)}
-                    </span>
-                    <span class="separator">|</span>
-                    <span class="turn-value red">
-                      {formatTurnValue(beat.motions?.red?.turns ?? null)}
-                    </span>
+      {#if errorMessage}
+        <div class="error-message">
+          <i class="fas fa-exclamation-circle" aria-hidden="true"></i>
+          {errorMessage}
+        </div>
+      {/if}
+
+      {#if mode === "save"}
+        <!-- Save mode -->
+        <div class="save-section">
+          {#if !sequence || sequence.beats.length === 0}
+            <p class="empty-message">No sequence to save pattern from</p>
+          {:else}
+            <div class="pattern-preview">
+              <h3>Current Pattern ({sequence.beats.length} beats)</h3>
+              <div class="preview-grid">
+                {#each sequence.beats as beat, i}
+                  <div class="preview-beat">
+                    <span class="beat-num">{i + 1}</span>
+                    <div class="turn-pair">
+                      <span class="turn-value blue">
+                        {formatTurnValue(beat.motions?.blue?.turns ?? null)}
+                      </span>
+                      <span class="separator">|</span>
+                      <span class="turn-value red">
+                        {formatTurnValue(beat.motions?.red?.turns ?? null)}
+                      </span>
+                    </div>
                   </div>
-                </div>
-              {/each}
-            </div>
-          </div>
-
-          <div class="save-form">
-            <input
-              type="text"
-              placeholder="Pattern name (optional - auto-generated if empty)"
-              bind:value={patternName}
-              maxlength={50}
-            />
-            <button
-              class="save-btn"
-              onclick={handleSavePattern}
-              disabled={savingPattern}
-            >
-              {#if savingPattern}
-                <i class="fas fa-spinner fa-spin" aria-hidden="true"></i>
-              {:else}
-                <i class="fas fa-save" aria-hidden="true"></i>
-              {/if}
-              Save Pattern
-            </button>
-          </div>
-        {/if}
-      </div>
-    {:else}
-      <!-- Apply mode -->
-      <div class="apply-section">
-        {#if turnPatternState.isLoading}
-          <div class="loading">
-            <i class="fas fa-spinner fa-spin" aria-hidden="true"></i>
-            Loading patterns...
-          </div>
-        {:else}
-          <!-- Uniform Pattern Section -->
-          {#if sequence && sequence.beats.length > 0}
-            <div class="uniform-section">
-              <h3>Uniform</h3>
-              <p class="section-desc">Apply same turn value to all beats</p>
-              <div class="uniform-buttons">
-                {#each [0, 1, 2, 3] as turnValue}
-                  {@const uniformTemplate = createUniformPattern(
-                    sequence.beats.length,
-                    turnValue
-                  )}
-                  {@const uniformPattern = authState.user
-                    ? templateToPattern(uniformTemplate, authState.user.uid)
-                    : null}
-                  {@const complexityInfo = getComplexityInfo(
-                    uniformTemplate.complexity
-                  )}
-                  {#if uniformPattern}
-                    <button
-                      class="uniform-btn"
-                      style="--glass-color: {complexityInfo.color}"
-                      onclick={() => handleApplyPattern(uniformPattern)}
-                    >
-                      {turnValue}
-                    </button>
-                  {/if}
                 {/each}
               </div>
             </div>
-          {/if}
 
-          <!-- Templates section -->
-          {@const allTemplates = sequence
-            ? getTemplatesForBeatCount(sequence.beats.length)
-            : []}
-          {@const filteredTemplates =
-            complexityFilter === "all"
-              ? allTemplates
-              : allTemplates.filter((t) => t.complexity === complexityFilter)}
-          {#if allTemplates.length > 0}
-            <div class="templates-section">
-              <div class="templates-header">
-                <h3>Patterns</h3>
-                <!-- Complexity filter - mobile shows as segmented control without "All" -->
-                <div class="complexity-filter" class:mobile={isMobile}>
-                  {#if !isMobile}
-                    <button
-                      class="filter-btn"
-                      class:active={complexityFilter === "all"}
-                      onclick={() => (complexityFilter = "all")}>All</button
-                    >
-                  {/if}
-                  {#each ["simple", "medium", "complex"] as level}
-                    {@const info = getComplexityInfo(
-                      level as PatternComplexity
+            <div class="save-form">
+              <input
+                type="text"
+                placeholder="Pattern name (optional - auto-generated if empty)"
+                bind:value={patternName}
+                maxlength={50}
+              />
+              <button
+                class="save-btn"
+                onclick={handleSavePattern}
+                disabled={savingPattern}
+              >
+                {#if savingPattern}
+                  <i class="fas fa-spinner fa-spin" aria-hidden="true"></i>
+                {:else}
+                  <i class="fas fa-save" aria-hidden="true"></i>
+                {/if}
+                Save Pattern
+              </button>
+            </div>
+          {/if}
+        </div>
+      {:else}
+        <!-- Apply mode -->
+        <div class="apply-section">
+          {#if turnPatternState.isLoading}
+            <div class="loading">
+              <i class="fas fa-spinner fa-spin" aria-hidden="true"></i>
+              Loading patterns...
+            </div>
+          {:else}
+            <!-- Uniform Pattern Section -->
+            {#if sequence && sequence.beats.length > 0}
+              <div class="uniform-section">
+                <h3>Uniform</h3>
+                <p class="section-desc">Apply same turn value to all beats</p>
+                <div class="uniform-buttons">
+                  {#each [0, 1, 2, 3] as turnValue}
+                    {@const uniformTemplate = createUniformPattern(
+                      sequence.beats.length,
+                      turnValue
                     )}
-                    <button
-                      class="filter-btn"
-                      class:active={complexityFilter === level}
-                      onclick={() =>
-                        (complexityFilter = level as PatternComplexity)}
-                      style="--filter-color: {info.color}"
-                    >
-                      <span
-                        class="complexity-dot"
-                        style="background: {info.color}"
-                      ></span>
-                      {info.label}
-                    </button>
+                    {@const uniformPattern = authState.user
+                      ? templateToPattern(uniformTemplate, authState.user.uid)
+                      : null}
+                    {@const complexityInfo = getComplexityInfo(
+                      uniformTemplate.complexity
+                    )}
+                    {#if uniformPattern}
+                      <button
+                        class="uniform-btn"
+                        style="--glass-color: {complexityInfo.color}"
+                        onclick={() => handleApplyPattern(uniformPattern)}
+                      >
+                        {turnValue}
+                      </button>
+                    {/if}
                   {/each}
                 </div>
               </div>
+            {/if}
 
-              <!-- Desktop grouped display when "All" selected -->
-              {#if !isMobile && complexityFilter === "all"}
-                {#each ["simple", "medium", "complex"] as complexity}
-                  {@const groupTemplates = allTemplates.filter(t => t.complexity === complexity)}
-                  {@const groupInfo = getComplexityInfo(complexity as PatternComplexity)}
-                  {#if groupTemplates.length > 0}
-                    <div class="complexity-group">
-                      <h4 class="group-header" style="--group-color: {groupInfo.color}">
-                        <span class="group-dot" style="background: {groupInfo.color}"></span>
-                        {groupInfo.label}
-                      </h4>
-                      <div class="patterns-list">
-                        {#each groupTemplates as template}
-                          {@const pattern = authState.user
-                            ? templateToPattern(template, authState.user.uid)
-                            : null}
-                          {@const complexityInfo = getComplexityInfo(template.complexity)}
-                          {#if pattern}
-                            <div
-                              class="pattern-item template complexity-{template.complexity}"
-                              style="--glass-color: {complexityInfo.color}"
-                              onclick={() => handleApplyPattern(pattern)}
-                              role="button"
-                              tabindex="0"
-                              onkeydown={(e) => {
-                                if (e.key === "Enter" || e.key === " ") {
-                                  e.preventDefault();
-                                  handleApplyPattern(pattern);
-                                }
-                              }}
-                            >
-                              <div class="pattern-info">
-                                <span class="pattern-name">{pattern.name}</span>
-                                <span class="pattern-desc">{template.description}</span>
-                              </div>
-                            </div>
-                          {/if}
-                        {/each}
-                      </div>
-                    </div>
-                  {/if}
-                {/each}
-              {:else}
-                <!-- Filtered display (mobile always uses this, desktop when filter selected) -->
-                <div class="patterns-list" class:mobile-compact={isMobile}>
-                  {#each filteredTemplates as template}
-                    {@const pattern = authState.user
-                      ? templateToPattern(template, authState.user.uid)
-                      : null}
-                    {@const complexityInfo = getComplexityInfo(
-                      template.complexity
-                    )}
-                    {#if pattern}
-                      <div
-                        class="pattern-item template complexity-{template.complexity}"
-                        style="--glass-color: {complexityInfo.color}"
-                        onclick={() => handleApplyPattern(pattern)}
-                        role="button"
-                        tabindex="0"
-                        onkeydown={(e) => {
-                          if (e.key === "Enter" || e.key === " ") {
-                            e.preventDefault();
-                            handleApplyPattern(pattern);
-                          }
-                        }}
+            <!-- Templates section -->
+            {@const allTemplates = sequence
+              ? getTemplatesForBeatCount(sequence.beats.length)
+              : []}
+            {@const filteredTemplates =
+              complexityFilter === "all"
+                ? allTemplates
+                : allTemplates.filter((t) => t.complexity === complexityFilter)}
+            {#if allTemplates.length > 0}
+              <div class="templates-section">
+                <div class="templates-header">
+                  <h3>Patterns</h3>
+                  <!-- Complexity filter - mobile shows as segmented control without "All" -->
+                  <div class="complexity-filter" class:mobile={isMobile}>
+                    {#if !isMobile}
+                      <button
+                        class="filter-btn"
+                        class:active={complexityFilter === "all"}
+                        onclick={() => (complexityFilter = "all")}>All</button
                       >
-                        <div class="pattern-info">
-                          <span class="pattern-name">{pattern.name}</span>
-                          <span class="pattern-desc">{template.description}</span>
+                    {/if}
+                    {#each ["simple", "medium", "complex"] as level}
+                      {@const info = getComplexityInfo(
+                        level as PatternComplexity
+                      )}
+                      <button
+                        class="filter-btn"
+                        class:active={complexityFilter === level}
+                        onclick={() =>
+                          (complexityFilter = level as PatternComplexity)}
+                        style="--filter-color: {info.color}"
+                      >
+                        <span
+                          class="complexity-dot"
+                          style="background: {info.color}"
+                        ></span>
+                        {info.label}
+                      </button>
+                    {/each}
+                  </div>
+                </div>
+
+                <!-- Desktop grouped display when "All" selected -->
+                {#if !isMobile && complexityFilter === "all"}
+                  {#each ["simple", "medium", "complex"] as complexity}
+                    {@const groupTemplates = allTemplates.filter(
+                      (t) => t.complexity === complexity
+                    )}
+                    {@const groupInfo = getComplexityInfo(
+                      complexity as PatternComplexity
+                    )}
+                    {#if groupTemplates.length > 0}
+                      <div class="complexity-group">
+                        <h4
+                          class="group-header"
+                          style="--group-color: {groupInfo.color}"
+                        >
+                          <span
+                            class="group-dot"
+                            style="background: {groupInfo.color}"
+                          ></span>
+                          {groupInfo.label}
+                        </h4>
+                        <div class="patterns-list">
+                          {#each groupTemplates as template}
+                            {@const pattern = authState.user
+                              ? templateToPattern(template, authState.user.uid)
+                              : null}
+                            {@const complexityInfo = getComplexityInfo(
+                              template.complexity
+                            )}
+                            {#if pattern}
+                              <div
+                                class="pattern-item template complexity-{template.complexity}"
+                                style="--glass-color: {complexityInfo.color}"
+                                onclick={() => handleApplyPattern(pattern)}
+                                role="button"
+                                tabindex="0"
+                                onkeydown={(e) => {
+                                  if (e.key === "Enter" || e.key === " ") {
+                                    e.preventDefault();
+                                    handleApplyPattern(pattern);
+                                  }
+                                }}
+                              >
+                                <div class="pattern-info">
+                                  <span class="pattern-name"
+                                    >{pattern.name}</span
+                                  >
+                                  <span class="pattern-desc"
+                                    >{template.description}</span
+                                  >
+                                </div>
+                              </div>
+                            {/if}
+                          {/each}
                         </div>
                       </div>
                     {/if}
                   {/each}
+                {:else}
+                  <!-- Filtered display (mobile always uses this, desktop when filter selected) -->
+                  <div class="patterns-list" class:mobile-compact={isMobile}>
+                    {#each filteredTemplates as template}
+                      {@const pattern = authState.user
+                        ? templateToPattern(template, authState.user.uid)
+                        : null}
+                      {@const complexityInfo = getComplexityInfo(
+                        template.complexity
+                      )}
+                      {#if pattern}
+                        <div
+                          class="pattern-item template complexity-{template.complexity}"
+                          style="--glass-color: {complexityInfo.color}"
+                          onclick={() => handleApplyPattern(pattern)}
+                          role="button"
+                          tabindex="0"
+                          onkeydown={(e) => {
+                            if (e.key === "Enter" || e.key === " ") {
+                              e.preventDefault();
+                              handleApplyPattern(pattern);
+                            }
+                          }}
+                        >
+                          <div class="pattern-info">
+                            <span class="pattern-name">{pattern.name}</span>
+                            <span class="pattern-desc"
+                              >{template.description}</span
+                            >
+                          </div>
+                        </div>
+                      {/if}
+                    {/each}
 
-                  {#if filteredTemplates.length === 0}
-                    <p class="empty-filter-message">
-                      No {complexityFilter} patterns available
-                    </p>
-                  {/if}
-                </div>
-              {/if}
-            </div>
-          {/if}
-
-          <!-- User's saved patterns -->
-          {#if turnPatternState.patterns.length === 0}
-            <p class="empty-message">
-              No saved patterns yet. Save a pattern from the current sequence or
-              try a template above.
-            </p>
-          {:else}
-            <div class="saved-patterns-section">
-              <h3>Your Patterns</h3>
-              <div class="patterns-list">
-                {#each turnPatternState.patterns as pattern}
-                  {@const isDisabled =
-                    applyingPattern ||
-                    !sequence ||
-                    sequence.beats.length !== pattern.beatCount}
-                  <div
-                    class="pattern-item"
-                    class:disabled={isDisabled}
-                    onclick={() => !isDisabled && handleApplyPattern(pattern)}
-                    role="button"
-                    tabindex={isDisabled ? -1 : 0}
-                    onkeydown={(e) => {
-                      if (!isDisabled && (e.key === "Enter" || e.key === " ")) {
-                        e.preventDefault();
-                        handleApplyPattern(pattern);
-                      }
-                    }}
-                    title={sequence &&
-                    sequence.beats.length !== pattern.beatCount
-                      ? `Requires ${pattern.beatCount} beats`
-                      : "Apply pattern"}
-                  >
-                    <div class="pattern-info">
-                      <span class="pattern-name">{pattern.name}</span>
-                      <span class="pattern-beats"
-                        >{pattern.beatCount} beats</span
-                      >
-                    </div>
-                    <div class="pattern-actions">
-                      <button
-                        class="delete-btn"
-                        onclick={(e) => {
-                          e.stopPropagation();
-                          handleDeletePattern(pattern);
-                        }}
-                        title="Delete pattern"
-                        aria-label="Delete pattern"
-                      >
-                        <i class="fas fa-trash" aria-hidden="true"></i>
-                      </button>
-                    </div>
+                    {#if filteredTemplates.length === 0}
+                      <p class="empty-filter-message">
+                        No {complexityFilter} patterns available
+                      </p>
+                    {/if}
                   </div>
-                {/each}
+                {/if}
               </div>
-            </div>
+            {/if}
+
+            <!-- User's saved patterns -->
+            {#if turnPatternState.patterns.length === 0}
+              <p class="empty-message">
+                No saved patterns yet. Save a pattern from the current sequence
+                or try a template above.
+              </p>
+            {:else}
+              <div class="saved-patterns-section">
+                <h3>Your Patterns</h3>
+                <div class="patterns-list">
+                  {#each turnPatternState.patterns as pattern}
+                    {@const isDisabled =
+                      applyingPattern ||
+                      !sequence ||
+                      sequence.beats.length !== pattern.beatCount}
+                    <div
+                      class="pattern-item"
+                      class:disabled={isDisabled}
+                      onclick={() => !isDisabled && handleApplyPattern(pattern)}
+                      role="button"
+                      tabindex={isDisabled ? -1 : 0}
+                      onkeydown={(e) => {
+                        if (
+                          !isDisabled &&
+                          (e.key === "Enter" || e.key === " ")
+                        ) {
+                          e.preventDefault();
+                          handleApplyPattern(pattern);
+                        }
+                      }}
+                      title={sequence &&
+                      sequence.beats.length !== pattern.beatCount
+                        ? `Requires ${pattern.beatCount} beats`
+                        : "Apply pattern"}
+                    >
+                      <div class="pattern-info">
+                        <span class="pattern-name">{pattern.name}</span>
+                        <span class="pattern-beats"
+                          >{pattern.beatCount} beats</span
+                        >
+                      </div>
+                      <div class="pattern-actions">
+                        <button
+                          class="delete-btn"
+                          onclick={(e) => {
+                            e.stopPropagation();
+                            handleDeletePattern(pattern);
+                          }}
+                          title="Delete pattern"
+                          aria-label="Delete pattern"
+                        >
+                          <i class="fas fa-trash" aria-hidden="true"></i>
+                        </button>
+                      </div>
+                    </div>
+                  {/each}
+                </div>
+              </div>
+            {/if}
           {/if}
-        {/if}
-      </div>
-    {/if}
-  </div>
-</Drawer>
+        </div>
+      {/if}
+    </div>
+  </Drawer>
 </div>
 
 <style>

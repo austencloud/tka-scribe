@@ -154,13 +154,21 @@ QuizCompleteSection - Results display and actions
   }
 
   .action-btn.primary {
-    background: linear-gradient(135deg, rgba(74, 158, 255, 0.3), rgba(168, 85, 247, 0.3));
+    background: linear-gradient(
+      135deg,
+      rgba(74, 158, 255, 0.3),
+      rgba(168, 85, 247, 0.3)
+    );
     border: 1px solid rgba(74, 158, 255, 0.4);
     color: white;
   }
 
   .action-btn.primary:hover {
-    background: linear-gradient(135deg, rgba(74, 158, 255, 0.4), rgba(168, 85, 247, 0.4));
+    background: linear-gradient(
+      135deg,
+      rgba(74, 158, 255, 0.4),
+      rgba(168, 85, 247, 0.4)
+    );
     border-color: rgba(74, 158, 255, 0.6);
     transform: translateY(-2px);
   }

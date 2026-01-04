@@ -37,9 +37,7 @@
   let hapticService: IHapticFeedback | null = null;
 
   onMount(() => {
-    hapticService = tryResolve<IHapticFeedback>(
-      TYPES.IHapticFeedback
-    );
+    hapticService = tryResolve<IHapticFeedback>(TYPES.IHapticFeedback);
   });
 
   // Get icon for current practice mode
@@ -130,7 +128,10 @@
     onclick={handleSequence}
     aria-label={hasSequence ? "Change sequence" : "Select sequence"}
   >
-    <i class="fas {hasSequence ? 'fa-exchange-alt' : 'fa-folder-open'}" aria-hidden="true"></i>
+    <i
+      class="fas {hasSequence ? 'fa-exchange-alt' : 'fa-folder-open'}"
+      aria-hidden="true"
+    ></i>
     <span class="btn-label">Seq</span>
   </button>
 
@@ -169,10 +170,7 @@
     background: var(--theme-panel-bg);
     border: 1px solid var(--theme-stroke);
     border-radius: var(--radius-2026-md, 14px);
-    box-shadow: var(
-      --shadow-2026-sm,
-      0 1px 3px var(--theme-shadow)
-    );
+    box-shadow: var(--shadow-2026-sm, 0 1px 3px var(--theme-shadow));
     color: var(--theme-text-dim, var(--theme-text-dim));
     font-size: 1rem;
     cursor: pointer;
@@ -221,7 +219,12 @@
   .primary-btn {
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--semantic-success, var(--semantic-success)) 15%, transparent) 0%,
+      color-mix(
+          in srgb,
+          var(--semantic-success, var(--semantic-success)) 15%,
+          transparent
+        )
+        0%,
       color-mix(in srgb, var(--semantic-success) 15%, transparent) 100%
     );
     border-color: color-mix(
@@ -235,7 +238,12 @@
   .primary-btn:hover:not(:disabled) {
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--semantic-success, var(--semantic-success)) 25%, transparent) 0%,
+      color-mix(
+          in srgb,
+          var(--semantic-success, var(--semantic-success)) 25%,
+          transparent
+        )
+        0%,
       color-mix(in srgb, var(--semantic-success) 25%, transparent) 100%
     );
     border-color: color-mix(
@@ -256,22 +264,46 @@
   .primary-btn.playing {
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 15%, transparent) 0%,
-      color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 15%, transparent) 100%
+      color-mix(
+          in srgb,
+          var(--semantic-error, var(--semantic-error)) 15%,
+          transparent
+        )
+        0%,
+      color-mix(
+          in srgb,
+          var(--semantic-error, var(--semantic-error)) 15%,
+          transparent
+        )
+        100%
     );
     border-color: color-mix(
       in srgb,
       var(--semantic-error, var(--semantic-error)) 30%,
       transparent
     );
-    color: color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 95%, white);
+    color: color-mix(
+      in srgb,
+      var(--semantic-error, var(--semantic-error)) 95%,
+      white
+    );
   }
 
   .primary-btn.playing:hover {
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 25%, transparent) 0%,
-      color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 25%, transparent) 100%
+      color-mix(
+          in srgb,
+          var(--semantic-error, var(--semantic-error)) 25%,
+          transparent
+        )
+        0%,
+      color-mix(
+          in srgb,
+          var(--semantic-error, var(--semantic-error)) 25%,
+          transparent
+        )
+        100%
     );
     border-color: color-mix(
       in srgb,
@@ -285,7 +317,12 @@
   .mode-btn {
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--theme-accent, var(--theme-accent-strong)) 15%, transparent) 0%,
+      color-mix(
+          in srgb,
+          var(--theme-accent, var(--theme-accent-strong)) 15%,
+          transparent
+        )
+        0%,
       color-mix(in srgb, var(--theme-accent) 15%, transparent) 100%
     );
     border-color: color-mix(
@@ -299,7 +336,12 @@
   .mode-btn:hover:not(:disabled) {
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--theme-accent, var(--theme-accent-strong)) 25%, transparent) 0%,
+      color-mix(
+          in srgb,
+          var(--theme-accent, var(--theme-accent-strong)) 25%,
+          transparent
+        )
+        0%,
       color-mix(in srgb, var(--theme-accent) 25%, transparent) 100%
     );
     border-color: color-mix(
@@ -314,7 +356,12 @@
   .sequence-btn {
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--semantic-info, var(--semantic-info)) 15%, transparent) 0%,
+      color-mix(
+          in srgb,
+          var(--semantic-info, var(--semantic-info)) 15%,
+          transparent
+        )
+        0%,
       color-mix(in srgb, var(--semantic-info) 15%, transparent) 100%
     );
     border-color: color-mix(
@@ -328,7 +375,12 @@
   .sequence-btn:hover:not(:disabled) {
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--semantic-info, var(--semantic-info)) 25%, transparent) 0%,
+      color-mix(
+          in srgb,
+          var(--semantic-info, var(--semantic-info)) 25%,
+          transparent
+        )
+        0%,
       color-mix(in srgb, var(--semantic-info) 25%, transparent) 100%
     );
     border-color: color-mix(
@@ -343,7 +395,12 @@
   .sequence-btn.has-sequence {
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--semantic-success, var(--semantic-success)) 15%, transparent) 0%,
+      color-mix(
+          in srgb,
+          var(--semantic-success, var(--semantic-success)) 15%,
+          transparent
+        )
+        0%,
       color-mix(in srgb, var(--semantic-success) 15%, transparent) 100%
     );
     border-color: color-mix(
@@ -357,7 +414,12 @@
   .sequence-btn.has-sequence:hover {
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--semantic-success, var(--semantic-success)) 25%, transparent) 0%,
+      color-mix(
+          in srgb,
+          var(--semantic-success, var(--semantic-success)) 25%,
+          transparent
+        )
+        0%,
       color-mix(in srgb, var(--semantic-success) 25%, transparent) 100%
     );
     border-color: color-mix(
@@ -372,8 +434,18 @@
   .settings-btn {
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--semantic-warning, var(--semantic-warning)) 15%, transparent) 0%,
-      color-mix(in srgb, var(--semantic-warning, var(--semantic-warning)) 15%, transparent) 100%
+      color-mix(
+          in srgb,
+          var(--semantic-warning, var(--semantic-warning)) 15%,
+          transparent
+        )
+        0%,
+      color-mix(
+          in srgb,
+          var(--semantic-warning, var(--semantic-warning)) 15%,
+          transparent
+        )
+        100%
     );
     border-color: color-mix(
       in srgb,
@@ -386,8 +458,18 @@
   .settings-btn:hover:not(:disabled) {
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--semantic-warning, var(--semantic-warning)) 25%, transparent) 0%,
-      color-mix(in srgb, var(--semantic-warning, var(--semantic-warning)) 25%, transparent) 100%
+      color-mix(
+          in srgb,
+          var(--semantic-warning, var(--semantic-warning)) 25%,
+          transparent
+        )
+        0%,
+      color-mix(
+          in srgb,
+          var(--semantic-warning, var(--semantic-warning)) 25%,
+          transparent
+        )
+        100%
     );
     border-color: color-mix(
       in srgb,

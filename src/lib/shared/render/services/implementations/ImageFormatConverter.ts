@@ -26,9 +26,7 @@ interface OptimizationSettings {
 }
 
 @injectable()
-export class ImageFormatConverter
-  implements IImageFormatConverter
-{
+export class ImageFormatConverter implements IImageFormatConverter {
   constructor(
     @inject(TYPES.IFileDownloader)
     private fileDownloadService: IFileDownloader

@@ -81,7 +81,10 @@ export const SequenceDataSchema = z.object({
   isCircular: z.boolean().default(false),
   difficultyLevel: z.string().max(20).optional(),
   tags: z.array(z.string().max(30)).max(10, "Too many tags").default([]),
-  metadata: z.record(z.string(), z.unknown()).optional().default({} as Record<string, unknown>),
+  metadata: z
+    .record(z.string(), z.unknown())
+    .optional()
+    .default({} as Record<string, unknown>),
 });
 
 // ============================================================================

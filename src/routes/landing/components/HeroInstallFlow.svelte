@@ -41,7 +41,8 @@
   let showInAppBrowserModal = $state(false);
 
   // Play Store URL
-  const PLAY_STORE_URL = "https://play.google.com/store/apps/details?id=com.tkascribe.app";
+  const PLAY_STORE_URL =
+    "https://play.google.com/store/apps/details?id=com.tkascribe.app";
 
   onMount(async () => {
     const platformService = resolve<IPlatformDetector>(TYPES.IPlatformDetector);
@@ -53,9 +54,17 @@
     console.log("[Install Flow] Platform detection:", info);
 
     // Check if already installed (standalone mode)
-    const isStandaloneMedia = window.matchMedia("(display-mode: standalone)").matches;
-    const isFullscreenMedia = window.matchMedia("(display-mode: fullscreen)").matches;
-    const isInstalled = info.isStandalone || isStandaloneMedia || isFullscreenMedia || (navigator as any).standalone;
+    const isStandaloneMedia = window.matchMedia(
+      "(display-mode: standalone)"
+    ).matches;
+    const isFullscreenMedia = window.matchMedia(
+      "(display-mode: fullscreen)"
+    ).matches;
+    const isInstalled =
+      info.isStandalone ||
+      isStandaloneMedia ||
+      isFullscreenMedia ||
+      (navigator as any).standalone;
 
     // Determine install state
     if (isInstalled) {
@@ -93,14 +102,15 @@
     none: "",
   };
 
-  const inAppBrowserName = $derived(inAppBrowserNames[inAppBrowser] || "this app");
+  const inAppBrowserName = $derived(
+    inAppBrowserNames[inAppBrowser] || "this app"
+  );
   const targetBrowser = $derived(platform === "ios" ? "Safari" : "Chrome");
 </script>
 
 <div class="install-flow">
   {#if installState === "loading"}
     <div class="cta-placeholder"></div>
-
   {:else if installState === "installed"}
     <!-- Already installed -->
     <div class="installed-container">
@@ -111,11 +121,8 @@
       <p class="installed-instruction">
         Open <strong>TKA Scribe</strong> from your home screen
       </p>
-      <a href="/app" class="link-secondary">
-        Or continue in browser →
-      </a>
+      <a href="/app" class="link-secondary"> Or continue in browser → </a>
     </div>
-
   {:else if installState === "in-app-browser"}
     <!-- In-app browser -->
     <button
@@ -129,14 +136,17 @@
       <i class="fas fa-info-circle" aria-hidden="true"></i>
       {inAppBrowserName} browser doesn't support installation
     </p>
-
   {:else if installState === "android"}
     <!-- Android - Play Store -->
-    <a href={PLAY_STORE_URL} class="btn btn-primary" target="_blank" rel="noopener">
+    <a
+      href={PLAY_STORE_URL}
+      class="btn btn-primary"
+      target="_blank"
+      rel="noopener"
+    >
       <i class="fab fa-google-play" aria-hidden="true"></i>
       <span>Get TKA Scribe</span>
     </a>
-
   {:else if installState === "ios-non-safari"}
     <!-- iOS but not Safari -->
     <button
@@ -150,17 +160,13 @@
       <i class="fas fa-info-circle" aria-hidden="true"></i>
       iOS requires Safari for installation
     </p>
-
   {:else if installState === "ios-safari"}
     <!-- iOS Safari - expandable instructions -->
     <IOSInstallInstructions
       bind:isExpanded={showIOSInstructions}
       onToggle={() => (showIOSInstructions = !showIOSInstructions)}
     />
-    <a href="/app" class="link-secondary">
-      Or continue in browser →
-    </a>
-
+    <a href="/app" class="link-secondary"> Or continue in browser → </a>
   {:else}
     <!-- Desktop - just open in browser -->
     <a href="/app" class="btn btn-primary">

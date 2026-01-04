@@ -50,13 +50,22 @@
     height: 64px;
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--semantic-success, var(--semantic-success)) 80%, white) 0%,
+      color-mix(
+          in srgb,
+          var(--semantic-success, var(--semantic-success)) 80%,
+          white
+        )
+        0%,
       var(--semantic-success, var(--semantic-success)) 100%
     );
     border-radius: 50%;
     margin-bottom: 16px;
     box-shadow: 0 4px 16px
-      color-mix(in srgb, var(--semantic-success, var(--semantic-success)) 25%, transparent);
+      color-mix(
+        in srgb,
+        var(--semantic-success, var(--semantic-success)) 25%,
+        transparent
+      );
   }
 
   .success-icon i {
@@ -93,9 +102,17 @@
       transparent
     );
     border: 1px solid
-      color-mix(in srgb, var(--semantic-success, var(--semantic-success)) 30%, transparent);
+      color-mix(
+        in srgb,
+        var(--semantic-success, var(--semantic-success)) 30%,
+        transparent
+      );
     border-radius: 10px;
-    color: color-mix(in srgb, var(--semantic-success, var(--semantic-success)) 80%, white);
+    color: color-mix(
+      in srgb,
+      var(--semantic-success, var(--semantic-success)) 80%,
+      white
+    );
     font-size: 0.9375rem;
     font-weight: 600;
     cursor: pointer;

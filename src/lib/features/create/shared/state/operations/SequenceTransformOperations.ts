@@ -59,10 +59,13 @@ export function createSequenceTransformOperations(
       try {
         if (startPosition === null) {
           // Clear start position
-          const updatedSequence = updateSequenceData(coreState.currentSequence, {
-            startPosition: undefined,
-            startingPositionBeat: undefined,
-          });
+          const updatedSequence = updateSequenceData(
+            coreState.currentSequence,
+            {
+              startPosition: undefined,
+              startingPositionBeat: undefined,
+            }
+          );
           coreState.setCurrentSequence(updatedSequence);
           selectionState.setStartPosition(null);
           console.log(
@@ -70,10 +73,13 @@ export function createSequenceTransformOperations(
           );
         } else {
           // Update sequence with start position - set both fields for compatibility
-          const updatedSequence = updateSequenceData(coreState.currentSequence, {
-            startPosition: startPosition,
-            startingPositionBeat: startPosition, // CRITICAL: Set both fields for compatibility
-          });
+          const updatedSequence = updateSequenceData(
+            coreState.currentSequence,
+            {
+              startPosition: startPosition,
+              startingPositionBeat: startPosition, // CRITICAL: Set both fields for compatibility
+            }
+          );
           coreState.setCurrentSequence(updatedSequence);
           selectionState.setStartPosition(startPosition);
           console.log(
@@ -165,8 +171,7 @@ export function createSequenceTransformOperations(
     },
 
     duplicateSequence(newName?: string): SequenceData | null {
-      if (!coreState.currentSequence || !SequenceTransformer)
-        return null;
+      if (!coreState.currentSequence || !SequenceTransformer) return null;
 
       try {
         const duplicated = SequenceTransformer.duplicateSequence(
@@ -185,10 +190,9 @@ export function createSequenceTransformOperations(
       if (!coreState.currentSequence || !SequenceTransformer) return;
 
       try {
-        const rewindSequence =
-          await SequenceTransformer.rewindSequence(
-            coreState.currentSequence
-          );
+        const rewindSequence = await SequenceTransformer.rewindSequence(
+          coreState.currentSequence
+        );
         coreState.setCurrentSequence(rewindSequence);
 
         // Update selection state with new start position so UI re-renders
@@ -262,10 +266,9 @@ export function createSequenceTransformOperations(
 
       try {
         console.log("🔄 Inverting sequence rotation directions...");
-        const invertedSequence =
-          await SequenceTransformer.invertSequence(
-            coreState.currentSequence
-          );
+        const invertedSequence = await SequenceTransformer.invertSequence(
+          coreState.currentSequence
+        );
         console.log("✅ Got inverted sequence:", invertedSequence);
         coreState.setCurrentSequence(invertedSequence);
         console.log("✅ Updated core state with inverted sequence");

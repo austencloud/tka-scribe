@@ -36,7 +36,11 @@
     justify-content: center;
 
     /* Styling */
-    background: linear-gradient(135deg, var(--semantic-error) 0%, var(--semantic-error) 100%);
+    background: linear-gradient(
+      135deg,
+      var(--semantic-error) 0%,
+      var(--semantic-error) 100%
+    );
     color: white;
     font-size: var(--font-size-compact);
     font-weight: 700;

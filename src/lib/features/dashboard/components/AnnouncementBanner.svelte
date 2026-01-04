@@ -32,22 +32,30 @@
     }
 
     try {
-      announcementService = tryResolve<IAnnouncementManager>(TYPES.IAnnouncementManager);
+      announcementService = tryResolve<IAnnouncementManager>(
+        TYPES.IAnnouncementManager
+      );
       if (announcementService) {
         // Get announcements user hasn't dismissed
-        const active = await announcementService.getActiveAnnouncementsForUser(authState.user.uid);
+        const active = await announcementService.getActiveAnnouncementsForUser(
+          authState.user.uid
+        );
 
         // Filter to non-dismissed ones (the service should handle this, but double-check)
         const undismissed: Announcement[] = [];
         for (const announcement of active) {
-          const dismissed = await announcementService.hasUserDismissed(authState.user.uid, announcement.id);
+          const dismissed = await announcementService.hasUserDismissed(
+            authState.user.uid,
+            announcement.id
+          );
           if (!dismissed) {
             undismissed.push(announcement);
           }
         }
 
-        announcements = undismissed.sort((a, b) =>
-          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        announcements = undismissed.sort(
+          (a, b) =>
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
         );
       }
     } catch (error) {
@@ -60,8 +68,13 @@
     if (!currentAnnouncement || !announcementService || !authState.user) return;
 
     try {
-      await announcementService.dismissAnnouncement(authState.user.uid, currentAnnouncement.id);
-      announcements = announcements.filter(a => a.id !== currentAnnouncement.id);
+      await announcementService.dismissAnnouncement(
+        authState.user.uid,
+        currentAnnouncement.id
+      );
+      announcements = announcements.filter(
+        (a) => a.id !== currentAnnouncement.id
+      );
       if (currentIndex >= announcements.length) {
         currentIndex = Math.max(0, announcements.length - 1);
       }
@@ -95,17 +108,23 @@
 
   function getSeverityIcon(severity: Announcement["severity"]): string {
     switch (severity) {
-      case "critical": return "fa-exclamation-triangle";
-      case "warning": return "fa-exclamation-circle";
-      default: return "fa-bullhorn";
+      case "critical":
+        return "fa-exclamation-triangle";
+      case "warning":
+        return "fa-exclamation-circle";
+      default:
+        return "fa-bullhorn";
     }
   }
 
   function getSeverityColor(severity: Announcement["severity"]): string {
     switch (severity) {
-      case "critical": return "var(--semantic-error, var(--semantic-error))";
-      case "warning": return "var(--semantic-warning, var(--semantic-warning))";
-      default: return "var(--theme-accent)";
+      case "critical":
+        return "var(--semantic-error, var(--semantic-error))";
+      case "warning":
+        return "var(--semantic-warning, var(--semantic-warning))";
+      default:
+        return "var(--theme-accent)";
     }
   }
 </script>
@@ -119,7 +138,10 @@
     transition:fly={{ y: -20, duration: 300, easing: cubicOut }}
   >
     <div class="banner-icon">
-      <i class="fas {getSeverityIcon(currentAnnouncement.severity)}" aria-hidden="true"></i>
+      <i
+        class="fas {getSeverityIcon(currentAnnouncement.severity)}"
+        aria-hidden="true"
+      ></i>
     </div>
 
     <div class="banner-content">
@@ -138,7 +160,11 @@
         View All
       </button>
 
-      <button class="dismiss-btn" onclick={dismissCurrent} aria-label="Dismiss announcement">
+      <button
+        class="dismiss-btn"
+        onclick={dismissCurrent}
+        aria-label="Dismiss announcement"
+      >
         <i class="fas fa-times" aria-hidden="true"></i>
       </button>
     </div>
@@ -153,7 +179,9 @@
         >
           <i class="fas fa-chevron-left" aria-hidden="true"></i>
         </button>
-        <span class="page-indicator">{currentIndex + 1} / {announcements.length}</span>
+        <span class="page-indicator"
+          >{currentIndex + 1} / {announcements.length}</span
+        >
         <button
           class="page-btn"
           onclick={nextAnnouncement}
@@ -174,7 +202,8 @@
     gap: 16px;
     padding: 16px 20px;
     background: var(--theme-panel-bg);
-    border: 1px solid var(--severity-color, var(--theme-accent, var(--theme-accent)));
+    border: 1px solid
+      var(--severity-color, var(--theme-accent, var(--theme-accent)));
     border-left-width: 4px;
     border-radius: 16px;
     backdrop-filter: blur(16px);
@@ -183,11 +212,19 @@
   }
 
   .announcement-banner.critical {
-    background: color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 10%, var(--theme-panel-bg));
+    background: color-mix(
+      in srgb,
+      var(--semantic-error, var(--semantic-error)) 10%,
+      var(--theme-panel-bg)
+    );
   }
 
   .announcement-banner.warning {
-    background: color-mix(in srgb, var(--semantic-warning, var(--semantic-warning)) 10%, var(--theme-panel-bg));
+    background: color-mix(
+      in srgb,
+      var(--semantic-warning, var(--semantic-warning)) 10%,
+      var(--theme-panel-bg)
+    );
   }
 
   .banner-icon {
@@ -196,7 +233,11 @@
     justify-content: center;
     width: 40px;
     height: 40px;
-    background: color-mix(in srgb, var(--severity-color) 20%, var(--theme-card-bg));
+    background: color-mix(
+      in srgb,
+      var(--severity-color) 20%,
+      var(--theme-card-bg)
+    );
     border-radius: 10px;
     color: var(--severity-color);
     font-size: var(--font-size-base);

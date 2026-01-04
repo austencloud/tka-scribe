@@ -145,11 +145,7 @@
   }
 
   .tab-content::-webkit-scrollbar-thumb {
-    background: color-mix(
-      in srgb,
-      var(--theme-accent) 25%,
-      transparent
-    );
+    background: color-mix(in srgb, var(--theme-accent) 25%, transparent);
     border-radius: 3px;
   }
 
@@ -232,7 +228,11 @@
 
   .empty-state i {
     font-size: var(--font-size-3xl);
-    color: color-mix(in srgb, var(--theme-accent, var(--theme-accent-strong)) 40%, transparent);
+    color: color-mix(
+      in srgb,
+      var(--theme-accent, var(--theme-accent-strong)) 40%,
+      transparent
+    );
     margin-bottom: 16px;
   }
 

@@ -9,7 +9,9 @@ import type { SequenceData } from "$lib/shared/foundation/domain/models/Sequence
 import type { TrailSettings } from "$lib/features/compose/shared/domain/types/TrailTypes";
 import type { Composition, CellConfig, CellType } from "../../domain/types";
 
-export type CellOperationsManager = ReturnType<typeof createCellOperationsManager>;
+export type CellOperationsManager = ReturnType<
+  typeof createCellOperationsManager
+>;
 
 interface CompositionAccessor {
   get: () => Composition;

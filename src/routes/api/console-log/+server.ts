@@ -20,7 +20,10 @@ function sanitizeLogInput(input: string): string {
 export const POST: RequestHandler = async ({ request, getClientAddress }) => {
   // Rate limit to prevent log flooding
   const clientIp = getClientAddress();
-  const rateCheck = checkRateLimit(`console-log:${clientIp}`, RATE_LIMITS.GENERAL);
+  const rateCheck = checkRateLimit(
+    `console-log:${clientIp}`,
+    RATE_LIMITS.GENERAL
+  );
   if (!rateCheck.allowed) {
     return rateLimitResponse(rateCheck.resetAt);
   }

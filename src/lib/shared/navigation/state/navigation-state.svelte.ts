@@ -289,7 +289,6 @@ export function createNavigationState() {
     }
   }
 
-
   // Module-based functions
   // targetTab: Optional tab to set directly (bypasses remembered/default tab logic)
   function setCurrentModule(moduleId: ModuleId, targetTab?: string) {
@@ -412,11 +411,10 @@ export function createNavigationState() {
     const moduleDefinition = MODULE_DEFINITIONS.find(
       (m) => m.id === currentModule
     );
-    const tabExists = moduleDefinition?.sections.some((tab) => tab.id === tabId);
-    if (
-      moduleDefinition &&
-      tabExists
-    ) {
+    const tabExists = moduleDefinition?.sections.some(
+      (tab) => tab.id === tabId
+    );
+    if (moduleDefinition && tabExists) {
       const previousTab = activeTab;
       activeTab = tabId;
 

@@ -89,7 +89,10 @@
     // Use sequence's grid mode if available (updated by rotations)
     if (seq?.gridMode) return seq.gridMode;
     // Fallback to start position picker's grid mode (for initial selection)
-    return constructTabState?.startPositionStateService?.currentGridMode ?? GridMode.DIAMOND;
+    return (
+      constructTabState?.startPositionStateService?.currentGridMode ??
+      GridMode.DIAMOND
+    );
   });
 
   // Transition state for undo animations

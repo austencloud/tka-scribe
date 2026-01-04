@@ -97,9 +97,7 @@
     try {
       await loadFeatureModule("community");
       userService = resolve<IUserRepository>(TYPES.IUserRepository);
-      hapticService = resolve<IHapticFeedback>(
-        TYPES.IHapticFeedback
-      );
+      hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
       await loadUsers();
     } catch (err) {
       console.error("[UserBrowserPanel] Error initializing:", err);

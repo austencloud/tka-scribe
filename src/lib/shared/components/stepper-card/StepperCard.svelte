@@ -60,9 +60,7 @@ Landscape: Left half decrements, right half increments (horizontal layout)
   });
 
   onMount(() => {
-    hapticService = resolve<IHapticFeedback>(
-      TYPES.IHapticFeedback
-    );
+    hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
     rippleService = resolve<IRippleEffect>(TYPES.IRippleEffect);
 
     // Attach ripple effect

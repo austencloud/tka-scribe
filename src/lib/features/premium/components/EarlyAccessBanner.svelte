@@ -26,7 +26,8 @@
       color-mix(in srgb, var(--semantic-warning) 10%, transparent),
       color-mix(in srgb, #f97316 10%, transparent)
     );
-    border: 1px solid color-mix(in srgb, var(--semantic-warning) 30%, transparent);
+    border: 1px solid
+      color-mix(in srgb, var(--semantic-warning) 30%, transparent);
     border-radius: 10px;
   }
 

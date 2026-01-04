@@ -74,7 +74,8 @@
       <div class="fallback-icon">
         <i class="fas fa-image" aria-hidden="true"></i>
       </div>
-      <span class="fallback-name">{sequence.name.replace(" Sequence", "")}</span>
+      <span class="fallback-name">{sequence.name.replace(" Sequence", "")}</span
+      >
       <span class="fallback-beats">{sequence.beats.length} beats</span>
     </div>
   {/if}

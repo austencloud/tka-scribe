@@ -52,14 +52,16 @@ export const BASE_COMPONENTS = [
   {
     id: "repeated",
     label: "Repeated",
-    description: "Sequence repeats 2-4x for true circularity (orientations match)",
+    description:
+      "Sequence repeats 2-4x for true circularity (orientations match)",
     icon: "repeat",
     color: "#f59e0b",
   },
   {
     id: "modular",
     label: "Modular",
-    description: "Multiple motifs transform independently at different intervals",
+    description:
+      "Multiple motifs transform independently at different intervals",
     icon: "layer-group",
     color: "#8b5cf6",
   },

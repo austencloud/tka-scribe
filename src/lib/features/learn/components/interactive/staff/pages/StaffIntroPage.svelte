@@ -2,7 +2,10 @@
 StaffIntroPage - Page 1: Staff Positions Introduction
 -->
 <script lang="ts">
-  import type { HandPosition, ThumbOrientation } from "../../../../domain/constants/staff-examples";
+  import type {
+    HandPosition,
+    ThumbOrientation,
+  } from "../../../../domain/constants/staff-examples";
   import StaffPositionVisualizer from "../StaffPositionVisualizer.svelte";
 
   let {

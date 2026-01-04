@@ -170,14 +170,18 @@
       >
         <div class="tracks-scroll-content" style="width: {timelineWidth}px">
           <SnapGuides {activeSnapTime} height={tracks.length * 80 + 60} />
-          <Playhead position={playheadPosition} {pixelsPerSecond} height={tracks.length * 80} />
+          <Playhead
+            position={playheadPosition}
+            {pixelsPerSecond}
+            height={tracks.length * 80}
+          />
 
           {#each tracks as track (track.id)}
             <TrackLane {track} {pixelsPerSecond} />
           {/each}
 
           {#if !hasClips}
-            <TimelineEmptyState onBrowseLibrary={onBrowseLibrary} />
+            <TimelineEmptyState {onBrowseLibrary} />
           {:else}
             <div class="drop-zone">
               <span class="drop-hint">Drag sequences here to add clips</span>
@@ -247,7 +251,8 @@
     border-style: solid;
     border-color: var(--theme-accent);
     color: var(--theme-accent);
-    box-shadow: 0 0 10px color-mix(in srgb, var(--theme-accent) 25%, transparent);
+    box-shadow: 0 0 10px
+      color-mix(in srgb, var(--theme-accent) 25%, transparent);
   }
 
   .timeline-content {
@@ -322,7 +327,8 @@
     opacity: 1;
     border-color: var(--theme-accent);
     background: color-mix(in srgb, var(--theme-accent) 10%, transparent);
-    box-shadow: 0 0 12px color-mix(in srgb, var(--theme-accent) 20%, transparent);
+    box-shadow: 0 0 12px
+      color-mix(in srgb, var(--theme-accent) 20%, transparent);
   }
 
   .drop-hint {

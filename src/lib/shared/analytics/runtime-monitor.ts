@@ -145,7 +145,8 @@ class RuntimeMonitor {
             duration: entry.duration,
             startTime: entry.startTime,
             attribution:
-              (entry as { attribution?: { name: string }[] }).attribution?.[0]?.name ?? "unknown",
+              (entry as { attribution?: { name: string }[] }).attribution?.[0]
+                ?.name ?? "unknown",
           };
 
           this.longTasks.push(taskEntry);
@@ -195,7 +196,9 @@ class RuntimeMonitor {
               value: shiftEntry.value,
               hadRecentInput: shiftEntry.hadRecentInput,
               sources:
-                shiftEntry.sources?.map((s) => s.node?.nodeName ?? "unknown").slice(0, 3) ?? [],
+                shiftEntry.sources
+                  ?.map((s) => s.node?.nodeName ?? "unknown")
+                  .slice(0, 3) ?? [],
             };
 
             this.layoutShifts.push(layoutShift);
@@ -225,7 +228,9 @@ class RuntimeMonitor {
     const currentFps = this.fpsHistory[this.fpsHistory.length - 1] ?? 0;
     const avgFps =
       this.fpsHistory.length > 0
-        ? Math.round(this.fpsHistory.reduce((a, b) => a + b, 0) / this.fpsHistory.length)
+        ? Math.round(
+            this.fpsHistory.reduce((a, b) => a + b, 0) / this.fpsHistory.length
+          )
         : 0;
 
     return {
@@ -251,7 +256,8 @@ class RuntimeMonitor {
     // Long tasks summary
     if (stats.longTasks.length > 0) {
       const avgDuration =
-        stats.longTasks.reduce((a, t) => a + t.duration, 0) / stats.longTasks.length;
+        stats.longTasks.reduce((a, t) => a + t.duration, 0) /
+        stats.longTasks.length;
       console.log(`Avg Long Task Duration: ${avgDuration.toFixed(1)}ms`);
     }
 
@@ -274,5 +280,6 @@ export const runtimeMonitor = new RuntimeMonitor();
 
 // Expose to window for debugging
 if (typeof window !== "undefined") {
-  (window as unknown as { runtimeMonitor: RuntimeMonitor }).runtimeMonitor = runtimeMonitor;
+  (window as unknown as { runtimeMonitor: RuntimeMonitor }).runtimeMonitor =
+    runtimeMonitor;
 }

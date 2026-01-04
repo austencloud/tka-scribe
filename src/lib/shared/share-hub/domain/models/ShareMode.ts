@@ -7,4 +7,4 @@
  * Domain: Share Hub - Core Mode Selection
  */
 
-export type ShareMode = 'single' | 'composite';
+export type ShareMode = "single" | "composite";

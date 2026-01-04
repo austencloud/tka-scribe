@@ -72,15 +72,15 @@ export class UserDocumentManager implements IUserDocumentManager {
         });
 
         // Notify admins of new user signup (async, non-blocking)
-        void import(
-          "$lib/features/admin/services/implementations/AdminNotifier"
-        ).then(({ adminNotificationService }) => {
-          void adminNotificationService.notifyNewUserSignup(
-            user.uid,
-            user.email,
-            displayName
-          );
-        });
+        void import("$lib/features/admin/services/implementations/AdminNotifier").then(
+          ({ adminNotificationService }) => {
+            void adminNotificationService.notifyNewUserSignup(
+              user.uid,
+              user.email,
+              displayName
+            );
+          }
+        );
       } else {
         // Update existing user document with latest auth data
         // Always update provider IDs and photoURL to keep them fresh

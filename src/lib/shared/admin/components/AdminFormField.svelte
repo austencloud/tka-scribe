@@ -38,7 +38,9 @@
   }: AdminFormFieldProps = $props();
 
   // Generate unique IDs for accessibility - derived from label prop
-  const baseId = $derived(`field-${label.toLowerCase().replace(/\s+/g, "-")}-${Math.random().toString(36).slice(2, 7)}`);
+  const baseId = $derived(
+    `field-${label.toLowerCase().replace(/\s+/g, "-")}-${Math.random().toString(36).slice(2, 7)}`
+  );
   const fieldId = $derived(baseId);
   const errorId = $derived(`${baseId}-error`);
   const helpId = $derived(`${baseId}-help`);
@@ -48,7 +50,7 @@
     const ids: string[] = [];
     if (error) ids.push(errorId);
     if (helpText) ids.push(helpId);
-    return ids.length > 0 ? ids.join(' ') : undefined;
+    return ids.length > 0 ? ids.join(" ") : undefined;
   });
 
   function handleChange(e: Event) {
@@ -140,7 +142,9 @@
   {/if}
 
   {#if error}
-    <span id={errorId} class="field-error" role="alert" aria-live="assertive">{error}</span>
+    <span id={errorId} class="field-error" role="alert" aria-live="assertive"
+      >{error}</span
+    >
   {/if}
 </div>
 

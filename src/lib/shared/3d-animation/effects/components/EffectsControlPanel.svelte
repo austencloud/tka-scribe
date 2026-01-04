@@ -144,7 +144,9 @@
             step="0.1"
             value={state.fire.intensity}
             oninput={(e) =>
-              state.updateFire({ intensity: parseFloat(e.currentTarget.value) })}
+              state.updateFire({
+                intensity: parseFloat(e.currentTarget.value),
+              })}
             class="slider"
           />
           <span class="value-display">{state.fire.intensity.toFixed(1)}</span>
@@ -414,8 +416,8 @@
     font-size: 0.875rem;
     font-weight: 600;
     text-align: left;
-    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui,
-      sans-serif;
+    font-family:
+      -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
   }
 
   .header-toggle:hover {

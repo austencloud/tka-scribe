@@ -8,18 +8,14 @@ export const CreateTypes = {
   // Create Module Core
   ICreateModuleOrchestrator: Symbol.for("ICreateModuleOrchestrator"),
   ICreateModuleHandlers: Symbol.for("ICreateModuleHandlers"),
-  ICreateModuleInitializer: Symbol.for(
-    "ICreateModuleInitializer"
-  ),
+  ICreateModuleInitializer: Symbol.for("ICreateModuleInitializer"),
   ICreateModuleEffectCoordinator: Symbol.for("ICreateModuleEffectCoordinator"),
   IDeepLinkSequenceHandler: Symbol.for("IDeepLinkSequenceHandler"),
   ICreateModuleLayoutManager: Symbol.for("ICreateModuleLayoutManager"),
   IResponsiveLayoutManager: Symbol.for("IResponsiveLayoutManager"),
   INavigationSyncer: Symbol.for("INavigationSyncer"),
   IBeatOperator: Symbol.for("IBeatOperator"),
-  IKeyboardArrowAdjuster: Symbol.for(
-    "IKeyboardArrowAdjuster"
-  ),
+  IKeyboardArrowAdjuster: Symbol.for("IKeyboardArrowAdjuster"),
   IUndoManager: Symbol.for("IUndoManager"),
   ITurnController: Symbol.for("ITurnController"),
 
@@ -29,9 +25,7 @@ export const CreateTypes = {
 
   // Option Picker
   IOptionPickerSizingService: Symbol.for("IOptionPickerSizingService"),
-  IOptionPickerFilterPersister: Symbol.for(
-    "IOptionPickerFilterPersister"
-  ),
+  IOptionPickerFilterPersister: Symbol.for("IOptionPickerFilterPersister"),
   IReversalChecker: Symbol.for("IReversalChecker"),
   IPositionAnalyzer: Symbol.for("IPositionAnalyzer"),
   IOptionSorter: Symbol.for("IOptionSorter"),
@@ -51,7 +45,9 @@ export const CreateTypes = {
   // Sequence Extension
   ISequenceExtender: Symbol.for("ISequenceExtender"),
   ILOOPValidator: Symbol.for("ILOOPValidator"),
-  IOrientationAlignmentCalculator: Symbol.for("IOrientationAlignmentCalculator"),
+  IOrientationAlignmentCalculator: Symbol.for(
+    "IOrientationAlignmentCalculator"
+  ),
   IBridgeFinder: Symbol.for("IBridgeFinder"),
 
   // Panel Management
@@ -62,7 +58,9 @@ export const CreateTypes = {
   ISequenceJsonExporter: Symbol.for("ISequenceJsonExporter"),
 
   // Pattern Management
-  IRotationDirectionPatternManager: Symbol.for("IRotationDirectionPatternManager"),
+  IRotationDirectionPatternManager: Symbol.for(
+    "IRotationDirectionPatternManager"
+  ),
   ITurnPatternManager: Symbol.for("ITurnPatternManager"),
 
   // Spell Tab (Word-to-Sequence)
@@ -73,6 +71,8 @@ export const CreateTypes = {
   IVariationScorer: Symbol.for("IVariationScorer"),
   ISpellServiceLoader: Symbol.for("ISpellServiceLoader"),
   ISpellGenerationOrchestrator: Symbol.for("ISpellGenerationOrchestrator"),
-  IVariationExplorationOrchestrator: Symbol.for("IVariationExplorationOrchestrator"),
+  IVariationExplorationOrchestrator: Symbol.for(
+    "IVariationExplorationOrchestrator"
+  ),
   ILOOPSelectionCoordinator: Symbol.for("ILOOPSelectionCoordinator"),
 } as const;

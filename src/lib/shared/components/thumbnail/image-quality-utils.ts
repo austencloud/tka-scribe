@@ -24,13 +24,15 @@ export function getConnectionInfo(): ConnectionInfo {
   }
 
   // Check for Network Information API
-  const connection = (navigator as Navigator & {
-    connection?: {
-      effectiveType?: string;
-      saveData?: boolean;
-      downlink?: number;
-    };
-  }).connection;
+  const connection = (
+    navigator as Navigator & {
+      connection?: {
+        effectiveType?: string;
+        saveData?: boolean;
+        downlink?: number;
+      };
+    }
+  ).connection;
 
   if (!connection) {
     return { quality: "fast", saveData: false };
@@ -112,9 +114,11 @@ export function getMaxImageWidth(connectionQuality: ConnectionQuality): number {
 export function prefersReducedData(): boolean {
   if (typeof navigator === "undefined") return false;
 
-  const connection = (navigator as Navigator & {
-    connection?: { saveData?: boolean };
-  }).connection;
+  const connection = (
+    navigator as Navigator & {
+      connection?: { saveData?: boolean };
+    }
+  ).connection;
 
   return connection?.saveData ?? false;
 }
@@ -128,12 +132,14 @@ export function onConnectionChange(
 ): () => void {
   if (typeof navigator === "undefined") return () => {};
 
-  const connection = (navigator as Navigator & {
-    connection?: EventTarget & {
-      addEventListener: (type: string, listener: () => void) => void;
-      removeEventListener: (type: string, listener: () => void) => void;
-    };
-  }).connection;
+  const connection = (
+    navigator as Navigator & {
+      connection?: EventTarget & {
+        addEventListener: (type: string, listener: () => void) => void;
+        removeEventListener: (type: string, listener: () => void) => void;
+      };
+    }
+  ).connection;
 
   if (!connection) return () => {};
 

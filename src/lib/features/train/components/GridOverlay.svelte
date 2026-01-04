@@ -255,7 +255,9 @@
   ): string {
     if (!detected) return "transparent";
     if (!expected || !showExpected) return "white"; // No expectation, just show detected
-    return isCorrect(detected.quadrant, expected) ? "var(--semantic-success)" : "var(--semantic-error)"; // green or red
+    return isCorrect(detected.quadrant, expected)
+      ? "var(--semantic-success)"
+      : "var(--semantic-error)"; // green or red
   }
 
   // Derived correctness states

@@ -703,7 +703,11 @@
 
   .progress-fill {
     height: 100%;
-    background: linear-gradient(90deg, var(--semantic-info) 0%, var(--theme-accent-strong) 100%);
+    background: linear-gradient(
+      90deg,
+      var(--semantic-info) 0%,
+      var(--theme-accent-strong) 100%
+    );
     border-radius: 4px;
     transition: width 0.3s ease;
   }

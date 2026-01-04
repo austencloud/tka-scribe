@@ -11,7 +11,12 @@
     lastError: string | null;
   }
 
-  let { videoContainer = $bindable(), isInitialized, isRecording, lastError }: Props = $props();
+  let {
+    videoContainer = $bindable(),
+    isInitialized,
+    isRecording,
+    lastError,
+  }: Props = $props();
 </script>
 
 <div class="video-wrapper">

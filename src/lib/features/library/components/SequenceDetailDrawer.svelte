@@ -85,7 +85,8 @@
 
   async function handleToggleVisibility() {
     if (!sequenceId || !sequence) return;
-    const newVisibility = sequence.visibility === "public" ? "private" : "public";
+    const newVisibility =
+      sequence.visibility === "public" ? "private" : "public";
     const success = await libraryState.setVisibility(sequenceId, newVisibility);
     if (success) {
       toast.success(
@@ -193,7 +194,7 @@
       <!-- Thumbnail -->
       <div class="thumbnail-section">
         <PropAwareThumbnail
-          sequence={sequence}
+          {sequence}
           {bluePropType}
           {redPropType}
           {catDogModeEnabled}
@@ -207,7 +208,9 @@
           class="action-chip"
           class:active={sequence.isFavorite}
           onclick={handleToggleFavorite}
-          aria-label={sequence.isFavorite ? "Remove from favorites" : "Add to favorites"}
+          aria-label={sequence.isFavorite
+            ? "Remove from favorites"
+            : "Add to favorites"}
         >
           <i class="fas fa-star" aria-hidden="true"></i>
           <span>{sequence.isFavorite ? "Favorited" : "Favorite"}</span>
@@ -217,9 +220,14 @@
           class="action-chip"
           class:public={sequence.visibility === "public"}
           onclick={handleToggleVisibility}
-          aria-label={sequence.visibility === "public" ? "Make private" : "Make public"}
+          aria-label={sequence.visibility === "public"
+            ? "Make private"
+            : "Make public"}
         >
-          <i class="fas fa-{sequence.visibility === 'public' ? 'globe' : 'lock'}" aria-hidden="true"></i>
+          <i
+            class="fas fa-{sequence.visibility === 'public' ? 'globe' : 'lock'}"
+            aria-hidden="true"
+          ></i>
           <span>{sequence.visibility === "public" ? "Public" : "Private"}</span>
         </button>
       </div>
@@ -342,10 +350,7 @@
             </div>
           </div>
         {:else}
-          <button
-            class="delete-btn"
-            onclick={() => (showDeleteConfirm = true)}
-          >
+          <button class="delete-btn" onclick={() => (showDeleteConfirm = true)}>
             <i class="fas fa-trash" aria-hidden="true"></i>
             Delete Sequence
           </button>

@@ -18,9 +18,7 @@ Shows all 4 orientations: in, out, clock, counter
   let hapticService: IHapticFeedback | null = null;
 
   onMount(() => {
-    hapticService = tryResolve<IHapticFeedback>(
-      TYPES.IHapticFeedback
-    );
+    hapticService = tryResolve<IHapticFeedback>(TYPES.IHapticFeedback);
   });
 
   // Orientation options with display info

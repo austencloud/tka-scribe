@@ -11,9 +11,7 @@ import type { PropType } from "../../domain/enums/PropType";
 import type { IPropTypeConfigurator } from "../contracts/IPropTypeConfigurator";
 
 @injectable()
-export class PropTypeConfigurator
-  implements IPropTypeConfigurator
-{
+export class PropTypeConfigurator implements IPropTypeConfigurator {
   /**
    * Convert UI prop type to filename format.
    * With the unified PropType enum, this is now a simple passthrough.

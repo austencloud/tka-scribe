@@ -147,15 +147,15 @@ Uses grid layout for perfect centering with multi-select toggle
       transparent
     );
     box-shadow: 0 0 16px
-      color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent-strong)) 60%, transparent);
+      color-mix(
+        in srgb,
+        var(--theme-accent-strong, var(--theme-accent-strong)) 60%,
+        transparent
+      );
   }
 
   .multi-select-toggle.active:hover {
-    background: color-mix(
-      in srgb,
-      var(--theme-accent-strong) 50%,
-      transparent
-    );
+    background: color-mix(in srgb, var(--theme-accent-strong) 50%, transparent);
     border-color: var(--theme-accent-strong, var(--theme-accent-strong));
   }
 

@@ -41,9 +41,7 @@
 
     // Resolve sheet router service
     try {
-      sheetRouterService = resolve<ISheetRouter>(
-        TYPES.ISheetRouter
-      );
+      sheetRouterService = resolve<ISheetRouter>(TYPES.ISheetRouter);
     } catch (error) {
       console.error("Failed to resolve SheetRouter:", error);
       return;

@@ -14,7 +14,11 @@
     loading?: boolean;
   }
 
-  let { providers = [], emailVerified = false, loading = false }: Props = $props();
+  let {
+    providers = [],
+    emailVerified = false,
+    loading = false,
+  }: Props = $props();
 
   // Map Firebase provider IDs to our config
   function getProviderConfig(providerId: string) {
@@ -64,7 +68,10 @@
             </div>
           {:else}
             <!-- Unknown provider - show generic card -->
-            <div class="provider-card" style="--provider-color: #9ca3af; --provider-bg: rgba(156, 163, 175, 0.1); --provider-border: rgba(156, 163, 175, 0.2);">
+            <div
+              class="provider-card"
+              style="--provider-color: #9ca3af; --provider-bg: rgba(156, 163, 175, 0.1); --provider-border: rgba(156, 163, 175, 0.2);"
+            >
               <div class="provider-icon">
                 <i class="fas fa-plug" aria-hidden="true"></i>
               </div>

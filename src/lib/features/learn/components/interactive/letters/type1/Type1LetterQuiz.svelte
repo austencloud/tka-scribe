@@ -45,7 +45,9 @@ Shows pictograph, user identifies the motion pattern (Pro-Pro, Anti-Anti, or Hyb
     lastLoadedQuestionIndex = questionIndex;
 
     try {
-      const letterQueryHandler = resolve<ILetterQueryHandler>(TYPES.ILetterQueryHandler);
+      const letterQueryHandler = resolve<ILetterQueryHandler>(
+        TYPES.ILetterQueryHandler
+      );
       const currentQuestion = questions[questionIndex];
       if (!currentQuestion) return;
 

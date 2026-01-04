@@ -47,7 +47,9 @@ export interface SpellGenerationError {
   error: string;
 }
 
-export type SpellGenerationOutcome = SpellGenerationResult | SpellGenerationError;
+export type SpellGenerationOutcome =
+  | SpellGenerationResult
+  | SpellGenerationError;
 
 export interface ISpellGenerationOrchestrator {
   /**

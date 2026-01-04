@@ -10,7 +10,11 @@
   let { onClearCache, isClearing }: Props = $props();
 </script>
 
-<GlassCard icon="fas fa-database" title="Storage" subtitle="Manage local cached data">
+<GlassCard
+  icon="fas fa-database"
+  title="Storage"
+  subtitle="Manage local cached data"
+>
   {#snippet children()}
     <div class="storage-content">
       <button class="action-btn" onclick={onClearCache} disabled={isClearing}>

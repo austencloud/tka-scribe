@@ -297,14 +297,22 @@
     );
     color: white;
     box-shadow: 0 2px 8px
-      color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 30%, transparent);
+      color-mix(
+        in srgb,
+        var(--theme-accent, var(--theme-accent)) 30%,
+        transparent
+      );
   }
 
   .button--primary:hover:not(:disabled) {
     filter: brightness(1.1);
     transform: translateY(-2px);
     box-shadow: 0 4px 12px
-      color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 40%, transparent);
+      color-mix(
+        in srgb,
+        var(--theme-accent, var(--theme-accent)) 40%,
+        transparent
+      );
   }
 
   .button--secondary {
@@ -315,15 +323,15 @@
     );
     color: var(--theme-accent);
     border: 1px solid
-      color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 40%, transparent);
+      color-mix(
+        in srgb,
+        var(--theme-accent, var(--theme-accent)) 40%,
+        transparent
+      );
   }
 
   .button--secondary:hover:not(:disabled) {
-    background: color-mix(
-      in srgb,
-      var(--theme-accent) 25%,
-      transparent
-    );
+    background: color-mix(in srgb, var(--theme-accent) 25%, transparent);
     border-color: color-mix(
       in srgb,
       var(--theme-accent, var(--theme-accent)) 60%,

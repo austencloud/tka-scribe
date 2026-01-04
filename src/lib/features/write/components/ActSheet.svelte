@@ -30,12 +30,7 @@
 <div class="act-sheet" class:disabled class:empty={!act}>
   {#if act}
     <div class="sheet-header">
-      <ActHeader
-        {act}
-        {disabled}
-        {onActInfoChanged}
-        {onMusicLoadRequested}
-      />
+      <ActHeader {act} {disabled} {onActInfoChanged} {onMusicLoadRequested} />
     </div>
 
     <div class="sheet-content">

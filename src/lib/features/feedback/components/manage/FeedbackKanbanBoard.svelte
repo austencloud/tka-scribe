@@ -39,9 +39,7 @@
         await loadFeatureModule("feedback");
 
         // Now resolve services - feedback module is ready
-        sortingService = tryResolve<IFeedbackSorter>(
-          TYPES.IFeedbackSorter
-        );
+        sortingService = tryResolve<IFeedbackSorter>(TYPES.IFeedbackSorter);
         storageService = tryResolve<IStorageManager>(TYPES.IStorageManager);
 
         if (!sortingService) {
@@ -267,11 +265,7 @@
 
     /* ===== COLORS ===== */
     --kb-text: var(--theme-text);
-    --kb-text-muted: color-mix(
-      in srgb,
-      var(--theme-text) 75%,
-      transparent
-    );
+    --kb-text-muted: color-mix(in srgb, var(--theme-text) 75%, transparent);
     --kb-text-subtle: var(--theme-text-dim);
 
     /* ===== TRANSITIONS ===== */
@@ -438,7 +432,8 @@
     border-radius: clamp(8px, 2cqi, 12px);
     color: var(--semantic-warning);
     font-size: clamp(16px, 4cqi, 20px);
-    box-shadow: 0 4px 12px color-mix(in srgb, var(--semantic-warning) 30%, transparent);
+    box-shadow: 0 4px 12px
+      color-mix(in srgb, var(--semantic-warning) 30%, transparent);
   }
 
   .dialog-title {
@@ -541,7 +536,8 @@
     outline: none;
     background: var(--theme-card-hover-bg, var(--theme-card-bg));
     border-color: var(--semantic-warning);
-    box-shadow: 0 0 0 3px color-mix(in srgb, var(--semantic-warning) 15%, transparent);
+    box-shadow: 0 0 0 3px
+      color-mix(in srgb, var(--semantic-warning) 15%, transparent);
   }
 
   .notes-input {
@@ -585,14 +581,24 @@
   }
 
   .submit-button {
-    background: linear-gradient(135deg, var(--semantic-warning) 0%, #d97706 100%);
+    background: linear-gradient(
+      135deg,
+      var(--semantic-warning) 0%,
+      #d97706 100%
+    );
     color: rgba(0, 0, 0, 0.9);
-    box-shadow: 0 4px 12px color-mix(in srgb, var(--semantic-warning) 30%, transparent);
+    box-shadow: 0 4px 12px
+      color-mix(in srgb, var(--semantic-warning) 30%, transparent);
   }
 
   .submit-button:hover:not(:disabled) {
-    background: linear-gradient(135deg, var(--semantic-warning) 0%, var(--semantic-warning) 100%);
-    box-shadow: 0 6px 16px color-mix(in srgb, var(--semantic-warning) 40%, transparent);
+    background: linear-gradient(
+      135deg,
+      var(--semantic-warning) 0%,
+      var(--semantic-warning) 100%
+    );
+    box-shadow: 0 6px 16px
+      color-mix(in srgb, var(--semantic-warning) 40%, transparent);
     transform: translateY(-1px);
   }
 

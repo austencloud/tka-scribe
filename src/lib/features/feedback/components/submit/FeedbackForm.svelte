@@ -184,7 +184,8 @@
   <form
     class="feedback-form"
     onsubmit={handleSubmit}
-    style="--active-type-color: {currentTypeConfig?.color ?? 'var(--theme-accent)'}"
+    style="--active-type-color: {currentTypeConfig?.color ??
+      'var(--theme-accent)'}"
   >
     <TypeSelector
       selectedType={formState.formData.type}
@@ -196,7 +197,8 @@
     <FeedbackTextarea
       value={displayText}
       error={formState.formErrors.description}
-      placeholder={currentTypeConfig?.placeholder ?? "Describe the issue, suggestion, or idea..."}
+      placeholder={currentTypeConfig?.placeholder ??
+        "Describe the issue, suggestion, or idea..."}
       isStreaming={(voiceCoordinator?.getInterimText()?.length ?? 0) > 0}
       isMobile={isMobileDevice}
       draftStatus={draftPersister?.saveStatus}

@@ -8,9 +8,8 @@ import type { IStepUpAuthCoordinator } from "../contracts/IStepUpAuthCoordinator
  */
 function hasPasswordProvider(): boolean {
   return (
-    auth.currentUser?.providerData?.some(
-      (p) => p?.providerId === "password"
-    ) ?? false
+    auth.currentUser?.providerData?.some((p) => p?.providerId === "password") ??
+    false
   );
 }
 

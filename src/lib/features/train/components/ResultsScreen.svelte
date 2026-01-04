@@ -533,11 +533,7 @@
   }
 
   .stat-icon.score {
-    background: color-mix(
-      in srgb,
-      var(--semantic-warning) 20%,
-      transparent
-    );
+    background: color-mix(in srgb, var(--semantic-warning) 20%, transparent);
     color: var(--semantic-warning);
   }
 
@@ -673,7 +669,11 @@
   .primary-button:hover {
     transform: translateY(-2px);
     box-shadow: 0 8px 20px
-      color-mix(in srgb, var(--semantic-info, var(--semantic-info)) 40%, transparent);
+      color-mix(
+        in srgb,
+        var(--semantic-info, var(--semantic-info)) 40%,
+        transparent
+      );
   }
 
   .primary-button svg {
@@ -697,7 +697,11 @@
     background: linear-gradient(
       135deg,
       color-mix(in srgb, var(--semantic-warning) 10%, transparent),
-      color-mix(in srgb, var(--semantic-warning, var(--semantic-warning)) 5%, transparent)
+      color-mix(
+        in srgb,
+        var(--semantic-warning, var(--semantic-warning)) 5%,
+        transparent
+      )
     );
     border: 1px solid
       color-mix(in srgb, var(--semantic-warning) 30%, transparent);
@@ -739,11 +743,7 @@
   }
 
   .xp-row.bonus {
-    color: color-mix(
-      in srgb,
-      var(--semantic-warning) 90%,
-      transparent
-    );
+    color: color-mix(in srgb, var(--semantic-warning) 90%, transparent);
   }
 
   .xp-label {
@@ -784,19 +784,39 @@
     padding: 0.75rem 1rem;
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--semantic-info, var(--semantic-info)) 10%, transparent),
-      color-mix(in srgb, var(--theme-accent, var(--theme-accent-strong)) 5%, transparent)
+      color-mix(
+        in srgb,
+        var(--semantic-info, var(--semantic-info)) 10%,
+        transparent
+      ),
+      color-mix(
+        in srgb,
+        var(--theme-accent, var(--theme-accent-strong)) 5%,
+        transparent
+      )
     );
     border: 1px solid
-      color-mix(in srgb, var(--semantic-info, var(--semantic-info)) 30%, transparent);
+      color-mix(
+        in srgb,
+        var(--semantic-info, var(--semantic-info)) 30%,
+        transparent
+      );
     border-radius: 8px;
   }
 
   .challenge-section.complete {
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--semantic-success, var(--semantic-success)) 10%, transparent),
-      color-mix(in srgb, var(--semantic-success, var(--semantic-success)) 5%, transparent)
+      color-mix(
+        in srgb,
+        var(--semantic-success, var(--semantic-success)) 10%,
+        transparent
+      ),
+      color-mix(
+        in srgb,
+        var(--semantic-success, var(--semantic-success)) 5%,
+        transparent
+      )
     );
     border-color: color-mix(
       in srgb,

@@ -205,9 +205,17 @@
       transparent
     );
     border: 1px solid
-      color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 30%, transparent);
+      color-mix(
+        in srgb,
+        var(--theme-accent, var(--theme-accent)) 30%,
+        transparent
+      );
     border-radius: 6px;
-    color: color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 120%, white);
+    color: color-mix(
+      in srgb,
+      var(--theme-accent, var(--theme-accent)) 120%,
+      white
+    );
     font-size: var(--font-size-compact);
     font-weight: 600;
   }
@@ -243,17 +251,17 @@
   }
 
   .action-button.edit:hover {
-    background: color-mix(
-      in srgb,
-      var(--theme-accent) 20%,
-      transparent
-    );
+    background: color-mix(in srgb, var(--theme-accent) 20%, transparent);
     border-color: color-mix(
       in srgb,
       var(--theme-accent, var(--theme-accent)) 40%,
       transparent
     );
-    color: color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 120%, white);
+    color: color-mix(
+      in srgb,
+      var(--theme-accent, var(--theme-accent)) 120%,
+      white
+    );
   }
 
   /* ============================================================================

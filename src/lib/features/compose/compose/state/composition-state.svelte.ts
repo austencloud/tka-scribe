@@ -16,7 +16,11 @@ import {
 import { createCellsFromTemplate, getTemplateById } from "../domain/templates";
 
 // Import types and helpers
-import type { WorkflowPhase, BeatMarker, TempoRegion } from "./composition-types";
+import type {
+  WorkflowPhase,
+  BeatMarker,
+  TempoRegion,
+} from "./composition-types";
 import { STORAGE_KEYS } from "./composition-types";
 import {
   createDefaultComposition,
@@ -31,7 +35,12 @@ import { createCellOperationsManager } from "./managers/CellOperationsManager.sv
 import { createCompositionUIManager } from "./managers/CompositionUIManager.svelte";
 
 // Re-export types for external consumers
-export type { WorkflowPhase, BeatMarker, TempoRegion, AudioState } from "./composition-types";
+export type {
+  WorkflowPhase,
+  BeatMarker,
+  TempoRegion,
+  AudioState,
+} from "./composition-types";
 
 // ============================================================================
 // State Factory
@@ -86,7 +95,9 @@ export function createCompositionState() {
   );
   const isComplete = $derived(isCompositionComplete(composition));
   const selectedCell = $derived(
-    uiManager.selectedCellId ? (cellMap.get(uiManager.selectedCellId) ?? null) : null
+    uiManager.selectedCellId
+      ? (cellMap.get(uiManager.selectedCellId) ?? null)
+      : null
   );
 
   // Effective BPM: manual override > detected > tempo region > default
@@ -255,7 +266,9 @@ export function createCompositionState() {
     const regionBpm = tempoManager.getBpmAtTime(time);
     if (regionBpm !== null) return regionBpm;
     // Fallback to manual or detected BPM
-    return audioManager.state.manualBpm ?? audioManager.state.detectedBpm ?? 120;
+    return (
+      audioManager.state.manualBpm ?? audioManager.state.detectedBpm ?? 120
+    );
   }
 
   // =========================================================================
@@ -336,7 +349,8 @@ export function createCompositionState() {
     applyTemplate,
 
     // Cell mutations (delegated)
-    setCellType: (cellId: string, type: CellType) => cellOps.setType(cellId, type),
+    setCellType: (cellId: string, type: CellType) =>
+      cellOps.setType(cellId, type),
     setCellMediaType: (
       cellId: string,
       mediaType: "animation" | "video" | "beatGrid" | "image"

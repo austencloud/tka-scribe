@@ -131,7 +131,8 @@ export function generateStaffQuizQuestions(): StaffQuizQuestion[] {
     rightThumb: "in",
     correctAnswer: "prospin",
     options: ["prospin", "antispin"],
-    questionText: "If the thumbs STAY IN during motion, what rotation type is this?",
+    questionText:
+      "If the thumbs STAY IN during motion, what rotation type is this?",
     showRotationPath: true,
     rotationType: "prospin",
   });
@@ -144,7 +145,8 @@ export function generateStaffQuizQuestions(): StaffQuizQuestion[] {
     rightThumb: "out",
     correctAnswer: "antispin",
     options: ["prospin", "antispin"],
-    questionText: "If thumbs started IN and now are OUT, what rotation occurred?",
+    questionText:
+      "If thumbs started IN and now are OUT, what rotation occurred?",
     showRotationPath: true,
     rotationType: "antispin",
   });

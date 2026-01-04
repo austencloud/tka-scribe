@@ -124,15 +124,16 @@ export class VideoExportOrchestrator implements IVideoExportOrchestrator {
       const beatsPerFrame = panelState.totalBeats / framesPerLoop;
 
       // Check if composite mode is enabled
-      const isCompositeMode = options.compositeMode && options.compositeMode !== 'none';
+      const isCompositeMode =
+        options.compositeMode && options.compositeMode !== "none";
 
       // Initialize composite renderer if in composite mode
       if (isCompositeMode) {
         if (!panelState.sequenceData) {
-          throw new Error('Sequence data is required for composite mode');
+          throw new Error("Sequence data is required for composite mode");
         }
         await this.compositeRenderer.initialize(panelState.sequenceData, {
-          orientation: options.compositeMode as 'horizontal' | 'vertical',
+          orientation: options.compositeMode as "horizontal" | "vertical",
           gridBeatSize: options.gridBeatSize ?? 120,
           includeStartPosition: options.includeStartPosition ?? false,
           showBeatNumbers: options.showBeatNumbers ?? true,
@@ -201,7 +202,11 @@ export class VideoExportOrchestrator implements IVideoExportOrchestrator {
         if (isCompositeMode) {
           // Composite mode: render animation + grid + beat highlight
           const beatIndex = Math.floor(beat);
-          this.compositeRenderer.renderCompositeFrame(canvas, beatIndex, offscreenCanvas);
+          this.compositeRenderer.renderCompositeFrame(
+            canvas,
+            beatIndex,
+            offscreenCanvas
+          );
         } else {
           // Normal mode: copy the live canvas to the offscreen canvas (preserves visible animation)
           offscreenCtx.clearRect(
@@ -339,7 +344,7 @@ export class VideoExportOrchestrator implements IVideoExportOrchestrator {
       this.shouldCancel = false;
 
       // Clean up composite renderer if it was used
-      if (options.compositeMode && options.compositeMode !== 'none') {
+      if (options.compositeMode && options.compositeMode !== "none") {
         this.compositeRenderer.dispose();
       }
     }

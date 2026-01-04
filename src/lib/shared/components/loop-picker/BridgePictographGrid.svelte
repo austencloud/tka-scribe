@@ -94,7 +94,11 @@
       return { label: "1×", class: "exact", tooltip: "Same position" };
     }
     if (align.matches) {
-      return { label: "✓", class: "exact-match", tooltip: "Perfect loop - orientations match" };
+      return {
+        label: "✓",
+        class: "exact-match",
+        tooltip: "Perfect loop - orientations match",
+      };
     }
     return {
       label: `${align.repetitionsNeeded}×`,
@@ -125,19 +129,24 @@
       <div class="rotation-group">
         <div class="group-header">
           <span class="multiplier-badge half">2×</span>
-          <span class="group-label">{getGroupDescription("half", halfRotationOptions[0])}</span>
+          <span class="group-label"
+            >{getGroupDescription("half", halfRotationOptions[0])}</span
+          >
         </div>
         <div class="bridge-grid">
-          {#each halfRotationOptions as option, index (option.bridgeLetters[0] + '-' + option.endPosition)}
+          {#each halfRotationOptions as option, index (option.bridgeLetters[0] + "-" + option.endPosition)}
             {@const pictograph = option.pictographData}
             {#if pictograph}
               <button
                 class="bridge-option"
                 onclick={() => handleBridgeSelect(option)}
                 disabled={isLoading}
-                style:--letter-border-color={getLetterBorderColorSafe(pictograph.letter)}
+                style:--letter-border-color={getLetterBorderColorSafe(
+                  pictograph.letter
+                )}
                 style:--animation-delay="{index * 40}ms"
-                aria-label="Add {option.bridgeLetters[0]} → {option.resultingLength || ''} beats"
+                aria-label="Add {option
+                  .bridgeLetters[0]} → {option.resultingLength || ''} beats"
                 title="{option.bridgeLetters[0]} → {option.endPosition}"
               >
                 <div class="pictograph-wrapper">
@@ -156,19 +165,24 @@
       <div class="rotation-group">
         <div class="group-header">
           <span class="multiplier-badge quarter">4×</span>
-          <span class="group-label">{getGroupDescription("quarter", quarterRotationOptions[0])}</span>
+          <span class="group-label"
+            >{getGroupDescription("quarter", quarterRotationOptions[0])}</span
+          >
         </div>
         <div class="bridge-grid">
-          {#each quarterRotationOptions as option, index (option.bridgeLetters[0] + '-' + option.endPosition)}
+          {#each quarterRotationOptions as option, index (option.bridgeLetters[0] + "-" + option.endPosition)}
             {@const pictograph = option.pictographData}
             {#if pictograph}
               <button
                 class="bridge-option"
                 onclick={() => handleBridgeSelect(option)}
                 disabled={isLoading}
-                style:--letter-border-color={getLetterBorderColorSafe(pictograph.letter)}
+                style:--letter-border-color={getLetterBorderColorSafe(
+                  pictograph.letter
+                )}
                 style:--animation-delay="{index * 40}ms"
-                aria-label="Add {option.bridgeLetters[0]} → {option.resultingLength || ''} beats"
+                aria-label="Add {option
+                  .bridgeLetters[0]} → {option.resultingLength || ''} beats"
                 title="{option.bridgeLetters[0]} → {option.endPosition}"
               >
                 <div class="pictograph-wrapper">
@@ -187,10 +201,12 @@
       <div class="rotation-group">
         <div class="group-header">
           <span class="multiplier-badge exact">↺</span>
-          <span class="group-label">{getGroupDescription("exact", exactOptions[0])}</span>
+          <span class="group-label"
+            >{getGroupDescription("exact", exactOptions[0])}</span
+          >
         </div>
         <div class="bridge-grid">
-          {#each exactOptions as option, index (option.bridgeLetters[0] + '-' + option.endPosition)}
+          {#each exactOptions as option, index (option.bridgeLetters[0] + "-" + option.endPosition)}
             {@const pictograph = option.pictographData}
             {@const badgeInfo = getExactBadgeInfo(option)}
             {#if pictograph}
@@ -198,17 +214,23 @@
                 class="bridge-option"
                 onclick={() => handleBridgeSelect(option)}
                 disabled={isLoading}
-                style:--letter-border-color={getLetterBorderColorSafe(pictograph.letter)}
+                style:--letter-border-color={getLetterBorderColorSafe(
+                  pictograph.letter
+                )}
                 style:--animation-delay="{index * 40}ms"
-                aria-label="Add {option.bridgeLetters[0]} → {option.resultingLength || ''} beats ({badgeInfo.tooltip})"
-                title="{badgeInfo.tooltip}"
+                aria-label="Add {option
+                  .bridgeLetters[0]} → {option.resultingLength ||
+                  ''} beats ({badgeInfo.tooltip})"
+                title={badgeInfo.tooltip}
               >
                 <div class="pictograph-wrapper">
                   <PictographContainer pictographData={pictograph} />
                 </div>
                 <div class="option-info">
                   <span class="letter-badge">{option.bridgeLetters[0]}</span>
-                  <span class="repeat-badge {badgeInfo.class}">{badgeInfo.label}</span>
+                  <span class="repeat-badge {badgeInfo.class}"
+                    >{badgeInfo.label}</span
+                  >
                 </div>
               </button>
             {/if}
@@ -264,21 +286,36 @@
   }
 
   .multiplier-badge.half {
-    background: color-mix(in srgb, var(--semantic-success, #22c55e) 20%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--semantic-success, #22c55e) 20%,
+      transparent
+    );
     color: var(--semantic-success, #22c55e);
-    border: 1px solid color-mix(in srgb, var(--semantic-success, #22c55e) 30%, transparent);
+    border: 1px solid
+      color-mix(in srgb, var(--semantic-success, #22c55e) 30%, transparent);
   }
 
   .multiplier-badge.quarter {
-    background: color-mix(in srgb, var(--semantic-warning, #f97316) 20%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--semantic-warning, #f97316) 20%,
+      transparent
+    );
     color: var(--semantic-warning, #f97316);
-    border: 1px solid color-mix(in srgb, var(--semantic-warning, #f97316) 30%, transparent);
+    border: 1px solid
+      color-mix(in srgb, var(--semantic-warning, #f97316) 30%, transparent);
   }
 
   .multiplier-badge.exact {
-    background: color-mix(in srgb, var(--theme-accent, #6366f1) 20%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--theme-accent, #6366f1) 20%,
+      transparent
+    );
     color: var(--theme-accent, #6366f1);
-    border: 1px solid color-mix(in srgb, var(--theme-accent, #6366f1) 30%, transparent);
+    border: 1px solid
+      color-mix(in srgb, var(--theme-accent, #6366f1) 30%, transparent);
   }
 
   .group-label {
@@ -309,8 +346,12 @@
   }
 
   @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
   }
 
   .loading-state,
@@ -336,7 +377,9 @@
   }
 
   @keyframes spin {
-    to { transform: rotate(360deg); }
+    to {
+      transform: rotate(360deg);
+    }
   }
 
   .empty-state i {
@@ -367,8 +410,14 @@
   }
 
   @keyframes scaleIn {
-    from { opacity: 0; transform: scale(0.9); }
-    to { opacity: 1; transform: scale(1); }
+    from {
+      opacity: 0;
+      transform: scale(0.9);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
   }
 
   .bridge-option:disabled {
@@ -434,22 +483,38 @@
   }
 
   .repeat-badge.exact-match {
-    background: color-mix(in srgb, var(--semantic-success, #22c55e) 30%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--semantic-success, #22c55e) 30%,
+      transparent
+    );
     color: var(--semantic-success, #22c55e);
   }
 
   .repeat-badge.repeat-2 {
-    background: color-mix(in srgb, var(--semantic-warning, #fbbf24) 30%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--semantic-warning, #fbbf24) 30%,
+      transparent
+    );
     color: var(--semantic-warning, #fbbf24);
   }
 
   .repeat-badge.repeat-4 {
-    background: color-mix(in srgb, var(--semantic-error, #ef4444) 30%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--semantic-error, #ef4444) 30%,
+      transparent
+    );
     color: var(--semantic-error, #ef4444);
   }
 
   .repeat-badge.exact {
-    background: color-mix(in srgb, var(--theme-accent, #6366f1) 20%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--theme-accent, #6366f1) 20%,
+      transparent
+    );
     color: var(--theme-accent, #6366f1);
   }
 

@@ -162,11 +162,15 @@ export class TextRenderer implements ITextRenderer {
     }
 
     // LED mode uses dark background, normal mode uses light gray
-    ctx.fillStyle = ledMode ? "rgba(10, 10, 15, 0.98)" : "rgba(245, 245, 245, 0.98)";
+    ctx.fillStyle = ledMode
+      ? "rgba(10, 10, 15, 0.98)"
+      : "rgba(245, 245, 245, 0.98)";
     ctx.fillRect(0, 0, canvas.width, headerHeight);
 
     // Draw subtle bottom border (light for LED mode, dark for normal)
-    ctx.strokeStyle = ledMode ? "rgba(255, 255, 255, 0.15)" : "rgba(0, 0, 0, 0.1)";
+    ctx.strokeStyle = ledMode
+      ? "rgba(255, 255, 255, 0.15)"
+      : "rgba(0, 0, 0, 0.1)";
     ctx.lineWidth = 1;
     ctx.beginPath();
     ctx.moveTo(0, headerHeight - 0.5);
@@ -450,11 +454,15 @@ export class TextRenderer implements ITextRenderer {
     const footerTop = canvas.height - footerHeight;
 
     // LED mode uses dark background, normal mode uses light gray
-    ctx.fillStyle = ledMode ? "rgba(10, 10, 15, 0.98)" : "rgba(245, 245, 245, 0.98)";
+    ctx.fillStyle = ledMode
+      ? "rgba(10, 10, 15, 0.98)"
+      : "rgba(245, 245, 245, 0.98)";
     ctx.fillRect(0, footerTop, canvas.width, footerHeight);
 
     // Draw subtle top border (light for LED mode, dark for normal)
-    ctx.strokeStyle = ledMode ? "rgba(255, 255, 255, 0.15)" : "rgba(0, 0, 0, 0.1)";
+    ctx.strokeStyle = ledMode
+      ? "rgba(255, 255, 255, 0.15)"
+      : "rgba(0, 0, 0, 0.1)";
     ctx.lineWidth = 1;
     ctx.beginPath();
     ctx.moveTo(0, footerTop + 0.5);

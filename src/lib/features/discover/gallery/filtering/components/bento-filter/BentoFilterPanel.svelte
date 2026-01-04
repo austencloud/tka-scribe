@@ -48,9 +48,7 @@ Uses shared parameter cards from $lib/shared/components/parameter-cards
   let hapticService: IHapticFeedback | null = null;
 
   onMount(() => {
-    hapticService = tryResolve<IHapticFeedback>(
-      TYPES.IHapticFeedback
-    );
+    hapticService = tryResolve<IHapticFeedback>(TYPES.IHapticFeedback);
   });
 
   // Derived filter values

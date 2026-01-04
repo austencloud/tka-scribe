@@ -19,9 +19,7 @@ Shows how hands coordinate their movements in different VTG patterns
     showLabels?: boolean;
   }>();
 
-  const hapticService = resolve<IHapticFeedback>(
-    TYPES.IHapticFeedback
-  );
+  const hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
 
   // VTG mode info
   const VTG_INFO: Record<

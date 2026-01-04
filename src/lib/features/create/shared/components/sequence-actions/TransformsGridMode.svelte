@@ -65,8 +65,8 @@
   // Patterns: Turn Pattern + Direction + Rewind (always) + Extend (conditional) + Shift Start (conditional)
   const patternsItemCount = $derived(
     3 + // Turn Pattern, Direction, Rewind (always present)
-    (onExtend && canExtend ? 1 : 0) +
-    (onShiftStart ? 1 : 0)
+      (onExtend && canExtend ? 1 : 0) +
+      (onShiftStart ? 1 : 0)
   );
 
   // Edit: Edit Turns (always) + Constructor (conditional)
@@ -85,48 +85,96 @@
   const editFlex = $derived(getRowCount(editItemCount, gridCols));
 </script>
 
-<div class="actions-container" class:disabled class:desktop={isDesktopPanel} class:mobile={!isDesktopPanel} class:compact={compactMode}>
+<div
+  class="actions-container"
+  class:disabled
+  class:desktop={isDesktopPanel}
+  class:mobile={!isDesktopPanel}
+  class:compact={compactMode}
+>
   <!-- TRANSFORM Section -->
   <section class="section transform-section" style:flex={transformFlex}>
     <span class="section-label">Transform</span>
     <div class="section-grid">
-      <button class="grid-btn mirror" onclick={onMirror} {disabled} aria-label="Mirror sequence: flip left and right">
-        <div class="btn-icon"><i class="fas fa-left-right" aria-hidden="true"></i></div>
+      <button
+        class="grid-btn mirror"
+        onclick={onMirror}
+        {disabled}
+        aria-label="Mirror sequence: flip left and right"
+      >
+        <div class="btn-icon">
+          <i class="fas fa-left-right" aria-hidden="true"></i>
+        </div>
         <div class="btn-text">
           <span class="btn-label">Mirror</span>
           <span class="btn-desc">Flip left & right</span>
         </div>
       </button>
-      <button class="grid-btn flip" onclick={onFlip} {disabled} aria-label="Flip sequence: flip up and down">
-        <div class="btn-icon"><i class="fas fa-up-down" aria-hidden="true"></i></div>
+      <button
+        class="grid-btn flip"
+        onclick={onFlip}
+        {disabled}
+        aria-label="Flip sequence: flip up and down"
+      >
+        <div class="btn-icon">
+          <i class="fas fa-up-down" aria-hidden="true"></i>
+        </div>
         <div class="btn-text">
           <span class="btn-label">Flip</span>
           <span class="btn-desc">Flip up & down</span>
         </div>
       </button>
-      <button class="grid-btn swap" onclick={onSwap} {disabled} aria-label="Swap hands in sequence">
-        <div class="btn-icon"><i class="fas fa-arrows-rotate" aria-hidden="true"></i></div>
+      <button
+        class="grid-btn swap"
+        onclick={onSwap}
+        {disabled}
+        aria-label="Swap hands in sequence"
+      >
+        <div class="btn-icon">
+          <i class="fas fa-arrows-rotate" aria-hidden="true"></i>
+        </div>
         <div class="btn-text">
           <span class="btn-label">Swap</span>
           <span class="btn-desc">Switch hands</span>
         </div>
       </button>
-      <button class="grid-btn invert" onclick={onInvert} {disabled} aria-label="Invert sequence: reverse turn directions">
-        <div class="btn-icon"><i class="fas fa-repeat" aria-hidden="true"></i></div>
+      <button
+        class="grid-btn invert"
+        onclick={onInvert}
+        {disabled}
+        aria-label="Invert sequence: reverse turn directions"
+      >
+        <div class="btn-icon">
+          <i class="fas fa-repeat" aria-hidden="true"></i>
+        </div>
         <div class="btn-text">
           <span class="btn-label">Invert</span>
           <span class="btn-desc">Reverse turns</span>
         </div>
       </button>
-      <button class="grid-btn rotate-ccw" onclick={onRotateCCW} {disabled} aria-label="Rotate sequence left 45 degrees">
-        <div class="btn-icon"><i class="fas fa-rotate-left" aria-hidden="true"></i></div>
+      <button
+        class="grid-btn rotate-ccw"
+        onclick={onRotateCCW}
+        {disabled}
+        aria-label="Rotate sequence left 45 degrees"
+      >
+        <div class="btn-icon">
+          <i class="fas fa-rotate-left" aria-hidden="true"></i>
+        </div>
         <div class="btn-text">
           <span class="btn-label">Rotate L</span>
           <span class="btn-desc">Pivot 45°</span>
         </div>
       </button>
-      <button class="grid-btn rotate-cw" onclick={onRotateCW} {disabled} aria-label="Rotate sequence right 45 degrees">
-        <div class="btn-icon"><i class="fas fa-rotate-right" aria-hidden="true"></i></div>
+      <button
+        class="grid-btn rotate-cw"
+        onclick={onRotateCW}
+        {disabled}
+        aria-label="Rotate sequence right 45 degrees"
+      >
+        <div class="btn-icon">
+          <i class="fas fa-rotate-right" aria-hidden="true"></i>
+        </div>
         <div class="btn-text">
           <span class="btn-label">Rotate R</span>
           <span class="btn-desc">Pivot 45°</span>
@@ -145,7 +193,9 @@
         disabled={!hasSequence}
         aria-label="Apply turn pattern to sequence"
       >
-        <div class="btn-icon"><i class="fas fa-wand-magic-sparkles" aria-hidden="true"></i></div>
+        <div class="btn-icon">
+          <i class="fas fa-wand-magic-sparkles" aria-hidden="true"></i>
+        </div>
         <div class="btn-text">
           <span class="btn-label">Turn Pattern</span>
           <span class="btn-desc">Apply patterns</span>
@@ -157,7 +207,9 @@
         disabled={!hasSequence}
         aria-label="Apply rotation direction pattern (clockwise or counter-clockwise)"
       >
-        <div class="btn-icon"><i class="fas fa-compass" aria-hidden="true"></i></div>
+        <div class="btn-icon">
+          <i class="fas fa-compass" aria-hidden="true"></i>
+        </div>
         <div class="btn-text">
           <span class="btn-label">Direction</span>
           <span class="btn-desc">CW/CCW patterns</span>
@@ -168,7 +220,9 @@
           class="grid-btn extend"
           onclick={onExtend}
           disabled={!hasSequence || isExtending}
-          aria-label={isExtending ? "Extending sequence" : "Extend sequence back to starting position"}
+          aria-label={isExtending
+            ? "Extending sequence"
+            : "Extend sequence back to starting position"}
         >
           <div class="btn-icon">
             {#if isExtending}
@@ -178,9 +232,7 @@
             {/if}
           </div>
           <div class="btn-text">
-            <span class="btn-label"
-              >{isExtending ? "..." : "Extend"}</span
-            >
+            <span class="btn-label">{isExtending ? "..." : "Extend"}</span>
             <span class="btn-desc">Complete to start</span>
           </div>
         </button>
@@ -202,8 +254,15 @@
           </div>
         </button>
       {/if}
-      <button class="grid-btn rewind" onclick={onRewind} {disabled} aria-label="Rewind: add reversed sequence to the end">
-        <div class="btn-icon"><i class="fas fa-backward" aria-hidden="true"></i></div>
+      <button
+        class="grid-btn rewind"
+        onclick={onRewind}
+        {disabled}
+        aria-label="Rewind: add reversed sequence to the end"
+      >
+        <div class="btn-icon">
+          <i class="fas fa-backward" aria-hidden="true"></i>
+        </div>
         <div class="btn-text">
           <span class="btn-label">Rewind</span>
           <span class="btn-desc">Add reverse to end</span>
@@ -221,9 +280,13 @@
         class:highlighted={hasSelection}
         onclick={onTurns}
         disabled={!hasSelection}
-        aria-label={hasSelection ? "Edit turns for selected beat" : "Edit turns: select a beat first"}
+        aria-label={hasSelection
+          ? "Edit turns for selected beat"
+          : "Edit turns: select a beat first"}
       >
-        <div class="btn-icon"><i class="fas fa-sliders-h" aria-hidden="true"></i></div>
+        <div class="btn-icon">
+          <i class="fas fa-sliders-h" aria-hidden="true"></i>
+        </div>
         <div class="btn-text">
           <span class="btn-label">Edit Turns</span>
           <span class="btn-desc"
@@ -239,7 +302,9 @@
           data-testid="edit-in-constructor"
           aria-label="Open sequence in constructor for full editing"
         >
-          <div class="btn-icon"><i class="fas fa-pen-to-square" aria-hidden="true"></i></div>
+          <div class="btn-icon">
+            <i class="fas fa-pen-to-square" aria-hidden="true"></i>
+          </div>
           <div class="btn-text">
             <span class="btn-label">Constructor</span>
             <span class="btn-desc">Full editor</span>
@@ -400,21 +465,44 @@
     }
   }
 
-
   /* ===== BUTTON COLORS - CSS custom properties for each button ===== */
-  .grid-btn.mirror { --btn-color: 139, 92, 246; }       /* Purple */
-  .grid-btn.flip { --btn-color: 99, 102, 241; }         /* Indigo */
-  .grid-btn.swap { --btn-color: 16, 185, 129; }         /* Emerald */
-  .grid-btn.invert { --btn-color: 245, 158, 11; }       /* Amber */
+  .grid-btn.mirror {
+    --btn-color: 139, 92, 246;
+  } /* Purple */
+  .grid-btn.flip {
+    --btn-color: 99, 102, 241;
+  } /* Indigo */
+  .grid-btn.swap {
+    --btn-color: 16, 185, 129;
+  } /* Emerald */
+  .grid-btn.invert {
+    --btn-color: 245, 158, 11;
+  } /* Amber */
   .grid-btn.rotate-ccw,
-  .grid-btn.rotate-cw { --btn-color: 249, 115, 22; }    /* Orange */
-  .grid-btn.rewind { --btn-color: 244, 63, 94; }        /* Rose */
-  .grid-btn.turn-pattern { --btn-color: 20, 184, 166; } /* Teal */
-  .grid-btn.direction { --btn-color: 14, 165, 233; }    /* Sky */
-  .grid-btn.extend { --btn-color: 34, 197, 94; }        /* Green */
-  .grid-btn.shift-start { --btn-color: 6, 182, 212; }   /* Cyan */
-  .grid-btn.edit-turns { --btn-color: 59, 130, 246; }   /* Blue */
-  .grid-btn.constructor { --btn-color: 124, 58, 237; }  /* Violet */
+  .grid-btn.rotate-cw {
+    --btn-color: 249, 115, 22;
+  } /* Orange */
+  .grid-btn.rewind {
+    --btn-color: 244, 63, 94;
+  } /* Rose */
+  .grid-btn.turn-pattern {
+    --btn-color: 20, 184, 166;
+  } /* Teal */
+  .grid-btn.direction {
+    --btn-color: 14, 165, 233;
+  } /* Sky */
+  .grid-btn.extend {
+    --btn-color: 34, 197, 94;
+  } /* Green */
+  .grid-btn.shift-start {
+    --btn-color: 6, 182, 212;
+  } /* Cyan */
+  .grid-btn.edit-turns {
+    --btn-color: 59, 130, 246;
+  } /* Blue */
+  .grid-btn.constructor {
+    --btn-color: 124, 58, 237;
+  } /* Violet */
 
   /* ===== SHARED COLOR APPLICATION - applies --btn-color to all buttons ===== */
   .grid-btn[class] {

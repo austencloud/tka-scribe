@@ -29,9 +29,7 @@
   let hapticService: IHapticFeedback;
 
   onMount(() => {
-    hapticService = resolve<IHapticFeedback>(
-      TYPES.IHapticFeedback
-    );
+    hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
   });
 
   // Handle modal close
@@ -73,11 +71,7 @@
 <!-- Modal overlay -->
 {#if show}
   <!-- svelte-ignore a11y_no_static_element_interactions -->
-  <div
-    class="modal-overlay"
-    onclick={handleBackdropClick}
-    aria-hidden="true"
-  >
+  <div class="modal-overlay" onclick={handleBackdropClick} aria-hidden="true">
     <div
       class="modal-content"
       role="dialog"

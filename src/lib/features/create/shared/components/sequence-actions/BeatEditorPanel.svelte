@@ -227,7 +227,11 @@
             <i class="fa-solid fa-trash" aria-hidden="true"></i>
           </button>
         {/if}
-        <button class="icon-btn close" onclick={handleClose} aria-label="Close beat editor">
+        <button
+          class="icon-btn close"
+          onclick={handleClose}
+          aria-label="Close beat editor"
+        >
           <i class="fas fa-times" aria-hidden="true"></i>
         </button>
       </div>
@@ -388,7 +392,11 @@
   }
 
   .icon-btn.editor:hover {
-    background: linear-gradient(135deg, var(--semantic-warning), var(--semantic-warning));
+    background: linear-gradient(
+      135deg,
+      var(--semantic-warning),
+      var(--semantic-warning)
+    );
     transform: scale(1.05);
   }
 
@@ -409,11 +417,7 @@
       var(--semantic-warning) 0%,
       color-mix(in srgb, var(--semantic-warning) 80%, #ff0000) 100%
     );
-    border-color: color-mix(
-      in srgb,
-      var(--semantic-warning) 30%,
-      transparent
-    );
+    border-color: color-mix(in srgb, var(--semantic-warning) 30%, transparent);
     color: white;
   }
 

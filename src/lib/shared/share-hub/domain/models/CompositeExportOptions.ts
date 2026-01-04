@@ -5,8 +5,8 @@
  */
 
 export interface CompositeExportOptions {
-  orientation: 'horizontal' | 'vertical';
-  gridBeatSize: number;  // Size of each beat in the grid (pixels)
+  orientation: "horizontal" | "vertical";
+  gridBeatSize: number; // Size of each beat in the grid (pixels)
   includeStartPosition: boolean;
   showBeatNumbers: boolean;
   fps: number;
@@ -14,7 +14,7 @@ export interface CompositeExportOptions {
 }
 
 export const DEFAULT_COMPOSITE_OPTIONS: CompositeExportOptions = {
-  orientation: 'horizontal',
+  orientation: "horizontal",
   gridBeatSize: 120,
   includeStartPosition: true,
   showBeatNumbers: true,

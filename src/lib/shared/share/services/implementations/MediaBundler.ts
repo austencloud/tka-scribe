@@ -19,9 +19,7 @@ import { TYPES } from "../../../inversify/types";
 
 @injectable()
 export class MediaBundler implements IMediaBundler {
-  constructor(
-    @inject(TYPES.ISharer) private shareService: ISharer
-  ) {}
+  constructor(@inject(TYPES.ISharer) private shareService: ISharer) {}
 
   /**
    * Bundle sequence into Instagram media items

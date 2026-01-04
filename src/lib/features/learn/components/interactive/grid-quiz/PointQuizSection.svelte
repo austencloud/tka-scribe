@@ -39,10 +39,42 @@ PointQuizSection - Click on the correct grid point
   <div class="grid-display interactive">
     <svg viewBox="0 0 100 100" class="quiz-grid clickable">
       <!-- All grid lines -->
-      <line x1="50" y1="15" x2="50" y2="85" stroke="white" stroke-width="0.5" opacity="0.2" />
-      <line x1="15" y1="50" x2="85" y2="50" stroke="white" stroke-width="0.5" opacity="0.2" />
-      <line x1="25" y1="25" x2="75" y2="75" stroke="white" stroke-width="0.5" opacity="0.2" />
-      <line x1="75" y1="25" x2="25" y2="75" stroke="white" stroke-width="0.5" opacity="0.2" />
+      <line
+        x1="50"
+        y1="15"
+        x2="50"
+        y2="85"
+        stroke="white"
+        stroke-width="0.5"
+        opacity="0.2"
+      />
+      <line
+        x1="15"
+        y1="50"
+        x2="85"
+        y2="50"
+        stroke="white"
+        stroke-width="0.5"
+        opacity="0.2"
+      />
+      <line
+        x1="25"
+        y1="25"
+        x2="75"
+        y2="75"
+        stroke="white"
+        stroke-width="0.5"
+        opacity="0.2"
+      />
+      <line
+        x1="75"
+        y1="25"
+        x2="25"
+        y2="75"
+        stroke="white"
+        stroke-width="0.5"
+        opacity="0.2"
+      />
 
       <!-- Clickable points -->
       {#each Object.entries(ALL_GRID_POINTS) as [dir, point]}
@@ -59,25 +91,50 @@ PointQuizSection - Click on the correct grid point
             class:incorrect={showIncorrect}
             class:reveal={revealCorrect}
             onclick={() => onPointClick(dir)}
-            onkeydown={(e) => (e.key === "Enter" || e.key === " ") && onPointClick(dir)}
+            onkeydown={(e) =>
+              (e.key === "Enter" || e.key === " ") && onPointClick(dir)}
             role="button"
             tabindex="0"
             aria-label="Point {dir}"
           >
             <!-- Hit area (larger, invisible) -->
-            <circle cx={point.x} cy={point.y} r="10" fill="transparent" class="hit-area" />
+            <circle
+              cx={point.x}
+              cy={point.y}
+              r="10"
+              fill="transparent"
+              class="hit-area"
+            />
             <!-- Glow effect -->
             {#if showCorrect || revealCorrect}
-              <circle cx={point.x} cy={point.y} r="8" fill="#50C878" opacity="0.3" class="glow" />
+              <circle
+                cx={point.x}
+                cy={point.y}
+                r="8"
+                fill="#50C878"
+                opacity="0.3"
+                class="glow"
+              />
             {:else if showIncorrect}
-              <circle cx={point.x} cy={point.y} r="8" fill="#FF4A4A" opacity="0.3" class="glow" />
+              <circle
+                cx={point.x}
+                cy={point.y}
+                r="8"
+                fill="#FF4A4A"
+                opacity="0.3"
+                class="glow"
+              />
             {/if}
             <!-- Main point -->
             <circle
               cx={point.x}
               cy={point.y}
               r="4"
-              fill={showCorrect || revealCorrect ? "#50C878" : showIncorrect ? "#FF4A4A" : "white"}
+              fill={showCorrect || revealCorrect
+                ? "#50C878"
+                : showIncorrect
+                  ? "#FF4A4A"
+                  : "white"}
               class="main-point"
             />
             <!-- Label on reveal -->
@@ -113,7 +170,10 @@ PointQuizSection - Click on the correct grid point
       {#if answerState === "correct"}
         <span>Correct! That's the {question.direction} point.</span>
       {:else}
-        <span>Not quite! The <strong>{question.direction}</strong> point is highlighted in green.</span>
+        <span
+          >Not quite! The <strong>{question.direction}</strong> point is highlighted
+          in green.</span
+        >
       {/if}
     </div>
   {/if}
@@ -207,15 +267,28 @@ PointQuizSection - Click on the correct grid point
   }
 
   @keyframes correctPop {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.5); }
-    100% { transform: scale(1); }
+    0% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.5);
+    }
+    100% {
+      transform: scale(1);
+    }
   }
 
   @keyframes shake {
-    0%, 100% { transform: translateX(0); }
-    25% { transform: translateX(-3px); }
-    75% { transform: translateX(3px); }
+    0%,
+    100% {
+      transform: translateX(0);
+    }
+    25% {
+      transform: translateX(-3px);
+    }
+    75% {
+      transform: translateX(3px);
+    }
   }
 
   .point-label {
@@ -227,8 +300,13 @@ PointQuizSection - Click on the correct grid point
   }
 
   @keyframes pulse {
-    0%, 100% { opacity: 0.3; }
-    50% { opacity: 0.5; }
+    0%,
+    100% {
+      opacity: 0.3;
+    }
+    50% {
+      opacity: 0.5;
+    }
   }
 
   .feedback {

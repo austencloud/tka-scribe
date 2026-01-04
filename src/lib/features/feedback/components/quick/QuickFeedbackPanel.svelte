@@ -170,11 +170,7 @@
     --accent: var(--theme-accent-strong);
     --text-primary: var(--theme-text);
     --text-secondary: var(--theme-text-dim);
-    --text-muted: color-mix(
-      in srgb,
-      var(--theme-text-dim) 80%,
-      transparent
-    );
+    --text-muted: color-mix(in srgb, var(--theme-text-dim) 80%, transparent);
     --border-subtle: var(--theme-stroke, var(--theme-stroke));
     --bg-subtle: var(--theme-card-bg);
     --bg-hover: var(--theme-card-hover-bg);
@@ -365,11 +361,7 @@
   }
 
   .panel-body::-webkit-scrollbar-thumb:hover {
-    background: color-mix(
-      in srgb,
-      var(--theme-text-dim) 60%,
-      transparent
-    );
+    background: color-mix(in srgb, var(--theme-text-dim) 60%, transparent);
   }
 
   /* ═══════════════════════════════════════════════════════════════════════════

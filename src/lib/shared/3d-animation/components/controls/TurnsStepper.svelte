@@ -44,9 +44,11 @@
 
   // Format display value
   const displayValue = $derived(
-    value === 0 ? "0" :
-    value === Math.floor(value) ? value.toString() :
-    value.toFixed(1)
+    value === 0
+      ? "0"
+      : value === Math.floor(value)
+        ? value.toString()
+        : value.toFixed(1)
   );
 </script>
 

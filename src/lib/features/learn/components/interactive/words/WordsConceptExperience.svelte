@@ -18,9 +18,7 @@ Orchestrator component that manages page navigation and state
     onComplete?: () => void;
   }>();
 
-  const hapticService = resolve<IHapticFeedback>(
-    TYPES.IHapticFeedback
-  );
+  const hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
 
   let currentPage = $state(1);
   const totalPages = 5;

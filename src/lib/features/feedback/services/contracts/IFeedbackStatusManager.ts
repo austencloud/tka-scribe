@@ -35,7 +35,9 @@ export interface IFeedbackStatusManager {
    */
   updateFeedback(
     feedbackId: string,
-    updates: Partial<Pick<FeedbackItem, "type" | "title" | "description" | "priority">>
+    updates: Partial<
+      Pick<FeedbackItem, "type" | "title" | "description" | "priority">
+    >
   ): Promise<void>;
 
   /**

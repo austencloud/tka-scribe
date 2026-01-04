@@ -42,9 +42,7 @@
   let hasNativeShare = $state(false);
 
   onMount(async () => {
-    mediaBundlerService = await resolve<IMediaBundler>(
-      TYPES.IMediaBundler
-    );
+    mediaBundlerService = await resolve<IMediaBundler>(TYPES.IMediaBundler);
     // Check if Web Share API is available (mobile devices)
     hasNativeShare =
       navigator.share !== undefined && navigator.canShare !== undefined;

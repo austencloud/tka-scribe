@@ -28,7 +28,8 @@ type IdleCallbackFn = (deadline?: IdleDeadline) => void;
 /**
  * Check if requestIdleCallback is available
  */
-const hasIdleCallback = typeof window !== "undefined" && "requestIdleCallback" in window;
+const hasIdleCallback =
+  typeof window !== "undefined" && "requestIdleCallback" in window;
 
 /**
  * Polyfill for requestIdleCallback
@@ -42,7 +43,9 @@ function requestIdleCallbackPolyfill(
 
   return window.setTimeout(() => {
     callback({
-      didTimeout: options?.timeout ? Date.now() - start >= options.timeout : false,
+      didTimeout: options?.timeout
+        ? Date.now() - start >= options.timeout
+        : false,
       timeRemaining: () => Math.max(0, 50 - (Date.now() - start)),
     });
   }, 1);
@@ -58,7 +61,10 @@ function cancelIdleCallbackPolyfill(id: number): void {
 /**
  * Run a callback when the browser is idle
  */
-export function runWhenIdle(callback: IdleCallbackFn, options?: IdleCallbackOptions): number {
+export function runWhenIdle(
+  callback: IdleCallbackFn,
+  options?: IdleCallbackOptions
+): number {
   if (typeof window === "undefined") {
     // SSR: run immediately
     callback();
@@ -66,10 +72,11 @@ export function runWhenIdle(callback: IdleCallbackFn, options?: IdleCallbackOpti
   }
 
   if (hasIdleCallback) {
-    return (window as Window & { requestIdleCallback: typeof requestIdleCallbackPolyfill }).requestIdleCallback(
-      callback,
-      { timeout: options?.timeout ?? 2000 }
-    );
+    return (
+      window as Window & {
+        requestIdleCallback: typeof requestIdleCallbackPolyfill;
+      }
+    ).requestIdleCallback(callback, { timeout: options?.timeout ?? 2000 });
   }
 
   return requestIdleCallbackPolyfill(callback, options);
@@ -82,7 +89,11 @@ export function cancelIdle(id: number): void {
   if (typeof window === "undefined") return;
 
   if (hasIdleCallback) {
-    (window as Window & { cancelIdleCallback: typeof cancelIdleCallbackPolyfill }).cancelIdleCallback(id);
+    (
+      window as Window & {
+        cancelIdleCallback: typeof cancelIdleCallbackPolyfill;
+      }
+    ).cancelIdleCallback(id);
   } else {
     cancelIdleCallbackPolyfill(id);
   }
@@ -96,17 +107,14 @@ export function runWhenIdleAsync<T>(
   options?: IdleCallbackOptions
 ): Promise<T> {
   return new Promise((resolve, reject) => {
-    runWhenIdle(
-      async () => {
-        try {
-          const result = await callback();
-          resolve(result);
-        } catch (error) {
-          reject(error);
-        }
-      },
-      options
-    );
+    runWhenIdle(async () => {
+      try {
+        const result = await callback();
+        resolve(result);
+      } catch (error) {
+        reject(error);
+      }
+    }, options);
   });
 }
 
@@ -137,15 +145,18 @@ export async function processInIdleChunks<T, R>(
   }
 
   for (const chunk of chunks) {
-    await runWhenIdleAsync(async () => {
-      for (const item of chunk) {
-        const result = await processor(item);
-        results.push(result);
-        processed++;
-      }
+    await runWhenIdleAsync(
+      async () => {
+        for (const item of chunk) {
+          const result = await processor(item);
+          results.push(result);
+          processed++;
+        }
 
-      options?.onProgress?.(processed, items.length);
-    }, { timeout });
+        options?.onProgress?.(processed, items.length);
+      },
+      { timeout }
+    );
   }
 
   return results;
@@ -155,7 +166,10 @@ export async function processInIdleChunks<T, R>(
  * Defer non-critical initialization until idle
  * Good for analytics, prefetching, etc.
  */
-export function deferInit(initFn: () => void | Promise<void>, label?: string): void {
+export function deferInit(
+  initFn: () => void | Promise<void>,
+  label?: string
+): void {
   runWhenIdle(
     async () => {
       const start = performance.now();

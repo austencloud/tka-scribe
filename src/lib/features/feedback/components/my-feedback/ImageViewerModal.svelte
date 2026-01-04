@@ -58,7 +58,12 @@
   onclick={handleBackdropClick}
 >
   {#if images.length > 0}
-    <div class="viewer-container" role="dialog" aria-modal="true" aria-label="Image viewer">
+    <div
+      class="viewer-container"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Image viewer"
+    >
       <!-- Close button -->
       <button
         class="close-btn"

@@ -1,5 +1,5 @@
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import { json } from "@sveltejs/kit";
+import type { RequestHandler } from "./$types";
 
 /**
  * Digital Asset Links for Android TWA (Trusted Web Activity)
@@ -13,24 +13,24 @@ import type { RequestHandler } from './$types';
  */
 
 const SHA256_FINGERPRINT =
-	'74:B7:8B:7B:F0:C7:9D:1B:F3:FB:A4:0E:14:F4:25:5B:86:CE:EC:6F:6E:BA:04:9B:18:11:23:67:59:83:F6:B5';
+  "74:B7:8B:7B:F0:C7:9D:1B:F3:FB:A4:0E:14:F4:25:5B:86:CE:EC:6F:6E:BA:04:9B:18:11:23:67:59:83:F6:B5";
 
 export const GET: RequestHandler = async () => {
-	const assetLinks = [
-		{
-			relation: ['delegate_permission/common.handle_all_urls'],
-			target: {
-				namespace: 'android_app',
-				package_name: 'com.tkascribe.app',
-				sha256_cert_fingerprints: [SHA256_FINGERPRINT]
-			}
-		}
-	];
+  const assetLinks = [
+    {
+      relation: ["delegate_permission/common.handle_all_urls"],
+      target: {
+        namespace: "android_app",
+        package_name: "com.tkascribe.app",
+        sha256_cert_fingerprints: [SHA256_FINGERPRINT],
+      },
+    },
+  ];
 
-	return json(assetLinks, {
-		headers: {
-			'Content-Type': 'application/json',
-			'Cache-Control': 'public, max-age=86400' // Cache for 24 hours
-		}
-	});
+  return json(assetLinks, {
+    headers: {
+      "Content-Type": "application/json",
+      "Cache-Control": "public, max-age=86400", // Cache for 24 hours
+    },
+  });
 };

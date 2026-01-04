@@ -10,12 +10,12 @@
 import type {
   StaticSettings,
   AnimationSettings,
-  PerformanceSettings
-} from '../../state/share-hub-state.svelte';
+  PerformanceSettings,
+} from "../../state/share-hub-state.svelte";
 
 /** Export settings payload - contains format-specific settings */
 export interface ExportSettings {
-  format: 'animation' | 'static' | 'performance';
+  format: "animation" | "static" | "performance";
   staticSettings?: StaticSettings;
   animationSettings?: AnimationSettings;
   performanceSettings?: PerformanceSettings;

@@ -21,7 +21,7 @@
    * Domain: Create module - Share Hub Coordination
    */
 
-  import { onMount, onDestroy } from 'svelte';
+  import { onMount, onDestroy } from "svelte";
   import ShareHubDrawer from "$lib/shared/share-hub/components/ShareHubDrawer.svelte";
   import type { ExportSettings } from "$lib/shared/share-hub/domain/models/ExportSettings";
   import SaveToLibraryPanel from "../SaveToLibraryPanel.svelte";
@@ -40,15 +40,29 @@
 
   // Animation imports
   import type { IAnimationPlaybackController } from "$lib/features/compose/services/contracts/IAnimationPlaybackController";
-  import type { IVideoExportOrchestrator, VideoExportProgress } from "$lib/features/compose/services/contracts/IVideoExportOrchestrator";
+  import type {
+    IVideoExportOrchestrator,
+    VideoExportProgress,
+  } from "$lib/features/compose/services/contracts/IVideoExportOrchestrator";
   import type { IVideoExporter } from "$lib/features/compose/services/contracts/IVideoExporter";
   import type { ISequenceLoopabilityChecker } from "$lib/features/compose/services/contracts/ISequenceLoopabilityChecker";
   import type { ISequenceRepository } from "$lib/features/create/shared/services/contracts/ISequenceRepository";
-  import type { ISheetRouter, AnimationPanelState as URLAnimationState } from "$lib/shared/navigation/services/contracts/ISheetRouter";
+  import type {
+    ISheetRouter,
+    AnimationPanelState as URLAnimationState,
+  } from "$lib/shared/navigation/services/contracts/ISheetRouter";
   import type { IResponsiveLayoutManager } from "$lib/features/create/shared/services/contracts/IResponsiveLayoutManager";
-  import { createAnimationPanelState, type PlaybackMode, type StepPlaybackStepSize } from "$lib/features/compose/state/animation-panel-state.svelte";
+  import {
+    createAnimationPanelState,
+    type PlaybackMode,
+    type StepPlaybackStepSize,
+  } from "$lib/features/compose/state/animation-panel-state.svelte";
   import { setAnimationPlaybackRef } from "$lib/shared/coordinators/animation-playback-ref.svelte";
-  import { ANIMATION_LOAD_DELAY_MS, ANIMATION_AUTO_START_DELAY_MS, VIDEO_EXPORT_SUCCESS_DELAY_MS } from "$lib/features/compose/shared/domain/constants/timing";
+  import {
+    ANIMATION_LOAD_DELAY_MS,
+    ANIMATION_AUTO_START_DELAY_MS,
+    VIDEO_EXPORT_SUCCESS_DELAY_MS,
+  } from "$lib/features/compose/shared/domain/constants/timing";
   import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
   import { getVisibilityStateManager } from "$lib/shared/pictograph/shared/state/visibility-state.svelte";
   import { MotionColor } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
@@ -80,14 +94,18 @@
 
   // Local reactive state for animation (polling workaround for state factory)
   let isPlayingLocal = $state(false);
-  let playbackModeLocal = $state<PlaybackMode>('continuous');
+  let playbackModeLocal = $state<PlaybackMode>("continuous");
   let stepPlaybackPauseMsLocal = $state(300);
   let stepPlaybackStepSizeLocal = $state<StepPlaybackStepSize>(1);
 
   // Visibility state management
   const visibilityManager = getVisibilityStateManager();
-  let blueMotionVisible = $state(visibilityManager.getMotionVisibility(MotionColor.BLUE));
-  let redMotionVisible = $state(visibilityManager.getMotionVisibility(MotionColor.RED));
+  let blueMotionVisible = $state(
+    visibilityManager.getMotionVisibility(MotionColor.BLUE)
+  );
+  let redMotionVisible = $state(
+    visibilityManager.getMotionVisibility(MotionColor.RED)
+  );
   let savedMotionVisibility: { blue: boolean; red: boolean } | null = null;
 
   // Layout detection
@@ -125,17 +143,22 @@
   }
 
   // Detect if we're on mobile (for share vs download behavior)
-  const platform = platformService?.detectPlatform() ?? 'desktop';
-  const isMobile = platform === 'ios' || platform === 'android';
+  const platform = platformService?.detectPlatform() ?? "desktop";
+  const isMobile = platform === "ios" || platform === "android";
 
   // State
   let showSaveToLibrary = $state(false);
-  let pendingExport = $state<{ mode: 'single' | 'composite'; settings?: ExportSettings } | null>(null);
+  let pendingExport = $state<{
+    mode: "single" | "composite";
+    settings?: ExportSettings;
+  } | null>(null);
   let isExporting = $state(false);
   let exportProgress = $state<VideoExportProgress | null>(null);
 
   // Track selected format for animation loading
-  let selectedFormat = $state<'animation' | 'static' | 'performance'>('animation');
+  let selectedFormat = $state<"animation" | "static" | "performance">(
+    "animation"
+  );
 
   // Handle requested format from keyboard shortcut or external trigger
   $effect(() => {
@@ -178,8 +201,13 @@
     if (animationPanelState.sequenceData.beats?.length > 0) {
       const beatNumber = Math.ceil(currentBeat - 1);
       const beatIndex = Math.max(0, beatNumber - 1);
-      const clampedIndex = Math.min(beatIndex, animationPanelState.sequenceData.beats.length - 1);
-      return animationPanelState.sequenceData.beats[clampedIndex]?.letter || null;
+      const clampedIndex = Math.min(
+        beatIndex,
+        animationPanelState.sequenceData.beats.length - 1
+      );
+      return (
+        animationPanelState.sequenceData.beats[clampedIndex]?.letter || null
+      );
     }
     return null;
   });
@@ -194,7 +222,10 @@
     if (animationPanelState.sequenceData.beats?.length > 0) {
       const beatNumber = Math.ceil(currentBeat - 1);
       const beatIndex = Math.max(0, beatNumber - 1);
-      const clampedIndex = Math.min(beatIndex, animationPanelState.sequenceData.beats.length - 1);
+      const clampedIndex = Math.min(
+        beatIndex,
+        animationPanelState.sequenceData.beats.length - 1
+      );
       return animationPanelState.sequenceData.beats[clampedIndex] || null;
     }
     return null;
@@ -210,8 +241,10 @@
 
       if (currentPlaying !== isPlayingLocal) isPlayingLocal = currentPlaying;
       if (currentMode !== playbackModeLocal) playbackModeLocal = currentMode;
-      if (currentPauseMs !== stepPlaybackPauseMsLocal) stepPlaybackPauseMsLocal = currentPauseMs;
-      if (currentStepSize !== stepPlaybackStepSizeLocal) stepPlaybackStepSizeLocal = currentStepSize;
+      if (currentPauseMs !== stepPlaybackPauseMsLocal)
+        stepPlaybackPauseMsLocal = currentPauseMs;
+      if (currentStepSize !== stepPlaybackStepSizeLocal)
+        stepPlaybackStepSizeLocal = currentStepSize;
     };
     checkState();
     const interval = setInterval(checkState, 50);
@@ -221,17 +254,23 @@
   // Sync visibility state from visibility manager
   $effect(() => {
     const updateVisibility = () => {
-      blueMotionVisible = visibilityManager.getMotionVisibility(MotionColor.BLUE);
+      blueMotionVisible = visibilityManager.getMotionVisibility(
+        MotionColor.BLUE
+      );
       redMotionVisible = visibilityManager.getMotionVisibility(MotionColor.RED);
     };
 
-    visibilityManager.registerObserver(updateVisibility, ['motion']);
+    visibilityManager.registerObserver(updateVisibility, ["motion"]);
     return () => visibilityManager.unregisterObserver(updateVisibility);
   });
 
   // Save visibility state when Share Hub opens, restore when it closes
   $effect(() => {
-    if (panelState.isShareHubPanelOpen && selectedFormat === 'animation' && savedMotionVisibility === null) {
+    if (
+      panelState.isShareHubPanelOpen &&
+      selectedFormat === "animation" &&
+      savedMotionVisibility === null
+    ) {
       savedMotionVisibility = visibilityManager.saveMotionVisibilityState();
     }
   });
@@ -245,19 +284,31 @@
 
   // Lazy load animation services when Animation format selected
   $effect(() => {
-    if (selectedFormat === 'animation' && panelState.isShareHubPanelOpen && !animationServicesReady) {
+    if (
+      selectedFormat === "animation" &&
+      panelState.isShareHubPanelOpen &&
+      !animationServicesReady
+    ) {
       loadAnimationServices();
     }
   });
 
   async function loadAnimationServices() {
     try {
-      await loadFeatureModule('animate');
-      playbackController = resolve<IAnimationPlaybackController>(TYPES.IAnimationPlaybackController);
-      videoExportOrchestrator = resolve<IVideoExportOrchestrator>(TYPES.IVideoExportOrchestrator);
+      await loadFeatureModule("animate");
+      playbackController = resolve<IAnimationPlaybackController>(
+        TYPES.IAnimationPlaybackController
+      );
+      videoExportOrchestrator = resolve<IVideoExportOrchestrator>(
+        TYPES.IVideoExportOrchestrator
+      );
       videoExporter = resolve<IVideoExporter>(TYPES.IVideoExporter);
-      loopabilityChecker = resolve<ISequenceLoopabilityChecker>(TYPES.ISequenceLoopabilityChecker);
-      layoutService = resolve<IResponsiveLayoutManager>(TYPES.IResponsiveLayoutManager);
+      loopabilityChecker = resolve<ISequenceLoopabilityChecker>(
+        TYPES.ISequenceLoopabilityChecker
+      );
+      layoutService = resolve<IResponsiveLayoutManager>(
+        TYPES.IResponsiveLayoutManager
+      );
       setAnimationPlaybackRef(playbackController);
 
       // Update layout detection
@@ -266,28 +317,29 @@
       }
 
       animationServicesReady = true;
-      console.log('✅ Animation services loaded for Share Hub');
+      console.log("✅ Animation services loaded for Share Hub");
     } catch (error) {
-      console.error('❌ Failed to load animation services:', error);
-      animationPanelState.setError('Failed to load animation services');
+      console.error("❌ Failed to load animation services:", error);
+      animationPanelState.setError("Failed to load animation services");
     }
   }
 
   // Initialize animation when services ready and sequence available
   $effect(() => {
     // Only initialize if we're actually in the Create module
-    const isInCreateModule = navigationState.currentModule === 'create';
+    const isInCreateModule = navigationState.currentModule === "create";
 
     if (
       isInCreateModule &&
-      selectedFormat === 'animation' &&
+      selectedFormat === "animation" &&
       panelState.isShareHubPanelOpen &&
       animationServicesReady &&
       currentSequence &&
       playbackController &&
       sequenceService
     ) {
-      const sequenceId = currentSequence.id || currentSequence.word || 'unknown';
+      const sequenceId =
+        currentSequence.id || currentSequence.word || "unknown";
       if (sequenceId !== lastLoadedSequenceId) {
         initializeAnimation(currentSequence, sequenceId);
       }
@@ -304,12 +356,15 @@
     try {
       // Load and hydrate sequence data
       const loadedSequence = await loadSequenceData(seq);
-      if (!loadedSequence) throw new Error('Failed to load sequence');
+      if (!loadedSequence) throw new Error("Failed to load sequence");
 
       // Initialize playback
       animationPanelState.setShouldLoop(true);
-      const success = playbackController.initialize(loadedSequence, animationPanelState);
-      if (!success) throw new Error('Failed to initialize playback');
+      const success = playbackController.initialize(
+        loadedSequence,
+        animationPanelState
+      );
+      if (!success) throw new Error("Failed to initialize playback");
 
       lastLoadedSequenceId = sequenceId;
       animationPanelState.setSequenceData(loadedSequence);
@@ -319,19 +374,24 @@
         playbackController?.togglePlayback();
       }, ANIMATION_AUTO_START_DELAY_MS);
     } catch (err) {
-      console.error('❌ Failed to initialize animation:', err);
-      animationPanelState.setError(err instanceof Error ? err.message : 'Failed to load animation');
+      console.error("❌ Failed to initialize animation:", err);
+      animationPanelState.setError(
+        err instanceof Error ? err.message : "Failed to load animation"
+      );
     } finally {
       animationLoading = false;
       animationPanelState.setLoading(false);
     }
   }
 
-  async function loadSequenceData(sequence: SequenceData): Promise<SequenceData | null> {
+  async function loadSequenceData(
+    sequence: SequenceData
+  ): Promise<SequenceData | null> {
     if (!sequenceService) return sequence;
 
     const hasMotionData = (s: SequenceData) =>
-      Array.isArray(s.beats) && s.beats.length > 0 &&
+      Array.isArray(s.beats) &&
+      s.beats.length > 0 &&
       s.beats.some((beat) => beat?.motions?.blue && beat?.motions?.red);
 
     if (hasMotionData(sequence)) return sequence;
@@ -360,12 +420,16 @@
       if (sheetType === "animation") {
         // Open Share Hub with animation format if it's not already open
         if (!panelState.isShareHubPanelOpen) {
-          selectedFormat = 'animation';
-          panelState.openShareHubPanel('animation');
+          selectedFormat = "animation";
+          panelState.openShareHubPanel("animation");
         }
 
         // Restore animation state from URL if available
-        if (state.animationPanel && playbackController && animationServicesReady) {
+        if (
+          state.animationPanel &&
+          playbackController &&
+          animationServicesReady
+        ) {
           restoreAnimationState(state.animationPanel);
         }
       }
@@ -379,8 +443,8 @@
     // Check if animation panel should be open on initial load
     const initialState = sheetRouterService?.getCurrentAnimationPanelState();
     if (initialState) {
-      selectedFormat = 'animation';
-      panelState.openShareHubPanel('animation');
+      selectedFormat = "animation";
+      panelState.openShareHubPanel("animation");
     }
   });
 
@@ -388,14 +452,21 @@
    * Restore animation state from URL parameters
    * Only restores state on initial load, not during active playback
    */
-  function restoreAnimationState(urlState: { speed?: number; currentBeat?: number; isPlaying?: boolean }) {
+  function restoreAnimationState(urlState: {
+    speed?: number;
+    currentBeat?: number;
+    isPlaying?: boolean;
+  }) {
     if (!playbackController) return;
 
     // Don't restore beat position if animation is currently playing
     const isAnimationActive = animationPanelState.isPlaying;
 
     // Restore speed if specified (safe to do while playing)
-    if (urlState.speed !== undefined && urlState.speed !== animationPanelState.speed) {
+    if (
+      urlState.speed !== undefined &&
+      urlState.speed !== animationPanelState.speed
+    ) {
       playbackController.setSpeed(urlState.speed);
     }
 
@@ -409,7 +480,7 @@
   let previousIsOpen = panelState.isShareHubPanelOpen;
   $effect(() => {
     const isOpen = panelState.isShareHubPanelOpen;
-    if (!isRespondingToRouteChange && selectedFormat === 'animation') {
+    if (!isRespondingToRouteChange && selectedFormat === "animation") {
       if (isOpen && !previousIsOpen && currentSequence) {
         // Opening: Push new history entry with animation panel
         sheetRouterService?.openAnimationPanel({
@@ -442,12 +513,21 @@
   let previousPlaying = animationPanelState.isPlaying;
 
   $effect(() => {
-    if (panelState.isShareHubPanelOpen && currentSequence && !isRespondingToRouteChange && selectedFormat === 'animation') {
+    if (
+      panelState.isShareHubPanelOpen &&
+      currentSequence &&
+      !isRespondingToRouteChange &&
+      selectedFormat === "animation"
+    ) {
       const currentSpeed = animationPanelState.speed;
       const currentPlaying = animationPanelState.isPlaying;
 
-      if (currentSpeed !== previousSpeed || currentPlaying !== previousPlaying) {
-        const currentState = sheetRouterService?.getCurrentAnimationPanelState();
+      if (
+        currentSpeed !== previousSpeed ||
+        currentPlaying !== previousPlaying
+      ) {
+        const currentState =
+          sheetRouterService?.getCurrentAnimationPanelState();
         if (currentState !== null) {
           sheetRouterService?.updateAnimationPanelState({
             speed: currentSpeed,
@@ -525,9 +605,13 @@
     visibilityManager.setMotionVisibility(MotionColor.RED, !redMotionVisible);
   }
 
-  function handleFormatChange(format: 'animation' | 'static' | 'performance') {
+  function handleFormatChange(format: "animation" | "static" | "performance") {
     // Pause animation when switching away from Animation format
-    if (selectedFormat === 'animation' && format !== 'animation' && isPlayingLocal) {
+    if (
+      selectedFormat === "animation" &&
+      format !== "animation" &&
+      isPlayingLocal
+    ) {
       playbackController?.togglePlayback();
     }
     selectedFormat = format;
@@ -557,7 +641,10 @@
     panelState.closeShareHubPanel();
   }
 
-  async function handleExport(mode: 'single' | 'composite', settings?: ExportSettings) {
+  async function handleExport(
+    mode: "single" | "composite",
+    settings?: ExportSettings
+  ) {
     if (isExporting) return;
 
     // Check if sequence is saved
@@ -572,7 +659,10 @@
     await performExport(mode, settings);
   }
 
-  async function performExport(mode: 'single' | 'composite', settings?: ExportSettings) {
+  async function performExport(
+    mode: "single" | "composite",
+    settings?: ExportSettings
+  ) {
     if (!currentSequence) {
       showToast("No sequence to export", "error");
       return;
@@ -581,21 +671,21 @@
     isExporting = true;
 
     try {
-      if (mode === 'single' && settings) {
+      if (mode === "single" && settings) {
         switch (settings.format) {
-          case 'animation':
+          case "animation":
             await exportAnimation(settings);
             break;
-          case 'static':
+          case "static":
             await exportStatic(settings);
             break;
-          case 'performance':
+          case "performance":
             await exportPerformance(settings);
             break;
           default:
             throw new Error(`Unknown format: ${settings.format}`);
         }
-      } else if (mode === 'composite') {
+      } else if (mode === "composite") {
         // Composite export - TODO: implement full composite rendering
         showToast("Composite export coming soon!", "info");
         hapticService?.trigger("selection");
@@ -631,15 +721,15 @@
     // Use user's saved settings for export
     const shareOptions: ShareOptions = {
       ...DEFAULT_SHARE_OPTIONS,
-      format: 'PNG',
+      format: "PNG",
       quality: 1.0,
-      backgroundColor: '#FFFFFF',
+      backgroundColor: "#FFFFFF",
       includeStartPosition: compositionSettings.includeStartPosition,
       addBeatNumbers: compositionSettings.addBeatNumbers,
       addWord: compositionSettings.addWord,
       addUserInfo: compositionSettings.addUserInfo,
       addDifficultyLevel: compositionSettings.addDifficultyLevel,
-      userName: authState.user?.displayName ?? '',
+      userName: authState.user?.displayName ?? "",
     };
 
     // Use native share on mobile, download on desktop
@@ -656,7 +746,9 @@
     }
 
     if (!videoExportOrchestrator || !playbackController || !animationCanvas) {
-      throw new Error("Animation services not ready. Please wait for preview to load.");
+      throw new Error(
+        "Animation services not ready. Please wait for preview to load."
+      );
     }
 
     // Pause playback during export
@@ -671,19 +763,21 @@
         animationPanelState,
         (progress) => {
           exportProgress = progress;
-          if (progress.stage === 'error') {
-            showToast(progress.error || 'Export failed', 'error');
+          if (progress.stage === "error") {
+            showToast(progress.error || "Export failed", "error");
           }
         },
         {
-          filename: currentSequence.word || currentSequence.name || 'sequence',
+          filename: currentSequence.word || currentSequence.name || "sequence",
           fps: 50,
-          format: 'mp4',
+          format: "mp4",
         }
       );
 
       // Short delay before closing for success feedback
-      await new Promise(resolve => setTimeout(resolve, VIDEO_EXPORT_SUCCESS_DELAY_MS));
+      await new Promise((resolve) =>
+        setTimeout(resolve, VIDEO_EXPORT_SUCCESS_DELAY_MS)
+      );
     } finally {
       exportProgress = null;
     }
@@ -700,14 +794,14 @@
 
     // Check if sequence is saved first
     if (!isSequenceSaved) {
-      pendingExport = { mode: 'single', settings: { format: 'animation' } };
+      pendingExport = { mode: "single", settings: { format: "animation" } };
       showSaveToLibrary = true;
       hapticService?.trigger("selection");
       return;
     }
 
     // Proceed with animation export
-    await performExport('single', { format: 'animation' });
+    await performExport("single", { format: "animation" });
   }
 
   async function exportPerformance(settings: ExportSettings) {
@@ -737,7 +831,7 @@
 <ShareHubDrawer
   isOpen={panelState.isShareHubPanelOpen}
   sequence={currentSequence}
-  isSequenceSaved={isSequenceSaved}
+  {isSequenceSaved}
   {isMobile}
   onClose={handleClose}
   onExport={handleExport}
@@ -749,7 +843,7 @@
   animationRedPropState={animationPanelState.redPropState}
   {isCircular}
   {exportLoopCount}
-  isAnimationExporting={isExporting && selectedFormat === 'animation'}
+  isAnimationExporting={isExporting && selectedFormat === "animation"}
   animationExportProgress={exportProgress}
   {animationServicesReady}
   {animationLoading}

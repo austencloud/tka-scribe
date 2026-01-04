@@ -62,11 +62,13 @@ Note: RPM avatars have more detail (clothes, hair) - may need optimization.
 ## Option 3: Create in Blender (Full Control)
 
 ### Step 1: Model the Mesh
+
 - Create a simple humanoid mesh (low-poly is fine)
 - Use mirror modifier for symmetry
 - Apply modifiers before rigging
 
 ### Step 2: Create Armature
+
 ```python
 # Blender Python script to create humanoid armature
 import bpy
@@ -83,11 +85,13 @@ bpy.ops.object.mode_set(mode='EDIT')
 ```
 
 ### Step 3: Skin the Mesh
+
 1. Select mesh, then armature
 2. Ctrl+P → Armature Deform with Automatic Weights
 3. Fine-tune weights in Weight Paint mode
 
 ### Step 4: Export as GLTF
+
 1. File → Export → GLTF 2.0 (.glb/.gltf)
 2. Settings:
    - Format: GLB (binary)
@@ -105,11 +109,7 @@ any external model file.
 To switch from procedural to GLTF:
 
 ```svelte
-<Avatar3D
-  {bluePropState}
-  {redPropState}
-  modelUrl="/models/avatar.glb"
-/>
+<Avatar3D {bluePropState} {redPropState} modelUrl="/models/avatar.glb" />
 ```
 
 ## File Location
@@ -130,18 +130,22 @@ Access URL: `/models/tka-avatar.glb`
 ## Troubleshooting
 
 ### "No bones found"
+
 - Check bone naming matches aliases
 - Verify armature is exported with mesh
 
 ### "IK not working"
+
 - Ensure left/right arm chains are detected
 - Check bone hierarchy (arm → forearm → hand)
 
 ### "Avatar too big/small"
+
 - Use `skeletonService.setHeight(380)` to scale
 - 380 units = ~190cm (our scale: 1 unit = 0.5cm)
 
 ### "Arms not reaching targets"
+
 - Verify hand point radius (100 units = 50cm)
 - Check IK solver convergence threshold
 

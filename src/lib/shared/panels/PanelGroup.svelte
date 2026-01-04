@@ -101,7 +101,13 @@
     const startSize1 = dragStartSizes[index];
     const startSize2 = dragStartSizes[index + 1];
 
-    if (!panel1 || !panel2 || startSize1 === undefined || startSize2 === undefined) return;
+    if (
+      !panel1 ||
+      !panel2 ||
+      startSize1 === undefined ||
+      startSize2 === undefined
+    )
+      return;
 
     const minFlex1 = panel1.minSize ? panel1.minSize / pixelsPerFlex : 0.1;
     const minFlex2 = panel2.minSize ? panel2.minSize / pixelsPerFlex : 0.1;

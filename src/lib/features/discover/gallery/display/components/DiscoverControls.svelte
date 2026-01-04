@@ -22,9 +22,7 @@
   let hapticService: IHapticFeedback | null = $state(null);
 
   onMount(async () => {
-    hapticService = await resolve<IHapticFeedback>(
-      TYPES.IHapticFeedback
-    );
+    hapticService = await resolve<IHapticFeedback>(TYPES.IHapticFeedback);
   });
 
   // Sort options

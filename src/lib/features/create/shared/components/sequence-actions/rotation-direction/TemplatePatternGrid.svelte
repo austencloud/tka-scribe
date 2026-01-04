@@ -21,7 +21,9 @@
   let { beatCount, isMobile, onApplyTemplate }: Props = $props();
 
   // svelte-ignore state_referenced_locally
-  let categoryFilter = $state<TemplateCategory | "all">(isMobile ? "alternating" : "all");
+  let categoryFilter = $state<TemplateCategory | "all">(
+    isMobile ? "alternating" : "all"
+  );
 
   // Get all templates for the beat count, excluding uniform (handled separately)
   const allTemplates = $derived(getTemplatesForBeatCount(beatCount));
@@ -66,7 +68,8 @@
               onclick={() => (categoryFilter = category as TemplateCategory)}
               style="--filter-color: {info.color}"
             >
-              <span class="category-dot" style="background: {info.color}"></span>
+              <span class="category-dot" style="background: {info.color}"
+              ></span>
               {info.label}
             </button>
           {/if}
@@ -84,8 +87,12 @@
           {@const categoryInfo = getCategoryInfo(category as TemplateCategory)}
           {#if groupTemplates.length > 0}
             <div class="category-group">
-              <div class="group-header" style="--group-color: {categoryInfo.color}">
-                <span class="group-dot" style="background: {categoryInfo.color}"></span>
+              <div
+                class="group-header"
+                style="--group-color: {categoryInfo.color}"
+              >
+                <span class="group-dot" style="background: {categoryInfo.color}"
+                ></span>
                 <span class="group-label">{categoryInfo.label}</span>
               </div>
               <div class="patterns-list">
@@ -255,7 +262,8 @@
     align-items: center;
     gap: 8px;
     padding: 6px 0;
-    border-bottom: 1px solid color-mix(in srgb, var(--group-color, #fff) 25%, transparent);
+    border-bottom: 1px solid
+      color-mix(in srgb, var(--group-color, #fff) 25%, transparent);
   }
 
   .group-dot {
@@ -316,7 +324,8 @@
 
   .pattern-item.template {
     background: color-mix(in srgb, var(--glass-color, #fff) 8%, transparent);
-    border: 1px solid color-mix(in srgb, var(--glass-color, #fff) 20%, transparent);
+    border: 1px solid
+      color-mix(in srgb, var(--glass-color, #fff) 20%, transparent);
   }
 
   .pattern-item.template:hover {

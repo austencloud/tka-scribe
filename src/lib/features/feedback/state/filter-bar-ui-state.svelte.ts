@@ -8,7 +8,9 @@
 
 import type { FeedbackManageState } from "./feedback-manage-state.svelte";
 
-export function createFilterBarUIState(getManageState: () => FeedbackManageState) {
+export function createFilterBarUIState(
+  getManageState: () => FeedbackManageState
+) {
   // Mobile sheet state
   let isSheetOpen = $state(false);
   let isSheetAnimating = $state(false);

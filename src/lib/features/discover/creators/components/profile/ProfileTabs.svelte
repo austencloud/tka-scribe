@@ -41,9 +41,7 @@
   let hapticService: IHapticFeedback | undefined;
 
   onMount(() => {
-    hapticService = resolve<IHapticFeedback>(
-      TYPES.IHapticFeedback
-    );
+    hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
   });
 
   function handleSequenceClick(sequence: LibrarySequence) {
@@ -199,7 +197,8 @@
                 {user.followerCount}
               </span>
             </div>
-            <i class="fas fa-chevron-right user-list-arrow" aria-hidden="true"></i>
+            <i class="fas fa-chevron-right user-list-arrow" aria-hidden="true"
+            ></i>
           </button>
         {/each}
       </div>
@@ -239,7 +238,8 @@
                 {user.followerCount}
               </span>
             </div>
-            <i class="fas fa-chevron-right user-list-arrow" aria-hidden="true"></i>
+            <i class="fas fa-chevron-right user-list-arrow" aria-hidden="true"
+            ></i>
           </button>
         {/each}
       </div>
@@ -495,15 +495,10 @@
     justify-content: center;
     width: 60px;
     height: 60px;
-    background: color-mix(
-      in srgb,
-      var(--theme-accent) 20%,
-      transparent
-    );
+    background: color-mix(in srgb, var(--theme-accent) 20%, transparent);
     border-radius: 50%;
     flex-shrink: 0;
-    border: 2px solid
-      color-mix(in srgb, var(--theme-accent) 30%, transparent);
+    border: 2px solid color-mix(in srgb, var(--theme-accent) 30%, transparent);
   }
 
   .achievement-icon.tier-bronze {
@@ -583,11 +578,7 @@
   }
 
   .xp-badge {
-    background: color-mix(
-      in srgb,
-      var(--theme-accent) 20%,
-      transparent
-    );
+    background: color-mix(in srgb, var(--theme-accent) 20%, transparent);
     color: var(--theme-accent);
   }
 

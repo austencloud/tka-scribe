@@ -13,9 +13,7 @@
 
 <div class="empty-state">
   <p>No sequences to label with current filters.</p>
-  <button onclick={onShowAll}>
-    Show All Sequences
-  </button>
+  <button onclick={onShowAll}> Show All Sequences </button>
 </div>
 
 <style>

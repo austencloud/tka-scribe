@@ -14,15 +14,21 @@
   Domain: Share Hub - Composite Mode - Dual Preview
 -->
 <script lang="ts">
-  import { getShareHubState } from '../../state/share-hub-state.svelte';
-  import MediaPieceCard from './MediaPieceCard.svelte';
+  import { getShareHubState } from "../../state/share-hub-state.svelte";
+  import MediaPieceCard from "./MediaPieceCard.svelte";
 
   // FIX: Use 'hubState' instead of 'state' to avoid collision with $state rune
   const hubState = getShareHubState();
-  const isHorizontal = $derived(hubState.compositeLayout.orientation === 'horizontal');
+  const isHorizontal = $derived(
+    hubState.compositeLayout.orientation === "horizontal"
+  );
 </script>
 
-<div class="dual-preview" class:horizontal={isHorizontal} class:vertical={!isHorizontal}>
+<div
+  class="dual-preview"
+  class:horizontal={isHorizontal}
+  class:vertical={!isHorizontal}
+>
   <!-- Piece 1 (Left/Top) -->
   <div class="piece-container piece-1">
     <MediaPieceCard

@@ -238,11 +238,7 @@
   .reply-textarea {
     width: 100%;
     padding: 10px 12px;
-    background: color-mix(
-      in srgb,
-      var(--theme-panel-bg) 80%,
-      transparent
-    );
+    background: color-mix(in srgb, var(--theme-panel-bg) 80%, transparent);
     border: 1px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: 8px;
     color: var(--theme-text, var(--theme-text));
@@ -255,18 +251,18 @@
 
   .reply-textarea:focus {
     outline: none;
-    background: color-mix(
-      in srgb,
-      var(--theme-panel-bg) 90%,
-      transparent
-    );
+    background: color-mix(in srgb, var(--theme-panel-bg) 90%, transparent);
     border-color: color-mix(
       in srgb,
       var(--theme-accent, var(--semantic-info)) 60%,
       transparent
     );
     box-shadow: 0 0 0 3px
-      color-mix(in srgb, var(--theme-accent, var(--semantic-info)) 10%, transparent);
+      color-mix(
+        in srgb,
+        var(--theme-accent, var(--semantic-info)) 10%,
+        transparent
+      );
   }
 
   .reply-textarea:disabled {

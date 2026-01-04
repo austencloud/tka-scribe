@@ -42,7 +42,7 @@ export class SeoManager implements ISeoManager {
     canonicalUrl?: string;
   }): Record<string, string> {
     const {
-      title = "TKA Scribe - Flow Arts Choreography Tool",
+      title = "TKA Scribe - The Flow Arts Choreography Toolbox",
       description = "Create visual movement sequences with TKA Scribe using The Kinetic Alphabet notation system",
       keywords = [],
       ogImage,

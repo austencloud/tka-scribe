@@ -21,9 +21,19 @@
   import type { CameraPreset } from "./components/controls/CameraPresetBar.svelte";
   import { Plane } from "./domain/enums/Plane";
   import type { GridMode } from "./domain/constants/grid-layout";
-  import { createAvatarInstanceState, type AvatarInstanceState } from "./state/avatar-instance-state.svelte";
-  import { createAvatarSyncState, type AvatarSyncState } from "./state/avatar-sync-state.svelte";
-  import { getDefaultPositions, MAX_PERFORMERS, WALL_OFFSET } from "./utils/performer-positions";
+  import {
+    createAvatarInstanceState,
+    type AvatarInstanceState,
+  } from "./state/avatar-instance-state.svelte";
+  import {
+    createAvatarSyncState,
+    type AvatarSyncState,
+  } from "./state/avatar-sync-state.svelte";
+  import {
+    getDefaultPositions,
+    MAX_PERFORMERS,
+    WALL_OFFSET,
+  } from "./utils/performer-positions";
   import PerformerManager from "./components/panels/PerformerManager.svelte";
   import AvatarSyncControls from "./components/panels/AvatarSyncControls.svelte";
   import DuetBrowserPanel from "./components/panels/DuetBrowserPanel.svelte";
@@ -47,13 +57,19 @@
     position: [number, number, number];
     target: [number, number, number];
   }
-  import { loadFeatureModule, resolveAsync } from "$lib/shared/inversify/container";
+  import {
+    loadFeatureModule,
+    resolveAsync,
+  } from "$lib/shared/inversify/container";
   import { ANIMATION_3D_TYPES } from "./inversify/animation-3d.types";
   import type { IPropStateInterpolator } from "./services/contracts/IPropStateInterpolator";
   import type { ISequenceConverter } from "./services/contracts/ISequenceConverter";
   import type { IAnimation3DPersister } from "./services/contracts/IAnimation3DPersister";
   import { browser } from "$app/environment";
-  import { DEFAULT_AVATAR_ID, type AvatarId } from "./config/avatar-definitions";
+  import {
+    DEFAULT_AVATAR_ID,
+    type AvatarId,
+  } from "./config/avatar-definitions";
 
   // Synchronously read avatar ID from localStorage to prevent flash
   function getInitialAvatarId(): AvatarId {
@@ -82,11 +98,14 @@
   let servicesReady = $state(false);
 
   // Dependencies stored for creating new performers
-  let serviceDeps: { propInterpolator: IPropStateInterpolator; sequenceConverter: ISequenceConverter } | null = null;
+  let serviceDeps: {
+    propInterpolator: IPropStateInterpolator;
+    sequenceConverter: ISequenceConverter;
+  } | null = null;
 
   // Duet browser state
-  type BrowserViewMode = 'sequences' | 'duets';
-  let browserViewMode = $state<BrowserViewMode>('sequences');
+  type BrowserViewMode = "sequences" | "duets";
+  let browserViewMode = $state<BrowserViewMode>("sequences");
   let duetCreatorOpen = $state(false);
 
   // Derived: active performer state (routes controls to selected performer)
@@ -128,17 +147,21 @@
   // Derived - use function to avoid TypeScript narrowing issues with $state(null)
   const sequenceName = $derived.by(() => {
     if (!activeState) return null;
-    return activeState.loadedSequence?.word || activeState.loadedSequence?.name || null;
+    return (
+      activeState.loadedSequence?.word ||
+      activeState.loadedSequence?.name ||
+      null
+    );
   });
 
   // Avatar positions for per-avatar grid planes (full 3D position + facing angle)
   // Grid planes rotate with avatar's body orientation for body-relative coordinate system
   const avatarPositions = $derived.by(() => {
-    return performerStates.map(p => ({
+    return performerStates.map((p) => ({
       x: p.position.x,
       y: p.position.y,
       z: p.position.z,
-      facingAngle: p.facingAngle
+      facingAngle: p.facingAngle,
     }));
   });
 
@@ -178,12 +201,15 @@
     const positions = getDefaultPositions(performerStates.length + 1);
     const pos = positions[index] ?? { x: 0, z: 0 };
 
-    return createAvatarInstanceState({
-      id: `performer-${index}`,
-      positionX: pos.x,
-      positionZ: pos.z,
-      avatarModelId: initialAvatarId
-    }, serviceDeps);
+    return createAvatarInstanceState(
+      {
+        id: `performer-${index}`,
+        positionX: pos.x,
+        positionZ: pos.z,
+        avatarModelId: initialAvatarId,
+      },
+      serviceDeps
+    );
   }
 
   function addPerformer() {
@@ -240,7 +266,10 @@
     });
   }
 
-  function handlePerformerDrag(index: number, newPos: { x: number; z: number }) {
+  function handlePerformerDrag(
+    index: number,
+    newPos: { x: number; z: number }
+  ) {
     const performer = performerStates[index];
     if (performer) {
       performer.position.x = newPos.x;
@@ -249,7 +278,10 @@
   }
 
   // Handle mesh clicks from raycaster (for performer selection)
-  function handleMeshClick(meshName: string, point: { x: number; y: number; z: number }) {
+  function handleMeshClick(
+    meshName: string,
+    point: { x: number; y: number; z: number }
+  ) {
     // Check if this is a performer (either avatar body or hitbox)
     // Avatar3D names its group: PERFORMER_performer-0, PERFORMER_performer-1, etc.
     const performerMatch = meshName.match(/^PERFORMER_performer-(\d+)$/);
@@ -301,7 +333,7 @@
 
   function handleDuetCreated(duetId: string) {
     duetCreatorOpen = false;
-    browserViewMode = 'duets';
+    browserViewMode = "duets";
     browserOpen = true;
   }
 
@@ -326,19 +358,23 @@
 
     // Create initial performer (start with 1, user can add more)
     const initialPosition = getDefaultPositions(1)[0] ?? { x: 0, z: 0 };
-    const initialPerformer = createAvatarInstanceState({
-      id: 'performer-0',
-      positionX: initialPosition.x,
-      positionZ: initialPosition.z,
-      avatarModelId: initialAvatarId
-    }, serviceDeps);
+    const initialPerformer = createAvatarInstanceState(
+      {
+        id: "performer-0",
+        positionX: initialPosition.x,
+        positionZ: initialPosition.z,
+        avatarModelId: initialAvatarId,
+      },
+      serviceDeps
+    );
 
     performerStates = [initialPerformer];
 
     // Load persisted state
     const saved = persistenceService.loadState();
 
-    if (saved.visiblePlanes) visiblePlanes = persistenceService.parsePlanes(saved.visiblePlanes);
+    if (saved.visiblePlanes)
+      visiblePlanes = persistenceService.parsePlanes(saved.visiblePlanes);
     if (saved.showGrid !== undefined) showGrid = saved.showGrid;
     if (saved.showLabels !== undefined) showLabels = saved.showLabels;
     if (saved.gridMode) gridMode = saved.gridMode;
@@ -347,7 +383,8 @@
     if (saved.speed !== undefined) speed = saved.speed;
     if (saved.cameraPosition) customCameraPosition = saved.cameraPosition;
     if (saved.cameraTarget) customCameraTarget = saved.cameraTarget;
-    if (saved.loop !== undefined && performerStates[0]) performerStates[0].loop = saved.loop;
+    if (saved.loop !== undefined && performerStates[0])
+      performerStates[0].loop = saved.loop;
     if (saved.avatarId) avatarId = saved.avatarId;
     // Note: environmentType removed - now uses settingsService.settings.backgroundType
 
@@ -368,7 +405,7 @@
 
   // Sync speed to all performer states
   $effect(() => {
-    performerStates.forEach(p => p.speed = speed);
+    performerStates.forEach((p) => (p.speed = speed));
   });
 
   // Reset pointer lock state when exiting locomotion mode
@@ -401,7 +438,7 @@
   });
 
   onDestroy(() => {
-    performerStates.forEach(p => p.destroy());
+    performerStates.forEach((p) => p.destroy());
     syncState?.destroy();
   });
 </script>
@@ -524,7 +561,9 @@
         onTogglePlay={() => activeState?.togglePlay()}
         onReset={() => activeState?.reset()}
         onProgressChange={(v) => activeState?.setProgress(v)}
-        onLoopChange={(v) => { if (activeState) activeState.loop = v; }}
+        onLoopChange={(v) => {
+          if (activeState) activeState.loop = v;
+        }}
         onPrevBeat={() => activeState?.prevBeat()}
         onNextBeat={() => activeState?.nextBeat()}
         onShowHelp={() => keyboardShortcutState.openHelp()}
@@ -535,7 +574,9 @@
             class:active={locomotionMode}
             onclick={() => (locomotionMode = !locomotionMode)}
             aria-label={locomotionMode ? "Exit walk mode" : "Enter walk mode"}
-            title={locomotionMode ? "Exit walk mode (WASD)" : "Enter walk mode (WASD)"}
+            title={locomotionMode
+              ? "Exit walk mode (WASD)"
+              : "Enter walk mode (WASD)"}
           >
             <i class="fas fa-person-walking" aria-hidden="true"></i>
           </button>
@@ -544,7 +585,12 @@
             onclick={() => (panelOpen = !panelOpen)}
             aria-label={panelOpen ? "Hide panel" : "Show panel"}
           >
-            <i class="fas" class:fa-chevron-right={panelOpen} class:fa-chevron-left={!panelOpen} aria-hidden="true"></i>
+            <i
+              class="fas"
+              class:fa-chevron-right={panelOpen}
+              class:fa-chevron-left={!panelOpen}
+              aria-hidden="true"
+            ></i>
           </button>
         {/snippet}
       </SceneOverlayControls>
@@ -612,12 +658,16 @@
       <div class="browser-panel">
         <header class="browser-header">
           <h2>Load Sequence</h2>
-          <button class="close-browser-btn" onclick={() => (browserOpen = false)} aria-label="Close browser">
+          <button
+            class="close-browser-btn"
+            onclick={() => (browserOpen = false)}
+            aria-label="Close browser"
+          >
             <i class="fas fa-times" aria-hidden="true"></i>
           </button>
         </header>
 
-        {#if browserViewMode === 'sequences'}
+        {#if browserViewMode === "sequences"}
           <SequenceBrowserPanel
             mode="primary"
             show={true}
@@ -637,16 +687,16 @@
         <div class="browser-footer">
           <button
             class="view-mode-btn"
-            class:active={browserViewMode === 'sequences'}
-            onclick={() => (browserViewMode = 'sequences')}
+            class:active={browserViewMode === "sequences"}
+            onclick={() => (browserViewMode = "sequences")}
           >
             <i class="fas fa-film" aria-hidden="true"></i>
             Solo Sequences
           </button>
           <button
             class="view-mode-btn"
-            class:active={browserViewMode === 'duets'}
-            onclick={() => (browserViewMode = 'duets')}
+            class:active={browserViewMode === "duets"}
+            onclick={() => (browserViewMode = "duets")}
           >
             <i class="fas fa-users" aria-hidden="true"></i>
             Duets
@@ -674,7 +724,9 @@
     togglePlay={() => activeState?.togglePlay()}
     reset={() => activeState?.reset()}
     loop={activeState?.loop ?? false}
-    setLoop={(v) => { if (activeState) activeState.loop = v; }}
+    setLoop={(v) => {
+      if (activeState) activeState.loop = v;
+    }}
     {speed}
     setSpeed={(s) => (speed = s)}
     hasSequence={activeState?.hasSequence ?? false}
@@ -683,13 +735,13 @@
     prevBeat={() => activeState?.prevBeat()}
     nextBeat={() => activeState?.nextBeat()}
     goToBeat={(i) => activeState?.goToBeat(i)}
-    setCameraPreset={setCameraPreset}
+    {setCameraPreset}
     {showGrid}
     setShowGrid={(v) => (showGrid = v)}
     {panelOpen}
     setPanelOpen={(v) => (panelOpen = v)}
     setBrowserOpen={(v) => (browserOpen = v)}
-/>
+  />
 
   <!-- Shortcuts Help Modal -->
   <ShortcutsHelp />
@@ -719,7 +771,9 @@
   }
 
   @keyframes spin {
-    to { transform: rotate(360deg); }
+    to {
+      transform: rotate(360deg);
+    }
   }
   .viewer-3d-module {
     display: flex;
@@ -744,7 +798,9 @@
     background: var(--theme-panel-bg, rgba(18, 18, 28, 0.98));
     border-left: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
     overflow-y: auto;
-    transition: width 0.2s ease, padding 0.2s ease;
+    transition:
+      width 0.2s ease,
+      padding 0.2s ease;
   }
 
   .side-panel-wrapper.collapsed {
@@ -845,8 +901,13 @@
   }
 
   @keyframes locomotion-pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.7; }
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.7;
+    }
   }
 
   @media (max-width: 1024px) {

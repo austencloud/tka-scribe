@@ -27,9 +27,7 @@ Features:
 
   let { activeTab = $bindable("concepts"), onTabChange }: Props = $props();
 
-  const hapticService = resolve<IHapticFeedback>(
-    TYPES.IHapticFeedback
-  );
+  const hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
 
   // Tab configuration
   const tabs = [

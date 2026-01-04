@@ -14,11 +14,11 @@
  * Domain: Share Hub - Unified State Management
  */
 
-import type { ShareMode } from '../domain/models/ShareMode';
-import type { MediaFormat } from '../domain/models/MediaFormat';
-import type { CompositeLayout } from '../domain/models/CompositeLayout';
-import { DEFAULT_COMPOSITE_LAYOUT } from '../domain/models/CompositeLayout';
-import type { SequenceData } from '$lib/shared/foundation/domain/models/SequenceData';
+import type { ShareMode } from "../domain/models/ShareMode";
+import type { MediaFormat } from "../domain/models/MediaFormat";
+import type { CompositeLayout } from "../domain/models/CompositeLayout";
+import { DEFAULT_COMPOSITE_LAYOUT } from "../domain/models/CompositeLayout";
+import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 
 /** Settings for animation export */
 export interface AnimationSettings {
@@ -33,12 +33,12 @@ export interface StaticSettings {
   width: number;
   height: number;
   quality: number; // 0-100
-  background: 'transparent' | 'white' | 'black';
+  background: "transparent" | "white" | "black";
 }
 
 /** Settings for performance video */
 export interface PerformanceSettings {
-  mode: 'record' | 'upload';
+  mode: "record" | "upload";
   cameraId: string | null;
   uploadedFile: File | null;
 }
@@ -93,19 +93,19 @@ const DEFAULT_STATIC_SETTINGS: StaticSettings = {
   width: 1920,
   height: 1080,
   quality: 90,
-  background: 'transparent',
+  background: "transparent",
 };
 
 /** Default performance settings */
 const DEFAULT_PERFORMANCE_SETTINGS: PerformanceSettings = {
-  mode: 'record',
+  mode: "record",
   cameraId: null,
   uploadedFile: null,
 };
 
-import { getContext, setContext } from 'svelte';
+import { getContext, setContext } from "svelte";
 
-const SHARE_HUB_STATE_KEY = Symbol('ShareHubState');
+const SHARE_HUB_STATE_KEY = Symbol("ShareHubState");
 
 /**
  * Internal state holder class.
@@ -120,14 +120,18 @@ class ShareHubStateHolder implements ShareHubState {
   currentBeat: number = $state(0);
 
   // Mode state
-  mode: ShareMode = $state('single');
-  selectedFormat: MediaFormat = $state('animation');
+  mode: ShareMode = $state("single");
+  selectedFormat: MediaFormat = $state("animation");
   compositeLayout: CompositeLayout = $state({ ...DEFAULT_COMPOSITE_LAYOUT });
   settingsPanelOpen: boolean = $state(false);
   settingsContext: SettingsContext | null = $state(null);
-  animationSettings: AnimationSettings = $state({ ...DEFAULT_ANIMATION_SETTINGS });
+  animationSettings: AnimationSettings = $state({
+    ...DEFAULT_ANIMATION_SETTINGS,
+  });
   staticSettings: StaticSettings = $state({ ...DEFAULT_STATIC_SETTINGS });
-  performanceSettings: PerformanceSettings = $state({ ...DEFAULT_PERFORMANCE_SETTINGS });
+  performanceSettings: PerformanceSettings = $state({
+    ...DEFAULT_PERFORMANCE_SETTINGS,
+  });
 
   setSequence(sequence: SequenceData | null): void {
     this.sequence = sequence;
@@ -154,7 +158,9 @@ export function createShareHubState(): ShareHubState {
 export function getShareHubState(): ShareHubState {
   const state = getContext<ShareHubState | undefined>(SHARE_HUB_STATE_KEY);
   if (!state) {
-    throw new Error('ShareHubState not found in context. Ensure ShareHubPanel is a parent component.');
+    throw new Error(
+      "ShareHubState not found in context. Ensure ShareHubPanel is a parent component."
+    );
   }
   return state;
 }

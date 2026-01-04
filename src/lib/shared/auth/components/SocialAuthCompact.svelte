@@ -1,21 +1,26 @@
 <!--
-  SocialAuthCompact.svelte - Compact Social Authentication Buttons (FedCM-Ready 2028+)
+  SocialAuthCompact.svelte - Compact Social Authentication Buttons
 
   Side-by-side Google and Facebook auth buttons for sign-in/sign-up flows.
 
   Auth Flow Priority:
-  1. Google One Tap (FedCM-native, no redirects, preferred)
-  2. Redirect-based fallback (COOP-compatible, avoids popup issues)
-
-  Note: Popup-based auth removed due to COOP (Cross-Origin-Opener-Policy)
-  blocking window.closed polling in modern browsers.
+  1. Google One Tap (FedCM-native, no redirects) - via GoogleOneTap.svelte
+  2. Popup-based auth (best UX, opens Google in new window)
+  3. Redirect-based fallback (if popup blocked/fails)
 -->
 <script lang="ts">
   import FacebookIcon from "./icons/FacebookIcon.svelte";
   import GoogleIcon from "./icons/GoogleIcon.svelte";
-  import { resolve } from "../../inversify/di";
-  import { TYPES } from "../../inversify/types";
-  import type { IAuthenticator } from "../services/contracts/IAuthenticator";
+  import { goto } from "$app/navigation";
+  import {
+    GoogleAuthProvider,
+    browserLocalPersistence,
+    indexedDBLocalPersistence,
+    setPersistence,
+    signInWithPopup,
+    signInWithRedirect,
+  } from "firebase/auth";
+  import { auth } from "../firebase";
 
   let { mode = "signin", onFacebookAuth } = $props<{
     mode: "signin" | "signup";
@@ -23,31 +28,66 @@
   }>();
 
   let googleError = $state<string | null>(null);
-  let isRedirecting = $state(false);
+  let isLoading = $state(false);
 
-  async function handleGoogleClick() {
-    googleError = null;
-
-    // Strategy: When user explicitly clicks Google button, always use redirect
-    // One Tap works automatically via GoogleOneTap.svelte on page load
-    // This ensures a reliable, consistent experience when user clicks the button
-    //
-    // FedCM Note: One Tap may fail silently (cooldown, disabled, etc.)
-    // Redirect-based auth is the robust fallback that always works
-    await handleGoogleRedirectFallback();
+  function isMobileDevice(): boolean {
+    if (typeof window === "undefined") return false;
+    const hasTouch = "ontouchstart" in window || navigator.maxTouchPoints > 0;
+    return hasTouch && window.innerWidth < 768;
   }
 
-  async function handleGoogleRedirectFallback() {
+  async function handleGoogleClick() {
+    if (isLoading) return;
+    isLoading = true;
+    googleError = null;
+
     try {
-      isRedirecting = true;
-      const authService = await resolve<IAuthenticator>(TYPES.IAuthenticator);
-      // This will redirect away from the page
-      await authService.signInWithGoogleRedirect();
+      // Set persistence for reliable auth state
+      try {
+        await setPersistence(auth, indexedDBLocalPersistence);
+      } catch {
+        await setPersistence(auth, browserLocalPersistence);
+      }
+
+      const provider = new GoogleAuthProvider();
+      provider.addScope("email");
+      provider.addScope("profile");
+
+      // Mobile always uses redirect (more reliable on mobile browsers)
+      if (isMobileDevice()) {
+        console.log("[SocialAuthCompact] Mobile detected, using redirect flow");
+        await signInWithRedirect(auth, provider);
+        return;
+      }
+
+      // Desktop: try popup first, fall back to redirect if it fails
+      try {
+        await signInWithPopup(auth, provider);
+        console.log("[SocialAuthCompact] Popup sign-in successful");
+        await goto("/app");
+      } catch (popupError: unknown) {
+        const errorCode = (popupError as { code?: string })?.code;
+        console.warn("[SocialAuthCompact] Popup failed:", errorCode, "- falling back to redirect");
+
+        // Popup blocked, closed, or COOP issue - use redirect instead
+        if (
+          errorCode === "auth/popup-blocked" ||
+          errorCode === "auth/popup-closed-by-user" ||
+          errorCode === "auth/cancelled-popup-request" ||
+          errorCode === "auth/internal-error"
+        ) {
+          await signInWithRedirect(auth, provider);
+          return;
+        }
+
+        // Re-throw other errors
+        throw popupError;
+      }
     } catch (error: unknown) {
-      isRedirecting = false;
-      console.error("[SocialAuthCompact] Google redirect error:", error);
-      googleError =
-        error instanceof Error ? error.message : "Google sign-in failed";
+      console.error("[SocialAuthCompact] Google sign-in error:", error);
+      googleError = error instanceof Error ? error.message : "Google sign-in failed";
+    } finally {
+      isLoading = false;
     }
   }
 
@@ -64,14 +104,14 @@
     <button
       class="social-compact-button social-compact-button--google"
       onclick={handleGoogleClick}
-      disabled={isRedirecting}
+      disabled={isLoading}
       aria-label={mode === "signin"
         ? "Sign in with Google"
         : "Sign up with Google"}
     >
-      {#if isRedirecting}
+      {#if isLoading}
         <span class="spinner"></span>
-        Redirecting...
+        Signing in...
       {:else}
         <GoogleIcon />
         Google

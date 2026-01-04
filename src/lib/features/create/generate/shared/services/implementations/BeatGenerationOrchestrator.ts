@@ -121,8 +121,7 @@ export class BeatGenerationOrchestrator implements IBeatGenerationOrchestrator {
     }
 
     // Random selection
-    const selectedOption =
-      this.PictographFilter.selectRandom(filteredOptions);
+    const selectedOption = this.PictographFilter.selectRandom(filteredOptions);
 
     // Convert to beat
     let nextBeat = this.BeatConverter.convertToBeat(
@@ -151,8 +150,7 @@ export class BeatGenerationOrchestrator implements IBeatGenerationOrchestrator {
       options.redRotationDirection
     );
 
-    nextBeat =
-      this.OrientationCalculator.updateEndOrientations(nextBeat);
+    nextBeat = this.OrientationCalculator.updateEndOrientations(nextBeat);
 
     // 🎯 CRITICAL FIX: Calculate arrow placements BEFORE returning the beat
     // This ensures arrows have correct positions instead of default (0, 0)

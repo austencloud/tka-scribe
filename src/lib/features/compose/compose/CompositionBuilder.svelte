@@ -118,7 +118,6 @@
       compState.exitFullscreen();
     }
   }
-
 </script>
 
 <svelte:window onkeydown={handleKeydown} />
@@ -143,7 +142,14 @@
       <!-- Canvas Phase -->
       <div class="canvas-phase">
         <div class="canvas-column">
-          <div class="canvas-area" onclick={handleCanvasClick} onkeydown={(e) => e.key === 'Enter' && handleCanvasClick()} role="button" tabindex="0" aria-label="Composition canvas - click to exit fullscreen">
+          <div
+            class="canvas-area"
+            onclick={handleCanvasClick}
+            onkeydown={(e) => e.key === "Enter" && handleCanvasClick()}
+            role="button"
+            tabindex="0"
+            aria-label="Composition canvas - click to exit fullscreen"
+          >
             <CompositionCanvas
               {composition}
               {isPlaying}

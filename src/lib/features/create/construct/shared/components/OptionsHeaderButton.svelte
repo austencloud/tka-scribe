@@ -19,9 +19,7 @@
     onOpenFilters?: (() => void) | undefined;
   } = $props();
 
-  const hapticService = resolve<IHapticFeedback>(
-    TYPES.IHapticFeedback
-  );
+  const hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
 
   function handleFilterClick() {
     hapticService?.trigger("selection");
@@ -50,7 +48,11 @@
   </div>
 
   <div class="header-right-indicator">
-    <i class="fas fa-chevron-down chevron" class:open={isFilterPanelOpen} aria-hidden="true"></i>
+    <i
+      class="fas fa-chevron-down chevron"
+      class:open={isFilterPanelOpen}
+      aria-hidden="true"
+    ></i>
   </div>
 </button>
 

@@ -1,7 +1,10 @@
-import { injectable } from 'inversify';
-import type { ISubDrawerStatePersister, SubDrawerType } from '../contracts/ISubDrawerStatePersister';
+import { injectable } from "inversify";
+import type {
+  ISubDrawerStatePersister,
+  SubDrawerType,
+} from "../contracts/ISubDrawerStatePersister";
 
-const SUB_DRAWER_KEY = 'tka_sequence_actions_sub_drawer';
+const SUB_DRAWER_KEY = "tka_sequence_actions_sub_drawer";
 
 /**
  * SubDrawerStatePersister
@@ -12,28 +15,35 @@ const SUB_DRAWER_KEY = 'tka_sequence_actions_sub_drawer';
  */
 @injectable()
 export class SubDrawerStatePersister implements ISubDrawerStatePersister {
-	getActiveSubDrawer(): SubDrawerType {
-		if (typeof sessionStorage === 'undefined') return null;
-		const value = sessionStorage.getItem(SUB_DRAWER_KEY);
-		if (!value) return null;
+  getActiveSubDrawer(): SubDrawerType {
+    if (typeof sessionStorage === "undefined") return null;
+    const value = sessionStorage.getItem(SUB_DRAWER_KEY);
+    if (!value) return null;
 
-		// Validate the stored value
-		const validTypes: SubDrawerType[] = ['help', 'turnPattern', 'rotationDirection', 'extend'];
-		return validTypes.includes(value as SubDrawerType) ? (value as SubDrawerType) : null;
-	}
+    // Validate the stored value
+    const validTypes: SubDrawerType[] = [
+      "help",
+      "turnPattern",
+      "rotationDirection",
+      "extend",
+    ];
+    return validTypes.includes(value as SubDrawerType)
+      ? (value as SubDrawerType)
+      : null;
+  }
 
-	setActiveSubDrawer(drawer: SubDrawerType): void {
-		if (typeof sessionStorage === 'undefined') return;
+  setActiveSubDrawer(drawer: SubDrawerType): void {
+    if (typeof sessionStorage === "undefined") return;
 
-		if (drawer) {
-			sessionStorage.setItem(SUB_DRAWER_KEY, drawer);
-		} else {
-			sessionStorage.removeItem(SUB_DRAWER_KEY);
-		}
-	}
+    if (drawer) {
+      sessionStorage.setItem(SUB_DRAWER_KEY, drawer);
+    } else {
+      sessionStorage.removeItem(SUB_DRAWER_KEY);
+    }
+  }
 
-	clear(): void {
-		if (typeof sessionStorage === 'undefined') return;
-		sessionStorage.removeItem(SUB_DRAWER_KEY);
-	}
+  clear(): void {
+    if (typeof sessionStorage === "undefined") return;
+    sessionStorage.removeItem(SUB_DRAWER_KEY);
+  }
 }

@@ -18,9 +18,7 @@ import type {
  * Matches legacy HandpathCalculator logic.
  */
 @injectable()
-export class HandpathDirectionCalculator
-  implements IHandpathDirectionCalculator
-{
+export class HandpathDirectionCalculator implements IHandpathDirectionCalculator {
   calculateDirection(
     startLocation: GridLocation,
     endLocation: GridLocation

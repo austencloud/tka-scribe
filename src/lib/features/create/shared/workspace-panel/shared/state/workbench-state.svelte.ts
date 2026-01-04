@@ -37,10 +37,7 @@ export function createWorkbenchState() {
     sequence: SequenceData | null
   ): boolean {
     try {
-      const shouldSelect = Workbench.handleBeatClick(
-        beatIndex,
-        sequence
-      );
+      const shouldSelect = Workbench.handleBeatClick(beatIndex, sequence);
       if (shouldSelect) {
         selectedBeatIndex = beatIndex;
       }

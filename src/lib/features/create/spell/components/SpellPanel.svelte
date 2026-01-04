@@ -109,7 +109,9 @@ This component orchestrates the UI; business logic lives in extracted services.
           spellState.setLoopAnalysis(result.loopAnalysis);
         }
         spellState.setCircularizationOptions(result.circularizationOptions);
-        spellState.setDirectLoopUnavailableReason(result.directLoopUnavailableReason);
+        spellState.setDirectLoopUnavailableReason(
+          result.directLoopUnavailableReason
+        );
 
         // Update extension options
         extensionOptions = result.extensionOptions;
@@ -168,7 +170,9 @@ This component orchestrates the UI; business logic lives in extracted services.
       }
 
       // Store expanded word for display
-      spellState.setExpandedWord(parseResult.expandedWord || spellState.inputWord);
+      spellState.setExpandedWord(
+        parseResult.expandedWord || spellState.inputWord
+      );
 
       // Estimate total variations for progress UI
       const gridMode = GridMode.DIAMOND;
@@ -223,7 +227,9 @@ This component orchestrates the UI; business logic lives in extracted services.
 
   // Handle variation selection
   function handleVariationSelect(variationId: string) {
-    const variation = variationState.allVariations.find((v) => v.id === variationId);
+    const variation = variationState.allVariations.find(
+      (v) => v.id === variationId
+    );
     if (!variation || !sequenceState) return;
 
     variationState.selectVariation(variationId);
@@ -243,7 +249,10 @@ This component orchestrates the UI; business logic lives in extracted services.
   }
 
   // Handle LOOP chip click - apply LOOP with optional bridge
-  async function handleApplyLOOP(bridgeLetter: Letter | null, loopType: LOOPType) {
+  async function handleApplyLOOP(
+    bridgeLetter: Letter | null,
+    loopType: LOOPType
+  ) {
     if (!spellState.inputWord.trim()) {
       return;
     }
@@ -256,7 +265,9 @@ This component orchestrates the UI; business logic lives in extracted services.
       // the sequence already has the bridge beat appended. We should just
       // apply the LOOP to the current sequence instead of regenerating.
       if (selectedBridge && sequenceState?.currentSequence) {
-        const sequenceExtender = resolve<ISequenceExtender>(TYPES.ISequenceExtender);
+        const sequenceExtender = resolve<ISequenceExtender>(
+          TYPES.ISequenceExtender
+        );
 
         const extendedSequence = await sequenceExtender.extendSequence(
           sequenceState.currentSequence,
@@ -384,7 +395,10 @@ This component orchestrates the UI; business logic lives in extracted services.
     }
   }
 
-  async function handleLoopSelect(bridgeLetter: Letter | null, loopType: LOOPType) {
+  async function handleLoopSelect(
+    bridgeLetter: Letter | null,
+    loopType: LOOPType
+  ) {
     if (spellState.isGenerating) {
       return;
     }
@@ -446,7 +460,9 @@ This component orchestrates the UI; business logic lives in extracted services.
         {#if loopPhase === "bridge-selection" && hasExtensionOptions}
           <div class="loop-phase-header">
             <h3>Choose Next Pictograph</h3>
-            <p class="phase-subtitle">Select a pictograph to extend your sequence</p>
+            <p class="phase-subtitle">
+              Select a pictograph to extend your sequence
+            </p>
           </div>
           <BridgePictographGrid
             options={extensionOptions}
@@ -500,7 +516,7 @@ This component orchestrates the UI; business logic lives in extracted services.
         <button
           class="mode-button"
           class:active={generationMode === "single"}
-          onclick={() => generationMode = "single"}
+          onclick={() => (generationMode = "single")}
           disabled={variationState.progress.isExploring}
         >
           <i class="fas fa-dice-one" aria-hidden="true"></i>
@@ -509,7 +525,7 @@ This component orchestrates the UI; business logic lives in extracted services.
         <button
           class="mode-button"
           class:active={generationMode === "all"}
-          onclick={() => generationMode = "all"}
+          onclick={() => (generationMode = "all")}
           disabled={variationState.progress.isExploring}
         >
           <i class="fas fa-layer-group" aria-hidden="true"></i>
@@ -537,7 +553,8 @@ This component orchestrates the UI; business logic lives in extracted services.
         <button
           class="generate-button"
           onclick={handleGenerateAll}
-          disabled={!spellState.canGenerate || variationState.progress.isExploring}
+          disabled={!spellState.canGenerate ||
+            variationState.progress.isExploring}
         >
           {#if variationState.progress.isExploring}
             <span class="spinner"></span>

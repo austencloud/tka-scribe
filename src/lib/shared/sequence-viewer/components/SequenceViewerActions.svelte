@@ -65,7 +65,8 @@
       class:active={isFavorite}
       onclick={() => onAction("favorite")}
     >
-      <i class={isFavorite ? "fas fa-heart" : "far fa-heart"} aria-hidden="true"></i>
+      <i class={isFavorite ? "fas fa-heart" : "far fa-heart"} aria-hidden="true"
+      ></i>
       Favorite
     </button>
   {/if}
@@ -112,7 +113,11 @@
   }
 
   .action-button.primary:hover {
-    background: linear-gradient(135deg, var(--semantic-info), var(--semantic-info));
+    background: linear-gradient(
+      135deg,
+      var(--semantic-info),
+      var(--semantic-info)
+    );
   }
 
   .action-button.active {

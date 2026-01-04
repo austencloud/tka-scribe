@@ -22,7 +22,14 @@
   .price-highlight {
     text-align: center;
     padding: var(--spacing-lg, 24px) var(--spacing-md, 16px);
-    background: var(--gradient-primary, linear-gradient(135deg, var(--theme-accent) 0%, var(--theme-accent-strong) 100%));
+    background: var(
+      --gradient-primary,
+      linear-gradient(
+        135deg,
+        var(--theme-accent) 0%,
+        var(--theme-accent-strong) 100%
+      )
+    );
     border-radius: 12px;
     margin-bottom: var(--spacing-lg, 24px);
   }

@@ -15,5 +15,7 @@ export const GOOGLE_CLIENT_ID =
  * Check if Google One Tap is properly configured
  */
 export function isGoogleOneTapConfigured(): boolean {
-  return Boolean(GOOGLE_CLIENT_ID && GOOGLE_CLIENT_ID.includes(".apps.googleusercontent.com"));
+  return Boolean(
+    GOOGLE_CLIENT_ID && GOOGLE_CLIENT_ID.includes(".apps.googleusercontent.com")
+  );
 }

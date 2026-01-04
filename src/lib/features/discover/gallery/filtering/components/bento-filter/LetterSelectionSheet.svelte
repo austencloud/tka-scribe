@@ -21,9 +21,7 @@ Displays A-Z grid with clear option
   let hapticService: IHapticFeedback | null = null;
 
   onMount(() => {
-    hapticService = tryResolve<IHapticFeedback>(
-      TYPES.IHapticFeedback
-    );
+    hapticService = tryResolve<IHapticFeedback>(TYPES.IHapticFeedback);
   });
 
   const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");

@@ -126,7 +126,10 @@ export class AchievementManager implements IAchievementManager {
         });
       }
     } catch (error) {
-      console.error("❌ [AchievementManager] Failed to initialize user XP:", error);
+      console.error(
+        "❌ [AchievementManager] Failed to initialize user XP:",
+        error
+      );
       throw error;
     }
   }
@@ -186,7 +189,10 @@ export class AchievementManager implements IAchievementManager {
         );
       }
     } catch (error) {
-      console.error("❌ [AchievementManager] Failed to initialize user achievements:", error);
+      console.error(
+        "❌ [AchievementManager] Failed to initialize user achievements:",
+        error
+      );
       throw error;
     }
   }
@@ -512,7 +518,10 @@ export class AchievementManager implements IAchievementManager {
 
       return unlockedAchievements;
     } catch (error) {
-      console.error("❌ [AchievementManager] Failed to check achievement progress:", error);
+      console.error(
+        "❌ [AchievementManager] Failed to check achievement progress:",
+        error
+      );
       return [];
     }
   }
@@ -644,7 +653,10 @@ export class AchievementManager implements IAchievementManager {
         return false;
       }
     } catch (error) {
-      console.error("❌ [AchievementManager] Failed to update achievement progress:", error);
+      console.error(
+        "❌ [AchievementManager] Failed to update achievement progress:",
+        error
+      );
       return false;
     }
   }
@@ -776,7 +788,10 @@ export class AchievementManager implements IAchievementManager {
         userProgress: userProgressMap.get(achievement.id) ?? null,
       }));
     } catch (error) {
-      console.error("❌ [AchievementManager] Failed to get all achievements:", error);
+      console.error(
+        "❌ [AchievementManager] Failed to get all achievements:",
+        error
+      );
       return ALL_ACHIEVEMENTS.map((a) => ({ ...a, userProgress: null }));
     }
   }
@@ -810,7 +825,10 @@ export class AchievementManager implements IAchievementManager {
         (doc) => ({ ...doc.data(), id: doc.id }) as UserAchievement
       );
     } catch (error) {
-      console.error("❌ [AchievementManager] Failed to get recent achievements:", error);
+      console.error(
+        "❌ [AchievementManager] Failed to get recent achievements:",
+        error
+      );
       return [];
     }
   }
@@ -839,7 +857,10 @@ export class AchievementManager implements IAchievementManager {
         id: achievementDoc.id,
       } as UserAchievement;
     } catch (error) {
-      console.error("❌ [AchievementManager] Failed to get achievement progress:", error);
+      console.error(
+        "❌ [AchievementManager] Failed to get achievement progress:",
+        error
+      );
       return null;
     }
   }

@@ -109,10 +109,7 @@ export const loopLabelerModule = new ContainerModule(
       .to(SequenceLoader)
       .inSingletonScope();
 
-    options
-      .bind(LOOPLabelerTypes.INavigator)
-      .to(Navigator)
-      .inSingletonScope();
+    options.bind(LOOPLabelerTypes.INavigator).to(Navigator).inSingletonScope();
 
     options
       .bind(LOOPLabelerTypes.ISequenceFeatureExtractor)

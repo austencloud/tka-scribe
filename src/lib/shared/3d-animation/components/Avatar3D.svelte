@@ -24,7 +24,11 @@
   import type { IAvatarAnimator } from "../services/contracts/IAvatarAnimator";
   import type { PropState3D } from "../domain/models/PropState3D";
   import { cmToUnits } from "../config/avatar-proportions";
-  import { getAvatarModelPath, type AvatarId, DEFAULT_AVATAR_ID } from "../config/avatar-definitions";
+  import {
+    getAvatarModelPath,
+    type AvatarId,
+    DEFAULT_AVATAR_ID,
+  } from "../config/avatar-definitions";
   import { WALL_OFFSET } from "../utils/performer-positions";
   import { userProportionsState } from "../state/user-proportions-state.svelte";
   import IKFigure3D from "./IKFigure3D.svelte";
@@ -70,7 +74,7 @@
     avatarId = DEFAULT_AVATAR_ID,
     useGLTF = true, // Default to using GLTF model
     // Multi-avatar defaults
-    id = 'avatar1',
+    id = "avatar1",
     position = { x: 0, y: 0, z: DEFAULT_FIGURE_Z },
     facingAngle = 0,
     isActive = true,
@@ -93,7 +97,7 @@
   let isLoading = $state(false);
 
   // Cache the root object to avoid reactivity issues during swap
-  let cachedRoot = $state<import('three').Object3D | null>(null);
+  let cachedRoot = $state<import("three").Object3D | null>(null);
 
   // Feet offset from model origin (negative value, updated after setHeight)
   let feetOffset = $state(0);
@@ -156,18 +160,26 @@
         legAnimator.initialize(cachedRoot);
 
         // Load directional walk animations (non-blocking)
-        legAnimator.loadDirectionalAnimations({
-          forward: '/animations/walk.glb',
-          backward: '/animations/walk-backward.glb',
-          strafeLeft: '/animations/strafe-left.glb',
-          strafeRight: '/animations/strafe-right.glb',
-        }).catch((err) => {
-          console.warn("[Avatar3D] Directional animations not loaded:", err.message);
-          // Animation is optional - avatar will work without it
-        });
+        legAnimator
+          .loadDirectionalAnimations({
+            forward: "/animations/walk.glb",
+            backward: "/animations/walk-backward.glb",
+            strafeLeft: "/animations/strafe-left.glb",
+            strafeRight: "/animations/strafe-right.glb",
+          })
+          .catch((err) => {
+            console.warn(
+              "[Avatar3D] Directional animations not loaded:",
+              err.message
+            );
+            // Animation is optional - avatar will work without it
+          });
       }
     } catch (err) {
-      console.warn("[Avatar3D] Failed to load avatar model, using procedural fallback:", err);
+      console.warn(
+        "[Avatar3D] Failed to load avatar model, using procedural fallback:",
+        err
+      );
       useProceduralFallback = true;
     } finally {
       isLoading = false;
@@ -250,7 +262,11 @@
     const gridOffset = -WALL_OFFSET; // Same as passed to Staff3D
 
     // Transform grid-local position to world position (mirrors Staff3D.position calculation)
-    function toWorldPosition(local: { x: number; y: number; z: number }): Vector3 {
+    function toWorldPosition(local: {
+      x: number;
+      y: number;
+      z: number;
+    }): Vector3 {
       // Body-local position with forward offset (same as Staff3D)
       const localX = local.x;
       const localZ = local.z + gridOffset;
@@ -262,19 +278,23 @@
       return new Vector3(
         rotatedX + position.x,
         local.y + (position.y ?? 0),
-        rotatedZ + position.z,
+        rotatedZ + position.z
       );
     }
 
-    const blueWorldProp = bluePropState ? {
-      ...bluePropState,
-      worldPosition: toWorldPosition(bluePropState.worldPosition),
-    } : null;
+    const blueWorldProp = bluePropState
+      ? {
+          ...bluePropState,
+          worldPosition: toWorldPosition(bluePropState.worldPosition),
+        }
+      : null;
 
-    const redWorldProp = redPropState ? {
-      ...redPropState,
-      worldPosition: toWorldPosition(redPropState.worldPosition),
-    } : null;
+    const redWorldProp = redPropState
+      ? {
+          ...redPropState,
+          worldPosition: toWorldPosition(redPropState.worldPosition),
+        }
+      : null;
 
     // Update hand targets from prop states (now in world coords)
     animationService.setHandTargetsFromProps(blueWorldProp, redWorldProp);

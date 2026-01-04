@@ -221,9 +221,7 @@ Red Rot Key: ${lookupKeys.redRotationOverrideKey ?? "N/A"}`;
 
   onMount(() => {
     try {
-      hapticService = resolve<IHapticFeedback>(
-        TYPES.IHapticFeedback
-      );
+      hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
       keyboardAdjustmentService = resolve<IKeyboardArrowAdjuster>(
         TYPES.IKeyboardArrowAdjuster
       );

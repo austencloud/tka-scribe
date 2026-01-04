@@ -117,7 +117,11 @@
     position: absolute;
     inset: 0;
     border: 2px solid
-      color-mix(in srgb, var(--semantic-info, var(--semantic-info)) 40%, transparent);
+      color-mix(
+        in srgb,
+        var(--semantic-info, var(--semantic-info)) 40%,
+        transparent
+      );
     border-radius: 50%;
     animation: pulse-ring 2s ease-out infinite;
   }
@@ -241,7 +245,11 @@
       transparent
     );
     border: 1px solid
-      color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 30%, transparent);
+      color-mix(
+        in srgb,
+        var(--semantic-error, var(--semantic-error)) 30%,
+        transparent
+      );
     border-radius: 10px;
     color: #fca5a5;
     font-size: var(--font-size-sm);

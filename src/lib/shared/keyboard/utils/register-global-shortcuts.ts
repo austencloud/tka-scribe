@@ -18,7 +18,11 @@ import { saveActiveTab } from "../../settings/utils/tab-persistence.svelte";
 import { adminToolbarState } from "../../debug/state/admin-toolbar-state.svelte";
 import { settingsService } from "../../settings/state/SettingsState.svelte";
 import { getAnimationVisibilityManager } from "../../animation-engine/state/animation-visibility-state.svelte";
-import { getSettings, updateSettings, isSettingsPreviewMode } from "../../application/state/app-state.svelte";
+import {
+  getSettings,
+  updateSettings,
+  isSettingsPreviewMode,
+} from "../../application/state/app-state.svelte";
 import { toast } from "../../toast/state/toast-state.svelte";
 
 export function registerGlobalShortcuts(
@@ -126,11 +130,11 @@ export function registerGlobalShortcuts(
     },
   });
 
-  // l - Toggle Lights Off mode (dark background, LED-style display)
+  // l - Toggle Dark Mode (dark background, LED-style display)
   service.register({
     id: "global.toggle-lights",
     label: "Toggle Lights",
-    description: "Toggle Lights Off mode (dark background with glowing props)",
+    description: "Toggle Dark Mode (dark background with glowing props)",
     key: "l",
     modifiers: [],
     context: "global",
@@ -156,11 +160,13 @@ export function registerGlobalShortcuts(
 
       // Show toast notification
       const message = newValue
-        ? "Lights Off mode enabled — press L to toggle"
-        : "Lights Off mode disabled — press L to toggle";
+        ? "Dark Mode enabled — press L to toggle"
+        : "Dark Mode disabled — press L to toggle";
       toast.info(message, 2500);
 
-      console.log(`[Keyboard L] Toggled lightsOff: ${beforeValue} -> ${newValue}`);
+      console.log(
+        `[Keyboard L] Toggled lightsOff: ${beforeValue} -> ${newValue}`
+      );
     },
   });
 

@@ -6,7 +6,11 @@
     showGrowth?: boolean;
   }
 
-  let { totalUsers = 0, premiumUsers = 0, showGrowth = false }: Props = $props();
+  let {
+    totalUsers = 0,
+    premiumUsers = 0,
+    showGrowth = false,
+  }: Props = $props();
 
   function formatCount(count: number): string {
     if (count >= 1000) {

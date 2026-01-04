@@ -101,7 +101,10 @@
         onclick={() => onPropsVisibilityChange?.(!propsVisible)}
         aria-label={propsVisible ? "Hide props" : "Show props"}
       >
-        <i class="fas {propsVisible ? 'fa-eye' : 'fa-eye-slash'}" aria-hidden="true"></i>
+        <i
+          class="fas {propsVisible ? 'fa-eye' : 'fa-eye-slash'}"
+          aria-hidden="true"
+        ></i>
         <span>{propsVisible ? "Visible" : "Hidden"}</span>
       </button>
     </div>
@@ -289,7 +292,11 @@
   .reset-btn:focus-visible,
   .visibility-toggle:focus-visible {
     outline: 2px solid
-      color-mix(in srgb, var(--semantic-info, var(--semantic-info)) 60%, transparent);
+      color-mix(
+        in srgb,
+        var(--semantic-info, var(--semantic-info)) 60%,
+        transparent
+      );
     outline-offset: 2px;
   }
 </style>

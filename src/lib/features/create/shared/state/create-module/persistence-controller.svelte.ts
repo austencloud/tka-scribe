@@ -57,8 +57,7 @@ export function createCreateModulePersistenceController({
 
     try {
       if (SequencePersister) {
-        const lastActiveState =
-          await SequencePersister.loadCurrentState();
+        const lastActiveState = await SequencePersister.loadCurrentState();
         if (lastActiveState?.activeBuildSection) {
           modeToLoad = lastActiveState.activeBuildSection;
         }
@@ -152,8 +151,7 @@ export function createCreateModulePersistenceController({
     }
 
     try {
-      const savedState =
-        await SequencePersister.loadCurrentState(panel);
+      const savedState = await SequencePersister.loadCurrentState(panel);
 
       if (savedState) {
         // Load saved state for this tab's specific sequence state

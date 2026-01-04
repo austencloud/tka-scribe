@@ -30,11 +30,7 @@
 />
 
 <!-- Volcanic ground - uses dynamic groundY from user proportions -->
-<GroundPlane
-  color={palette.ground}
-  opacity={0.95}
-  size={3000}
-/>
+<GroundPlane color={palette.ground} opacity={0.95} size={3000} />
 
 <!-- Rising embers -->
 <FallingParticles

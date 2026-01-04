@@ -41,8 +41,7 @@ export class AnimationRenderLoop implements IAnimationRenderLoop {
   }
 
   updateConfig(config: Partial<RenderLoopConfig>): void {
-    if (config.renderer !== undefined)
-      this.renderer = config.renderer;
+    if (config.renderer !== undefined) this.renderer = config.renderer;
     if (config.TrailCapturer !== undefined)
       this.TrailCapturer = config.TrailCapturer;
     if (config.pathCache !== undefined) this.pathCache = config.pathCache;
@@ -142,7 +141,6 @@ export class AnimationRenderLoop implements IAnimationRenderLoop {
     const shouldContinueLoop =
       this.needsRender || trailsNeedContinuousRender || isPlaying;
 
-
     if (shouldContinueLoop) {
       this.render(params, currentTime);
       this.needsRender = false;
@@ -192,7 +190,6 @@ export class AnimationRenderLoop implements IAnimationRenderLoop {
       visibility.blueMotionVisible && props.blueProp !== null;
     const effectiveRedMotionVisible =
       visibility.redMotionVisible && props.redProp !== null;
-
 
     // Render scene
     this.renderer.renderScene({

@@ -48,7 +48,11 @@
 </script>
 
 <div class="settings-button-row">
-  <button class="settings-btn visual-btn" onclick={onOpenVisibility} type="button">
+  <button
+    class="settings-btn visual-btn"
+    onclick={onOpenVisibility}
+    type="button"
+  >
     <i class="fas fa-eye" aria-hidden="true"></i>
     <span class="btn-label">Visual Settings</span>
     <span class="btn-summary">{buttonSummary}</span>

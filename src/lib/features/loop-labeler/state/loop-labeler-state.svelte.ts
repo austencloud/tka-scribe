@@ -6,7 +6,10 @@
  */
 
 import type { SequenceEntry } from "../domain/models/sequence-models";
-import type { LabeledSequence, FilterMode } from "../domain/models/label-models";
+import type {
+  LabeledSequence,
+  FilterMode,
+} from "../domain/models/label-models";
 import type { LOOPDetectionResult } from "../services/contracts/ILOOPDetector";
 import { LOOPLabelerServiceLocator } from "./LOOPLabelerServiceLocator";
 import { LOOPLabelerController } from "./LOOPLabelerController";
@@ -66,21 +69,51 @@ export class LOOPLabelerState {
   // GETTERS (simple property access)
   // ============================================================
 
-  get sequences() { return this.data.sequences; }
-  get labels() { return this.data.labels; }
-  get currentIndex() { return this.data.currentIndex; }
-  get loading() { return this.data.loading; }
-  get filterMode() { return this.data.filterMode; }
-  get notes() { return this.data.notes; }
-  get syncStatus() { return this.data.syncStatus; }
-  get labelingMode() { return this.data.labelingMode; }
-  get showExport() { return this.data.showExport; }
-  get showStartPosition() { return this.data.showStartPosition; }
-  get manualColumnCount() { return this.data.manualColumnCount; }
-  get unsubscribe() { return this.data.unsubscribe; }
-  get popstateHandler() { return this.data.popstateHandler; }
-  get hasData() { return this.data.sequences.length > 0; }
-  get isHMRRestored() { return this.wasRestoredFromHMR; }
+  get sequences() {
+    return this.data.sequences;
+  }
+  get labels() {
+    return this.data.labels;
+  }
+  get currentIndex() {
+    return this.data.currentIndex;
+  }
+  get loading() {
+    return this.data.loading;
+  }
+  get filterMode() {
+    return this.data.filterMode;
+  }
+  get notes() {
+    return this.data.notes;
+  }
+  get syncStatus() {
+    return this.data.syncStatus;
+  }
+  get labelingMode() {
+    return this.data.labelingMode;
+  }
+  get showExport() {
+    return this.data.showExport;
+  }
+  get showStartPosition() {
+    return this.data.showStartPosition;
+  }
+  get manualColumnCount() {
+    return this.data.manualColumnCount;
+  }
+  get unsubscribe() {
+    return this.data.unsubscribe;
+  }
+  get popstateHandler() {
+    return this.data.popstateHandler;
+  }
+  get hasData() {
+    return this.data.sequences.length > 0;
+  }
+  get isHMRRestored() {
+    return this.wasRestoredFromHMR;
+  }
 
   // ============================================================
   // DERIVED GETTERS
@@ -95,7 +128,11 @@ export class LOOPLabelerState {
     const loader = loopLabelerServices.sequenceLoader;
     if (!loader) return circular;
 
-    return loader.filterSequences(circular, this.data.labels, this.data.filterMode);
+    return loader.filterSequences(
+      circular,
+      this.data.labels,
+      this.data.filterMode
+    );
   }
 
   get currentSequence(): SequenceEntry | null {
@@ -126,7 +163,11 @@ export class LOOPLabelerState {
   get stats() {
     const loader = loopLabelerServices.sequenceLoader;
     if (!loader) {
-      return { total: this.circularSequences.length, needsVerification: 0, verified: 0 };
+      return {
+        total: this.circularSequences.length,
+        needsVerification: 0,
+        verified: 0,
+      };
     }
     return loader.calculateStats(this.circularSequences, this.data.labels);
   }
@@ -202,7 +243,9 @@ export class LOOPLabelerState {
   }
 
   removeSequence(sequenceId: string) {
-    this.data.sequences = this.data.sequences.filter((s) => s.id !== sequenceId);
+    this.data.sequences = this.data.sequences.filter(
+      (s) => s.id !== sequenceId
+    );
   }
 
   clearDetectionCache(sequenceId?: string) {
@@ -254,7 +297,10 @@ export class LOOPLabelerState {
 
 export const loopLabelerState = new LOOPLabelerState();
 export const loopLabelerServices = new LOOPLabelerServiceLocator();
-export const loopLabelerController = new LOOPLabelerController(loopLabelerState, loopLabelerServices);
+export const loopLabelerController = new LOOPLabelerController(
+  loopLabelerState,
+  loopLabelerServices
+);
 
 // ============================================================
 // HMR SUPPORT

@@ -50,9 +50,7 @@ Uses IStartPositionManager to load variations and displays actual pictographs
   onMount(async () => {
     try {
       // Load haptic service
-      hapticService = tryResolve<IHapticFeedback>(
-        TYPES.IHapticFeedback
-      );
+      hapticService = tryResolve<IHapticFeedback>(TYPES.IHapticFeedback);
 
       // Try to use StartPositionManager if available (in Create module)
       StartPositionManager = tryResolve<IStartPositionManager>(

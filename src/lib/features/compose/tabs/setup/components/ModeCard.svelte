@@ -70,9 +70,7 @@
   let hapticService: IHapticFeedback | undefined;
 
   try {
-    hapticService = resolve<IHapticFeedback>(
-      TYPES.IHapticFeedback
-    );
+    hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
   } catch (error) {
     console.warn("ModeCard: Failed to resolve HapticFeedback", error);
   }

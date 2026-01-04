@@ -79,7 +79,12 @@
   </div>
 
   <div class="button-row">
-    <button type="button" class="back-button" onclick={onBack} aria-label="Go back">
+    <button
+      type="button"
+      class="back-button"
+      onclick={onBack}
+      aria-label="Go back"
+    >
       <i class="fas fa-arrow-left" aria-hidden="true"></i>
     </button>
 

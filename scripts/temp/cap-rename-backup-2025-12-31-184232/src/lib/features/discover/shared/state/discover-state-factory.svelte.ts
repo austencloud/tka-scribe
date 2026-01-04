@@ -38,13 +38,9 @@ interface PersistedControlsState {
 export function createExploreState() {
   // Services - Use specialized services directly instead of orchestration layer
   const loaderService = resolve<IDiscoverLoader>(TYPES.IDiscoverLoader);
-  const filterService = resolve<IDiscoverFilter>(
-    TYPES.IDiscoverFilter
-  );
+  const filterService = resolve<IDiscoverFilter>(TYPES.IDiscoverFilter);
   const sortService = resolve<IDiscoverSorter>(TYPES.IDiscoverSorter);
-  const Navigator = resolve<INavigator>(
-    TYPES.INavigator
-  );
+  const Navigator = resolve<INavigator>(TYPES.INavigator);
   const SectionManager = resolve<ISectionManager>(TYPES.ISectionManager);
   const FavoritesManager = tryResolve<IFavoritesManager>(
     TYPES.IFavoritesManager
@@ -164,10 +160,7 @@ export function createExploreState() {
       const sequences = await loaderService.loadSequenceMetadata();
       allSequences = sequences;
       displayedSequences = sequences;
-      const sections = Navigator.generateNavigationSections(
-        sequences,
-        []
-      );
+      const sections = Navigator.generateNavigationSections(sequences, []);
       navigationSections = sections;
       applyFilterAndSort();
       await generateSequenceSections();

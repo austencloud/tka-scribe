@@ -15,7 +15,10 @@
   const MOBILE_BREAKPOINT = 768;
 
   function handleTermsClick(e: MouseEvent) {
-    if (typeof window !== "undefined" && window.innerWidth < MOBILE_BREAKPOINT) {
+    if (
+      typeof window !== "undefined" &&
+      window.innerWidth < MOBILE_BREAKPOINT
+    ) {
       e.preventDefault();
       sheetType = "terms";
       sheetOpen = true;
@@ -23,7 +26,10 @@
   }
 
   function handlePrivacyClick(e: MouseEvent) {
-    if (typeof window !== "undefined" && window.innerWidth < MOBILE_BREAKPOINT) {
+    if (
+      typeof window !== "undefined" &&
+      window.innerWidth < MOBILE_BREAKPOINT
+    ) {
       e.preventDefault();
       sheetType = "privacy";
       sheetOpen = true;

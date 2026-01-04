@@ -47,7 +47,10 @@ export class CreateModuleOrchestrator implements ICreateModuleOrchestrator {
       const eventService = constructTabEventService();
       await eventService.handleOptionSelected(option);
     } catch (error) {
-      console.error("❌ CreateModuleOrchestrator: Error selecting option:", error);
+      console.error(
+        "❌ CreateModuleOrchestrator: Error selecting option:",
+        error
+      );
       throw error; // Re-throw to let caller handle UI error states
     }
   }

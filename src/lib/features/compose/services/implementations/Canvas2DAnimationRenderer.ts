@@ -83,7 +83,11 @@ export class Canvas2DAnimationRenderer implements IAnimationRenderer {
     blueColor: string,
     redColor: string
   ): Promise<void> {
-    await this.imageLoader.loadSecondaryPropImages(propType, blueColor, redColor);
+    await this.imageLoader.loadSecondaryPropImages(
+      propType,
+      blueColor,
+      redColor
+    );
   }
 
   async loadGridTexture(gridMode: string): Promise<void> {
@@ -215,7 +219,12 @@ export class Canvas2DAnimationRenderer implements IAnimationRenderer {
    */
   private renderProp(
     ctx: CanvasRenderingContext2D,
-    propState: { centerPathAngle: number; staffRotationAngle: number; x?: number; y?: number },
+    propState: {
+      centerPathAngle: number;
+      staffRotationAngle: number;
+      x?: number;
+      y?: number;
+    },
     image: HTMLImageElement | null,
     dimensions: { width: number; height: number },
     canvasSize: number,
@@ -223,7 +232,11 @@ export class Canvas2DAnimationRenderer implements IAnimationRenderer {
   ): void {
     if (!image) return;
 
-    const transform = this.calculatePropTransform(propState, dimensions, canvasSize);
+    const transform = this.calculatePropTransform(
+      propState,
+      dimensions,
+      canvasSize
+    );
 
     ctx.save();
     ctx.translate(transform.x, transform.y);
@@ -250,7 +263,12 @@ export class Canvas2DAnimationRenderer implements IAnimationRenderer {
    * Matches PixiPropRenderer logic for consistency
    */
   private calculatePropTransform(
-    propState: { centerPathAngle: number; staffRotationAngle: number; x?: number; y?: number },
+    propState: {
+      centerPathAngle: number;
+      staffRotationAngle: number;
+      x?: number;
+      y?: number;
+    },
     propDimensions: { width: number; height: number },
     canvasSize: number
   ): {

@@ -69,6 +69,7 @@
     background: color-mix(in srgb, var(--theme-accent) 20%, transparent);
     border-color: var(--theme-accent);
     color: var(--theme-accent);
-    box-shadow: 0 0 12px color-mix(in srgb, var(--theme-accent) 30%, transparent);
+    box-shadow: 0 0 12px
+      color-mix(in srgb, var(--theme-accent) 30%, transparent);
   }
 </style>

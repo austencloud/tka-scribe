@@ -197,4 +197,3 @@ export function generateSequenceThumbnail(sequence: SequenceData): string {
   // Use encodeURIComponent instead of btoa to handle Unicode characters
   return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
 }
-

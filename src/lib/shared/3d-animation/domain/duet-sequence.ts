@@ -5,50 +5,50 @@
  * Does NOT modify SequenceData - references existing library sequences by ID.
  */
 
-import type { SequenceData } from '$lib/shared/foundation/domain/models/SequenceData';
+import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 
 /**
  * Avatar positioning hint for duet performance
  */
-export type DuetPositioning = 'side-by-side' | 'face-to-face' | 'custom';
+export type DuetPositioning = "side-by-side" | "face-to-face" | "custom";
 
 /**
  * Duet sequence definition - pairs two sequences for dual-avatar playback
  */
 export interface DuetSequence {
-	/** Unique identifier */
-	id: string;
+  /** Unique identifier */
+  id: string;
 
-	/** Display name for the duet */
-	name: string;
+  /** Display name for the duet */
+  name: string;
 
-	/** Optional description */
-	description?: string;
+  /** Optional description */
+  description?: string;
 
-	/** Reference to avatar 1's sequence (by ID) */
-	avatar1SequenceId: string;
+  /** Reference to avatar 1's sequence (by ID) */
+  avatar1SequenceId: string;
 
-	/** Reference to avatar 2's sequence (by ID) */
-	avatar2SequenceId: string;
+  /** Reference to avatar 2's sequence (by ID) */
+  avatar2SequenceId: string;
 
-	/**
-	 * Beat offset applied to avatar 2.
-	 * Positive = avatar 2 starts later, negative = avatar 2 starts earlier.
-	 * In beats (e.g., 1 = one beat behind, -0.5 = half beat ahead)
-	 */
-	beatOffset: number;
+  /**
+   * Beat offset applied to avatar 2.
+   * Positive = avatar 2 starts later, negative = avatar 2 starts earlier.
+   * In beats (e.g., 1 = one beat behind, -0.5 = half beat ahead)
+   */
+  beatOffset: number;
 
-	/** Positioning hint for avatar placement */
-	positioning: DuetPositioning;
+  /** Positioning hint for avatar placement */
+  positioning: DuetPositioning;
 
-	/** Creation timestamp */
-	createdAt: Date;
+  /** Creation timestamp */
+  createdAt: Date;
 
-	/** Creator user ID (optional) */
-	createdBy?: string;
+  /** Creator user ID (optional) */
+  createdBy?: string;
 
-	/** Tags for organization */
-	tags?: string[];
+  /** Tags for organization */
+  tags?: string[];
 }
 
 /**
@@ -56,39 +56,39 @@ export interface DuetSequence {
  * Used when loading a duet for playback
  */
 export interface DuetSequenceWithData extends DuetSequence {
-	/** Resolved sequence data for avatar 1 */
-	avatar1Sequence: SequenceData;
+  /** Resolved sequence data for avatar 1 */
+  avatar1Sequence: SequenceData;
 
-	/** Resolved sequence data for avatar 2 */
-	avatar2Sequence: SequenceData;
+  /** Resolved sequence data for avatar 2 */
+  avatar2Sequence: SequenceData;
 }
 
 /**
  * Input for creating a new duet
  */
 export interface CreateDuetInput {
-	name: string;
-	description?: string;
-	avatar1SequenceId: string;
-	avatar2SequenceId: string;
-	beatOffset?: number;
-	positioning?: DuetPositioning;
-	tags?: string[];
+  name: string;
+  description?: string;
+  avatar1SequenceId: string;
+  avatar2SequenceId: string;
+  beatOffset?: number;
+  positioning?: DuetPositioning;
+  tags?: string[];
 }
 
 /**
  * Create a new DuetSequence from input
  */
 export function createDuetSequence(input: CreateDuetInput): DuetSequence {
-	return {
-		id: crypto.randomUUID(),
-		name: input.name,
-		description: input.description,
-		avatar1SequenceId: input.avatar1SequenceId,
-		avatar2SequenceId: input.avatar2SequenceId,
-		beatOffset: input.beatOffset ?? 0,
-		positioning: input.positioning ?? 'side-by-side',
-		createdAt: new Date(),
-		tags: input.tags
-	};
+  return {
+    id: crypto.randomUUID(),
+    name: input.name,
+    description: input.description,
+    avatar1SequenceId: input.avatar1SequenceId,
+    avatar2SequenceId: input.avatar2SequenceId,
+    beatOffset: input.beatOffset ?? 0,
+    positioning: input.positioning ?? "side-by-side",
+    createdAt: new Date(),
+    tags: input.tags,
+  };
 }

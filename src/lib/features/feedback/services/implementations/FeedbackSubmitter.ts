@@ -148,12 +148,18 @@ export class FeedbackSubmissionService implements IFeedbackSubmissionService {
     return docRef.id;
   }
 
-  private getEffectiveUser(user: { uid: string; email: string | null; displayName: string | null; photoURL: string | null }) {
+  private getEffectiveUser(user: {
+    uid: string;
+    email: string | null;
+    displayName: string | null;
+    photoURL: string | null;
+  }) {
     if (userPreviewState.isActive && userPreviewState.data.profile) {
       return {
         uid: userPreviewState.data.profile.uid,
         email: userPreviewState.data.profile.email || "",
-        displayName: userPreviewState.data.profile.displayName || "Unknown User",
+        displayName:
+          userPreviewState.data.profile.displayName || "Unknown User",
         photoURL: userPreviewState.data.profile.photoURL || null,
       };
     }
@@ -166,7 +172,8 @@ export class FeedbackSubmissionService implements IFeedbackSubmissionService {
   }
 
   private async uploadImage(file: File, feedbackId: string): Promise<string> {
-    const { ref, uploadBytes, getDownloadURL } = await import("firebase/storage");
+    const { ref, uploadBytes, getDownloadURL } =
+      await import("firebase/storage");
     const storage = await getStorageInstance();
 
     const timestamp = Date.now();
@@ -190,9 +197,8 @@ export class FeedbackSubmissionService implements IFeedbackSubmissionService {
     type: FeedbackFormData["type"],
     description: string
   ): Promise<void> {
-    const { conversation } = await conversationService.getOrCreateConversation(
-      ADMIN_USER_ID
-    );
+    const { conversation } =
+      await conversationService.getOrCreateConversation(ADMIN_USER_ID);
 
     const feedbackAttachment: MessageAttachment = {
       type: "feedback",

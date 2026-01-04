@@ -45,7 +45,7 @@
   <div class="canvas-container">
     <Canvas>
       <T.PerspectiveCamera makeDefault position={[0, 1.5, 3]} fov={50} />
-      <OrbitControls enableDamping autoRotate={autoRotate} autoRotateSpeed={1} />
+      <OrbitControls enableDamping {autoRotate} autoRotateSpeed={1} />
 
       <T.AmbientLight intensity={0.5} />
       <T.DirectionalLight position={[5, 10, 5]} intensity={1} />
@@ -83,7 +83,8 @@
   <footer>
     <p>
       <strong>Next step:</strong> Upload this mesh to
-      <a href="https://www.mixamo.com/" target="_blank" rel="noopener">Mixamo</a>
+      <a href="https://www.mixamo.com/" target="_blank" rel="noopener">Mixamo</a
+      >
       to auto-rig it for animation.
     </p>
   </footer>

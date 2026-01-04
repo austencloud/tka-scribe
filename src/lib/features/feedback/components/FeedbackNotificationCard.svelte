@@ -70,9 +70,8 @@
     if (user) {
       try {
         // Dynamically import to avoid circular dependencies
-        const { notificationService } = await import(
-          "$lib/features/feedback/services/implementations/Notifier"
-        );
+        const { notificationService } =
+          await import("$lib/features/feedback/services/implementations/Notifier");
         await notificationService.deleteNotification(user.uid, notification.id);
       } catch (error) {
         console.error("Failed to delete notification:", error);
@@ -156,7 +155,11 @@
 
   .notification-item.unread {
     box-shadow: 0 0 0 1px inset
-      color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent)) 30%, transparent);
+      color-mix(
+        in srgb,
+        var(--theme-accent-strong, var(--theme-accent)) 30%,
+        transparent
+      );
   }
 
   /* ============================================================================
@@ -267,7 +270,11 @@
     flex-shrink: 0;
     margin-top: 4px;
     box-shadow: 0 0 8px
-      color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent)) 50%, transparent);
+      color-mix(
+        in srgb,
+        var(--theme-accent-strong, var(--theme-accent)) 50%,
+        transparent
+      );
   }
 
   /* ============================================================================
@@ -285,14 +292,26 @@
     cursor: pointer;
     transition: all var(--duration-fast) var(--ease-out);
     box-shadow: 0 2px 6px
-      color-mix(in srgb, var(--theme-accent, var(--semantic-info)) 20%, transparent);
+      color-mix(
+        in srgb,
+        var(--theme-accent, var(--semantic-info)) 20%,
+        transparent
+      );
   }
 
   .notification-action:hover {
-    background: color-mix(in srgb, var(--theme-accent, var(--semantic-info)) 85%, black);
+    background: color-mix(
+      in srgb,
+      var(--theme-accent, var(--semantic-info)) 85%,
+      black
+    );
     transform: translateY(-2px);
     box-shadow: 0 4px 12px
-      color-mix(in srgb, var(--theme-accent, var(--semantic-info)) 35%, transparent);
+      color-mix(
+        in srgb,
+        var(--theme-accent, var(--semantic-info)) 35%,
+        transparent
+      );
   }
 
   .notification-action:active {
@@ -314,7 +333,11 @@
 
   .notification-action:focus-visible {
     outline: 2px solid
-      color-mix(in srgb, var(--theme-accent, var(--semantic-info)) 70%, transparent);
+      color-mix(
+        in srgb,
+        var(--theme-accent, var(--semantic-info)) 70%,
+        transparent
+      );
     outline-offset: 2px;
   }
 

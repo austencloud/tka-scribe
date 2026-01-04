@@ -50,9 +50,7 @@ export const RenderingTypes = {
   IGlyphCache: Symbol.for("IGlyphCache"),
   IFilenameGenerator: Symbol.for("IFilenameGenerator"),
   IReversalDetector: Symbol.for("IReversalDetector"),
-  IUltimatePictographRenderer: Symbol.for(
-    "IUltimatePictographRenderer"
-  ),
+  IUltimatePictographRenderer: Symbol.for("IUltimatePictographRenderer"),
 
   // CSV/Data Loading
   ICSVPictographLoader: Symbol.for("ICSVPictographLoader"),

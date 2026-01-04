@@ -19,9 +19,7 @@ Two phases:
     onComplete?: () => void;
   }>();
 
-  const hapticService = resolve<IHapticFeedback>(
-    TYPES.IHapticFeedback
-  );
+  const hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
 
   type QuizPhase = "mode" | "point" | "complete";
   type AnswerState = "idle" | "correct" | "incorrect";

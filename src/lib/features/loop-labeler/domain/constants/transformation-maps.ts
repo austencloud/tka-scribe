@@ -5,60 +5,60 @@
 
 /** 180° rotation: positions swap to opposite side */
 export const ROTATE_180: Record<string, string> = {
-	n: 's',
-	s: 'n',
-	e: 'w',
-	w: 'e',
-	ne: 'sw',
-	sw: 'ne',
-	nw: 'se',
-	se: 'nw'
+  n: "s",
+  s: "n",
+  e: "w",
+  w: "e",
+  ne: "sw",
+  sw: "ne",
+  nw: "se",
+  se: "nw",
 };
 
 /** 90° counter-clockwise rotation */
 export const ROTATE_90_CCW: Record<string, string> = {
-	n: 'w',
-	w: 's',
-	s: 'e',
-	e: 'n',
-	ne: 'nw',
-	nw: 'sw',
-	sw: 'se',
-	se: 'ne'
+  n: "w",
+  w: "s",
+  s: "e",
+  e: "n",
+  ne: "nw",
+  nw: "sw",
+  sw: "se",
+  se: "ne",
 };
 
 /** 90° clockwise rotation */
 export const ROTATE_90_CW: Record<string, string> = {
-	n: 'e',
-	e: 's',
-	s: 'w',
-	w: 'n',
-	ne: 'se',
-	se: 'sw',
-	sw: 'nw',
-	nw: 'ne'
+  n: "e",
+  e: "s",
+  s: "w",
+  w: "n",
+  ne: "se",
+  se: "sw",
+  sw: "nw",
+  nw: "ne",
 };
 
 /** Mirror across vertical axis (left/right swap) */
 export const MIRROR_VERTICAL: Record<string, string> = {
-	n: 'n',
-	s: 's',
-	e: 'w',
-	w: 'e',
-	ne: 'nw',
-	nw: 'ne',
-	se: 'sw',
-	sw: 'se'
+  n: "n",
+  s: "s",
+  e: "w",
+  w: "e",
+  ne: "nw",
+  nw: "ne",
+  se: "sw",
+  sw: "se",
 };
 
 /** Flip across horizontal axis (top/bottom swap) */
 export const FLIP_HORIZONTAL: Record<string, string> = {
-	n: 's',
-	s: 'n',
-	e: 'e',
-	w: 'w',
-	ne: 'se',
-	se: 'ne',
-	nw: 'sw',
-	sw: 'nw'
+  n: "s",
+  s: "n",
+  e: "e",
+  w: "w",
+  ne: "se",
+  se: "ne",
+  nw: "sw",
+  sw: "nw",
 };

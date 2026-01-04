@@ -67,9 +67,7 @@
     try {
       deviceDetector = resolve<IDeviceDetector>(TYPES.IDeviceDetector);
       responsiveSettings = deviceDetector.getResponsiveSettings();
-      hapticService = resolve<IHapticFeedback>(
-        TYPES.IHapticFeedback
-      );
+      hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
 
       deviceCleanup = deviceDetector.onCapabilitiesChanged(() => {
         responsiveSettings = deviceDetector!.getResponsiveSettings();
@@ -330,11 +328,7 @@
   }
 
   .back-header-button:hover {
-    background: color-mix(
-      in srgb,
-      var(--theme-accent) 15%,
-      transparent
-    );
+    background: color-mix(in srgb, var(--theme-accent) 15%, transparent);
     border-color: color-mix(
       in srgb,
       var(--theme-accent, var(--theme-accent)) 30%,
@@ -386,11 +380,7 @@
   }
 
   .settings-module-body::-webkit-scrollbar-thumb {
-    background: color-mix(
-      in srgb,
-      var(--theme-accent) 25%,
-      transparent
-    );
+    background: color-mix(in srgb, var(--theme-accent) 25%, transparent);
     border-radius: 3px;
   }
 
@@ -459,9 +449,17 @@
     );
     border-radius: 50%;
     border: 1px solid
-      color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 35%, transparent);
+      color-mix(
+        in srgb,
+        var(--theme-accent, var(--theme-accent)) 35%,
+        transparent
+      );
     box-shadow: 0 0 12px
-      color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 30%, transparent);
+      color-mix(
+        in srgb,
+        var(--theme-accent, var(--theme-accent)) 30%,
+        transparent
+      );
   }
 
   .swipe-arrow i {

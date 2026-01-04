@@ -36,8 +36,5 @@
     "vite",
     "vitest"
   ],
-  "ignoreBinaries": [
-    "firebase",
-    "netlify"
-  ]
+  "ignoreBinaries": ["firebase", "netlify"]
 }

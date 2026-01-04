@@ -46,7 +46,9 @@
 
       // Resolve service if not already resolved
       if (!libraryService) {
-        libraryService = tryResolve<ILibraryRepository>(TYPES.ILibraryRepository);
+        libraryService = tryResolve<ILibraryRepository>(
+          TYPES.ILibraryRepository
+        );
         if (!libraryService) {
           throw new Error("Library service not available");
         }
@@ -130,7 +132,10 @@
                     {sequence.beats?.length || 0} beats</span
                   >
                   {#if sequence.author}
-                    <span><i class="fas fa-user" aria-hidden="true"></i> {sequence.author}</span>
+                    <span
+                      ><i class="fas fa-user" aria-hidden="true"></i>
+                      {sequence.author}</span
+                    >
                   {/if}
                 </div>
               </div>
@@ -254,7 +259,11 @@
   .error-state button:hover {
     transform: translateY(-2px);
     box-shadow: 0 4px 12px
-      color-mix(in srgb, var(--semantic-info, var(--semantic-info)) 40%, transparent);
+      color-mix(
+        in srgb,
+        var(--semantic-info, var(--semantic-info)) 40%,
+        transparent
+      );
   }
 
   .sequences-grid {
@@ -320,7 +329,11 @@
   }
 
   .sequence-card:hover > i {
-    color: color-mix(in srgb, var(--semantic-info, var(--semantic-info)) 80%, transparent);
+    color: color-mix(
+      in srgb,
+      var(--semantic-info, var(--semantic-info)) 80%,
+      transparent
+    );
     transform: translateX(4px);
   }
 </style>

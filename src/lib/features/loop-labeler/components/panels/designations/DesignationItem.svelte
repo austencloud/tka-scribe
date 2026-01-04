@@ -6,7 +6,13 @@
    */
   import FontAwesomeIcon from "$lib/shared/foundation/ui/FontAwesomeIcon.svelte";
 
-  type DesignationType = "whole" | "section" | "beatpair" | "freeform" | "modular" | "axis-alternating";
+  type DesignationType =
+    | "whole"
+    | "section"
+    | "beatpair"
+    | "freeform"
+    | "modular"
+    | "axis-alternating";
 
   interface Props {
     type: DesignationType;
@@ -22,11 +28,7 @@
   <span class="designation-badge">{badge}</span>
   <span class="designation-label">{label}</span>
   {#if onRemove}
-    <button
-      class="remove-btn"
-      onclick={onRemove}
-      title="Remove"
-    >
+    <button class="remove-btn" onclick={onRemove} title="Remove">
       <FontAwesomeIcon icon="xmark" size="0.85em" />
     </button>
   {/if}
@@ -44,32 +46,56 @@
   }
 
   .designation-item.whole {
-    background: linear-gradient(135deg, rgba(99, 102, 241, 0.12) 0%, rgba(139, 92, 246, 0.08) 100%);
+    background: linear-gradient(
+      135deg,
+      rgba(99, 102, 241, 0.12) 0%,
+      rgba(139, 92, 246, 0.08) 100%
+    );
     border-color: rgba(99, 102, 241, 0.25);
   }
 
   .designation-item.section {
-    background: linear-gradient(135deg, rgba(59, 130, 246, 0.12) 0%, rgba(99, 102, 241, 0.08) 100%);
+    background: linear-gradient(
+      135deg,
+      rgba(59, 130, 246, 0.12) 0%,
+      rgba(99, 102, 241, 0.08) 100%
+    );
     border-color: rgba(59, 130, 246, 0.25);
   }
 
   .designation-item.beatpair {
-    background: linear-gradient(135deg, rgba(168, 85, 247, 0.12) 0%, rgba(139, 92, 246, 0.08) 100%);
+    background: linear-gradient(
+      135deg,
+      rgba(168, 85, 247, 0.12) 0%,
+      rgba(139, 92, 246, 0.08) 100%
+    );
     border-color: rgba(168, 85, 247, 0.25);
   }
 
   .designation-item.freeform {
-    background: linear-gradient(135deg, rgba(239, 68, 68, 0.12) 0%, rgba(220, 38, 38, 0.08) 100%);
+    background: linear-gradient(
+      135deg,
+      rgba(239, 68, 68, 0.12) 0%,
+      rgba(220, 38, 38, 0.08) 100%
+    );
     border-color: rgba(239, 68, 68, 0.25);
   }
 
   .designation-item.modular {
-    background: linear-gradient(135deg, rgba(234, 179, 8, 0.12) 0%, rgba(202, 138, 4, 0.08) 100%);
+    background: linear-gradient(
+      135deg,
+      rgba(234, 179, 8, 0.12) 0%,
+      rgba(202, 138, 4, 0.08) 100%
+    );
     border-color: rgba(234, 179, 8, 0.25);
   }
 
   .designation-item.axis-alternating {
-    background: linear-gradient(135deg, rgba(20, 184, 166, 0.15) 0%, rgba(168, 85, 247, 0.12) 100%);
+    background: linear-gradient(
+      135deg,
+      rgba(20, 184, 166, 0.15) 0%,
+      rgba(168, 85, 247, 0.12) 100%
+    );
     border-color: rgba(20, 184, 166, 0.35);
   }
 
@@ -111,7 +137,11 @@
   }
 
   .axis-alternating .designation-badge {
-    background: linear-gradient(135deg, rgba(20, 184, 166, 0.4) 0%, rgba(168, 85, 247, 0.4) 100%);
+    background: linear-gradient(
+      135deg,
+      rgba(20, 184, 166, 0.4) 0%,
+      rgba(168, 85, 247, 0.4) 100%
+    );
     color: #5eead4;
   }
 

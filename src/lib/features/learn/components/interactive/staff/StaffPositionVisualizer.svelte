@@ -4,174 +4,196 @@ Shows staffs positioned on the 4-point diamond grid with thumb end markers.
 Demonstrates Alpha, Beta, Gamma positions with thumb orientations (in, out, mixed).
 -->
 <script lang="ts">
-	import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
-	import { resolve } from "$lib/shared/inversify/di";
-	import { TYPES } from "$lib/shared/inversify/types";
-	import {
-		GRID_POINTS,
-		LEFT_STAFF_COLOR,
-		RIGHT_STAFF_COLOR,
-		getPositionType,
-		getStaffEndpoints,
-		type HandPosition,
-		type ThumbOrientation,
-		type PositionType,
-		type RotationType
-	} from "../../../domain/constants/staff-visualizer-data";
-	import StaffPositionBadge from "./staff-visualizer/StaffPositionBadge.svelte";
-	import StaffLegend from "./staff-visualizer/StaffLegend.svelte";
-	import StaffRotationIndicator from "./staff-visualizer/StaffRotationIndicator.svelte";
-	import StaffElement from "./staff-visualizer/StaffElement.svelte";
-	import StaffGridPoint from "./staff-visualizer/StaffGridPoint.svelte";
-	import RotationArcs from "./staff-visualizer/RotationArcs.svelte";
+  import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
+  import { resolve } from "$lib/shared/inversify/di";
+  import { TYPES } from "$lib/shared/inversify/types";
+  import {
+    GRID_POINTS,
+    LEFT_STAFF_COLOR,
+    RIGHT_STAFF_COLOR,
+    getPositionType,
+    getStaffEndpoints,
+    type HandPosition,
+    type ThumbOrientation,
+    type PositionType,
+    type RotationType,
+  } from "../../../domain/constants/staff-visualizer-data";
+  import StaffPositionBadge from "./staff-visualizer/StaffPositionBadge.svelte";
+  import StaffLegend from "./staff-visualizer/StaffLegend.svelte";
+  import StaffRotationIndicator from "./staff-visualizer/StaffRotationIndicator.svelte";
+  import StaffElement from "./staff-visualizer/StaffElement.svelte";
+  import StaffGridPoint from "./staff-visualizer/StaffGridPoint.svelte";
+  import RotationArcs from "./staff-visualizer/RotationArcs.svelte";
 
-	let {
-		leftPosition = $bindable<HandPosition>("N"),
-		rightPosition = $bindable<HandPosition>("S"),
-		leftThumbOrientation = $bindable<ThumbOrientation>("in"),
-		rightThumbOrientation = $bindable<ThumbOrientation>("in"),
-		showLabels = true,
-		highlightType = null as PositionType | null,
-		showRotationPath = false,
-		rotationType = "none" as RotationType,
-		animating = false,
-		interactive = false,
-		onPositionChange
-	} = $props<{
-		leftPosition?: HandPosition;
-		rightPosition?: HandPosition;
-		leftThumbOrientation?: ThumbOrientation;
-		rightThumbOrientation?: ThumbOrientation;
-		showLabels?: boolean;
-		highlightType?: PositionType | null;
-		showRotationPath?: boolean;
-		rotationType?: RotationType;
-		animating?: boolean;
-		interactive?: boolean;
-		onPositionChange?: (
-			leftPos: HandPosition,
-			rightPos: HandPosition,
-			leftThumb: ThumbOrientation,
-			rightThumb: ThumbOrientation
-		) => void;
-	}>();
+  let {
+    leftPosition = $bindable<HandPosition>("N"),
+    rightPosition = $bindable<HandPosition>("S"),
+    leftThumbOrientation = $bindable<ThumbOrientation>("in"),
+    rightThumbOrientation = $bindable<ThumbOrientation>("in"),
+    showLabels = true,
+    highlightType = null as PositionType | null,
+    showRotationPath = false,
+    rotationType = "none" as RotationType,
+    animating = false,
+    interactive = false,
+    onPositionChange,
+  } = $props<{
+    leftPosition?: HandPosition;
+    rightPosition?: HandPosition;
+    leftThumbOrientation?: ThumbOrientation;
+    rightThumbOrientation?: ThumbOrientation;
+    showLabels?: boolean;
+    highlightType?: PositionType | null;
+    showRotationPath?: boolean;
+    rotationType?: RotationType;
+    animating?: boolean;
+    interactive?: boolean;
+    onPositionChange?: (
+      leftPos: HandPosition,
+      rightPos: HandPosition,
+      leftThumb: ThumbOrientation,
+      rightThumb: ThumbOrientation
+    ) => void;
+  }>();
 
-	const hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
+  const hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
 
-	const currentPositionType = $derived(getPositionType(leftPosition, rightPosition));
-	const leftStaff = $derived(getStaffEndpoints(leftPosition, leftThumbOrientation));
-	const rightStaff = $derived(getStaffEndpoints(rightPosition, rightThumbOrientation));
+  const currentPositionType = $derived(
+    getPositionType(leftPosition, rightPosition)
+  );
+  const leftStaff = $derived(
+    getStaffEndpoints(leftPosition, leftThumbOrientation)
+  );
+  const rightStaff = $derived(
+    getStaffEndpoints(rightPosition, rightThumbOrientation)
+  );
 
-	function handlePointClick(point: HandPosition) {
-		if (!interactive) return;
-		hapticService?.trigger("selection");
-	}
+  function handlePointClick(point: HandPosition) {
+    if (!interactive) return;
+    hapticService?.trigger("selection");
+  }
 </script>
 
 <div class="staff-visualizer" class:interactive class:animating>
-	<!-- Position type badge -->
-	{#if highlightType || currentPositionType}
-		<StaffPositionBadge type={highlightType || currentPositionType} />
-	{/if}
+  <!-- Position type badge -->
+  {#if highlightType || currentPositionType}
+    <StaffPositionBadge type={highlightType || currentPositionType} />
+  {/if}
 
-	<!-- Grid SVG -->
-	<svg viewBox="0 0 100 100" class="staff-grid">
-		<!-- Grid lines (subtle diamond shape) -->
-		<g class="grid-lines" opacity="0.2">
-			<line x1="50" y1="15" x2="85" y2="50" stroke="white" stroke-width="0.5" />
-			<line x1="85" y1="50" x2="50" y2="85" stroke="white" stroke-width="0.5" />
-			<line x1="50" y1="85" x2="15" y2="50" stroke="white" stroke-width="0.5" />
-			<line x1="15" y1="50" x2="50" y2="15" stroke="white" stroke-width="0.5" />
-		</g>
+  <!-- Grid SVG -->
+  <svg viewBox="0 0 100 100" class="staff-grid">
+    <!-- Grid lines (subtle diamond shape) -->
+    <g class="grid-lines" opacity="0.2">
+      <line x1="50" y1="15" x2="85" y2="50" stroke="white" stroke-width="0.5" />
+      <line x1="85" y1="50" x2="50" y2="85" stroke="white" stroke-width="0.5" />
+      <line x1="50" y1="85" x2="15" y2="50" stroke="white" stroke-width="0.5" />
+      <line x1="15" y1="50" x2="50" y2="15" stroke="white" stroke-width="0.5" />
+    </g>
 
-		<!-- Center point -->
-		<circle cx="50" cy="50" r="3" fill="rgba(255, 255, 255, 0.4)" class="center-point" />
+    <!-- Center point -->
+    <circle
+      cx="50"
+      cy="50"
+      r="3"
+      fill="rgba(255, 255, 255, 0.4)"
+      class="center-point"
+    />
 
-		<!-- Grid points -->
-		{#each Object.entries(GRID_POINTS) as [key, point]}
-			<StaffGridPoint
-				position={key as HandPosition}
-				{point}
-				showLabel={showLabels}
-				{interactive}
-				onclick={() => handlePointClick(key as HandPosition)}
-			/>
-		{/each}
+    <!-- Grid points -->
+    {#each Object.entries(GRID_POINTS) as [key, point]}
+      <StaffGridPoint
+        position={key as HandPosition}
+        {point}
+        showLabel={showLabels}
+        {interactive}
+        onclick={() => handlePointClick(key as HandPosition)}
+      />
+    {/each}
 
-		<!-- Rotation path arcs -->
-		{#if showRotationPath && rotationType !== "none"}
-			<RotationArcs {leftPosition} {rightPosition} {rotationType} />
-		{/if}
+    <!-- Rotation path arcs -->
+    {#if showRotationPath && rotationType !== "none"}
+      <RotationArcs {leftPosition} {rightPosition} {rotationType} />
+    {/if}
 
-		<!-- Left Staff -->
-		<StaffElement endpoints={leftStaff} color={LEFT_STAFF_COLOR} isAnimating={animating} />
+    <!-- Left Staff -->
+    <StaffElement
+      endpoints={leftStaff}
+      color={LEFT_STAFF_COLOR}
+      isAnimating={animating}
+    />
 
-		<!-- Right Staff -->
-		<StaffElement endpoints={rightStaff} color={RIGHT_STAFF_COLOR} isAnimating={animating} />
-	</svg>
+    <!-- Right Staff -->
+    <StaffElement
+      endpoints={rightStaff}
+      color={RIGHT_STAFF_COLOR}
+      isAnimating={animating}
+    />
+  </svg>
 
-	<!-- Thumb orientation legend -->
-	<StaffLegend
-		{leftPosition}
-		{rightPosition}
-		{leftThumbOrientation}
-		{rightThumbOrientation}
-	/>
+  <!-- Thumb orientation legend -->
+  <StaffLegend
+    {leftPosition}
+    {rightPosition}
+    {leftThumbOrientation}
+    {rightThumbOrientation}
+  />
 
-	<!-- Rotation type indicator -->
-	{#if showRotationPath && rotationType !== "none"}
-		<StaffRotationIndicator rotationType={rotationType as "prospin" | "antispin"} />
-	{/if}
+  <!-- Rotation type indicator -->
+  {#if showRotationPath && rotationType !== "none"}
+    <StaffRotationIndicator
+      rotationType={rotationType as "prospin" | "antispin"}
+    />
+  {/if}
 </div>
 
 <style>
-	.staff-visualizer {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		gap: 1rem;
-		padding: 1rem;
-		background: rgba(255, 255, 255, 0.03);
-		border: 1px solid var(--theme-stroke);
-		border-radius: 16px;
-	}
+  .staff-visualizer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--theme-stroke);
+    border-radius: 16px;
+  }
 
-	.staff-visualizer.interactive {
-		border-color: rgba(74, 158, 255, 0.3);
-	}
+  .staff-visualizer.interactive {
+    border-color: rgba(74, 158, 255, 0.3);
+  }
 
-	.staff-grid {
-		width: 100%;
-		max-width: 280px;
-		height: auto;
-		aspect-ratio: 1;
-	}
+  .staff-grid {
+    width: 100%;
+    max-width: 280px;
+    height: auto;
+    aspect-ratio: 1;
+  }
 
-	.center-point {
-		animation: centerPulse 2s ease-in-out infinite;
-	}
+  .center-point {
+    animation: centerPulse 2s ease-in-out infinite;
+  }
 
-	@keyframes centerPulse {
-		0%,
-		100% {
-			opacity: 0.4;
-			r: 3;
-		}
-		50% {
-			opacity: 0.6;
-			r: 4;
-		}
-	}
+  @keyframes centerPulse {
+    0%,
+    100% {
+      opacity: 0.4;
+      r: 3;
+    }
+    50% {
+      opacity: 0.6;
+      r: 4;
+    }
+  }
 
-	@media (max-width: 400px) {
-		.staff-visualizer {
-			padding: 0.75rem;
-		}
-	}
+  @media (max-width: 400px) {
+    .staff-visualizer {
+      padding: 0.75rem;
+    }
+  }
 
-	@media (prefers-reduced-motion: reduce) {
-		.center-point {
-			animation: none;
-		}
-	}
+  @media (prefers-reduced-motion: reduce) {
+    .center-point {
+      animation: none;
+    }
+  }
 </style>

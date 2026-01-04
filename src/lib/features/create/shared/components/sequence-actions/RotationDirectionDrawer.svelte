@@ -40,7 +40,13 @@
     }) => void;
   }
 
-  let { isOpen = $bindable(), sequence, toolPanelWidth = 0, onClose, onApply }: Props = $props();
+  let {
+    isOpen = $bindable(),
+    sequence,
+    toolPanelWidth = 0,
+    onClose,
+    onApply,
+  }: Props = $props();
 
   // Local state
   let mode: "save" | "apply" = $state("apply");
@@ -62,7 +68,11 @@
 
   // Load patterns when drawer opens
   $effect(() => {
-    if (isOpen && authState.user?.uid && !rotationDirectionPatternState.initialized) {
+    if (
+      isOpen &&
+      authState.user?.uid &&
+      !rotationDirectionPatternState.initialized
+    ) {
       rotationDirectionPatternState.loadPatterns(authState.user.uid);
     }
   });
@@ -75,7 +85,8 @@
     savingPattern = true;
     errorMessage = null;
 
-    const finalName = patternName.trim() || `Rotation ${new Date().toLocaleTimeString()}`;
+    const finalName =
+      patternName.trim() || `Rotation ${new Date().toLocaleTimeString()}`;
 
     rotationDirectionPatternState
       .savePattern(finalName, authState.user.uid, sequence)
@@ -84,7 +95,8 @@
           patternName = "";
           mode = "apply";
         } else {
-          errorMessage = rotationDirectionPatternState.error ?? "Failed to save pattern";
+          errorMessage =
+            rotationDirectionPatternState.error ?? "Failed to save pattern";
         }
       })
       .finally(() => {
@@ -99,7 +111,10 @@
     errorMessage = null;
 
     try {
-      const result = await rotationPatternService.applyPattern(pattern, sequence);
+      const result = await rotationPatternService.applyPattern(
+        pattern,
+        sequence
+      );
 
       if (result.success && result.sequence) {
         onApply({
@@ -110,7 +125,8 @@
         errorMessage = result.error ?? "Failed to apply pattern";
       }
     } catch (error) {
-      errorMessage = error instanceof Error ? error.message : "Failed to apply pattern";
+      errorMessage =
+        error instanceof Error ? error.message : "Failed to apply pattern";
     } finally {
       applyingPattern = false;
     }
@@ -130,7 +146,11 @@
   function handleApplyTemplate(template: RotationDirectionTemplateDefinition) {
     if (!sequence || !authState.user?.uid) return;
 
-    const pattern = templateToPattern(template, authState.user.uid, sequence.beats.length);
+    const pattern = templateToPattern(
+      template,
+      authState.user.uid,
+      sequence.beats.length
+    );
     handleApplyPattern(pattern);
   }
 
@@ -232,7 +252,9 @@
 
 <style>
   /* Drawer positioning for desktop - must include [data-placement] for specificity */
-  :global(.rotation-direction-drawer[data-placement="right"].side-by-side-layout) {
+  :global(
+    .rotation-direction-drawer[data-placement="right"].side-by-side-layout
+  ) {
     width: var(--measured-panel-width, clamp(360px, 44.44vw, 900px)) !important;
     max-width: 100% !important;
   }

@@ -62,16 +62,12 @@
   ];
 
   onMount(() => {
-    hapticService = resolve<IHapticFeedback>(
-      TYPES.IHapticFeedback
-    );
+    hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
     SequenceEncoder = resolve<ISequenceEncoder>(TYPES.ISequenceEncoder);
   });
 
   // HMR-safe service resolution
-  const shareServiceResolver = createServiceResolver<ISharer>(
-    TYPES.ISharer
-  );
+  const shareServiceResolver = createServiceResolver<ISharer>(TYPES.ISharer);
 
   // Use provided share state or create a new one
   // IMPORTANT: Track the service instance to avoid recreating shareState on every render
@@ -329,7 +325,10 @@
         disabled={!canShare() || isCopyingLink}
         onclick={handleCopyLink}
       >
-        <i class="fas {isCopyingLink ? 'fa-check' : 'fa-link'}" aria-hidden="true"></i>
+        <i
+          class="fas {isCopyingLink ? 'fa-check' : 'fa-link'}"
+          aria-hidden="true"
+        ></i>
         <span class="btn-label">{isCopyingLink ? "Copied!" : "Copy Link"}</span>
         <span class="btn-hint">Share via URL</span>
       </button>

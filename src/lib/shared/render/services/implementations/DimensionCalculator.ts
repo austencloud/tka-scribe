@@ -13,9 +13,7 @@ import type { SequenceExportOptions } from "../../domain/models/SequenceExportOp
 import type { IDimensionCalculator } from "../contracts/IDimensionCalculator";
 
 @injectable()
-export class DimensionCalculator
-  implements IDimensionCalculator
-{
+export class DimensionCalculator implements IDimensionCalculator {
   // Base constants matching desktop application
   private static readonly BASE_MARGIN = 50; // Match desktop BASE_MARGIN
 

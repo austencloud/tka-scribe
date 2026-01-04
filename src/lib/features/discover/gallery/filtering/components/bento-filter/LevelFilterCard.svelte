@@ -23,9 +23,7 @@ Supports levels 1-3 with TKA color gradients (sky blue, silver, gold)
   let hapticService: IHapticFeedback | null = null;
 
   onMount(() => {
-    hapticService = tryResolve<IHapticFeedback>(
-      TYPES.IHapticFeedback
-    );
+    hapticService = tryResolve<IHapticFeedback>(TYPES.IHapticFeedback);
   });
 
   // TKA Level colors matching the existing pattern
@@ -65,7 +63,8 @@ Supports levels 1-3 with TKA color gradients (sky blue, silver, gold)
   };
 
   // Default styling when no level selected
-  const defaultGradient = "linear-gradient(135deg, var(--semantic-info), #1d4ed8)";
+  const defaultGradient =
+    "linear-gradient(135deg, var(--semantic-info), #1d4ed8)";
   const defaultShadowColor = "217deg 91% 60%";
 
   const currentConfig = $derived(

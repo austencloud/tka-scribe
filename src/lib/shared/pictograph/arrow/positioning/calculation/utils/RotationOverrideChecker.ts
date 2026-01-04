@@ -39,12 +39,11 @@ export class RotationOverrideChecker {
           pictographData
         );
 
-      const hasOverride =
-        await SpecialPlacer.hasRotationAngleOverride(
-          motion,
-          pictographData,
-          overrideKey
-        );
+      const hasOverride = await SpecialPlacer.hasRotationAngleOverride(
+        motion,
+        pictographData,
+        overrideKey
+      );
 
       if (hasOverride) {
         const overrideAngle = this.getRotationFromOverrideMap(

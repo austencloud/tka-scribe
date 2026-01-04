@@ -29,7 +29,11 @@
     // Length
     const length = start.distanceTo(end);
     if (length < 0.001) {
-      return { position: [0, 0, 0] as [number, number, number], quaternion: [0, 0, 0, 1] as [number, number, number, number], length: 0.001 };
+      return {
+        position: [0, 0, 0] as [number, number, number],
+        quaternion: [0, 0, 0, 1] as [number, number, number, number],
+        length: 0.001,
+      };
     }
 
     // Direction from start to end
@@ -55,8 +59,17 @@
     }
 
     return {
-      position: [position.x, position.y, position.z] as [number, number, number],
-      quaternion: [quaternion.x, quaternion.y, quaternion.z, quaternion.w] as [number, number, number, number],
+      position: [position.x, position.y, position.z] as [
+        number,
+        number,
+        number,
+      ],
+      quaternion: [quaternion.x, quaternion.y, quaternion.z, quaternion.w] as [
+        number,
+        number,
+        number,
+        number,
+      ],
       length,
     };
   });

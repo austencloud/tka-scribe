@@ -30,9 +30,7 @@ Pure presentation component that delegates to deletion services.
   let hapticService: IHapticFeedback;
 
   onMount(() => {
-    hapticService = resolve<IHapticFeedback>(
-      TYPES.IHapticFeedback
-    );
+    hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
   });
 
   function handleWithSelection(fn?: () => void) {

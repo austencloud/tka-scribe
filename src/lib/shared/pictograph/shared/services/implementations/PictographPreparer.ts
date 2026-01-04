@@ -60,8 +60,7 @@ export class PictographPreparer implements IPictographPreparer {
     const gridMode = this.deriveGridMode(pictograph);
     const arrowResult =
       await this.arrowManager.coordinateArrowLifecycle(pictograph);
-    const { propPositions, propAssets } =
-      await this.calculateProps(pictograph);
+    const { propPositions, propAssets } = await this.calculateProps(pictograph);
 
     const prepared: PreparedRenderData = {
       gridMode,

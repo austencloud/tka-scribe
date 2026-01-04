@@ -26,9 +26,7 @@
   let hapticService: IHapticFeedback | undefined;
 
   onMount(() => {
-    hapticService = resolve<IHapticFeedback>(
-      TYPES.IHapticFeedback
-    );
+    hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
   });
 
   function handleStatusFilter(status: FeedbackStatus | "all") {
@@ -45,7 +43,12 @@
 
   // Prepare filter options for grid components
   const statusOptions = [
-    { value: "all", label: "All Status", icon: "", color: "var(--semantic-success)" },
+    {
+      value: "all",
+      label: "All Status",
+      icon: "",
+      color: "var(--semantic-success)",
+    },
     ...Object.entries(STATUS_CONFIG).map(([value, config]) => ({
       value,
       label: config.label,
@@ -55,7 +58,12 @@
   ];
 
   const priorityOptions = [
-    { value: "all", label: "All Priority", icon: "", color: "var(--semantic-success)" },
+    {
+      value: "all",
+      label: "All Priority",
+      icon: "",
+      color: "var(--semantic-success)",
+    },
     ...Object.entries(PRIORITY_CONFIG).map(([value, config]) => ({
       value,
       label: config.label,

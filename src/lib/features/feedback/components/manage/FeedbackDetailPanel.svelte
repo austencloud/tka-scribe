@@ -222,7 +222,8 @@
               '#6b7280'}"
           >
             {#if currentPriorityConfig}
-              <i class="fas {currentPriorityConfig.icon}" aria-hidden="true"></i>
+              <i class="fas {currentPriorityConfig.icon}" aria-hidden="true"
+              ></i>
               {currentPriorityConfig.label}
             {:else}
               None
@@ -464,7 +465,11 @@
       transparent
     );
     border: 1px solid
-      color-mix(in srgb, var(--semantic-success, var(--semantic-success)) 30%, transparent);
+      color-mix(
+        in srgb,
+        var(--semantic-success, var(--semantic-success)) 30%,
+        transparent
+      );
     border-radius: var(--fb-radius-md);
   }
 

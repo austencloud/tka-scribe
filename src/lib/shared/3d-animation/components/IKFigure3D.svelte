@@ -108,10 +108,18 @@
 
   // Shoulder positions
   const leftShoulder = $derived(
-    new Vector3(-figureProps.shoulderX, figureProps.shoulderY, figureProps.figureZ)
+    new Vector3(
+      -figureProps.shoulderX,
+      figureProps.shoulderY,
+      figureProps.figureZ
+    )
   );
   const rightShoulder = $derived(
-    new Vector3(figureProps.shoulderX, figureProps.shoulderY, figureProps.figureZ)
+    new Vector3(
+      figureProps.shoulderX,
+      figureProps.shoulderY,
+      figureProps.figureZ
+    )
   );
 
   // Hand targets from prop states
@@ -122,7 +130,7 @@
   // positionOffset converts world prop positions to local coordinates:
   // localPos = worldPos - offset
   const leftTarget = $derived(
-    redPropState  // Performer's RIGHT hand (screen left)
+    redPropState // Performer's RIGHT hand (screen left)
       ? new Vector3(
           redPropState.worldPosition.x - positionOffset.x,
           redPropState.worldPosition.y - positionOffset.y,
@@ -136,7 +144,7 @@
   );
 
   const rightTarget = $derived(
-    bluePropState  // Performer's LEFT hand (screen right)
+    bluePropState // Performer's LEFT hand (screen right)
       ? new Vector3(
           bluePropState.worldPosition.x - positionOffset.x,
           bluePropState.worldPosition.y - positionOffset.y,
@@ -185,10 +193,26 @@
   const rightWristPos = $derived(toTuple(rightArm.wrist));
 
   // Body part positions
-  const headPos = $derived<[number, number, number]>([0, figureProps.headY, figureProps.figureZ]);
-  const neckPos = $derived<[number, number, number]>([0, figureProps.neckY, figureProps.figureZ]);
-  const torsoPos = $derived<[number, number, number]>([0, figureProps.torsoY, figureProps.figureZ]);
-  const hipPos = $derived<[number, number, number]>([0, figureProps.hipY, figureProps.figureZ]);
+  const headPos = $derived<[number, number, number]>([
+    0,
+    figureProps.headY,
+    figureProps.figureZ,
+  ]);
+  const neckPos = $derived<[number, number, number]>([
+    0,
+    figureProps.neckY,
+    figureProps.figureZ,
+  ]);
+  const torsoPos = $derived<[number, number, number]>([
+    0,
+    figureProps.torsoY,
+    figureProps.figureZ,
+  ]);
+  const hipPos = $derived<[number, number, number]>([
+    0,
+    figureProps.hipY,
+    figureProps.figureZ,
+  ]);
 
   // Leg positions (thigh center, shin center)
   const leftThighY = $derived((figureProps.hipY + figureProps.kneeY) / 2);
@@ -260,7 +284,12 @@
 
   <T.Mesh position={neckPos}>
     <T.CylinderGeometry
-      args={[figureProps.neckRadius, figureProps.neckRadius, figureProps.neckLength, 8]}
+      args={[
+        figureProps.neckRadius,
+        figureProps.neckRadius,
+        figureProps.neckLength,
+        8,
+      ]}
     />
     <T.MeshStandardMaterial color={skinTone} roughness={0.6} />
   </T.Mesh>
@@ -268,7 +297,12 @@
   <!-- ═══════════════ TORSO ═══════════════ -->
   <T.Mesh position={torsoPos}>
     <T.CylinderGeometry
-      args={[figureProps.torsoTopRadius, figureProps.torsoBottomRadius, figureProps.torsoLength, 8]}
+      args={[
+        figureProps.torsoTopRadius,
+        figureProps.torsoBottomRadius,
+        figureProps.torsoLength,
+        8,
+      ]}
     />
     <T.MeshStandardMaterial color={BODY_COLOR} roughness={0.5} />
   </T.Mesh>
@@ -279,7 +313,12 @@
     rotation={[0, 0, Math.PI / 2]}
   >
     <T.CylinderGeometry
-      args={[figureProps.shoulderBarRadius, figureProps.shoulderBarRadius, figureProps.shoulderX * 2, 8]}
+      args={[
+        figureProps.shoulderBarRadius,
+        figureProps.shoulderBarRadius,
+        figureProps.shoulderX * 2,
+        8,
+      ]}
     />
     <T.MeshStandardMaterial color={BODY_COLOR} roughness={0.5} />
   </T.Mesh>
@@ -287,7 +326,12 @@
   <!-- Hips bar -->
   <T.Mesh position={hipPos} rotation={[0, 0, Math.PI / 2]}>
     <T.CylinderGeometry
-      args={[figureProps.hipBarRadius, figureProps.hipBarRadius, figureProps.hipWidth * 2, 8]}
+      args={[
+        figureProps.hipBarRadius,
+        figureProps.hipBarRadius,
+        figureProps.hipWidth * 2,
+        8,
+      ]}
     />
     <T.MeshStandardMaterial color={BODY_COLOR} roughness={0.5} />
   </T.Mesh>
@@ -296,7 +340,12 @@
   <!-- Left thigh -->
   <T.Mesh position={[-figureProps.hipWidth, leftThighY, figureProps.figureZ]}>
     <T.CylinderGeometry
-      args={[figureProps.legThickness, figureProps.legThickness * 0.9, figureProps.thighLength, 8]}
+      args={[
+        figureProps.legThickness,
+        figureProps.legThickness * 0.9,
+        figureProps.thighLength,
+        8,
+      ]}
     />
     <T.MeshStandardMaterial color={BODY_COLOR} roughness={0.5} />
   </T.Mesh>
@@ -304,7 +353,12 @@
   <!-- Right thigh -->
   <T.Mesh position={[figureProps.hipWidth, rightThighY, figureProps.figureZ]}>
     <T.CylinderGeometry
-      args={[figureProps.legThickness, figureProps.legThickness * 0.9, figureProps.thighLength, 8]}
+      args={[
+        figureProps.legThickness,
+        figureProps.legThickness * 0.9,
+        figureProps.thighLength,
+        8,
+      ]}
     />
     <T.MeshStandardMaterial color={BODY_COLOR} roughness={0.5} />
   </T.Mesh>
@@ -312,7 +366,12 @@
   <!-- Left shin -->
   <T.Mesh position={[-figureProps.hipWidth, leftShinY, figureProps.figureZ]}>
     <T.CylinderGeometry
-      args={[figureProps.legThickness * 0.9, figureProps.legThickness * 0.7, figureProps.shinLength, 8]}
+      args={[
+        figureProps.legThickness * 0.9,
+        figureProps.legThickness * 0.7,
+        figureProps.shinLength,
+        8,
+      ]}
     />
     <T.MeshStandardMaterial color={BODY_COLOR} roughness={0.5} />
   </T.Mesh>
@@ -320,29 +379,52 @@
   <!-- Right shin -->
   <T.Mesh position={[figureProps.hipWidth, rightShinY, figureProps.figureZ]}>
     <T.CylinderGeometry
-      args={[figureProps.legThickness * 0.9, figureProps.legThickness * 0.7, figureProps.shinLength, 8]}
+      args={[
+        figureProps.legThickness * 0.9,
+        figureProps.legThickness * 0.7,
+        figureProps.shinLength,
+        8,
+      ]}
     />
     <T.MeshStandardMaterial color={BODY_COLOR} roughness={0.5} />
   </T.Mesh>
 
   <!-- Left foot -->
   <T.Mesh
-    position={[-figureProps.hipWidth, figureProps.footY, figureProps.figureZ + figureProps.footLength / 3]}
+    position={[
+      -figureProps.hipWidth,
+      figureProps.footY,
+      figureProps.figureZ + figureProps.footLength / 3,
+    ]}
     rotation={[Math.PI / 2, 0, 0]}
   >
     <T.CylinderGeometry
-      args={[figureProps.legThickness * 0.7, figureProps.legThickness * 0.6, figureProps.footLength, 8]}
+      args={[
+        figureProps.legThickness * 0.7,
+        figureProps.legThickness * 0.6,
+        figureProps.footLength,
+        8,
+      ]}
     />
     <T.MeshStandardMaterial color={BODY_COLOR} roughness={0.5} />
   </T.Mesh>
 
   <!-- Right foot -->
   <T.Mesh
-    position={[figureProps.hipWidth, figureProps.footY, figureProps.figureZ + figureProps.footLength / 3]}
+    position={[
+      figureProps.hipWidth,
+      figureProps.footY,
+      figureProps.figureZ + figureProps.footLength / 3,
+    ]}
     rotation={[Math.PI / 2, 0, 0]}
   >
     <T.CylinderGeometry
-      args={[figureProps.legThickness * 0.7, figureProps.legThickness * 0.6, figureProps.footLength, 8]}
+      args={[
+        figureProps.legThickness * 0.7,
+        figureProps.legThickness * 0.6,
+        figureProps.footLength,
+        8,
+      ]}
     />
     <T.MeshStandardMaterial color={BODY_COLOR} roughness={0.5} />
   </T.Mesh>

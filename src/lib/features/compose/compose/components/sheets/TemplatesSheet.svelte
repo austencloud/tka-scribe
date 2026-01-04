@@ -99,7 +99,10 @@
           aria-controls="advanced-templates-grid"
         >
           <h3 class="section-title">Advanced</h3>
-          <i class="fas fa-chevron-{showAdvanced ? 'up' : 'down'}" aria-hidden="true"></i>
+          <i
+            class="fas fa-chevron-{showAdvanced ? 'up' : 'down'}"
+            aria-hidden="true"
+          ></i>
         </button>
 
         {#if showAdvanced}
@@ -121,7 +124,8 @@
                           class:tunnel={cellDefault?.type === "tunnel"}
                         >
                           {#if cellDefault?.type === "tunnel"}
-                            <i class="fas fa-layer-group" aria-hidden="true"></i>
+                            <i class="fas fa-layer-group" aria-hidden="true"
+                            ></i>
                           {/if}
                         </div>
                       {/each}

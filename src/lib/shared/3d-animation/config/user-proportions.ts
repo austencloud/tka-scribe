@@ -90,7 +90,9 @@ export function inchesToCm(inches: number): number {
 /**
  * Calculate all scene dimensions from user proportions
  */
-export function calculateSceneDimensions(props: UserProportions): DerivedSceneDimensions {
+export function calculateSceneDimensions(
+  props: UserProportions
+): DerivedSceneDimensions {
   const { heightCm, staffLengthCm } = props;
 
   // Avatar scale relative to base model
@@ -174,4 +176,6 @@ export const DEFAULT_USER_PROPORTIONS: UserProportions = {
 /**
  * Pre-calculated default dimensions
  */
-export const DEFAULT_SCENE_DIMENSIONS = calculateSceneDimensions(DEFAULT_USER_PROPORTIONS);
+export const DEFAULT_SCENE_DIMENSIONS = calculateSceneDimensions(
+  DEFAULT_USER_PROPORTIONS
+);

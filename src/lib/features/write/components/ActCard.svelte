@@ -79,7 +79,8 @@
     <div class="card-meta">
       <span class="meta-item">
         <i class="fas fa-layer-group" aria-hidden="true"></i>
-        {actInfo.sequenceCount} {actInfo.sequenceCount === 1 ? "sequence" : "sequences"}
+        {actInfo.sequenceCount}
+        {actInfo.sequenceCount === 1 ? "sequence" : "sequences"}
       </span>
       <span class="meta-separator">·</span>
       <span class="meta-item">

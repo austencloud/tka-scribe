@@ -14,5 +14,8 @@ export interface IOrientationMapper {
    * @param centerPathAngle - The current center path angle in radians
    * @returns The staff angle in radians
    */
-  mapOrientationToAngle(orientation: Orientation, centerPathAngle: number): number;
+  mapOrientationToAngle(
+    orientation: Orientation,
+    centerPathAngle: number
+  ): number;
 }

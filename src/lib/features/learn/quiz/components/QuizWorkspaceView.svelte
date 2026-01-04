@@ -50,9 +50,7 @@
   let timerComponent = $state<QuizTimer>();
 
   // Services
-  const hapticService = resolve<IHapticFeedback>(
-    TYPES.IHapticFeedback
-  );
+  const hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
   const quizSessionService = resolve<IQuizSessionManager>(
     TYPES.IQuizSessionManager
   );

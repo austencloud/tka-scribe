@@ -12,7 +12,7 @@
  * 4. Render synchronized highlighting (matches workspace preview style)
  */
 
-import type { SequenceData } from '$lib/shared/foundation/domain/models/SequenceData';
+import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 
 export interface CompositeDimensions {
   width: number;
@@ -20,18 +20,18 @@ export interface CompositeDimensions {
 }
 
 export interface CompositeLayoutOptions {
-  orientation: 'horizontal' | 'vertical';
-  gridBeatSize: number;  // Size of each beat cell in pixels
+  orientation: "horizontal" | "vertical";
+  gridBeatSize: number; // Size of each beat cell in pixels
   includeStartPosition: boolean;
   showBeatNumbers: boolean;
 }
 
 export interface BeatGridPosition {
-  col: number;  // Column index (0-based)
-  row: number;  // Row index (0-based)
-  x: number;    // Pixel X coordinate
-  y: number;    // Pixel Y coordinate
-  width: number;  // Beat cell width
+  col: number; // Column index (0-based)
+  row: number; // Row index (0-based)
+  x: number; // Pixel X coordinate
+  y: number; // Pixel Y coordinate
+  width: number; // Beat cell width
   height: number; // Beat cell height
 }
 

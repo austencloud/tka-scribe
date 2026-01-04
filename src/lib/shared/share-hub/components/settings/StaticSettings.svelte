@@ -25,7 +25,9 @@
     <i class="fas fa-info-circle" aria-hidden="true"></i>
     <div class="info-content">
       <h4>Export Settings</h4>
-      <p>Images are exported as high-quality PNG files with a white background.</p>
+      <p>
+        Images are exported as high-quality PNG files with a white background.
+      </p>
       <ul>
         <li>Beat numbers included</li>
         <li>Sequence word displayed</li>

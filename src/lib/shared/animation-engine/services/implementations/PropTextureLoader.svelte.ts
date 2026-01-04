@@ -12,7 +12,10 @@ import type {
   IPropTextureLoader,
   PropTextureState,
 } from "../contracts/IPropTextureLoader";
-import { DEFAULT_PROP_DIMENSIONS, getPropDimensions } from "../contracts/IPropTextureLoader";
+import {
+  DEFAULT_PROP_DIMENSIONS,
+  getPropDimensions,
+} from "../contracts/IPropTextureLoader";
 
 export class PropTextureLoader implements IPropTextureLoader {
   // Reactive state - owned by service, read by component via $derived

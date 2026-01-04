@@ -24,6 +24,8 @@ export class FeedbackTypeResolver implements IFeedbackTypeResolver {
   }
 
   getEncouragementMessage(type: FeedbackType): string {
-    return this.encouragementMessages[type] ?? this.encouragementMessages.general;
+    return (
+      this.encouragementMessages[type] ?? this.encouragementMessages.general
+    );
   }
 }

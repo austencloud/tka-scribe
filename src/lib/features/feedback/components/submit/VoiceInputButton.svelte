@@ -234,7 +234,11 @@
       transparent
     );
     border: 1.5px solid
-      color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent)) 30%, transparent);
+      color-mix(
+        in srgb,
+        var(--theme-accent-strong, var(--theme-accent)) 30%,
+        transparent
+      );
     border-radius: 50%;
     color: var(--theme-accent-strong);
     cursor: pointer;
@@ -243,11 +247,7 @@
   }
 
   .voice-btn:hover:not(:disabled) {
-    background: color-mix(
-      in srgb,
-      var(--theme-accent-strong) 25%,
-      transparent
-    );
+    background: color-mix(in srgb, var(--theme-accent-strong) 25%, transparent);
     border-color: color-mix(
       in srgb,
       var(--theme-accent-strong, var(--theme-accent)) 50%,
@@ -291,7 +291,11 @@
     0%,
     100% {
       box-shadow: 0 0 0 0
-        color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 40%, transparent);
+        color-mix(
+          in srgb,
+          var(--semantic-error, var(--semantic-error)) 40%,
+          transparent
+        );
     }
     50% {
       box-shadow: 0 0 0 8px transparent;
@@ -303,7 +307,11 @@
     position: absolute;
     inset: -4px;
     border: 2px solid
-      color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 60%, transparent);
+      color-mix(
+        in srgb,
+        var(--semantic-error, var(--semantic-error)) 60%,
+        transparent
+      );
     border-radius: 50%;
     animation: ringPulse 1.5s ease-out infinite;
   }

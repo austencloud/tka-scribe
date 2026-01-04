@@ -107,7 +107,6 @@
         <span class="btn-hint">{buttonHint()}</span>
       </button>
     {/if}
-
   </div>
 
   <!-- Inline Repetitions Control (only for circular/looping sequences) -->
@@ -125,7 +124,9 @@
             class:active={loopCount === count}
             onclick={() => handleRepetitionClick(count)}
             type="button"
-            aria-label="Export video with {count} repetition{count > 1 ? 's' : ''}"
+            aria-label="Export video with {count} repetition{count > 1
+              ? 's'
+              : ''}"
           >
             {count}x
           </button>

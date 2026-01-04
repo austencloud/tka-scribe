@@ -71,7 +71,11 @@
   }
 
   .transformation-option.selected {
-    background: linear-gradient(135deg, rgba(139, 92, 246, 0.3) 0%, rgba(99, 102, 241, 0.3) 100%);
+    background: linear-gradient(
+      135deg,
+      rgba(139, 92, 246, 0.3) 0%,
+      rgba(99, 102, 241, 0.3) 100%
+    );
     border-color: var(--theme-accent-strong);
     color: var(--foreground);
     font-weight: 600;

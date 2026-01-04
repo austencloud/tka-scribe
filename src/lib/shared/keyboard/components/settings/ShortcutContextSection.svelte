@@ -60,13 +60,13 @@
   </button>
 
   {#if isExpanded}
-    <div id="shortcut-section-content-{context}" class="section-content" transition:slide={{ duration: 150 }}>
+    <div
+      id="shortcut-section-content-{context}"
+      class="section-content"
+      transition:slide={{ duration: 150 }}
+    >
       {#each shortcuts as item (item.shortcut.id)}
-        <ShortcutRow
-          {item}
-          onEdit={onEditShortcut}
-          onReset={onResetShortcut}
-        />
+        <ShortcutRow {item} onEdit={onEditShortcut} onReset={onResetShortcut} />
       {/each}
     </div>
   {/if}
@@ -107,8 +107,17 @@
     height: 36px;
     font-size: var(--font-size-sm);
     color: var(--theme-accent);
-    background: color-mix(in srgb, var(--theme-accent, var(--theme-accent-strong)) 12%, transparent);
-    border: 1px solid color-mix(in srgb, var(--theme-accent, var(--theme-accent-strong)) 25%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--theme-accent, var(--theme-accent-strong)) 12%,
+      transparent
+    );
+    border: 1px solid
+      color-mix(
+        in srgb,
+        var(--theme-accent, var(--theme-accent-strong)) 25%,
+        transparent
+      );
     border-radius: 10px;
   }
 
@@ -131,7 +140,11 @@
     text-transform: uppercase;
     padding: 4px 10px;
     border-radius: 6px;
-    background: color-mix(in srgb, var(--theme-accent, var(--theme-accent-strong)) 18%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--theme-accent, var(--theme-accent-strong)) 18%,
+      transparent
+    );
     color: var(--theme-accent);
   }
 

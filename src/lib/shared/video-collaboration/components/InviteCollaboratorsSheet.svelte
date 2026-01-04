@@ -40,9 +40,7 @@
     videoService = container.get<ICollaborativeVideoManager>(
       TYPES.ICollaborativeVideoManager
     );
-    hapticService = container.get<IHapticFeedback>(
-      TYPES.IHapticFeedback
-    );
+    hapticService = container.get<IHapticFeedback>(TYPES.IHapticFeedback);
   });
 
   // Search state
@@ -166,7 +164,8 @@
             autocapitalize="off"
           />
           {#if isSearching}
-            <i class="fas fa-spinner fa-spin loading-icon" aria-hidden="true"></i>
+            <i class="fas fa-spinner fa-spin loading-icon" aria-hidden="true"
+            ></i>
           {/if}
         </div>
       </div>

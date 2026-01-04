@@ -111,11 +111,23 @@
     padding: 8px 20px;
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--theme-accent, var(--theme-accent-strong)) 20%, transparent),
-      color-mix(in srgb, var(--theme-accent, var(--theme-accent-strong)) 10%, transparent)
+      color-mix(
+        in srgb,
+        var(--theme-accent, var(--theme-accent-strong)) 20%,
+        transparent
+      ),
+      color-mix(
+        in srgb,
+        var(--theme-accent, var(--theme-accent-strong)) 10%,
+        transparent
+      )
     );
     border: 1px solid
-      color-mix(in srgb, var(--theme-accent, var(--theme-accent-strong)) 30%, transparent);
+      color-mix(
+        in srgb,
+        var(--theme-accent, var(--theme-accent-strong)) 30%,
+        transparent
+      );
     border-radius: 24px;
   }
 

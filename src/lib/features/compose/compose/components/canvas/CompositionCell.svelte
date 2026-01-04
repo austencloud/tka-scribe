@@ -269,7 +269,11 @@
     position: absolute;
     inset: -2px;
     border: 2px solid
-      color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 80%, transparent);
+      color-mix(
+        in srgb,
+        var(--theme-accent, var(--theme-accent)) 80%,
+        transparent
+      );
     border-radius: 0;
     pointer-events: none;
     animation: pulse-ring 1.5s ease-in-out infinite;

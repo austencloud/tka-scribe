@@ -37,7 +37,8 @@ export class LibrarySaveService implements ILibrarySaveService {
 
   constructor(
     @inject(TYPES.ISharer) @optional() shareService: ISharer | null,
-    @inject(TYPES.IFirebaseVideoUploader) @optional()
+    @inject(TYPES.IFirebaseVideoUploader)
+    @optional()
     uploadService: IFirebaseVideoUploader | null,
     @inject(TYPES.ITagManager) @optional() tagService: ITagManager | null
   ) {
@@ -55,7 +56,10 @@ export class LibrarySaveService implements ILibrarySaveService {
     const { name, displayName, visibility, tags, notes } = options;
     let thumbnailUrl: string | undefined;
 
-    const emitProgress = (step: number, renderProgress?: { current: number; total: number }) => {
+    const emitProgress = (
+      step: number,
+      renderProgress?: { current: number; total: number }
+    ) => {
       onProgress?.({
         step,
         stepLabel: this.getStepLabel(step, renderProgress),
@@ -65,7 +69,10 @@ export class LibrarySaveService implements ILibrarySaveService {
 
     // Step 1: Generate thumbnail image
     emitProgress(1);
-    thumbnailUrl = await this.generateAndUploadThumbnail(sequence, emitProgress);
+    thumbnailUrl = await this.generateAndUploadThumbnail(
+      sequence,
+      emitProgress
+    );
 
     // Step 3: Create any new tags
     emitProgress(3);
@@ -122,10 +129,15 @@ export class LibrarySaveService implements ILibrarySaveService {
    */
   private async generateAndUploadThumbnail(
     sequence: SequenceData,
-    emitProgress: (step: number, renderProgress?: { current: number; total: number }) => void
+    emitProgress: (
+      step: number,
+      renderProgress?: { current: number; total: number }
+    ) => void
   ): Promise<string | undefined> {
     if (!this.shareService || !this.uploadService) {
-      console.warn("[LibrarySaveService] Share or upload service not available, skipping thumbnail");
+      console.warn(
+        "[LibrarySaveService] Share or upload service not available, skipping thumbnail"
+      );
       return undefined;
     }
 
@@ -156,7 +168,10 @@ export class LibrarySaveService implements ILibrarySaveService {
           sequence,
           thumbnailOptions,
           (progress: { current: number; total: number; stage: string }) => {
-            emitProgress(1, { current: progress.current, total: progress.total });
+            emitProgress(1, {
+              current: progress.current,
+              total: progress.total,
+            });
           }
         );
       }
@@ -172,7 +187,10 @@ export class LibrarySaveService implements ILibrarySaveService {
       return uploadResult.url;
     } catch (error) {
       // Don't fail the entire save if thumbnail generation fails
-      console.error("[LibrarySaveService] Failed to generate/upload thumbnail:", error);
+      console.error(
+        "[LibrarySaveService] Failed to generate/upload thumbnail:",
+        error
+      );
       return undefined;
     }
   }
@@ -192,7 +210,8 @@ export class LibrarySaveService implements ILibrarySaveService {
 
         if (!existing) {
           // Create new tag with random color
-          const randomColor = TAG_COLORS[Math.floor(Math.random() * TAG_COLORS.length)];
+          const randomColor =
+            TAG_COLORS[Math.floor(Math.random() * TAG_COLORS.length)];
           await this.tagService.createTag(normalized, { color: randomColor });
         }
       }
@@ -207,14 +226,16 @@ export class LibrarySaveService implements ILibrarySaveService {
    */
   private async refreshLibraryState(): Promise<void> {
     try {
-      const { libraryState } = await import(
-        "$lib/features/library/state/library-state.svelte"
-      );
+      const { libraryState } =
+        await import("$lib/features/library/state/library-state.svelte");
       if (libraryState) {
         await libraryState.loadSequences();
       }
     } catch (error) {
-      console.warn("[LibrarySaveService] Could not refresh library state:", error);
+      console.warn(
+        "[LibrarySaveService] Could not refresh library state:",
+        error
+      );
     }
   }
 }

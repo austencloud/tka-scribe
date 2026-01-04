@@ -13,10 +13,7 @@
   import type { IHapticFeedback } from "../../../application/services/contracts/IHapticFeedback";
   import { onMount } from "svelte";
   import EmailLinkingDrawer from "../../../auth/components/EmailLinkingDrawer.svelte";
-  import {
-    PROVIDERS,
-    type ProviderId,
-  } from "./connectedAccounts.providers";
+  import { PROVIDERS, type ProviderId } from "./connectedAccounts.providers";
   import ConfirmDialog from "../../../foundation/ui/ConfirmDialog.svelte";
 
   // Services
@@ -37,9 +34,7 @@
 
   onMount(() => {
     authService = resolve<IAuthenticator>(TYPES.IAuthenticator);
-    hapticService = resolve<IHapticFeedback>(
-      TYPES.IHapticFeedback
-    );
+    hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
   });
 
   // Derived state
@@ -68,7 +63,8 @@
     // Check if authService is available
     if (!authService) {
       console.error("Auth service not available - cannot link provider");
-      errorMessage = "Unable to connect. Please refresh the page and try again.";
+      errorMessage =
+        "Unable to connect. Please refresh the page and try again.";
       hapticService?.trigger("error");
       return;
     }
@@ -192,10 +188,16 @@
       {@const config = PROVIDERS[providerId as ProviderId]}
       {@const isUnlinking = unlinkingProvider === providerId}
       {#if config}
-        <div class="provider-row linked" style="--provider-color: {config.color};">
+        <div
+          class="provider-row linked"
+          style="--provider-color: {config.color};"
+        >
           <i class="{config.icon} provider-icon" aria-hidden="true"></i>
           <span class="provider-name">{config.name}</span>
-          <i class="fas fa-check-circle status-icon connected" aria-hidden="true"></i>
+          <i
+            class="fas fa-check-circle status-icon connected"
+            aria-hidden="true"
+          ></i>
           {#if canUnlink}
             <button
               class="action-btn unlink"
@@ -221,15 +223,21 @@
       <button
         class="provider-row available"
         style="--provider-color: {config.color};"
-        onclick={() => providerId === "password" ? openEmailLinkingDrawer() : linkProvider(providerId)}
+        onclick={() =>
+          providerId === "password"
+            ? openEmailLinkingDrawer()
+            : linkProvider(providerId)}
         disabled={isLinking || linkingProvider !== null}
       >
         {#if isLinking}
-          <i class="fas fa-spinner fa-spin provider-icon" aria-hidden="true"></i>
+          <i class="fas fa-spinner fa-spin provider-icon" aria-hidden="true"
+          ></i>
         {:else}
           <i class="{config.icon} provider-icon" aria-hidden="true"></i>
         {/if}
-        <span class="provider-name">{isLinking ? "Connecting..." : `Add ${config.name}`}</span>
+        <span class="provider-name"
+          >{isLinking ? "Connecting..." : `Add ${config.name}`}</span
+        >
         <i class="fas fa-plus action-icon" aria-hidden="true"></i>
       </button>
     {/each}

@@ -39,9 +39,7 @@ export class AnimatorLoader implements IAnimatorLoader {
         orchestrator: container.get<ISequenceAnimationOrchestrator>(
           TYPES.ISequenceAnimationOrchestrator
         ),
-        TrailCapturer: container.get<ITrailCapturer>(
-          TYPES.ITrailCapturer
-        ),
+        TrailCapturer: container.get<ITrailCapturer>(TYPES.ITrailCapturer),
         turnsTupleGenerator: container.get<ITurnsTupleGenerator>(
           TYPES.ITurnsTupleGenerator
         ),
@@ -60,10 +58,7 @@ export class AnimatorLoader implements IAnimatorLoader {
 
       return { success: true, services };
     } catch (err) {
-      console.error(
-        "[AnimatorLoader] Failed to load animator services:",
-        err
-      );
+      console.error("[AnimatorLoader] Failed to load animator services:", err);
       return {
         success: false,
         error: err instanceof Error ? err.message : "Unknown error",

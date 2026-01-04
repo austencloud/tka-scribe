@@ -67,9 +67,7 @@
 
     isReporting = true;
     try {
-      const errorService = tryResolve<IErrorHandler>(
-        TYPES.IErrorHandler
-      );
+      const errorService = tryResolve<IErrorHandler>(TYPES.IErrorHandler);
       if (!errorService) {
         toast.error("Unable to submit bug report - service unavailable");
         return;
@@ -106,11 +104,7 @@
 {#if error}
   {@const config = getConfig(error.severity)}
   <!-- svelte-ignore a11y_no_static_element_interactions -->
-  <div
-    class="error-overlay"
-    onclick={handleDismiss}
-    aria-hidden="true"
-  >
+  <div class="error-overlay" onclick={handleDismiss} aria-hidden="true">
     <div
       class="error-modal"
       style="--error-color: {config.color}; --error-bg: {config.bg}"
@@ -163,7 +157,10 @@
             aria-expanded={showDetails}
             aria-controls="error-technical-details"
           >
-            <i class="fas fa-chevron-{showDetails ? 'up' : 'down'}" aria-hidden="true"></i>
+            <i
+              class="fas fa-chevron-{showDetails ? 'up' : 'down'}"
+              aria-hidden="true"
+            ></i>
             {showDetails ? "Hide" : "Show"} technical details
           </button>
 

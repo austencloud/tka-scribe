@@ -34,9 +34,7 @@ Provides a beautiful, consistent icon selection experience
   let hapticService: IHapticFeedback;
 
   onMount(async () => {
-    hapticService = await resolve<IHapticFeedback>(
-      TYPES.IHapticFeedback
-    );
+    hapticService = await resolve<IHapticFeedback>(TYPES.IHapticFeedback);
   });
 
   function selectIcon(icon: string) {
@@ -138,8 +136,16 @@ Provides a beautiful, consistent icon selection experience
   .icon-button.selected {
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--theme-accent, var(--semantic-info)) 30%, transparent),
-      color-mix(in srgb, var(--theme-accent, var(--semantic-info)) 20%, transparent)
+      color-mix(
+        in srgb,
+        var(--theme-accent, var(--semantic-info)) 30%,
+        transparent
+      ),
+      color-mix(
+        in srgb,
+        var(--theme-accent, var(--semantic-info)) 20%,
+        transparent
+      )
     );
     border-color: color-mix(
       in srgb,
@@ -148,16 +154,32 @@ Provides a beautiful, consistent icon selection experience
     );
     box-shadow:
       0 0 0 3px
-        color-mix(in srgb, var(--theme-accent, var(--semantic-info)) 20%, transparent),
+        color-mix(
+          in srgb,
+          var(--theme-accent, var(--semantic-info)) 20%,
+          transparent
+        ),
       0 4px 12px
-        color-mix(in srgb, var(--theme-accent, var(--semantic-info)) 30%, transparent);
+        color-mix(
+          in srgb,
+          var(--theme-accent, var(--semantic-info)) 30%,
+          transparent
+        );
   }
 
   .icon-button.selected:hover {
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--theme-accent, var(--semantic-info)) 40%, transparent),
-      color-mix(in srgb, var(--theme-accent, var(--semantic-info)) 30%, transparent)
+      color-mix(
+        in srgb,
+        var(--theme-accent, var(--semantic-info)) 40%,
+        transparent
+      ),
+      color-mix(
+        in srgb,
+        var(--theme-accent, var(--semantic-info)) 30%,
+        transparent
+      )
     );
     border-color: color-mix(
       in srgb,

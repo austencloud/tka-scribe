@@ -212,9 +212,9 @@ export class AnswerChecker {
       case QuizType.VALID_NEXT_PICTOGRAPH:
         return Boolean(
           answer &&
-            typeof answer === "object" &&
-            "startPosition" in answer &&
-            "endPosition" in answer
+          typeof answer === "object" &&
+          "startPosition" in answer &&
+          "endPosition" in answer
         );
       default:
         return false;

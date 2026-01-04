@@ -99,8 +99,7 @@
   }
 
   .module-card:focus {
-    outline: 3px solid
-      color-mix(in srgb, var(--theme-text) 95%, transparent);
+    outline: 3px solid color-mix(in srgb, var(--theme-text) 95%, transparent);
     outline-offset: 2px;
   }
 
@@ -129,12 +128,7 @@
     background: color-mix(in srgb, var(--theme-shadow) 40%, transparent);
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
-    border: 1px solid
-      color-mix(
-        in srgb,
-        var(--theme-stroke) 60%,
-        transparent
-      );
+    border: 1px solid color-mix(in srgb, var(--theme-stroke) 60%, transparent);
     border-radius: 8px;
     z-index: 2;
   }

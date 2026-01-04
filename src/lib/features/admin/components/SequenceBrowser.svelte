@@ -72,7 +72,8 @@
           <div class="sequence-header">
             <h4 class="sequence-name">{sequence.name}</h4>
             {#if selectedSequence?.id === sequence.id}
-              <i class="fas fa-check-circle selected-icon" aria-hidden="true"></i>
+              <i class="fas fa-check-circle selected-icon" aria-hidden="true"
+              ></i>
             {/if}
           </div>
 

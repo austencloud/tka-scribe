@@ -88,7 +88,8 @@ QuizPictographCard - Question pictograph display
   }
 
   @keyframes arrowPulse {
-    0%, 100% {
+    0%,
+    100% {
       opacity: 0.4;
       transform: translateY(0);
     }

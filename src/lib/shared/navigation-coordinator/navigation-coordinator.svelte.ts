@@ -14,9 +14,8 @@ import {
   navigationState,
 } from "../navigation/state/navigation-state.svelte";
 import { switchModule } from "../application/state/ui/module-state";
-import { authState, isEffectiveAdmin } from "../auth/state/authState.svelte";
+import { authState } from "../auth/state/authState.svelte";
 import { featureFlagService } from "../auth/services/FeatureFlagService.svelte";
-import { userPreviewState } from "../debug/state/user-preview-state.svelte";
 
 // Session storage key for persisting navigation history across HMR
 const PREVIOUS_MODULE_KEY = "tka-previous-module-before-settings";
@@ -303,14 +302,29 @@ export async function handleModuleChange(
 // Tab order for determining slide direction (per module)
 // Note: Compose module playback is an overlay, not a tab
 const TAB_ORDERS: Record<string, string[]> = {
-  create: ["assembler", "constructor", "generator", "spell", "editor", "export"],
+  create: [
+    "assembler",
+    "constructor",
+    "generator",
+    "spell",
+    "editor",
+    "export",
+  ],
   discover: ["sequences", "collections", "creators", "library"],
   learn: ["concepts", "play", "codex"],
   compose: ["arrange", "browse"],
   train: ["drills", "challenges", "progress"],
   collect: ["achievements", "badges", "stats"],
   feedback: ["submit", "manage"],
-  settings: ["profile", "release-notes", "notifications", "props", "theme", "visibility", "keyboard"],
+  settings: [
+    "profile",
+    "release-notes",
+    "notifications",
+    "props",
+    "theme",
+    "visibility",
+    "keyboard",
+  ],
 };
 
 // Section change handler with View Transitions
@@ -392,23 +406,9 @@ export function getModuleDefinitions() {
   const isFeatureFlagsInitialized = featureFlagService.isInitialized;
 
   // Read role-based flags BEFORE the filter to establish Svelte reactivity
-  // This ensures $derived recalculates when these values change
-  const _isAdmin = featureFlagService.isAdmin;
-  const _isTester = featureFlagService.isTester;
-  const _isPremium = featureFlagService.isPremium;
+  // Read reactive values to ensure $derived recalculates when role changes
+  // (including when impersonation syncs to debugRoleOverride)
   const _effectiveRole = featureFlagService.effectiveRole;
-
-  // Check if we're in user impersonation mode
-  // When impersonating, use the impersonated user's role for access control
-  const isImpersonating = userPreviewState.isActive;
-  const impersonatedRole = userPreviewState.data.profile?.role;
-
-  // Determine effective admin status:
-  // - If impersonating: check the impersonated user's role
-  // - Otherwise: use actual admin status (or debug role override)
-  const effectiveIsAdmin = isImpersonating
-    ? impersonatedRole === "admin"
-    : isEffectiveAdmin();
 
   return MODULE_DEFINITIONS.filter((module) => {
     // Settings module is accessed via sidebar footer gear icon, not main module list
@@ -423,41 +423,9 @@ export function getModuleDefinitions() {
       return ["dashboard", "create", "discover"].includes(module.id);
     }
 
-    // When impersonating a user, manually check their role against module requirements
-    // This provides an accurate preview of what the impersonated user would see
-    if (isImpersonating) {
-      // Admin-only modules
-      const adminOnlyModules = [
-        "admin",
-        "ml-training",
-        "3d-viewer",
-        "premium",
-        "word_card",
-        "write",
-        "learn",
-        "compose",
-        "train",
-        "library",
-      ];
-      if (adminOnlyModules.includes(module.id)) {
-        return effectiveIsAdmin;
-      }
-
-      // Tester-level modules
-      const testerModules = ["feedback"];
-      if (testerModules.includes(module.id)) {
-        return (
-          effectiveIsAdmin ||
-          impersonatedRole === "tester" ||
-          impersonatedRole === "premium"
-        );
-      }
-
-      // All other modules are accessible to everyone
-      return true;
-    }
-
-    // Not impersonating - use standard feature flag checks
+    // Use feature flag service for all access checks
+    // When impersonating, the Impersonator syncs the role to featureFlagService.debugRoleOverride
+    // so canAccessModule() automatically respects the impersonated role
     return featureFlagService.canAccessModule(module.id);
   });
 }

@@ -57,7 +57,11 @@
     height: 100%;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(135deg, var(--theme-accent) 0%, var(--theme-accent-strong) 100%);
+    background: linear-gradient(
+      135deg,
+      var(--theme-accent) 0%,
+      var(--theme-accent-strong) 100%
+    );
     font-size: var(--font-size-3xl);
     color: white;
   }

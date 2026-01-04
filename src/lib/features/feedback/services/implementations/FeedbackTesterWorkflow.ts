@@ -29,9 +29,7 @@ import { feedbackQueryService } from "./FeedbackQuerier";
 
 const COLLECTION_NAME = "feedback";
 
-export class FeedbackTesterWorkflowService
-  implements IFeedbackTesterWorkflowService
-{
+export class FeedbackTesterWorkflowService implements IFeedbackTesterWorkflowService {
   constructor(
     private readonly queryService: IFeedbackQueryService = feedbackQueryService
   ) {}
@@ -179,4 +177,5 @@ export class FeedbackTesterWorkflowService
 }
 
 // Export singleton instance
-export const feedbackTesterWorkflowService = new FeedbackTesterWorkflowService();
+export const feedbackTesterWorkflowService =
+  new FeedbackTesterWorkflowService();

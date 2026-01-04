@@ -24,9 +24,7 @@ Provides a beautiful, unified experience for creating new presets
 
   onMount(() => {
     // Service resolution
-    hapticService = resolve<IHapticFeedback>(
-      TYPES.IHapticFeedback
-    );
+    hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
 
     // Focus the modal for accessibility
     modalElement?.focus();
@@ -121,11 +119,7 @@ Provides a beautiful, unified experience for creating new presets
     height: 100vh;
     height: 100dvh;
     height: var(--actual-vh, 100vh);
-    background: color-mix(
-      in srgb,
-      var(--theme-panel-bg) 85%,
-      transparent
-    );
+    background: color-mix(in srgb, var(--theme-panel-bg) 85%, transparent);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -217,17 +211,38 @@ Provides a beautiful, unified experience for creating new presets
     padding: 14px 16px;
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--semantic-info, var(--semantic-info)) 15%, transparent),
-      color-mix(in srgb, var(--semantic-info, var(--semantic-info)) 10%, transparent)
+      color-mix(
+        in srgb,
+        var(--semantic-info, var(--semantic-info)) 15%,
+        transparent
+      ),
+      color-mix(
+        in srgb,
+        var(--semantic-info, var(--semantic-info)) 10%,
+        transparent
+      )
     );
     border: 1px solid
-      color-mix(in srgb, var(--semantic-info, var(--semantic-info)) 30%, transparent);
+      color-mix(
+        in srgb,
+        var(--semantic-info, var(--semantic-info)) 30%,
+        transparent
+      );
     border-radius: 12px;
-    color: color-mix(in srgb, var(--semantic-info, var(--semantic-info)) 100%, #93c5fd);
+    color: color-mix(
+      in srgb,
+      var(--semantic-info, var(--semantic-info)) 100%,
+      #93c5fd
+    );
     font-size: var(--font-size-sm);
     line-height: 1.5;
     box-shadow: 0 0 0 1px
-      color-mix(in srgb, var(--semantic-info, var(--semantic-info)) 10%, transparent) inset;
+      color-mix(
+        in srgb,
+        var(--semantic-info, var(--semantic-info)) 10%,
+        transparent
+      )
+      inset;
   }
 
   .info-banner svg {
@@ -236,7 +251,11 @@ Provides a beautiful, unified experience for creating new presets
     flex-shrink: 0;
     filter: drop-shadow(
       0 2px 4px
-        color-mix(in srgb, var(--semantic-info, var(--semantic-info)) 30%, transparent)
+        color-mix(
+          in srgb,
+          var(--semantic-info, var(--semantic-info)) 30%,
+          transparent
+        )
     );
   }
 

@@ -31,9 +31,7 @@
   const recentSequences = $derived(practiceState.recentSequences);
 
   onMount(() => {
-    hapticService = tryResolve<IHapticFeedback>(
-      TYPES.IHapticFeedback
-    );
+    hapticService = tryResolve<IHapticFeedback>(TYPES.IHapticFeedback);
   });
 
   function handleBrowseClick() {
@@ -172,11 +170,23 @@
     height: clamp(48px, 14vw, 80px);
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--semantic-info, var(--semantic-info)) 20%, transparent),
-      color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent-strong)) 20%, transparent)
+      color-mix(
+        in srgb,
+        var(--semantic-info, var(--semantic-info)) 20%,
+        transparent
+      ),
+      color-mix(
+        in srgb,
+        var(--theme-accent-strong, var(--theme-accent-strong)) 20%,
+        transparent
+      )
     );
     border: 2px solid
-      color-mix(in srgb, var(--semantic-info, var(--semantic-info)) 30%, transparent);
+      color-mix(
+        in srgb,
+        var(--semantic-info, var(--semantic-info)) 30%,
+        transparent
+      );
     border-radius: clamp(14px, 4vw, 20px);
     color: var(--semantic-info, var(--semantic-info));
     font-size: clamp(1.5rem, 5vw, 2rem);
@@ -252,8 +262,17 @@
     );
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--semantic-info, var(--semantic-info)) 15%, transparent) 0%,
-      color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent-strong)) 10%, transparent)
+      color-mix(
+          in srgb,
+          var(--semantic-info, var(--semantic-info)) 15%,
+          transparent
+        )
+        0%,
+      color-mix(
+          in srgb,
+          var(--theme-accent-strong, var(--theme-accent-strong)) 10%,
+          transparent
+        )
         100%
     );
     transform: translateY(-2px);
@@ -282,7 +301,11 @@
   }
 
   .beat-count {
-    color: color-mix(in srgb, var(--semantic-info, var(--semantic-info)) 90%, transparent);
+    color: color-mix(
+      in srgb,
+      var(--semantic-info, var(--semantic-info)) 90%,
+      transparent
+    );
     font-weight: 500;
   }
 
@@ -319,7 +342,11 @@
   .browse-button:hover {
     transform: translateY(-2px);
     box-shadow: 0 8px 24px
-      color-mix(in srgb, var(--semantic-info, var(--semantic-info)) 40%, transparent);
+      color-mix(
+        in srgb,
+        var(--semantic-info, var(--semantic-info)) 40%,
+        transparent
+      );
   }
 
   .browse-button:active {

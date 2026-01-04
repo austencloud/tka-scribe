@@ -20,9 +20,7 @@ import {
 } from "../../config/storage-keys";
 
 @injectable()
-export class NavigationPersister
-  implements INavigationPersister
-{
+export class NavigationPersister implements INavigationPersister {
   // ─────────────────────────────────────────────────────────────────────────────
   // Module Persistence
   // ─────────────────────────────────────────────────────────────────────────────

@@ -40,9 +40,14 @@ export const exploreModule = new ContainerModule(
     // Note: IPersistenceService is now bound in data.module.ts to DexiePersistenceService
     // options.bind(TYPES.IPersistenceService).to(DiscoverPersistenceService); // REMOVED - conflicts with DexiePersistenceService
     options.bind(TYPES.ISectionManager).to(DiscoverSectionManager);
-    options.bind(TYPES.IDiscoverThumbnailProvider).to(DiscoverThumbnailProvider);
+    options
+      .bind(TYPES.IDiscoverThumbnailProvider)
+      .to(DiscoverThumbnailProvider);
     // Singleton for IndexedDB cache persistence (local device cache)
-    options.bind(TYPES.IDiscoverThumbnailCache).to(DiscoverThumbnailCache).inSingletonScope();
+    options
+      .bind(TYPES.IDiscoverThumbnailCache)
+      .to(DiscoverThumbnailCache)
+      .inSingletonScope();
     // Note: ICloudThumbnailCache is bound in share.module (tier 2) for cross-feature availability
     options.bind(TYPES.IOptimizedDiscoverer).to(OptimizedDiscoverer);
     options.bind(TYPES.INavigator).to(Navigator);

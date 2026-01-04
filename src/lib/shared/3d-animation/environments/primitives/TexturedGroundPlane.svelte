@@ -7,7 +7,12 @@
    */
 
   import { T, useLoader } from "@threlte/core";
-  import { TextureLoader, RepeatWrapping, SRGBColorSpace, type MeshStandardMaterial as MeshStandardMaterialType } from "three";
+  import {
+    TextureLoader,
+    RepeatWrapping,
+    SRGBColorSpace,
+    type MeshStandardMaterial as MeshStandardMaterialType,
+  } from "three";
   import { userProportionsState } from "../../state/user-proportions-state.svelte";
 
   interface Props {

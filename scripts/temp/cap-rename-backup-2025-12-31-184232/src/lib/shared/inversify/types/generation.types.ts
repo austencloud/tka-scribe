@@ -66,9 +66,7 @@ export const GenerationTypes = {
   IResponsiveTypographer: Symbol.for("IResponsiveTypographer"),
   ICardConfigurator: Symbol.for("ICardConfigurator"),
   ILOOPTypeResolver: Symbol.for("ILOOPTypeResolver"),
-  IGenerationOrchestrator: Symbol.for(
-    "IGenerationOrchestrator"
-  ),
+  IGenerationOrchestrator: Symbol.for("IGenerationOrchestrator"),
   IPresetFormatterService: Symbol.for("IPresetFormatterService"),
 
   // LOOP Detection (reverse of generation - detect LOOP type from existing sequence)

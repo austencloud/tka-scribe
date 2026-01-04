@@ -82,7 +82,10 @@
         onclick={togglePopover}
         aria-label="Select {color} orientation"
       >
-        <i class="fas {getOrientationOption(orientation).icon}" aria-hidden="true"></i>
+        <i
+          class="fas {getOrientationOption(orientation).icon}"
+          aria-hidden="true"
+        ></i>
         <span class="display-label"
           >{getOrientationOption(orientation).label}</span
         >

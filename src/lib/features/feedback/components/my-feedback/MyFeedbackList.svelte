@@ -156,18 +156,9 @@
     background: linear-gradient(
       135deg,
       var(--theme-card-hover-bg) 0%,
-      color-mix(
-          in srgb,
-          var(--theme-card-hover-bg) 90%,
-          white
-        )
-        100%
+      color-mix(in srgb, var(--theme-card-hover-bg) 90%, white) 100%
     );
-    border-color: color-mix(
-      in srgb,
-      var(--theme-text) 30%,
-      transparent
-    );
+    border-color: color-mix(in srgb, var(--theme-text) 30%, transparent);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
     transform: translateY(-1px);
   }
@@ -176,15 +167,21 @@
     background: linear-gradient(
       135deg,
       var(--status-color, var(--semantic-info)) 0%,
-      color-mix(in srgb, var(--status-color, var(--semantic-info)) 80%, black) 100%
+      color-mix(in srgb, var(--status-color, var(--semantic-info)) 80%, black)
+        100%
     );
     border: 1.5px solid
       color-mix(in srgb, var(--status-color, var(--semantic-info)) 120%, white);
     color: #ffffff;
     box-shadow:
-      0 6px 16px color-mix(in srgb, var(--status-color, var(--semantic-info)) 40%, black),
+      0 6px 16px
+        color-mix(in srgb, var(--status-color, var(--semantic-info)) 40%, black),
       0 0 0 1px
-        color-mix(in srgb, var(--status-color, var(--semantic-info)) 50%, transparent);
+        color-mix(
+          in srgb,
+          var(--status-color, var(--semantic-info)) 50%,
+          transparent
+        );
     transform: translateY(-2px);
   }
 

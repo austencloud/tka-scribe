@@ -1,9 +1,13 @@
+<script module>
+  import { fade } from "svelte/transition";
+</script>
+
 <!--
 PictographContainer.svelte - Smart pictograph wrapper
 
 Handles:
 - Visibility settings subscription
-- LED mode / Lights Off subscription
+- LED mode / Dark Mode subscription
 - Settings reactivity (prop type changes)
 - Transitions (fade in/out)
 - Preparing raw data via PictographPreparer
@@ -263,7 +267,11 @@ with pre-prepared data for better performance.
       />
     {:else}
       {#key contentKey}
-        <div class="transition-wrapper" in:fade={{ duration: 200 }} out:fade={{ duration: 150 }}>
+        <div
+          class="transition-wrapper"
+          in:fade={{ duration: 200 }}
+          out:fade={{ duration: 150 }}
+        >
           <PictographRenderer
             pictograph={preparedData}
             {blueReversal}
@@ -294,15 +302,15 @@ with pre-prepared data for better performance.
   {:else}
     <div class="empty-state">
       <svg width="100%" height="100%" viewBox="0 0 950 950">
-        <rect width="950" height="950" fill={effectiveLedMode ? "#0a0a0f" : "#f3f4f6"} />
+        <rect
+          width="950"
+          height="950"
+          fill={effectiveLedMode ? "#0a0a0f" : "#f3f4f6"}
+        />
       </svg>
     </div>
   {/if}
 </div>
-
-<script module>
-  import { fade } from "svelte/transition";
-</script>
 
 <style>
   .pictograph-container {

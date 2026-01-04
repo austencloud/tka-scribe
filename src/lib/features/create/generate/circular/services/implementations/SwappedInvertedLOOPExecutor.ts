@@ -145,7 +145,7 @@ export class SwappedInvertedLOOPExecutor {
     // e.g., alpha3 (blue=west, red=east) → alpha7 (blue=east, red=west)
     const matchingEndPos = previousMatchingBeat.endPosition;
     const swappedEndPosition = matchingEndPos
-      ? SWAPPED_POSITION_MAP[matchingEndPos] ?? matchingEndPos
+      ? (SWAPPED_POSITION_MAP[matchingEndPos] ?? matchingEndPos)
       : null;
 
     const newBeat: BeatData = {
@@ -174,15 +174,12 @@ export class SwappedInvertedLOOPExecutor {
     };
 
     // Update orientations
-    const beatWithStartOri =
-      this.OrientationCalculator.updateStartOrientations(
-        newBeat,
-        previousBeat
-      );
+    const beatWithStartOri = this.OrientationCalculator.updateStartOrientations(
+      newBeat,
+      previousBeat
+    );
     const finalBeat =
-      this.OrientationCalculator.updateEndOrientations(
-        beatWithStartOri
-      );
+      this.OrientationCalculator.updateEndOrientations(beatWithStartOri);
 
     return finalBeat;
   }

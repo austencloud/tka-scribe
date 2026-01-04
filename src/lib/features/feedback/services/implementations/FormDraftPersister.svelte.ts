@@ -32,7 +32,10 @@ export class FormDraftPersister implements IFormDraftPersister {
     this.cancelPendingSave();
 
     // Only save if there's content
-    if (formData.description.trim().length === 0 && formData.title.trim().length === 0) {
+    if (
+      formData.description.trim().length === 0 &&
+      formData.title.trim().length === 0
+    ) {
       clearFromStorage();
       this._saveStatus = "idle";
       return;

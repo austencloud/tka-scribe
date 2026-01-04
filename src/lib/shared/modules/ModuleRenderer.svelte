@@ -63,9 +63,7 @@
       import("../../features/admin/components/AdminDashboard.svelte"),
     // ML Training module for prop detection model training
     "ml-training": () =>
-      import(
-        "../../features/train/ml-training/components/MLTrainingModule.svelte"
-      ),
+      import("../../features/train/ml-training/components/MLTrainingModule.svelte"),
     // compose module
     compose: () => import("../../features/compose/ComposeModule.svelte"),
     // settings module - accessed via gear icon in sidebar footer
@@ -117,7 +115,12 @@
       <div class="module-content">
         {#await modulePromise}
           <!-- Loading state while module chunk is being fetched -->
-          <div class="module-loading" role="status" aria-live="polite" aria-busy="true">
+          <div
+            class="module-loading"
+            role="status"
+            aria-live="polite"
+            aria-busy="true"
+          >
             <div class="loading-spinner" aria-hidden="true"></div>
             <p>Loading module...</p>
           </div>

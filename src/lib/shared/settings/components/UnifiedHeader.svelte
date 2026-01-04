@@ -79,7 +79,11 @@
 
   .card-header i {
     font-size: clamp(18px, 2.5vh, 22px);
-    color: color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 80%, transparent);
+    color: color-mix(
+      in srgb,
+      var(--theme-accent, var(--theme-accent)) 80%,
+      transparent
+    );
     flex-shrink: 0;
   }
 
@@ -180,8 +184,7 @@
 
   /* Accessibility - Focus Indicators */
   .help-button:focus-visible {
-    outline: 3px solid
-      color-mix(in srgb, var(--theme-accent) 90%, transparent);
+    outline: 3px solid color-mix(in srgb, var(--theme-accent) 90%, transparent);
     outline-offset: 2px;
     border-radius: 4px;
   }

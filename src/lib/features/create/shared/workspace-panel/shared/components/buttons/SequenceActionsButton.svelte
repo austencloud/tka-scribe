@@ -13,9 +13,7 @@
   }>();
 
   // Resolve haptic feedback service
-  const hapticService = resolve<IHapticFeedback>(
-    TYPES.IHapticFeedback
-  );
+  const hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
 
   function handleClick() {
     hapticService?.trigger("selection");
@@ -41,29 +39,56 @@
     width: var(--min-touch-target);
     height: var(--min-touch-target);
     border: 1px solid
-      color-mix(in srgb, var(--semantic-success, var(--semantic-success)) 30%, transparent);
+      color-mix(
+        in srgb,
+        var(--semantic-success, var(--semantic-success)) 30%,
+        transparent
+      );
     background: linear-gradient(
       135deg,
       var(--semantic-success, var(--semantic-success)) 0%,
-      color-mix(in srgb, var(--semantic-success, var(--semantic-success)) 85%, #16a34a) 100%
+      color-mix(
+          in srgb,
+          var(--semantic-success, var(--semantic-success)) 85%,
+          #16a34a
+        )
+        100%
     );
     border-radius: 50%;
     color: var(--theme-text);
     cursor: pointer;
     transition: all var(--transition-normal, 0.3s cubic-bezier(0.4, 0, 0.2, 1));
     box-shadow: 0 4px 12px
-      color-mix(in srgb, var(--semantic-success, var(--semantic-success)) 40%, transparent);
+      color-mix(
+        in srgb,
+        var(--semantic-success, var(--semantic-success)) 40%,
+        transparent
+      );
   }
 
   .sequence-actions-button:hover {
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--semantic-success, var(--semantic-success)) 85%, #16a34a) 0%,
-      color-mix(in srgb, var(--semantic-success, var(--semantic-success)) 70%, #16a34a) 100%
+      color-mix(
+          in srgb,
+          var(--semantic-success, var(--semantic-success)) 85%,
+          #16a34a
+        )
+        0%,
+      color-mix(
+          in srgb,
+          var(--semantic-success, var(--semantic-success)) 70%,
+          #16a34a
+        )
+        100%
     );
     transform: scale(1.05);
     box-shadow: 0 6px 16px
-      color-mix(in srgb, var(--semantic-success, var(--semantic-success)) 60%, transparent);
+      color-mix(
+        in srgb,
+        var(--semantic-success, var(--semantic-success)) 60%,
+        transparent
+      );
   }
 
   .sequence-actions-button:active {

@@ -20,7 +20,9 @@ export class LOOPLabelerServiceLocator {
 
   get sequenceLoader(): ISequenceLoader | null {
     if (!this.cachedSequenceLoader) {
-      this.cachedSequenceLoader = tryResolve<ISequenceLoader>(LOOPLabelerTypes.ISequenceLoader);
+      this.cachedSequenceLoader = tryResolve<ISequenceLoader>(
+        LOOPLabelerTypes.ISequenceLoader
+      );
     }
     return this.cachedSequenceLoader;
   }
@@ -40,14 +42,18 @@ export class LOOPLabelerServiceLocator {
 
   get navigator(): INavigator | null {
     if (!this.cachedNavigator) {
-      this.cachedNavigator = tryResolve<INavigator>(LOOPLabelerTypes.INavigator);
+      this.cachedNavigator = tryResolve<INavigator>(
+        LOOPLabelerTypes.INavigator
+      );
     }
     return this.cachedNavigator;
   }
 
   get detector(): ILOOPDetector | null {
     if (!this.cachedDetector) {
-      this.cachedDetector = tryResolve<ILOOPDetector>(LOOPLabelerTypes.ILOOPLabelerDetectionService);
+      this.cachedDetector = tryResolve<ILOOPDetector>(
+        LOOPLabelerTypes.ILOOPLabelerDetectionService
+      );
     }
     return this.cachedDetector;
   }

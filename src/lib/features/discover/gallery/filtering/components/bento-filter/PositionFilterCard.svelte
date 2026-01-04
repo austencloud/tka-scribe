@@ -23,9 +23,7 @@ Supports Alpha, Beta, Gamma starting positions
   let hapticService: IHapticFeedback | null = null;
 
   onMount(() => {
-    hapticService = tryResolve<IHapticFeedback>(
-      TYPES.IHapticFeedback
-    );
+    hapticService = tryResolve<IHapticFeedback>(TYPES.IHapticFeedback);
   });
 
   const positions = [
@@ -107,11 +105,23 @@ Supports Alpha, Beta, Gamma starting positions
 
     box-shadow:
       0 1px 2px
-        color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent-strong)) 40%, transparent),
+        color-mix(
+          in srgb,
+          var(--theme-accent-strong, var(--theme-accent-strong)) 40%,
+          transparent
+        ),
       0 2px 4px
-        color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent-strong)) 32%, transparent),
+        color-mix(
+          in srgb,
+          var(--theme-accent-strong, var(--theme-accent-strong)) 32%,
+          transparent
+        ),
       0 4px 8px
-        color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent-strong)) 25%, transparent),
+        color-mix(
+          in srgb,
+          var(--theme-accent-strong, var(--theme-accent-strong)) 25%,
+          transparent
+        ),
       inset 0 1px 0 rgba(255, 255, 255, 0.2);
 
     overflow: hidden;

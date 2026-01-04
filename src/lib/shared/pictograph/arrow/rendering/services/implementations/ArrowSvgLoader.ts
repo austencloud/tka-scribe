@@ -71,7 +71,7 @@ export class ArrowSvgLoader implements IArrowSvgLoader {
 
   /**
    * Get the current theme mode based on dark mode setting
-   * Dark mode (Lights Off) = "dark" theme, Light mode = "light" theme
+   * Dark mode (Dark Mode) = "dark" theme, Light mode = "light" theme
    */
   private getCurrentThemeMode(): ThemeMode {
     try {

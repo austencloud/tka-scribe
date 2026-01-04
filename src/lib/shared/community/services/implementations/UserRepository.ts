@@ -198,54 +198,64 @@ export class UserRepository implements IUserRepository {
         const q = query(usersRef, firestoreLimit(limitValue));
 
         unsubscribe = onSnapshot(
-        q,
-        (querySnapshot) => {
-          // Process async operations without blocking
-          void (async () => {
-            try {
-              // Get list of users current user is following
-              let followingSet = new Set<string>();
-              if (currentUserId) {
-                followingSet = await this.getFollowingIds(currentUserId);
-              }
-
-              const users: EnhancedUserProfile[] = [];
-
-              for (const docSnap of querySnapshot.docs) {
-                const data = docSnap.data() as FirestoreUserData;
-                const isFollowing =
-                  currentUserId !== docSnap.id && followingSet.has(docSnap.id);
-                // Skip achievements fetch in list views to avoid N+1 queries
-                const user = await this.mapFirestoreToEnhancedProfile(
-                  docSnap.id,
-                  data,
-                  isFollowing,
-                  true // skipAchievements
-                );
-                if (user) {
-                  users.push(user);
+          q,
+          (querySnapshot) => {
+            // Process async operations without blocking
+            void (async () => {
+              try {
+                // Get list of users current user is following
+                let followingSet = new Set<string>();
+                if (currentUserId) {
+                  followingSet = await this.getFollowingIds(currentUserId);
                 }
+
+                const users: EnhancedUserProfile[] = [];
+
+                for (const docSnap of querySnapshot.docs) {
+                  const data = docSnap.data() as FirestoreUserData;
+                  const isFollowing =
+                    currentUserId !== docSnap.id &&
+                    followingSet.has(docSnap.id);
+                  // Skip achievements fetch in list views to avoid N+1 queries
+                  const user = await this.mapFirestoreToEnhancedProfile(
+                    docSnap.id,
+                    data,
+                    isFollowing,
+                    true // skipAchievements
+                  );
+                  if (user) {
+                    users.push(user);
+                  }
+                }
+
+                // Apply client-side filtering and sorting
+                let filteredUsers = this.applyFilters(users, options);
+                filteredUsers = this.applySorting(filteredUsers, options);
+
+                callback(filteredUsers);
+              } catch (error) {
+                console.error(
+                  "[UserRepository] Error processing creators snapshot:",
+                  error
+                );
+                // Return empty array on error to maintain UI stability
+                callback([]);
               }
-
-              // Apply client-side filtering and sorting
-              let filteredUsers = this.applyFilters(users, options);
-              filteredUsers = this.applySorting(filteredUsers, options);
-
-              callback(filteredUsers);
-            } catch (error) {
-              console.error("[UserRepository] Error processing creators snapshot:", error);
-              // Return empty array on error to maintain UI stability
-              callback([]);
-            }
-          })();
-        },
-        (error) => {
-          console.error("[UserRepository] Real-time subscription error:", error);
-          toast.error("Failed to connect to creators feed.");
-        }
-      );
+            })();
+          },
+          (error) => {
+            console.error(
+              "[UserRepository] Real-time subscription error:",
+              error
+            );
+            toast.error("Failed to connect to creators feed.");
+          }
+        );
       } catch (error) {
-        console.error("[UserRepository] Failed to initialize creators subscription:", error);
+        console.error(
+          "[UserRepository] Failed to initialize creators subscription:",
+          error
+        );
         toast.error("Failed to connect to creators feed.");
       }
     })();
@@ -598,7 +608,10 @@ export class UserRepository implements IUserRepository {
           }
         );
       } catch (error) {
-        console.error("[UserRepository] Failed to initialize follow status subscription:", error);
+        console.error(
+          "[UserRepository] Failed to initialize follow status subscription:",
+          error
+        );
         callback(false);
       }
     })();

@@ -57,5 +57,8 @@ export interface IVariationExplorer {
    * @param gridMode - Grid mode for the sequence
    * @returns Estimated variation count (may be approximate for large trees)
    */
-  estimateVariationCount(letters: Letter[], gridMode: GridMode): Promise<number>;
+  estimateVariationCount(
+    letters: Letter[],
+    gridMode: GridMode
+  ): Promise<number>;
 }

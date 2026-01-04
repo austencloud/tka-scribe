@@ -278,8 +278,16 @@ export class VideoPreRenderer implements IVideoPreRenderer {
         const settingsState = resolve<ISettingsState>(TYPES.ISettingsState);
         const settings = settingsState.currentSettings;
         const buugengFamily = ["buugeng", "bigbuugeng", "fractalgeng"];
-        const bluePropType = (settings?.bluePropType || settings?.propType || "staff").toLowerCase();
-        const redPropType = (settings?.redPropType || settings?.propType || "staff").toLowerCase();
+        const bluePropType = (
+          settings?.bluePropType ||
+          settings?.propType ||
+          "staff"
+        ).toLowerCase();
+        const redPropType = (
+          settings?.redPropType ||
+          settings?.propType ||
+          "staff"
+        ).toLowerCase();
         bluePropFlipped = buugengFamily.includes(bluePropType)
           ? (settings?.blueBuugengFlipped ?? false)
           : false;

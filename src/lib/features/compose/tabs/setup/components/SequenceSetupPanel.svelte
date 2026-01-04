@@ -74,9 +74,7 @@
   onMount(() => {
     try {
       deviceDetector = resolve<IDeviceDetector>(TYPES.IDeviceDetector);
-      hapticService = resolve<IHapticFeedback>(
-        TYPES.IHapticFeedback
-      );
+      hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
       responsiveSettings = deviceDetector.getResponsiveSettings();
 
       const cleanup = deviceDetector.onCapabilitiesChanged(() => {
@@ -458,7 +456,11 @@
     gap: 10px;
     min-height: var(--min-touch-target);
     padding: 16px 32px;
-    background: linear-gradient(135deg, var(--semantic-success) 0%, #059669 100%);
+    background: linear-gradient(
+      135deg,
+      var(--semantic-success) 0%,
+      #059669 100%
+    );
     border: none;
     border-radius: 16px;
     color: white;

@@ -105,7 +105,14 @@
   <div class="color-indicator"></div>
 
   <!-- Track name -->
-  <div class="track-name" ondblclick={startEdit} onkeydown={(e) => e.key === 'Enter' && startEdit()} role="button" tabindex="0" aria-label="Double-click to rename track">
+  <div
+    class="track-name"
+    ondblclick={startEdit}
+    onkeydown={(e) => e.key === "Enter" && startEdit()}
+    role="button"
+    tabindex="0"
+    aria-label="Double-click to rename track"
+  >
     {#if isEditing}
       <input
         type="text"
@@ -129,7 +136,9 @@
       <span class="status-badge solo" title="Solo">S</span>
     {/if}
     {#if track.locked}
-      <span class="status-badge locked" title="Locked"><i class="fa-solid fa-lock" aria-hidden="true"></i></span>
+      <span class="status-badge locked" title="Locked"
+        ><i class="fa-solid fa-lock" aria-hidden="true"></i></span
+      >
     {/if}
   </div>
 
@@ -175,7 +184,8 @@
         <button
           class="track-btn"
           class:active={track.locked}
-          onclick={() => getState().updateTrack(track.id, { locked: !track.locked })}
+          onclick={() =>
+            getState().updateTrack(track.id, { locked: !track.locked })}
           title="Lock track"
           aria-label={track.locked ? "Unlock track" : "Lock track"}
         >
@@ -206,7 +216,9 @@
     padding: 0 8px;
     background: var(--theme-panel-elevated-bg);
     border-bottom: 1px solid var(--theme-stroke);
-    transition: height 0.2s ease, opacity 0.2s ease;
+    transition:
+      height 0.2s ease,
+      opacity 0.2s ease;
     position: relative;
   }
 
@@ -224,7 +236,12 @@
     border-radius: 2px;
     background: var(--track-color, var(--theme-accent));
     flex-shrink: 0;
-    box-shadow: 0 0 8px color-mix(in srgb, var(--track-color, var(--theme-accent)) 40%, transparent);
+    box-shadow: 0 0 8px
+      color-mix(
+        in srgb,
+        var(--track-color, var(--theme-accent)) 40%,
+        transparent
+      );
   }
 
   .track-name {
@@ -252,7 +269,8 @@
     font-size: var(--font-size-compact);
     color: var(--theme-text, white);
     outline: none;
-    box-shadow: 0 0 12px color-mix(in srgb, var(--theme-accent) 30%, transparent);
+    box-shadow: 0 0 12px
+      color-mix(in srgb, var(--theme-accent) 30%, transparent);
   }
 
   /* Status indicators - always visible when state is active */
@@ -383,14 +401,16 @@
     background: var(--theme-accent);
     border-color: var(--theme-accent-strong);
     color: white;
-    box-shadow: 0 0 10px color-mix(in srgb, var(--theme-accent) 35%, transparent);
+    box-shadow: 0 0 10px
+      color-mix(in srgb, var(--theme-accent) 35%, transparent);
   }
 
   .track-btn.solo.active {
     background: var(--semantic-warning);
     border-color: #ffb800;
     color: #1a1a1a;
-    box-shadow: 0 0 10px color-mix(in srgb, var(--semantic-warning) 35%, transparent);
+    box-shadow: 0 0 10px
+      color-mix(in srgb, var(--semantic-warning) 35%, transparent);
   }
 
   .delete-btn {
@@ -416,7 +436,8 @@
     background: color-mix(in srgb, var(--semantic-error) 20%, transparent);
     border-color: var(--semantic-error);
     color: var(--semantic-error);
-    box-shadow: 0 0 8px color-mix(in srgb, var(--semantic-error) 30%, transparent);
+    box-shadow: 0 0 8px
+      color-mix(in srgb, var(--semantic-error) 30%, transparent);
     transform: scale(1.05);
   }
 </style>

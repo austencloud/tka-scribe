@@ -469,18 +469,18 @@
     padding: 20px;
     background: var(--theme-card-bg);
     border: 2px dashed
-      color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent-strong)) 40%, transparent);
+      color-mix(
+        in srgb,
+        var(--theme-accent-strong, var(--theme-accent-strong)) 40%,
+        transparent
+      );
     border-radius: 12px;
     cursor: pointer;
     transition: all 200ms ease;
   }
 
   .capture-area:hover {
-    background: color-mix(
-      in srgb,
-      var(--theme-accent-strong) 5%,
-      transparent
-    );
+    background: color-mix(in srgb, var(--theme-accent-strong) 5%, transparent);
     border-color: color-mix(
       in srgb,
       var(--theme-accent-strong, var(--theme-accent-strong)) 60%,
@@ -503,7 +503,11 @@
     0%,
     100% {
       box-shadow: 0 0 0 0
-        color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent-strong)) 40%, transparent);
+        color-mix(
+          in srgb,
+          var(--theme-accent-strong, var(--theme-accent-strong)) 40%,
+          transparent
+        );
     }
     50% {
       box-shadow: 0 0 0 8px transparent;
@@ -582,11 +586,7 @@
   }
 
   .btn-primary:hover:not(:disabled) {
-    background: color-mix(
-      in srgb,
-      var(--theme-accent-strong) 85%,
-      #000
-    );
+    background: color-mix(in srgb, var(--theme-accent-strong) 85%, #000);
   }
 
   .btn-primary:disabled {

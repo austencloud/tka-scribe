@@ -38,9 +38,7 @@ Features:
   }>();
 
   onMount(() => {
-    hapticService = tryResolve<IHapticFeedback>(
-      TYPES.IHapticFeedback
-    );
+    hapticService = tryResolve<IHapticFeedback>(TYPES.IHapticFeedback);
   });
 
   // Mode options
@@ -150,9 +148,11 @@ Features:
           : "Sort ascending"}
         title={sortDirection === "asc" ? "Sort descending" : "Sort ascending"}
       >
-        <i class="fas {sortDirection === 'asc'
+        <i
+          class="fas {sortDirection === 'asc'
             ? 'fa-arrow-up'
-            : 'fa-arrow-down'}" aria-hidden="true"
+            : 'fa-arrow-down'}"
+          aria-hidden="true"
         ></i>
       </button>
     </div>

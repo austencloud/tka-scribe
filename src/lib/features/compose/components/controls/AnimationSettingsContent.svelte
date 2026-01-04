@@ -65,8 +65,8 @@
       <PlaybackModeToggle
         {playbackMode}
         {isPlaying}
-        onPlaybackModeChange={onPlaybackModeChange}
-        onPlaybackToggle={onPlaybackToggle}
+        {onPlaybackModeChange}
+        {onPlaybackToggle}
       />
     </section>
 
@@ -79,7 +79,9 @@
           class:active={blueMotionVisible}
           onclick={onToggleBlue}
           type="button"
-          aria-label={blueMotionVisible ? "Hide blue motion" : "Show blue motion"}
+          aria-label={blueMotionVisible
+            ? "Hide blue motion"
+            : "Show blue motion"}
         >
           <i
             class="fas {blueMotionVisible ? 'fa-eye' : 'fa-eye-slash'}"
@@ -111,8 +113,8 @@
         {stepPlaybackStepSize}
         {stepPlaybackPauseMs}
         {isPlaying}
-        onStepPlaybackStepSizeChange={onStepPlaybackStepSizeChange}
-        onStepPlaybackPauseMsChange={onStepPlaybackPauseMsChange}
+        {onStepPlaybackStepSizeChange}
+        {onStepPlaybackPauseMsChange}
       />
     </div>
   {/if}

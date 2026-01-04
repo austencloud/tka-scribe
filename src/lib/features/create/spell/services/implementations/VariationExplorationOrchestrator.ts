@@ -19,9 +19,7 @@ import type {
 import type { SpellPreferences } from "../../domain/models/spell-models";
 
 @injectable()
-export class VariationExplorationOrchestrator
-  implements IVariationExplorationOrchestrator
-{
+export class VariationExplorationOrchestrator implements IVariationExplorationOrchestrator {
   constructor(
     @inject(SPELL_TYPES.ISpellServiceLoader)
     private serviceLoader: ISpellServiceLoader

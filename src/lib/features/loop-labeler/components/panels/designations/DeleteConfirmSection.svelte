@@ -37,7 +37,7 @@
       <div class="delete-actions">
         <button
           class="delete-cancel-btn"
-          onclick={() => showDeleteConfirm = false}
+          onclick={() => (showDeleteConfirm = false)}
           disabled={isDeleting}
         >
           Cancel
@@ -62,7 +62,7 @@
   {:else}
     <button
       class="action-btn delete"
-      onclick={() => showDeleteConfirm = true}
+      onclick={() => (showDeleteConfirm = true)}
     >
       <FontAwesomeIcon icon="trash" size="0.9em" />
       Delete Sequence

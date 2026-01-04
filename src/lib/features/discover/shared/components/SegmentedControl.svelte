@@ -39,9 +39,7 @@ Used for sort method selection (Letter/Length/Date)
   }
 
   onMount(() => {
-    hapticService = resolve<IHapticFeedback>(
-      TYPES.IHapticFeedback
-    );
+    hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
   });
 </script>
 

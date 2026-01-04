@@ -10,16 +10,16 @@
   - Overlay: SettingsPanel (slides in from right when gear clicked)
 -->
 <script lang="ts">
-  import { createShareHubState } from '../state/share-hub-state.svelte';
-  import SingleMediaView from './single-media/SingleMediaView.svelte';
-  import CompositeView from './composite/CompositeView.svelte';
-  import SettingsPanel from './settings/SettingsPanel.svelte';
-  import AnimationSettings from './settings/AnimationSettings.svelte';
-  import StaticSettingsPanel from './settings/StaticSettings.svelte';
-  import PerformanceSettingsPanel from './settings/PerformanceSettings.svelte';
-  import type { SequenceData } from '$lib/shared/foundation/domain/models/SequenceData';
-  import { untrack } from 'svelte';
-  import type { ExportSettings } from '../domain/models/ExportSettings';
+  import { createShareHubState } from "../state/share-hub-state.svelte";
+  import SingleMediaView from "./single-media/SingleMediaView.svelte";
+  import CompositeView from "./composite/CompositeView.svelte";
+  import SettingsPanel from "./settings/SettingsPanel.svelte";
+  import AnimationSettings from "./settings/AnimationSettings.svelte";
+  import StaticSettingsPanel from "./settings/StaticSettings.svelte";
+  import PerformanceSettingsPanel from "./settings/PerformanceSettings.svelte";
+  import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
+  import { untrack } from "svelte";
+  import type { ExportSettings } from "../domain/models/ExportSettings";
 
   let {
     sequence,
@@ -30,7 +30,10 @@
     sequence?: SequenceData | null;
     isSequenceSaved?: boolean;
     isMobile?: boolean;
-    onExport?: (mode: 'single' | 'composite', settings?: ExportSettings) => Promise<void>;
+    onExport?: (
+      mode: "single" | "composite",
+      settings?: ExportSettings
+    ) => Promise<void>;
   } = $props();
 
   const hubState = createShareHubState();
@@ -50,20 +53,29 @@
   const settingsTitle = $derived(
     hubState.settingsContext
       ? `${hubState.settingsContext.format.charAt(0).toUpperCase() + hubState.settingsContext.format.slice(1)} Settings${
-          hubState.settingsContext.pieceIndex ? ` (Piece ${hubState.settingsContext.pieceIndex})` : ''
+          hubState.settingsContext.pieceIndex
+            ? ` (Piece ${hubState.settingsContext.pieceIndex})`
+            : ""
         }`
-      : 'Settings'
+      : "Settings"
   );
 
   // Handle export - passes current settings to parent
   async function handleExport() {
-    if (hubState.mode === 'single') {
+    if (hubState.mode === "single") {
       const format = hubState.selectedFormat;
       const exportSettings: ExportSettings = {
         format,
-        staticSettings: format === 'static' ? { ...hubState.staticSettings } : undefined,
-        animationSettings: format === 'animation' ? { ...hubState.animationSettings } : undefined,
-        performanceSettings: format === 'performance' ? { ...hubState.performanceSettings } : undefined,
+        staticSettings:
+          format === "static" ? { ...hubState.staticSettings } : undefined,
+        animationSettings:
+          format === "animation"
+            ? { ...hubState.animationSettings }
+            : undefined,
+        performanceSettings:
+          format === "performance"
+            ? { ...hubState.performanceSettings }
+            : undefined,
       };
       await onExport?.(hubState.mode, exportSettings);
     } else {
@@ -72,7 +84,7 @@
   }
 
   // Handle mode change
-  function handleModeChange(mode: 'single' | 'composite') {
+  function handleModeChange(mode: "single" | "composite") {
     hubState.mode = mode;
     if (hubState.settingsPanelOpen) {
       hubState.settingsPanelOpen = false;
@@ -89,11 +101,7 @@
 
   <!-- Content Area - Animation props come from context -->
   <div class="content-area">
-    <SingleMediaView
-      {isSequenceSaved}
-      {isMobile}
-      onExport={handleExport}
-    />
+    <SingleMediaView {isSequenceSaved} {isMobile} onExport={handleExport} />
   </div>
 
   <!-- Settings Panel Overlay -->
@@ -106,11 +114,11 @@
         hubState.settingsContext = null;
       }}
     >
-      {#if hubState.settingsContext.format === 'animation'}
+      {#if hubState.settingsContext.format === "animation"}
         <AnimationSettings />
-      {:else if hubState.settingsContext.format === 'static'}
+      {:else if hubState.settingsContext.format === "static"}
         <StaticSettingsPanel />
-      {:else if hubState.settingsContext.format === 'performance'}
+      {:else if hubState.settingsContext.format === "performance"}
         <PerformanceSettingsPanel />
       {/if}
     </SettingsPanel>

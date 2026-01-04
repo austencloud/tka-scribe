@@ -37,7 +37,9 @@ Usage:
   const isEdited = $derived(selectedValue !== null);
 
   // Generate unique ID for the select element - reactive to label
-  const selectId = $derived(`dropdown-${label.toLowerCase().replace(/\s+/g, "-")}`);
+  const selectId = $derived(
+    `dropdown-${label.toLowerCase().replace(/\s+/g, "-")}`
+  );
 
   function handleChange(event: Event) {
     const target = event.target as HTMLSelectElement;

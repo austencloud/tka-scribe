@@ -52,19 +52,13 @@
 
 {#if showManualBuilder}
   <div class="manual-builder-section">
-    <button
-      class="collapse-builder-btn"
-      onclick={() => onToggleBuilder(false)}
-    >
+    <button class="collapse-builder-btn" onclick={() => onToggleBuilder(false)}>
       <span>Hide Manual Builder</span>
       <span class="chevron">▲</span>
     </button>
 
     <!-- Mode Toggle -->
-    <ComponentSelectionPanel
-      {labelingMode}
-      onLabelingModeChange={onLabelingModeChange}
-    />
+    <ComponentSelectionPanel {labelingMode} {onLabelingModeChange} />
 
     <!-- Mode-specific builder panels -->
     {#if labelingMode === "section" && sectionState}
@@ -74,10 +68,10 @@
         savedSections={sectionState.savedSections}
         selectedBaseWord={sectionState.selectedBaseWord}
         onBaseWordChange={(bw) => sectionState!.actions.setBaseWord(bw)}
-        onAddSection={onAddSection}
-        onRemoveSection={onRemoveSection}
-        onMarkUnknown={onMarkUnknown}
-        onNext={onNext}
+        {onAddSection}
+        {onRemoveSection}
+        {onMarkUnknown}
+        {onNext}
         canProceed={sectionState.selectedBeats.size === 0 &&
           sectionState.selectedComponents.size === 0}
       />
@@ -100,15 +94,12 @@
         onToggleComponent={(c) => wholeState!.actions.toggleComponent(c)}
         onSetInterval={(key, val) =>
           wholeState!.actions.setTransformationInterval(key, val)}
-        onAddDesignation={onAddDesignation}
+        {onAddDesignation}
       />
     {/if}
   </div>
 {:else}
-  <button
-    class="show-builder-btn"
-    onclick={() => onToggleBuilder(true)}
-  >
+  <button class="show-builder-btn" onclick={() => onToggleBuilder(true)}>
     <span>+ Add Manual Designation</span>
     <span class="chevron">▼</span>
   </button>

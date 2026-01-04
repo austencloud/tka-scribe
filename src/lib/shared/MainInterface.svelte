@@ -40,7 +40,7 @@
   // Domain managers
   import ModuleRenderer from "./modules/ModuleRenderer.svelte";
   import PWAInstallationManager from "./pwa/PWAInstallationManager.svelte";
-    import SpotlightRouter from "./spotlight/SpotlightRouter.svelte";
+  import SpotlightRouter from "./spotlight/SpotlightRouter.svelte";
   import {
     desktopSidebarState,
     setDesktopSidebarCollapsed,
@@ -239,7 +239,8 @@
     <SidebarTourOverlay
       sidebarCollapsed={desktopSidebarState.isCollapsed}
       onExpandSidebar={() => setDesktopSidebarCollapsed(false)}
-      onRestoreSidebar={(wasCollapsed) => setDesktopSidebarCollapsed(wasCollapsed)}
+      onRestoreSidebar={(wasCollapsed) =>
+        setDesktopSidebarCollapsed(wasCollapsed)}
     />
   {/if}
 

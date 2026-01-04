@@ -21,13 +21,9 @@
   let sheetRouterService: ISheetRouter | null = null;
 
   onMount(async () => {
-    hapticService = await resolve<IHapticFeedback>(
-      TYPES.IHapticFeedback
-    );
+    hapticService = await resolve<IHapticFeedback>(TYPES.IHapticFeedback);
     try {
-      sheetRouterService = await resolve<ISheetRouter>(
-        TYPES.ISheetRouter
-      );
+      sheetRouterService = await resolve<ISheetRouter>(TYPES.ISheetRouter);
     } catch {
       // Service not available
     }

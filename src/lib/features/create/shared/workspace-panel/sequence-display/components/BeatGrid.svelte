@@ -276,9 +276,7 @@
   // IMPORTANT: Event listeners must be set up in onMount (not $effect) to ensure
   // they're ready synchronously before any events are dispatched on first generation
   onMount(() => {
-    hapticService = resolve<IHapticFeedback>(
-      TYPES.IHapticFeedback
-    );
+    hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
     deviceDetector = resolve<IDeviceDetector>(TYPES.IDeviceDetector);
 
     // Set up animation event listeners synchronously on mount

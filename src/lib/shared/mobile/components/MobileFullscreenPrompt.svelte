@@ -486,11 +486,7 @@
   }
 
   .fullscreen-prompt {
-    background: color-mix(
-      in srgb,
-      var(--theme-panel-bg) 94%,
-      transparent
-    );
+    background: color-mix(in srgb, var(--theme-panel-bg) 94%, transparent);
     border-radius: 12px;
     box-shadow: 0 12px 40px var(--theme-shadow);
     max-width: 420px;
@@ -500,7 +496,11 @@
 
   .fullscreen-prompt.nag-mode {
     border: 2px solid
-      color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent-strong)) 60%, transparent);
+      color-mix(
+        in srgb,
+        var(--theme-accent-strong, var(--theme-accent-strong)) 60%,
+        transparent
+      );
   }
 
   .prompt-content {
@@ -544,11 +544,7 @@
   }
 
   .install-button:hover {
-    background: color-mix(
-      in srgb,
-      var(--theme-accent-strong) 85%,
-      #000
-    );
+    background: color-mix(in srgb, var(--theme-accent-strong) 85%, #000);
     transform: translateY(-1px);
   }
 

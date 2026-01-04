@@ -1,107 +1,119 @@
-import { injectable } from 'inversify';
-import type { ISwapInvertComparer } from '../../contracts/ISwapInvertComparer';
-import type { ColorData, TransformationCheckResult } from '../../../domain/models/internal-beat-models';
-import { hasRotationData, areRotDirsInvertedForRotation } from './rotation-direction-helpers';
+import { injectable } from "inversify";
+import type { ISwapInvertComparer } from "../../contracts/ISwapInvertComparer";
+import type {
+  ColorData,
+  TransformationCheckResult,
+} from "../../../domain/models/internal-beat-models";
+import {
+  hasRotationData,
+  areRotDirsInvertedForRotation,
+} from "./rotation-direction-helpers";
 
 /**
  * Service for detecting pure swap and invert transformations.
  */
 @injectable()
 export class SwapInvertComparer implements ISwapInvertComparer {
-	checkRepeated(
-		b1Blue: ColorData,
-		b1Red: ColorData,
-		b2Blue: ColorData,
-		b2Red: ColorData
-	): TransformationCheckResult {
-		const transformations: string[] = [];
+  checkRepeated(
+    b1Blue: ColorData,
+    b1Red: ColorData,
+    b2Blue: ColorData,
+    b2Red: ColorData
+  ): TransformationCheckResult {
+    const transformations: string[] = [];
 
-		const isRepeated =
-			b1Blue.startLoc === b2Blue.startLoc &&
-			b1Blue.endLoc === b2Blue.endLoc &&
-			b1Blue.motionType === b2Blue.motionType &&
-			b1Red.startLoc === b2Red.startLoc &&
-			b1Red.endLoc === b2Red.endLoc &&
-			b1Red.motionType === b2Red.motionType;
+    const isRepeated =
+      b1Blue.startLoc === b2Blue.startLoc &&
+      b1Blue.endLoc === b2Blue.endLoc &&
+      b1Blue.motionType === b2Blue.motionType &&
+      b1Red.startLoc === b2Red.startLoc &&
+      b1Red.endLoc === b2Red.endLoc &&
+      b1Red.motionType === b2Red.motionType;
 
-		if (isRepeated) {
-			transformations.push('repeated');
-		}
+    if (isRepeated) {
+      transformations.push("repeated");
+    }
 
-		return { transformations };
-	}
+    return { transformations };
+  }
 
-	checkSwapInvert(
-		b1Blue: ColorData,
-		b1Red: ColorData,
-		b2Blue: ColorData,
-		b2Red: ColorData
-	): TransformationCheckResult {
-		const transformations: string[] = [];
+  checkSwapInvert(
+    b1Blue: ColorData,
+    b1Red: ColorData,
+    b2Blue: ColorData,
+    b2Red: ColorData
+  ): TransformationCheckResult {
+    const transformations: string[] = [];
 
-		// Pure swap check (colors swapped, no position change)
-		const colorsSwapped =
-			b1Blue.startLoc === b2Red.startLoc &&
-			b1Blue.endLoc === b2Red.endLoc &&
-			b1Red.startLoc === b2Blue.startLoc &&
-			b1Red.endLoc === b2Blue.endLoc;
+    // Pure swap check (colors swapped, no position change)
+    const colorsSwapped =
+      b1Blue.startLoc === b2Red.startLoc &&
+      b1Blue.endLoc === b2Red.endLoc &&
+      b1Red.startLoc === b2Blue.startLoc &&
+      b1Red.endLoc === b2Blue.endLoc;
 
-		// Same positions check (for pure inversion)
-		const positionsSame =
-			b1Blue.startLoc === b2Blue.startLoc &&
-			b1Blue.endLoc === b2Blue.endLoc &&
-			b1Red.startLoc === b2Red.startLoc &&
-			b1Red.endLoc === b2Red.endLoc;
+    // Same positions check (for pure inversion)
+    const positionsSame =
+      b1Blue.startLoc === b2Blue.startLoc &&
+      b1Blue.endLoc === b2Blue.endLoc &&
+      b1Red.startLoc === b2Red.startLoc &&
+      b1Red.endLoc === b2Red.endLoc;
 
-		// Rotation direction checks
-		const canDetermineRotForSwap = hasRotationData(
-			b1Red.propRotDir,
-			b1Blue.propRotDir,
-			b2Blue.propRotDir,
-			b2Red.propRotDir,
-			b1Red.motionType,
-			b1Blue.motionType,
-			b2Blue.motionType,
-			b2Red.motionType
-		);
+    // Rotation direction checks
+    const canDetermineRotForSwap = hasRotationData(
+      b1Red.propRotDir,
+      b1Blue.propRotDir,
+      b2Blue.propRotDir,
+      b2Red.propRotDir,
+      b1Red.motionType,
+      b1Blue.motionType,
+      b2Blue.motionType,
+      b2Red.motionType
+    );
 
-		const rotDirSameSwapped =
-			b1Red.propRotDir === b2Blue.propRotDir && b1Blue.propRotDir === b2Red.propRotDir;
+    const rotDirSameSwapped =
+      b1Red.propRotDir === b2Blue.propRotDir &&
+      b1Blue.propRotDir === b2Red.propRotDir;
 
-		const rotDirInvertedSwappedForRotation = areRotDirsInvertedForRotation(
-			b1Red.propRotDir,
-			b1Blue.propRotDir,
-			b2Blue.propRotDir,
-			b2Red.propRotDir
-		);
+    const rotDirInvertedSwappedForRotation = areRotDirsInvertedForRotation(
+      b1Red.propRotDir,
+      b1Blue.propRotDir,
+      b2Blue.propRotDir,
+      b2Red.propRotDir
+    );
 
-		const rotDirInvertedForRotation = areRotDirsInvertedForRotation(
-			b1Blue.propRotDir,
-			b1Red.propRotDir,
-			b2Blue.propRotDir,
-			b2Red.propRotDir
-		);
+    const rotDirInvertedForRotation = areRotDirsInvertedForRotation(
+      b1Blue.propRotDir,
+      b1Red.propRotDir,
+      b2Blue.propRotDir,
+      b2Red.propRotDir
+    );
 
-		// Pure swap (no position change, just colors swapped)
-		if (colorsSwapped) {
-			if (!canDetermineRotForSwap) {
-				if (!transformations.includes('swapped')) transformations.push('swapped');
-				if (!transformations.includes('swapped_inverted')) transformations.push('swapped_inverted');
-			} else {
-				if (rotDirSameSwapped && !transformations.includes('swapped')) {
-					transformations.push('swapped');
-				}
-				if (rotDirInvertedSwappedForRotation && !transformations.includes('swapped_inverted')) {
-					transformations.push('swapped_inverted');
-				}
-			}
-		}
+    // Pure swap (no position change, just colors swapped)
+    if (colorsSwapped) {
+      if (!canDetermineRotForSwap) {
+        if (!transformations.includes("swapped"))
+          transformations.push("swapped");
+        if (!transformations.includes("swapped_inverted"))
+          transformations.push("swapped_inverted");
+      } else {
+        if (rotDirSameSwapped && !transformations.includes("swapped")) {
+          transformations.push("swapped");
+        }
+        if (
+          rotDirInvertedSwappedForRotation &&
+          !transformations.includes("swapped_inverted")
+        ) {
+          transformations.push("swapped_inverted");
+        }
+      }
+    }
 
-		// Pure inversion (same positions, rotation direction changed)
-		if (positionsSame && rotDirInvertedForRotation) {
-			transformations.push('inverted');
-		}
+    // Pure inversion (same positions, rotation direction changed)
+    if (positionsSame && rotDirInvertedForRotation) {
+      transformations.push("inverted");
+    }
 
-		return { transformations };
-	}
+    return { transformations };
+  }
 }

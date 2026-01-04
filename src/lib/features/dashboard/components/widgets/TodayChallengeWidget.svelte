@@ -86,7 +86,11 @@
     max-width: 100%;
     box-sizing: border-box;
     padding: 24px;
-    background: color-mix(in srgb, var(--semantic-warning, var(--semantic-warning)) 12%, var(--theme-panel-bg));
+    background: color-mix(
+      in srgb,
+      var(--semantic-warning, var(--semantic-warning)) 12%,
+      var(--theme-panel-bg)
+    );
     border: 1px solid var(--theme-stroke);
     border-radius: 24px;
     overflow: hidden;
@@ -108,7 +112,11 @@
     justify-content: center;
     width: 44px;
     height: 44px;
-    background: color-mix(in srgb, var(--semantic-warning, var(--semantic-warning)) 25%, var(--theme-card-bg));
+    background: color-mix(
+      in srgb,
+      var(--semantic-warning, var(--semantic-warning)) 25%,
+      var(--theme-card-bg)
+    );
     border-radius: 14px;
     color: var(--semantic-warning, var(--semantic-warning));
     font-size: var(--font-size-lg);
@@ -138,9 +146,24 @@
     height: 80px;
     background: linear-gradient(
       90deg,
-      color-mix(in srgb, var(--semantic-warning, var(--semantic-warning)) 8%, transparent) 25%,
-      color-mix(in srgb, var(--semantic-warning, var(--semantic-warning)) 15%, transparent) 50%,
-      color-mix(in srgb, var(--semantic-warning, var(--semantic-warning)) 8%, transparent) 75%
+      color-mix(
+          in srgb,
+          var(--semantic-warning, var(--semantic-warning)) 8%,
+          transparent
+        )
+        25%,
+      color-mix(
+          in srgb,
+          var(--semantic-warning, var(--semantic-warning)) 15%,
+          transparent
+        )
+        50%,
+      color-mix(
+          in srgb,
+          var(--semantic-warning, var(--semantic-warning)) 8%,
+          transparent
+        )
+        75%
     );
     background-size: 200% 100%;
     animation: shimmer 2s infinite ease-in-out;
@@ -168,7 +191,11 @@
 
   .empty-state i {
     font-size: var(--font-size-3xl);
-    color: color-mix(in srgb, var(--semantic-warning, var(--semantic-warning)) 40%, transparent);
+    color: color-mix(
+      in srgb,
+      var(--semantic-warning, var(--semantic-warning)) 40%,
+      transparent
+    );
   }
 
   .empty-state p {
@@ -187,7 +214,12 @@
     background: linear-gradient(
       135deg,
       var(--semantic-warning, var(--semantic-warning)) 0%,
-      color-mix(in srgb, var(--semantic-warning, var(--semantic-warning)) 80%, black) 100%
+      color-mix(
+          in srgb,
+          var(--semantic-warning, var(--semantic-warning)) 80%,
+          black
+        )
+        100%
     );
     border: none;
     border-radius: 14px;

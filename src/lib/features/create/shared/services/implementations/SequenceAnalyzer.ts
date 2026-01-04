@@ -549,7 +549,9 @@ export class SequenceAnalyzer implements ISequenceAnalyzer {
         startPosition: startPos,
         endPosition: startPos, // Start position ends where it starts
         letter: null,
-        motions: (startPosData as unknown as Record<string, unknown>).motions as Record<string, unknown> || {},
+        motions:
+          ((startPosData as unknown as Record<string, unknown>)
+            .motions as Record<string, unknown>) || {},
         duration: 1,
         blueReversal: false,
         redReversal: false,

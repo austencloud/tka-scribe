@@ -109,7 +109,9 @@ This component orchestrates the UI; business logic lives in extracted services.
           spellState.setLoopAnalysis(result.loopAnalysis);
         }
         spellState.setCircularizationOptions(result.circularizationOptions);
-        spellState.setDirectLoopUnavailableReason(result.directLoopUnavailableReason);
+        spellState.setDirectLoopUnavailableReason(
+          result.directLoopUnavailableReason
+        );
 
         // Update extension options
         extensionOptions = result.extensionOptions;
@@ -168,7 +170,9 @@ This component orchestrates the UI; business logic lives in extracted services.
       }
 
       // Store expanded word for display
-      spellState.setExpandedWord(parseResult.expandedWord || spellState.inputWord);
+      spellState.setExpandedWord(
+        parseResult.expandedWord || spellState.inputWord
+      );
 
       // Estimate total variations for progress UI
       const gridMode = spellState.preferences.gridMode ?? GridMode.DIAMOND;
@@ -223,7 +227,9 @@ This component orchestrates the UI; business logic lives in extracted services.
 
   // Handle variation selection
   function handleVariationSelect(variationId: string) {
-    const variation = variationState.allVariations.find((v) => v.id === variationId);
+    const variation = variationState.allVariations.find(
+      (v) => v.id === variationId
+    );
     if (!variation || !sequenceState) return;
 
     variationState.selectVariation(variationId);
@@ -243,14 +249,21 @@ This component orchestrates the UI; business logic lives in extracted services.
   }
 
   // Handle LOOP chip click - apply LOOP with optional bridge
-  async function handleApplyLOOP(bridgeLetter: Letter | null, loopType: LOOPType) {
+  async function handleApplyLOOP(
+    bridgeLetter: Letter | null,
+    loopType: LOOPType
+  ) {
     if (!spellState.inputWord.trim()) {
       console.warn("[SpellPanel] Cannot apply LOOP: no input word");
       return;
     }
 
-    console.log(`[SpellPanel] Applying LOOP type: ${loopType}, bridge: ${bridgeLetter || 'none'}`);
-    console.log(`[SpellPanel] Two-phase flow: ${selectedBridge ? 'yes (using current sequence)' : 'no (regenerating)'}`);
+    console.log(
+      `[SpellPanel] Applying LOOP type: ${loopType}, bridge: ${bridgeLetter || "none"}`
+    );
+    console.log(
+      `[SpellPanel] Two-phase flow: ${selectedBridge ? "yes (using current sequence)" : "no (regenerating)"}`
+    );
 
     spellState.setGenerating(true);
     spellState.clearError();
@@ -260,8 +273,12 @@ This component orchestrates the UI; business logic lives in extracted services.
       // the sequence already has the bridge beat appended. We should just
       // apply the LOOP to the current sequence instead of regenerating.
       if (selectedBridge && sequenceState?.currentSequence) {
-        console.log("[SpellPanel] Using two-phase LOOP application (current sequence)");
-        const sequenceExtender = resolve<ISequenceExtender>(TYPES.ISequenceExtender);
+        console.log(
+          "[SpellPanel] Using two-phase LOOP application (current sequence)"
+        );
+        const sequenceExtender = resolve<ISequenceExtender>(
+          TYPES.ISequenceExtender
+        );
 
         const extendedSequence = await sequenceExtender.extendSequence(
           sequenceState.currentSequence,
@@ -396,20 +413,27 @@ This component orchestrates the UI; business logic lives in extracted services.
     }
   }
 
-  async function handleLoopSelect(bridgeLetter: Letter | null, loopType: LOOPType) {
+  async function handleLoopSelect(
+    bridgeLetter: Letter | null,
+    loopType: LOOPType
+  ) {
     if (spellState.isGenerating) {
       console.warn("[SpellPanel] handleLoopSelect ignored: already generating");
       return;
     }
 
-    console.log(`[SpellPanel] handleLoopSelect called: bridgeLetter=${bridgeLetter}, loopType=${loopType}`);
+    console.log(
+      `[SpellPanel] handleLoopSelect called: bridgeLetter=${bridgeLetter}, loopType=${loopType}`
+    );
     console.log(`[SpellPanel] selectedBridge:`, selectedBridge);
 
     const finalBridgeLetter = selectedBridge
       ? (selectedBridge.bridgeLetters[0] as Letter)
       : bridgeLetter;
 
-    console.log(`[SpellPanel] Final bridge letter to apply: ${finalBridgeLetter || 'none'}`);
+    console.log(
+      `[SpellPanel] Final bridge letter to apply: ${finalBridgeLetter || "none"}`
+    );
 
     // Apply the LOOP and wait for it to complete before resetting selection
     await handleApplyLOOP(finalBridgeLetter, loopType);
@@ -465,7 +489,9 @@ This component orchestrates the UI; business logic lives in extracted services.
         {#if loopPhase === "bridge-selection" && hasExtensionOptions}
           <div class="loop-phase-header">
             <h3>Choose Next Pictograph</h3>
-            <p class="phase-subtitle">Select a pictograph to extend your sequence</p>
+            <p class="phase-subtitle">
+              Select a pictograph to extend your sequence
+            </p>
           </div>
           <BridgePictographGrid
             options={extensionOptions}
@@ -519,7 +545,7 @@ This component orchestrates the UI; business logic lives in extracted services.
         <button
           class="mode-button"
           class:active={generationMode === "single"}
-          onclick={() => generationMode = "single"}
+          onclick={() => (generationMode = "single")}
           disabled={variationState.progress.isExploring}
         >
           <i class="fas fa-dice-one" aria-hidden="true"></i>
@@ -528,7 +554,7 @@ This component orchestrates the UI; business logic lives in extracted services.
         <button
           class="mode-button"
           class:active={generationMode === "all"}
-          onclick={() => generationMode = "all"}
+          onclick={() => (generationMode = "all")}
           disabled={variationState.progress.isExploring}
         >
           <i class="fas fa-layer-group" aria-hidden="true"></i>
@@ -556,7 +582,8 @@ This component orchestrates the UI; business logic lives in extracted services.
         <button
           class="generate-button"
           onclick={handleGenerateAll}
-          disabled={!spellState.canGenerate || variationState.progress.isExploring}
+          disabled={!spellState.canGenerate ||
+            variationState.progress.isExploring}
         >
           {#if variationState.progress.isExploring}
             <span class="spinner"></span>

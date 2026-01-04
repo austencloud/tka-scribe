@@ -102,7 +102,9 @@ function allSame(values: string[]): boolean {
 /**
  * Extract properties from a raw beat object
  */
-function extractBeatProperties(rawBeat: Record<string, unknown>): BeatProperties {
+function extractBeatProperties(
+  rawBeat: Record<string, unknown>
+): BeatProperties {
   const blue = (rawBeat.blueAttributes as Record<string, unknown>) || {};
   const red = (rawBeat.redAttributes as Record<string, unknown>) || {};
 
@@ -158,7 +160,9 @@ export class PolyrhythmicDetector {
   /**
    * Analyze a sequence for polyrhythmic LOOP patterns
    */
-  detectPolyrhythmic(rawSequence: Record<string, unknown>[]): PolyrhythmicLOOPResult {
+  detectPolyrhythmic(
+    rawSequence: Record<string, unknown>[]
+  ): PolyrhythmicLOOPResult {
     // Filter to actual beats (exclude metadata at index 0)
     const beatRecords = rawSequence.filter(
       (item) => typeof item.beat === "number" && item.beat > 0
@@ -177,14 +181,18 @@ export class PolyrhythmicDetector {
     const length = beats.length;
 
     if (length < 4) {
-      return this.noPolyrhythmResult("Sequence too short for polyrhythmic analysis");
+      return this.noPolyrhythmResult(
+        "Sequence too short for polyrhythmic analysis"
+      );
     }
 
     // Get factors to analyze
     const factors = getProperFactors(length);
 
     if (factors.length < 2) {
-      return this.noPolyrhythmResult("Sequence length has insufficient factors");
+      return this.noPolyrhythmResult(
+        "Sequence length has insufficient factors"
+      );
     }
 
     // Analyze each period
@@ -203,12 +211,16 @@ export class PolyrhythmicDetector {
 
     // NEW APPROACH: Find valid polyrhythm pairs first, then check motion/spatial
     // A valid pair has LCM(p1, p2) = sequence length
-    const validPairs: Array<{ p1: PeriodAnalysis; p2: PeriodAnalysis; lcmValue: number }> = [];
+    const validPairs: Array<{
+      p1: PeriodAnalysis;
+      p2: PeriodAnalysis;
+      lcmValue: number;
+    }> = [];
 
     // IMPORTANT: Standard LOOP intervals (halved/quartered) should NOT be considered
     // for polyrhythmic detection - those are handled by beat-pair analysis
-    const halvedPeriod = length / 2;  // period that would indicate halved LOOP
-    const quarteredPeriod = length / 4;  // period that would indicate quartered LOOP
+    const halvedPeriod = length / 2; // period that would indicate halved LOOP
+    const quarteredPeriod = length / 4; // period that would indicate quartered LOOP
     const isStandardLOOPInterval = (period: number): boolean => {
       return period === halvedPeriod || period === quarteredPeriod;
     };
@@ -231,8 +243,12 @@ export class PolyrhythmicDetector {
 
           // Also skip if EITHER period is halved or quartered - these are standard LOOP intervals
           // A repeated word (like 5-letter word repeated 4 times = 20 beats) is NOT polyrhythmic
-          if (p1.period === halvedPeriod || p2.period === halvedPeriod ||
-              p1.period === quarteredPeriod || p2.period === quarteredPeriod) {
+          if (
+            p1.period === halvedPeriod ||
+            p2.period === halvedPeriod ||
+            p1.period === quarteredPeriod ||
+            p2.period === quarteredPeriod
+          ) {
             continue;
           }
 
@@ -243,24 +259,42 @@ export class PolyrhythmicDetector {
 
     // Find the best pair where one is motion-dominant and one is spatial-dominant
     // Priority: 1) Pure motion + pure spatial, 2) Smaller period values, 3) Higher consistency
-    let bestPair: { motionPeriod: PeriodAnalysis; spatialPeriod: PeriodAnalysis } | null = null;
+    let bestPair: {
+      motionPeriod: PeriodAnalysis;
+      spatialPeriod: PeriodAnalysis;
+    } | null = null;
     let bestScore = -Infinity;
 
     for (const { p1, p2 } of validPairs) {
       // Count motion and spatial properties for each period
-      const p1MotionCount = p1.consistentProperties.filter(p => getPropertyType(p.property) === "motion").length;
-      const p1SpatialCount = p1.consistentProperties.filter(p => getPropertyType(p.property) === "spatial").length;
-      const p2MotionCount = p2.consistentProperties.filter(p => getPropertyType(p.property) === "motion").length;
-      const p2SpatialCount = p2.consistentProperties.filter(p => getPropertyType(p.property) === "spatial").length;
+      const p1MotionCount = p1.consistentProperties.filter(
+        (p) => getPropertyType(p.property) === "motion"
+      ).length;
+      const p1SpatialCount = p1.consistentProperties.filter(
+        (p) => getPropertyType(p.property) === "spatial"
+      ).length;
+      const p2MotionCount = p2.consistentProperties.filter(
+        (p) => getPropertyType(p.property) === "motion"
+      ).length;
+      const p2SpatialCount = p2.consistentProperties.filter(
+        (p) => getPropertyType(p.property) === "spatial"
+      ).length;
 
       // Try both assignments and pick the one that makes more sense
-      const assignments: Array<{ motion: PeriodAnalysis; spatial: PeriodAnalysis; score: number }> = [];
+      const assignments: Array<{
+        motion: PeriodAnalysis;
+        spatial: PeriodAnalysis;
+        score: number;
+      }> = [];
 
       // Assignment 1: p1 = motion, p2 = spatial
       if (p1MotionCount > 0 || p2SpatialCount > 0) {
         let score = 0;
         // Bonus for pure type matches (not "both")
-        if (p1.dominantPropertyType === "motion" && p2.dominantPropertyType === "spatial") {
+        if (
+          p1.dominantPropertyType === "motion" &&
+          p2.dominantPropertyType === "spatial"
+        ) {
           score += 100; // Strong preference for pure matches
         }
         // Bonus for having the expected properties
@@ -268,19 +302,22 @@ export class PolyrhythmicDetector {
         // Penalty for having "wrong" properties in each role
         score -= p1SpatialCount * 5 + p2MotionCount * 5;
         // Smaller periods are more "canonical" polyrhythms
-        score -= (p1.period + p2.period);
+        score -= p1.period + p2.period;
         assignments.push({ motion: p1, spatial: p2, score });
       }
 
       // Assignment 2: p2 = motion, p1 = spatial
       if (p2MotionCount > 0 || p1SpatialCount > 0) {
         let score = 0;
-        if (p2.dominantPropertyType === "motion" && p1.dominantPropertyType === "spatial") {
+        if (
+          p2.dominantPropertyType === "motion" &&
+          p1.dominantPropertyType === "spatial"
+        ) {
           score += 100;
         }
         score += p2MotionCount * 10 + p1SpatialCount * 10;
         score -= p2SpatialCount * 5 + p1MotionCount * 5;
-        score -= (p1.period + p2.period);
+        score -= p1.period + p2.period;
         assignments.push({ motion: p2, spatial: p1, score });
       }
 
@@ -309,7 +346,11 @@ export class PolyrhythmicDetector {
         periods: analyses,
         motionPeriod,
         spatialPeriod,
-        description: this.generateDescription(motionPeriod, spatialPeriod, length),
+        description: this.generateDescription(
+          motionPeriod,
+          spatialPeriod,
+          length
+        ),
         confidence: this.calculateConfidence(motionPeriod, spatialPeriod),
         zoneCoverage,
       };
@@ -325,8 +366,10 @@ export class PolyrhythmicDetector {
         isPolyrhythmic: false,
         polyrhythm: null,
         periods: analyses,
-        motionPeriod: bestPeriod.dominantPropertyType === "motion" ? bestPeriod : null,
-        spatialPeriod: bestPeriod.dominantPropertyType === "spatial" ? bestPeriod : null,
+        motionPeriod:
+          bestPeriod.dominantPropertyType === "motion" ? bestPeriod : null,
+        spatialPeriod:
+          bestPeriod.dominantPropertyType === "spatial" ? bestPeriod : null,
         description: `Periodic pattern with period ${bestPeriod.period} detected`,
         confidence: 0.5,
       };
@@ -338,7 +381,10 @@ export class PolyrhythmicDetector {
   /**
    * Analyze a specific period
    */
-  private analyzePeriod(beats: BeatProperties[], period: number): PeriodAnalysis {
+  private analyzePeriod(
+    beats: BeatProperties[],
+    period: number
+  ): PeriodAnalysis {
     const length = beats.length;
     const numGroups = length / period;
 
@@ -372,7 +418,11 @@ export class PolyrhythmicDetector {
     let spatialCount = 0;
 
     for (const property of propertiesToCheck) {
-      const result = this.checkPropertyConsistency(beats, positionGroups, property);
+      const result = this.checkPropertyConsistency(
+        beats,
+        positionGroups,
+        property
+      );
       if (result) {
         consistentProperties.push(result);
         const propType = getPropertyType(property);
@@ -382,7 +432,8 @@ export class PolyrhythmicDetector {
     }
 
     // Determine dominant property type
-    let dominantPropertyType: "motion" | "spatial" | "both" | "other" | "none" = "none";
+    let dominantPropertyType: "motion" | "spatial" | "both" | "other" | "none" =
+      "none";
     if (motionCount > 0 && spatialCount > 0) {
       dominantPropertyType = "both";
     } else if (motionCount > spatialCount) {
@@ -457,7 +508,9 @@ export class PolyrhythmicDetector {
       : analyses;
 
     // First, try to find periods with pure type match (not "both")
-    const pureMatches = available.filter((a) => a.dominantPropertyType === type);
+    const pureMatches = available.filter(
+      (a) => a.dominantPropertyType === type
+    );
     if (pureMatches.length > 0) {
       // Return the one with highest consistency score among pure matches
       return pureMatches.reduce((best, curr) =>
@@ -466,7 +519,9 @@ export class PolyrhythmicDetector {
     }
 
     // Fall back to periods with "both" type
-    const bothMatches = available.filter((a) => a.dominantPropertyType === "both");
+    const bothMatches = available.filter(
+      (a) => a.dominantPropertyType === "both"
+    );
     if (bothMatches.length > 0) {
       return bothMatches.reduce((best, curr) =>
         curr.consistencyScore > best.consistencyScore ? curr : best
@@ -510,7 +565,8 @@ export class PolyrhythmicDetector {
     spatialPeriod: PeriodAnalysis
   ): number {
     // Base confidence on consistency scores
-    const totalScore = motionPeriod.consistencyScore + spatialPeriod.consistencyScore;
+    const totalScore =
+      motionPeriod.consistencyScore + spatialPeriod.consistencyScore;
     // Normalize to 0-1 range (assuming max ~10 properties each)
     return Math.min(1, totalScore / 10);
   }

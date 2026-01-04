@@ -47,10 +47,7 @@ export class SequenceViewer implements ISequenceViewer {
     try {
       return this.SequenceEncoder.decodeWithCompression(encodedSequence);
     } catch (error) {
-      console.error(
-        "[SequenceViewer] Failed to decode sequence:",
-        error
-      );
+      console.error("[SequenceViewer] Failed to decode sequence:", error);
       return null;
     }
   }

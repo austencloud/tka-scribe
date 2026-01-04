@@ -46,9 +46,7 @@ export async function renderPictograph(
 
     // Resolve required services directly
     const svgUtility = resolve<ISvgUtilityService>(TYPES.ISvgUtilityService);
-    const gridRendering = resolve<IGridRenderer>(
-      TYPES.IGridRenderer
-    );
+    const gridRendering = resolve<IGridRenderer>(TYPES.IGridRenderer);
     const arrowRendering = resolve<IArrowRenderer>(TYPES.IArrowRenderer);
     const overlayRendering = resolve<IOverlayRenderer>(TYPES.IOverlayRenderer);
     const gridModeService = resolve<IGridModeDeriver>(TYPES.IGridModeDeriver);

@@ -20,7 +20,13 @@
     onEndChange: (loc: GridLocation) => void;
   }
 
-  let { startValue, endValue, color = "blue", onStartChange, onEndChange }: Props = $props();
+  let {
+    startValue,
+    endValue,
+    color = "blue",
+    onStartChange,
+    onEndChange,
+  }: Props = $props();
 </script>
 
 <div class="position-pair">

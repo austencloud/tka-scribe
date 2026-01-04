@@ -57,7 +57,7 @@
       showAsModal = announcement.showAsModal ?? true;
       hasExpiration = !!announcement.expiresAt;
       expirationDate = announcement.expiresAt
-        ? new Date(announcement.expiresAt).toISOString().split("T")[0] ?? ""
+        ? (new Date(announcement.expiresAt).toISOString().split("T")[0] ?? "")
         : "";
       actionUrl = announcement.actionUrl ?? "";
       actionLabel = announcement.actionLabel ?? "";
@@ -416,7 +416,11 @@
     margin-bottom: 32px;
     padding-bottom: 20px;
     border-bottom: 2px solid
-      color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 20%, transparent);
+      color-mix(
+        in srgb,
+        var(--theme-accent, var(--theme-accent)) 20%,
+        transparent
+      );
   }
 
   .form-header h2 {
@@ -500,7 +504,11 @@
     min-height: var(--min-touch-target);
     background: linear-gradient(135deg, #1a1a24 0%, #16161e 100%);
     border: 2px solid
-      color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 30%, transparent);
+      color-mix(
+        in srgb,
+        var(--theme-accent, var(--theme-accent)) 30%,
+        transparent
+      );
     border-radius: 12px;
     color: #ffffff;
     font-size: var(--font-size-sm);
@@ -518,7 +526,11 @@
     border-color: var(--theme-accent, var(--theme-accent));
     background: linear-gradient(135deg, #20202e 0%, #1c1c28 100%);
     box-shadow: 0 0 0 4px
-      color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 15%, transparent);
+      color-mix(
+        in srgb,
+        var(--theme-accent, var(--theme-accent)) 15%,
+        transparent
+      );
   }
 
   textarea.text-input {
@@ -600,7 +612,12 @@
     border-color: var(--chip-color, var(--theme-accent));
     color: #ffffff;
     box-shadow:
-      0 0 24px color-mix(in srgb, var(--chip-color, var(--theme-accent)) 40%, transparent),
+      0 0 24px
+        color-mix(
+          in srgb,
+          var(--chip-color, var(--theme-accent)) 40%,
+          transparent
+        ),
       0 4px 16px rgba(0, 0, 0, 0.4);
   }
 
@@ -608,12 +625,22 @@
     background: linear-gradient(
       135deg,
       var(--theme-accent, var(--theme-accent)) 0%,
-      color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 90%, black) 100%
+      color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 90%, black)
+        100%
     );
-    border-color: color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 120%, white);
+    border-color: color-mix(
+      in srgb,
+      var(--theme-accent, var(--theme-accent)) 120%,
+      white
+    );
     color: #ffffff;
     box-shadow:
-      0 0 24px color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 40%, transparent),
+      0 0 24px
+        color-mix(
+          in srgb,
+          var(--theme-accent, var(--theme-accent)) 40%,
+          transparent
+        ),
       0 4px 16px rgba(0, 0, 0, 0.4);
   }
 
@@ -646,7 +673,11 @@
     margin-top: 40px;
     padding-top: 24px;
     border-top: 2px solid
-      color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 20%, transparent);
+      color-mix(
+        in srgb,
+        var(--theme-accent, var(--theme-accent)) 20%,
+        transparent
+      );
   }
 
   .cancel-button,
@@ -690,26 +721,39 @@
   .save-button {
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 120%, white) 0%,
+      color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 120%, white)
+        0%,
       var(--theme-accent, var(--theme-accent)) 100%
     );
     border: 2px solid
       color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 140%, white);
     color: #ffffff;
     box-shadow:
-      0 0 20px color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 30%, transparent),
+      0 0 20px
+        color-mix(
+          in srgb,
+          var(--theme-accent, var(--theme-accent)) 30%,
+          transparent
+        ),
       0 4px 16px rgba(0, 0, 0, 0.4);
   }
 
   .save-button:hover:not(:disabled) {
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 130%, white) 0%,
-      color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 110%, white) 100%
+      color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 130%, white)
+        0%,
+      color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 110%, white)
+        100%
     );
     transform: translateY(-2px);
     box-shadow:
-      0 0 30px color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 50%, transparent),
+      0 0 30px
+        color-mix(
+          in srgb,
+          var(--theme-accent, var(--theme-accent)) 50%,
+          transparent
+        ),
       0 6px 20px rgba(0, 0, 0, 0.5);
   }
 

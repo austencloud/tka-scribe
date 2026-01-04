@@ -15,7 +15,12 @@
     onMusicLoadRequested?: () => void;
   }
 
-  let { act, disabled = false, onActInfoChanged, onMusicLoadRequested }: Props = $props();
+  let {
+    act,
+    disabled = false,
+    onActInfoChanged,
+    onMusicLoadRequested,
+  }: Props = $props();
 
   let hapticService: IHapticFeedback;
   let nameInput = $state("");
@@ -139,13 +144,20 @@
 
   <!-- Stats row -->
   <div class="stats-row">
-    <button class="music-btn" onclick={handleMusicClick} {disabled} type="button">
+    <button
+      class="music-btn"
+      onclick={handleMusicClick}
+      {disabled}
+      type="button"
+    >
       <i class="fas fa-music" aria-hidden="true"></i>
       <span class="music-label">
         {#if act.musicFile}
           {act.musicFile.name}
           {#if act.musicFile.duration}
-            <span class="duration">({formatDuration(act.musicFile.duration)})</span>
+            <span class="duration"
+              >({formatDuration(act.musicFile.duration)})</span
+            >
           {/if}
         {:else}
           Add music

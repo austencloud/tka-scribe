@@ -196,8 +196,7 @@
 
   .kbd.modifier.pressable:hover {
     box-shadow:
-      0 6px 16px
-        color-mix(in srgb, var(--theme-accent-strong) 35%, transparent),
+      0 6px 16px color-mix(in srgb, var(--theme-accent-strong) 35%, transparent),
       0 2px 4px var(--theme-shadow, var(--theme-shadow)),
       inset 0 1px 0 rgba(255, 255, 255, 0.2);
   }

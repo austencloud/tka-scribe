@@ -30,9 +30,7 @@
   const hasData = $derived(stats && stats.totalSessions > 0);
 
   onMount(async () => {
-    hapticService = resolve<IHapticFeedback>(
-      TYPES.IHapticFeedback
-    );
+    hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
     try {
       const historyService = resolve<IPerformanceHistoryTracker>(
         TYPES.IPerformanceHistoryTracker
@@ -263,8 +261,18 @@
     height: 64px;
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 15%, transparent) 0%,
-      color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 10%, transparent) 100%
+      color-mix(
+          in srgb,
+          var(--semantic-error, var(--semantic-error)) 15%,
+          transparent
+        )
+        0%,
+      color-mix(
+          in srgb,
+          var(--semantic-error, var(--semantic-error)) 10%,
+          transparent
+        )
+        100%
     );
     border-radius: 18px;
     margin-bottom: 1rem;
@@ -280,11 +288,19 @@
     0%,
     100% {
       box-shadow: 0 0 20px
-        color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 10%, transparent);
+        color-mix(
+          in srgb,
+          var(--semantic-error, var(--semantic-error)) 10%,
+          transparent
+        );
     }
     50% {
       box-shadow: 0 0 30px
-        color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 20%, transparent);
+        color-mix(
+          in srgb,
+          var(--semantic-error, var(--semantic-error)) 20%,
+          transparent
+        );
     }
   }
 
@@ -519,7 +535,11 @@
   .start-btn:hover {
     transform: translateY(-2px);
     box-shadow: 0 12px 32px
-      color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 35%, transparent);
+      color-mix(
+        in srgb,
+        var(--semantic-error, var(--semantic-error)) 35%,
+        transparent
+      );
   }
 
   .start-btn:active {

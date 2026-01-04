@@ -110,11 +110,7 @@
     color: var(--theme-text);
     margin: 0;
     font-family:
-      -apple-system,
-      BlinkMacSystemFont,
-      "SF Pro Display",
-      system-ui,
-      sans-serif;
+      -apple-system, BlinkMacSystemFont, "SF Pro Display", system-ui, sans-serif;
   }
 
   .profile-email {

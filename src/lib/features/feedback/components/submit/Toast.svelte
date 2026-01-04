@@ -41,23 +41,49 @@
   .toast.error {
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 15%, transparent) 0%,
-      color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 8%, transparent) 100%
+      color-mix(
+          in srgb,
+          var(--semantic-error, var(--semantic-error)) 15%,
+          transparent
+        )
+        0%,
+      color-mix(
+          in srgb,
+          var(--semantic-error, var(--semantic-error)) 8%,
+          transparent
+        )
+        100%
     );
     border: 1px solid
-      color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 25%, transparent);
+      color-mix(
+        in srgb,
+        var(--semantic-error, var(--semantic-error)) 25%,
+        transparent
+      );
   }
 
   .toast.info {
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent)) 15%, transparent)
+      color-mix(
+          in srgb,
+          var(--theme-accent-strong, var(--theme-accent)) 15%,
+          transparent
+        )
         0%,
-      color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent)) 8%, transparent)
+      color-mix(
+          in srgb,
+          var(--theme-accent-strong, var(--theme-accent)) 8%,
+          transparent
+        )
         100%
     );
     border: 1px solid
-      color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent)) 25%, transparent);
+      color-mix(
+        in srgb,
+        var(--theme-accent-strong, var(--theme-accent)) 25%,
+        transparent
+      );
   }
 
   .toast.info .toast-icon {

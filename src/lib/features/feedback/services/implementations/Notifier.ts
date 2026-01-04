@@ -346,18 +346,24 @@ export class NotificationService {
         this.unsubscribe = onSnapshot(
           q,
           (snapshot) => {
-            const notifications: UserNotification[] = snapshot.docs.map((docSnap) =>
-              this.mapDocToNotification(docSnap.id, docSnap.data())
+            const notifications: UserNotification[] = snapshot.docs.map(
+              (docSnap) => this.mapDocToNotification(docSnap.id, docSnap.data())
             );
             callback(notifications);
           },
           (error) => {
-            console.error("[Notifier] Notifications subscription error:", error);
+            console.error(
+              "[Notifier] Notifications subscription error:",
+              error
+            );
             toast.error("Lost connection to notifications. Please refresh.");
           }
         );
       } catch (error) {
-        console.error("[Notifier] Failed to initialize notifications subscription:", error);
+        console.error(
+          "[Notifier] Failed to initialize notifications subscription:",
+          error
+        );
         toast.error("Failed to connect to notifications.");
       }
     })();

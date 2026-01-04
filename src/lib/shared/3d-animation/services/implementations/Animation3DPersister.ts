@@ -14,9 +14,7 @@ import type {
 const STORAGE_KEY = "tka-3d-animator-state";
 
 @injectable()
-export class Animation3DPersister
-  implements IAnimation3DPersister
-{
+export class Animation3DPersister implements IAnimation3DPersister {
   /**
    * Save state to localStorage (merges with existing)
    */

@@ -13,7 +13,15 @@
     disabled?: boolean;
   }
 
-  let { title, description, items, preferences, isBusyKey, onToggle, disabled = false }: Props = $props();
+  let {
+    title,
+    description,
+    items,
+    preferences,
+    isBusyKey,
+    onToggle,
+    disabled = false,
+  }: Props = $props();
 </script>
 
 <div class="preference-group">

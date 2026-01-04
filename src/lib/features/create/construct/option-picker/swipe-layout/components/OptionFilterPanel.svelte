@@ -29,9 +29,7 @@ Provides a dedicated UI for filtering option viewer content:
     onToggleContinuous?: (isContinuousOnly: boolean) => void;
   }>();
 
-  const hapticService = resolve<IHapticFeedback>(
-    TYPES.IHapticFeedback
-  );
+  const hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
 
   // Container-aware sizing state
   let panelElement: HTMLElement | null = $state(null);

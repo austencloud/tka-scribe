@@ -59,9 +59,7 @@
   let hapticService: IHapticFeedback | undefined;
 
   onMount(() => {
-    hapticService = resolve<IHapticFeedback>(
-      TYPES.IHapticFeedback
-    );
+    hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
   });
 
   // Auto-focus when requested
@@ -247,7 +245,7 @@
     {#if isSearching}
       Searching...
     {:else if showResults && searchResults.length > 0}
-      {searchResults.length} user{searchResults.length === 1 ? '' : 's'} found
+      {searchResults.length} user{searchResults.length === 1 ? "" : "s"} found
     {:else if showResults && searchResults.length === 0 && searchQuery.length >= 2}
       No users found
     {/if}

@@ -83,9 +83,7 @@
   let hapticService: IHapticFeedback;
 
   onMount(async () => {
-    hapticService = await resolve<IHapticFeedback>(
-      TYPES.IHapticFeedback
-    );
+    hapticService = await resolve<IHapticFeedback>(TYPES.IHapticFeedback);
   });
 
   // Handle confirm button
@@ -132,11 +130,15 @@
       <!-- Icon -->
       <div class="dialog-icon">
         {#if variant === "warning"}
-          <i class="fa-solid fa-triangle-exclamation icon warning-icon" aria-hidden="true"></i>
+          <i
+            class="fa-solid fa-triangle-exclamation icon warning-icon"
+            aria-hidden="true"
+          ></i>
         {:else if variant === "danger"}
           <i class="fa-solid fa-trash icon danger-icon" aria-hidden="true"></i>
         {:else}
-          <i class="fa-solid fa-circle-info icon info-icon" aria-hidden="true"></i>
+          <i class="fa-solid fa-circle-info icon info-icon" aria-hidden="true"
+          ></i>
         {/if}
       </div>
 
@@ -157,7 +159,7 @@
             type="button"
             class="dont-ask-chip"
             class:selected={dontAskAgainChecked}
-            onclick={() => dontAskAgainChecked = !dontAskAgainChecked}
+            onclick={() => (dontAskAgainChecked = !dontAskAgainChecked)}
             aria-pressed={dontAskAgainChecked}
           >
             {#if dontAskAgainChecked}
@@ -319,13 +321,21 @@
   }
 
   .dont-ask-chip.selected {
-    background: color-mix(in srgb, var(--theme-accent, #6366f1) 15%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--theme-accent, #6366f1) 15%,
+      transparent
+    );
     border-color: var(--theme-accent, #6366f1);
     color: var(--theme-accent, #6366f1);
   }
 
   .dont-ask-chip.selected:hover {
-    background: color-mix(in srgb, var(--theme-accent, #6366f1) 22%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--theme-accent, #6366f1) 22%,
+      transparent
+    );
   }
 
   .dont-ask-chip:focus-visible {
@@ -390,20 +400,36 @@
   }
 
   :global(.dialog-container.warning) .confirm-button {
-    background: linear-gradient(135deg, var(--semantic-warning) 0%, #d97706 100%);
+    background: linear-gradient(
+      135deg,
+      var(--semantic-warning) 0%,
+      #d97706 100%
+    );
   }
 
   :global(.dialog-container.warning) .confirm-button:hover {
-    background: linear-gradient(135deg, var(--semantic-warning) 0%, var(--semantic-warning) 100%);
+    background: linear-gradient(
+      135deg,
+      var(--semantic-warning) 0%,
+      var(--semantic-warning) 100%
+    );
     box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
   }
 
   :global(.dialog-container.danger) .confirm-button {
-    background: linear-gradient(135deg, var(--semantic-error) 0%, var(--semantic-error) 100%);
+    background: linear-gradient(
+      135deg,
+      var(--semantic-error) 0%,
+      var(--semantic-error) 100%
+    );
   }
 
   :global(.dialog-container.danger) .confirm-button:hover {
-    background: linear-gradient(135deg, var(--semantic-error) 0%, var(--semantic-error) 100%);
+    background: linear-gradient(
+      135deg,
+      var(--semantic-error) 0%,
+      var(--semantic-error) 100%
+    );
     box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
   }
 

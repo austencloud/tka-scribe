@@ -114,7 +114,9 @@
   const shouldShowFloatingUndo = $derived(
     !hasWorkspaceContent && CreateModuleState.canUndo
   );
-  const showFloatingUndo = $derived(shouldShowFloatingUndo && floatingUndoDelayComplete);
+  const showFloatingUndo = $derived(
+    shouldShowFloatingUndo && floatingUndoDelayComplete
+  );
 
   // Effect to handle delayed appearance of floating undo
   // Waits for layout animation (450ms) to complete before showing
@@ -183,11 +185,7 @@
     <!-- Button Panel -->
     {#if hasWorkspaceContent}
       <div class="button-panel-wrapper" bind:this={buttonPanelElement}>
-        <ButtonPanel
-          {onClearSequence}
-          {onShareHub}
-          {onSequenceActionsClick}
-        />
+        <ButtonPanel {onClearSequence} {onShareHub} {onSequenceActionsClick} />
       </div>
     {/if}
   </div>

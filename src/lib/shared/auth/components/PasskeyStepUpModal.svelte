@@ -201,7 +201,10 @@
                 disabled={isSubmitting}
                 aria-label={showPassword ? "Hide password" : "Show password"}
               >
-                <i class="fas {showPassword ? 'fa-eye-slash' : 'fa-eye'}" aria-hidden="true"></i>
+                <i
+                  class="fas {showPassword ? 'fa-eye-slash' : 'fa-eye'}"
+                  aria-hidden="true"
+                ></i>
               </button>
             </div>
           </div>
@@ -266,11 +269,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: color-mix(
-      in srgb,
-      var(--theme-panel-bg) 85%,
-      transparent
-    );
+    background: color-mix(in srgb, var(--theme-panel-bg) 85%, transparent);
     z-index: 10000;
     animation: fadeIn 0.2s ease;
   }
@@ -290,7 +289,11 @@
     margin: 16px;
     background: var(--theme-panel-bg);
     border: 1px solid
-      color-mix(in srgb, var(--theme-accent, var(--semantic-info)) 30%, transparent);
+      color-mix(
+        in srgb,
+        var(--theme-accent, var(--semantic-info)) 30%,
+        transparent
+      );
     border-radius: 20px;
     box-shadow: 0 20px 60px var(--theme-shadow);
     animation: modalSlideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);

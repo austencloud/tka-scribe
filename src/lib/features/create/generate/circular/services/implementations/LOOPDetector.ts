@@ -333,7 +333,9 @@ export class LOOPDetector implements ILOOPDetector {
     // 1. Majority of beats show swap pattern
     // 2. Hands have different motion types (swap is meaningful)
     return (
-      checkCount > 0 && swapCount >= checkCount * 0.75 && hasDifferentMotionTypes
+      checkCount > 0 &&
+      swapCount >= checkCount * 0.75 &&
+      hasDifferentMotionTypes
     );
   }
 
@@ -518,7 +520,9 @@ export class LOOPDetector implements ILOOPDetector {
     }
 
     return (
-      checkCount > 0 && swapCount >= checkCount * 0.75 && hasDifferentMotionTypes
+      checkCount > 0 &&
+      swapCount >= checkCount * 0.75 &&
+      hasDifferentMotionTypes
     );
   }
 
@@ -556,7 +560,10 @@ export class LOOPDetector implements ILOOPDetector {
 
       if (firstBlue && secondBlue) {
         if (
-          !this.isMotionTypeInverted(firstBlue.motionType, secondBlue.motionType)
+          !this.isMotionTypeInverted(
+            firstBlue.motionType,
+            secondBlue.motionType
+          )
         ) {
           return false;
         }
@@ -592,17 +599,23 @@ export class LOOPDetector implements ILOOPDetector {
     const hasQuarteredRotation = quarteredComponents.includes(
       LOOPComponent.ROTATED
     );
-    const hasQuarteredSwap = quarteredComponents.includes(LOOPComponent.SWAPPED);
+    const hasQuarteredSwap = quarteredComponents.includes(
+      LOOPComponent.SWAPPED
+    );
 
     // Check if we have swap at halved
     const hasHalvedSwap = halvedComponents.includes(LOOPComponent.SWAPPED);
-    const hasHalvedInversion = halvedComponents.includes(LOOPComponent.INVERTED);
+    const hasHalvedInversion = halvedComponents.includes(
+      LOOPComponent.INVERTED
+    );
 
     // Compound pattern: rotation at quartered + swap ONLY at halved (not at quartered)
     if (hasQuarteredRotation && !hasQuarteredSwap && hasHalvedSwap) {
       const rotationDirection = this.getQuarteredRotationDirection(beats);
       const rotationDesc =
-        rotationDirection === "ccw" ? "90 deg CCW Rotated" : "90 deg CW Rotated";
+        rotationDirection === "ccw"
+          ? "90 deg CCW Rotated"
+          : "90 deg CW Rotated";
 
       return {
         isCompound: true,
@@ -620,7 +633,9 @@ export class LOOPDetector implements ILOOPDetector {
       if (!hasQuarteredInversion) {
         const rotationDirection = this.getQuarteredRotationDirection(beats);
         const rotationDesc =
-          rotationDirection === "ccw" ? "90 deg CCW Rotated" : "90 deg CW Rotated";
+          rotationDirection === "ccw"
+            ? "90 deg CCW Rotated"
+            : "90 deg CW Rotated";
 
         return {
           isCompound: true,
@@ -632,10 +647,17 @@ export class LOOPDetector implements ILOOPDetector {
     }
 
     // Compound pattern: rotation at quartered + swap + inversion at halved
-    if (hasQuarteredRotation && !hasQuarteredSwap && hasHalvedSwap && hasHalvedInversion) {
+    if (
+      hasQuarteredRotation &&
+      !hasQuarteredSwap &&
+      hasHalvedSwap &&
+      hasHalvedInversion
+    ) {
       const rotationDirection = this.getQuarteredRotationDirection(beats);
       const rotationDesc =
-        rotationDirection === "ccw" ? "90 deg CCW Rotated" : "90 deg CW Rotated";
+        rotationDirection === "ccw"
+          ? "90 deg CCW Rotated"
+          : "90 deg CW Rotated";
 
       return {
         isCompound: true,

@@ -13,7 +13,7 @@
   Domain: Share Hub - Settings - Animation Format
 -->
 <script lang="ts">
-  import { getShareHubState } from '../../state/share-hub-state.svelte';
+  import { getShareHubState } from "../../state/share-hub-state.svelte";
 
   // FIX: Use 'hubState' instead of 'state' to avoid collision with $state rune
   const hubState = getShareHubState();
@@ -25,11 +25,17 @@
 
   function handleLoopCountChange(event: Event) {
     const value = parseInt((event.target as HTMLInputElement).value);
-    hubState.animationSettings = { ...hubState.animationSettings, loopCount: value };
+    hubState.animationSettings = {
+      ...hubState.animationSettings,
+      loopCount: value,
+    };
   }
 
   function handleOverlaysToggle() {
-    hubState.animationSettings = { ...hubState.animationSettings, showOverlays: !hubState.animationSettings.showOverlays };
+    hubState.animationSettings = {
+      ...hubState.animationSettings,
+      showOverlays: !hubState.animationSettings.showOverlays,
+    };
   }
 </script>
 
@@ -91,7 +97,9 @@
         <i class="fas fa-layer-group" aria-hidden="true"></i>
         <div>
           <span class="toggle-title">Show Overlays</span>
-          <span class="toggle-description">Display grid lines and beat markers</span>
+          <span class="toggle-description"
+            >Display grid lines and beat markers</span
+          >
         </div>
       </div>
       <button

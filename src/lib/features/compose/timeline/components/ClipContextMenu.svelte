@@ -96,7 +96,9 @@
           getState().updateClip(clipId, { muted: !clip?.muted })
         )}
     >
-      <i class="fa-solid {clip?.muted ? 'fa-volume-high' : 'fa-volume-xmark'}" aria-hidden="true"
+      <i
+        class="fa-solid {clip?.muted ? 'fa-volume-high' : 'fa-volume-xmark'}"
+        aria-hidden="true"
       ></i>
       <span>{clip?.muted ? "Unmute" : "Mute"}</span>
       <kbd>M</kbd>
@@ -109,7 +111,10 @@
           getState().updateClip(clipId, { locked: !clip?.locked })
         )}
     >
-      <i class="fa-solid {clip?.locked ? 'fa-lock-open' : 'fa-lock'}" aria-hidden="true"></i>
+      <i
+        class="fa-solid {clip?.locked ? 'fa-lock-open' : 'fa-lock'}"
+        aria-hidden="true"
+      ></i>
       <span>{clip?.locked ? "Unlock" : "Lock"}</span>
       <kbd>L</kbd>
     </button>
@@ -130,7 +135,8 @@
       <button class="menu-item">
         <i class="fa-solid fa-gauge" aria-hidden="true"></i>
         <span>Speed</span>
-        <i class="fa-solid fa-chevron-right submenu-arrow" aria-hidden="true"></i>
+        <i class="fa-solid fa-chevron-right submenu-arrow" aria-hidden="true"
+        ></i>
       </button>
       <div class="submenu-content">
         <button

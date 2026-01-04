@@ -101,9 +101,9 @@ export class IKSolver implements IIKSolver {
     }
 
     // Adjust target to clamped distance
-    const clampedTarget = shoulderWorld.clone().add(
-      toTarget.clone().normalize().multiplyScalar(dist)
-    );
+    const clampedTarget = shoulderWorld
+      .clone()
+      .add(toTarget.clone().normalize().multiplyScalar(dist));
 
     // Law of cosines: find angle at shoulder (angle between upper arm and line to target)
     const cosShoulderAngle =
@@ -111,7 +111,9 @@ export class IKSolver implements IIKSolver {
         dist * dist -
         chain.lowerLength * chain.lowerLength) /
       (2 * chain.upperLength * dist);
-    const shoulderAngle = Math.acos(Math.max(-1, Math.min(1, cosShoulderAngle)));
+    const shoulderAngle = Math.acos(
+      Math.max(-1, Math.min(1, cosShoulderAngle))
+    );
 
     // Direction from shoulder to target (world space)
     const targetDir = clampedTarget.clone().sub(shoulderWorld).normalize();
@@ -129,12 +131,14 @@ export class IKSolver implements IIKSolver {
 
     // Calculate upper arm direction (world space)
     // Rotate target direction by shoulder angle around the bend axis
-    const upperArmDir = targetDir.clone().applyAxisAngle(bendAxis, shoulderAngle);
+    const upperArmDir = targetDir
+      .clone()
+      .applyAxisAngle(bendAxis, shoulderAngle);
 
     // Calculate elbow position analytically (world space)
-    const elbowWorld = shoulderWorld.clone().add(
-      upperArmDir.clone().multiplyScalar(chain.upperLength)
-    );
+    const elbowWorld = shoulderWorld
+      .clone()
+      .add(upperArmDir.clone().multiplyScalar(chain.upperLength));
 
     // Calculate forearm direction (world space) - from elbow to target
     const forearmDir = clampedTarget.clone().sub(elbowWorld).normalize();
@@ -146,11 +150,16 @@ export class IKSolver implements IIKSolver {
       chain.root.parent.updateWorldMatrix(true, false);
       shoulderParentInverse.copy(chain.root.parent.matrixWorld).invert();
     }
-    const localUpperArmDir = upperArmDir.clone().transformDirection(shoulderParentInverse);
+    const localUpperArmDir = upperArmDir
+      .clone()
+      .transformDirection(shoulderParentInverse);
 
     // Rotate from rest direction to target direction
     const shoulderQuat = new Quaternion();
-    shoulderQuat.setFromUnitVectors(chain.rootRestDir.clone(), localUpperArmDir);
+    shoulderQuat.setFromUnitVectors(
+      chain.rootRestDir.clone(),
+      localUpperArmDir
+    );
     rotations.push(shoulderQuat);
 
     // === ELBOW ROTATION ===
@@ -169,11 +178,15 @@ export class IKSolver implements IIKSolver {
       : new Matrix4();
 
     // Apply the new shoulder rotation
-    const shoulderRotMatrix = new Matrix4().makeRotationFromQuaternion(shoulderQuat);
+    const shoulderRotMatrix = new Matrix4().makeRotationFromQuaternion(
+      shoulderQuat
+    );
     const elbowParentMatrix = shoulderWorldMatrix.multiply(shoulderRotMatrix);
     const elbowParentInverse = elbowParentMatrix.clone().invert();
 
-    const localForearmDir = forearmDir.clone().transformDirection(elbowParentInverse);
+    const localForearmDir = forearmDir
+      .clone()
+      .transformDirection(elbowParentInverse);
 
     // The elbow's rest direction is relative to its own local space
     // After the shoulder rotates, the forearm's "rest" direction in elbow local space
@@ -183,7 +196,9 @@ export class IKSolver implements IIKSolver {
     rotations.push(elbowQuat);
 
     // Calculate error
-    const handWorld = elbowWorld.clone().add(forearmDir.multiplyScalar(chain.lowerLength));
+    const handWorld = elbowWorld
+      .clone()
+      .add(forearmDir.multiplyScalar(chain.lowerLength));
     const error = target.distanceTo(handWorld);
 
     return {
@@ -232,7 +247,10 @@ export class IKSolver implements IIKSolver {
         const toTarget = target.position.clone().sub(boneWorld).normalize();
 
         // Calculate rotation to move effector towards target
-        const rotation = new Quaternion().setFromUnitVectors(toEffector, toTarget);
+        const rotation = new Quaternion().setFromUnitVectors(
+          toEffector,
+          toTarget
+        );
 
         // Apply rotation
         bone.quaternion.premultiply(rotation);
@@ -366,12 +384,18 @@ export class IKSolver implements IIKSolver {
   private applyConstraints(bone: Bone, constraints: JointConstraints): void {
     const euler = new Euler().setFromQuaternion(bone.quaternion);
 
-    if (constraints.minX !== undefined) euler.x = Math.max(euler.x, constraints.minX);
-    if (constraints.maxX !== undefined) euler.x = Math.min(euler.x, constraints.maxX);
-    if (constraints.minY !== undefined) euler.y = Math.max(euler.y, constraints.minY);
-    if (constraints.maxY !== undefined) euler.y = Math.min(euler.y, constraints.maxY);
-    if (constraints.minZ !== undefined) euler.z = Math.max(euler.z, constraints.minZ);
-    if (constraints.maxZ !== undefined) euler.z = Math.min(euler.z, constraints.maxZ);
+    if (constraints.minX !== undefined)
+      euler.x = Math.max(euler.x, constraints.minX);
+    if (constraints.maxX !== undefined)
+      euler.x = Math.min(euler.x, constraints.maxX);
+    if (constraints.minY !== undefined)
+      euler.y = Math.max(euler.y, constraints.minY);
+    if (constraints.maxY !== undefined)
+      euler.y = Math.min(euler.y, constraints.maxY);
+    if (constraints.minZ !== undefined)
+      euler.z = Math.max(euler.z, constraints.minZ);
+    if (constraints.maxZ !== undefined)
+      euler.z = Math.min(euler.z, constraints.maxZ);
 
     bone.quaternion.setFromEuler(euler);
   }

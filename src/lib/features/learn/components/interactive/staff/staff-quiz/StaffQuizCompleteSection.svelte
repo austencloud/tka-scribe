@@ -220,13 +220,21 @@ StaffQuizCompleteSection - Score display and completion actions
   }
 
   .action-btn.primary {
-    background: linear-gradient(135deg, rgba(34, 211, 238, 0.3), rgba(6, 182, 212, 0.3));
+    background: linear-gradient(
+      135deg,
+      rgba(34, 211, 238, 0.3),
+      rgba(6, 182, 212, 0.3)
+    );
     border: 1px solid rgba(34, 211, 238, 0.4);
     color: white;
   }
 
   .action-btn.primary:hover {
-    background: linear-gradient(135deg, rgba(34, 211, 238, 0.4), rgba(6, 182, 212, 0.4));
+    background: linear-gradient(
+      135deg,
+      rgba(34, 211, 238, 0.4),
+      rgba(6, 182, 212, 0.4)
+    );
     border-color: rgba(34, 211, 238, 0.6);
     transform: translateY(-2px);
   }

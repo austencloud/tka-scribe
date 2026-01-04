@@ -30,7 +30,13 @@
     </div>
     <button class="cancel-btn" onclick={onCancel}>Cancel</button>
   </div>
-  <div class="progress-bar" role="progressbar" aria-valuenow={progress.percent} aria-valuemin={0} aria-valuemax={100}>
+  <div
+    class="progress-bar"
+    role="progressbar"
+    aria-valuenow={progress.percent}
+    aria-valuemin={0}
+    aria-valuemax={100}
+  >
     <div class="progress-fill" style="width: {progress.percent}%"></div>
   </div>
   <div class="status-detail">

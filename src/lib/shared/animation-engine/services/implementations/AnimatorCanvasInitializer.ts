@@ -76,7 +76,9 @@ export class AnimatorCanvasInitializer implements IAnimatorCanvasInitializer {
         }
 
         if (!rendererResult.success) {
-          callbacks.onPixiError(rendererResult.error ?? "Unknown renderer error");
+          callbacks.onPixiError(
+            rendererResult.error ?? "Unknown renderer error"
+          );
           this.isInitializing = false;
           return { success: false, error: rendererResult.error };
         }

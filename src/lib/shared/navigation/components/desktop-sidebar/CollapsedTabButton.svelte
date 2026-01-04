@@ -62,8 +62,7 @@
       --theme-card-hover-bg,
       rgba(255, 255, 255, 0.18)
     ); /* More prominent to show active selection */
-    box-shadow: inset 0 0 0 1px
-      var(--theme-stroke-strong);
+    box-shadow: inset 0 0 0 1px var(--theme-stroke-strong);
   }
 
   .collapsed-tab-button.disabled {

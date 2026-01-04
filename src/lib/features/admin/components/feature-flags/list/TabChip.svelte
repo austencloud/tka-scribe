@@ -23,7 +23,8 @@
   aria-label={`Edit ${tab.name} settings`}
   title={tab.description}
 >
-  <i class="fas {style.icon}" aria-hidden="true" style="color: {style.color}"></i>
+  <i class="fas {style.icon}" aria-hidden="true" style="color: {style.color}"
+  ></i>
   <span class="tab-name">{tab.name.replace(" Tab", "")}</span>
   {#if elevated}
     <span

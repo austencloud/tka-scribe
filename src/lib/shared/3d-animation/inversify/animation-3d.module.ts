@@ -86,10 +86,7 @@ export const animation3DModule = new ContainerModule(
       .inTransientScope();
 
     // IK solver (analytic, CCD, FABRIK algorithms)
-    options
-      .bind(ANIMATION_3D_TYPES.IIKSolver)
-      .to(IKSolver)
-      .inTransientScope();
+    options.bind(ANIMATION_3D_TYPES.IIKSolver).to(IKSolver).inTransientScope();
 
     // Customization (body type, skin tone, proportions)
     options

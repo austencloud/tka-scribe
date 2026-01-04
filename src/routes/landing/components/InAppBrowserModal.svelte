@@ -15,7 +15,12 @@
     onClose: () => void;
   }
 
-  let { isOpen = $bindable(), platform, inAppBrowserName, onClose }: Props = $props();
+  let {
+    isOpen = $bindable(),
+    platform,
+    inAppBrowserName,
+    onClose,
+  }: Props = $props();
 
   let copied = $state(false);
 
@@ -49,10 +54,7 @@
 
 {#if isOpen}
   <div class="modal-overlay" transition:fade={{ duration: 200 }}>
-    <button
-      class="modal-backdrop"
-      onclick={onClose}
-      aria-label="Close modal"
+    <button class="modal-backdrop" onclick={onClose} aria-label="Close modal"
     ></button>
 
     <div
@@ -75,7 +77,9 @@
           {#if inAppBrowserName}
             {inAppBrowserName}'s browser doesn't support app installation.
           {:else}
-            This browser doesn't support installation on {platform === "ios" ? "iOS" : "Android"}.
+            This browser doesn't support installation on {platform === "ios"
+              ? "iOS"
+              : "Android"}.
           {/if}
         </p>
       </div>
@@ -109,9 +113,7 @@
         <span>tkascribe.com</span>
       </div>
 
-      <button class="dismiss-btn" onclick={onClose}>
-        Continue anyway
-      </button>
+      <button class="dismiss-btn" onclick={onClose}> Continue anyway </button>
     </div>
   </div>
 {/if}

@@ -88,16 +88,8 @@ export const GREEK_LETTER_PALETTE = {
     Letter.OMEGA_DASH,
   ] as Letter[],
   dash: [Letter.PHI, Letter.PSI, Letter.LAMBDA] as Letter[],
-  dualDash: [
-    Letter.PHI_DASH,
-    Letter.PSI_DASH,
-    Letter.LAMBDA_DASH,
-  ] as Letter[],
-  static: [
-    Letter.ALPHA,
-    Letter.BETA,
-    Letter.GAMMA,
-  ] as Letter[],
+  dualDash: [Letter.PHI_DASH, Letter.PSI_DASH, Letter.LAMBDA_DASH] as Letter[],
+  static: [Letter.ALPHA, Letter.BETA, Letter.GAMMA] as Letter[],
 };
 
 /**

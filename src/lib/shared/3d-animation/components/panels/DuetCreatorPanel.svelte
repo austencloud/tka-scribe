@@ -1,746 +1,760 @@
 <script lang="ts">
-	/**
-	 * DuetCreatorPanel
-	 *
-	 * UI for creating new duet sequences by pairing two library sequences.
-	 * Provides sequence selection, beat offset configuration, and positioning hints.
-	 */
+  /**
+   * DuetCreatorPanel
+   *
+   * UI for creating new duet sequences by pairing two library sequences.
+   * Provides sequence selection, beat offset configuration, and positioning hints.
+   */
 
-	import { onMount } from 'svelte';
-	import { resolve } from '$lib/shared/inversify/di';
-	import { TYPES } from '$lib/shared/inversify/types';
-	import { ANIMATION_3D_TYPES } from '../../inversify/animation-3d.types';
-	import type { IDiscoverLoader } from '$lib/features/discover/gallery/display/services/contracts/IDiscoverLoader';
-	import type { IDuetPersister } from '../../services/contracts/IDuetPersister';
-	import type { SequenceData } from '$lib/shared/foundation/domain/models/SequenceData';
-	import type { DuetPositioning, CreateDuetInput } from '../../domain/duet-sequence';
+  import { onMount } from "svelte";
+  import { resolve } from "$lib/shared/inversify/di";
+  import { TYPES } from "$lib/shared/inversify/types";
+  import { ANIMATION_3D_TYPES } from "../../inversify/animation-3d.types";
+  import type { IDiscoverLoader } from "$lib/features/discover/gallery/display/services/contracts/IDiscoverLoader";
+  import type { IDuetPersister } from "../../services/contracts/IDuetPersister";
+  import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
+  import type {
+    DuetPositioning,
+    CreateDuetInput,
+  } from "../../domain/duet-sequence";
 
-	interface Props {
-		/** Called when duet is created successfully */
-		onCreated: (duetId: string) => void;
-		/** Called when user cancels */
-		onCancel: () => void;
-	}
+  interface Props {
+    /** Called when duet is created successfully */
+    onCreated: (duetId: string) => void;
+    /** Called when user cancels */
+    onCancel: () => void;
+  }
 
-	let { onCreated, onCancel }: Props = $props();
+  let { onCreated, onCancel }: Props = $props();
 
-	// Form state
-	let name = $state('');
-	let description = $state('');
-	let avatar1SequenceId = $state<string | null>(null);
-	let avatar2SequenceId = $state<string | null>(null);
-	let beatOffset = $state(0);
-	let positioning = $state<DuetPositioning>('side-by-side');
+  // Form state
+  let name = $state("");
+  let description = $state("");
+  let avatar1SequenceId = $state<string | null>(null);
+  let avatar2SequenceId = $state<string | null>(null);
+  let beatOffset = $state(0);
+  let positioning = $state<DuetPositioning>("side-by-side");
 
-	// UI state
-	let sequences = $state<SequenceData[]>([]);
-	let isLoadingSequences = $state(true);
-	let isSaving = $state(false);
-	let error = $state<string | null>(null);
-	let searchQuery = $state('');
-	let activeSelector = $state<'avatar1' | 'avatar2' | null>(null);
+  // UI state
+  let sequences = $state<SequenceData[]>([]);
+  let isLoadingSequences = $state(true);
+  let isSaving = $state(false);
+  let error = $state<string | null>(null);
+  let searchQuery = $state("");
+  let activeSelector = $state<"avatar1" | "avatar2" | null>(null);
 
-	// Services
-	let discoverLoader: IDiscoverLoader | null = null;
-	let duetPersister: IDuetPersister | null = null;
+  // Services
+  let discoverLoader: IDiscoverLoader | null = null;
+  let duetPersister: IDuetPersister | null = null;
 
-	// Derived
-	const filteredSequences = $derived(
-		sequences.filter((seq) => {
-			if (!searchQuery.trim()) return true;
-			const query = searchQuery.toLowerCase();
-			return (
-				seq.word?.toLowerCase().includes(query) ||
-				seq.name?.toLowerCase().includes(query) ||
-				seq.author?.toLowerCase().includes(query)
-			);
-		})
-	);
+  // Derived
+  const filteredSequences = $derived(
+    sequences.filter((seq) => {
+      if (!searchQuery.trim()) return true;
+      const query = searchQuery.toLowerCase();
+      return (
+        seq.word?.toLowerCase().includes(query) ||
+        seq.name?.toLowerCase().includes(query) ||
+        seq.author?.toLowerCase().includes(query)
+      );
+    })
+  );
 
-	const avatar1Sequence = $derived(
-		avatar1SequenceId ? sequences.find((s) => s.id === avatar1SequenceId) : null
-	);
+  const avatar1Sequence = $derived(
+    avatar1SequenceId ? sequences.find((s) => s.id === avatar1SequenceId) : null
+  );
 
-	const avatar2Sequence = $derived(
-		avatar2SequenceId ? sequences.find((s) => s.id === avatar2SequenceId) : null
-	);
+  const avatar2Sequence = $derived(
+    avatar2SequenceId ? sequences.find((s) => s.id === avatar2SequenceId) : null
+  );
 
-	const canSave = $derived(
-		name.trim().length > 0 && avatar1SequenceId && avatar2SequenceId && !isSaving
-	);
+  const canSave = $derived(
+    name.trim().length > 0 &&
+      avatar1SequenceId &&
+      avatar2SequenceId &&
+      !isSaving
+  );
 
-	onMount(async () => {
-		try {
-			discoverLoader = resolve<IDiscoverLoader>(TYPES.IDiscoverLoader);
-			duetPersister = resolve<IDuetPersister>(ANIMATION_3D_TYPES.IDuetPersister);
-			await loadSequences();
-		} catch (e) {
-			error = 'Failed to initialize';
-			console.error('[DuetCreatorPanel] Init error:', e);
-		}
-	});
+  onMount(async () => {
+    try {
+      discoverLoader = resolve<IDiscoverLoader>(TYPES.IDiscoverLoader);
+      duetPersister = resolve<IDuetPersister>(
+        ANIMATION_3D_TYPES.IDuetPersister
+      );
+      await loadSequences();
+    } catch (e) {
+      error = "Failed to initialize";
+      console.error("[DuetCreatorPanel] Init error:", e);
+    }
+  });
 
-	async function loadSequences() {
-		if (!discoverLoader) return;
+  async function loadSequences() {
+    if (!discoverLoader) return;
 
-		isLoadingSequences = true;
-		try {
-			sequences = await discoverLoader.loadSequenceMetadata();
-		} catch (e) {
-			error = 'Failed to load sequences';
-			console.error('[DuetCreatorPanel] Load error:', e);
-		} finally {
-			isLoadingSequences = false;
-		}
-	}
+    isLoadingSequences = true;
+    try {
+      sequences = await discoverLoader.loadSequenceMetadata();
+    } catch (e) {
+      error = "Failed to load sequences";
+      console.error("[DuetCreatorPanel] Load error:", e);
+    } finally {
+      isLoadingSequences = false;
+    }
+  }
 
-	function selectSequence(sequenceId: string) {
-		if (activeSelector === 'avatar1') {
-			avatar1SequenceId = sequenceId;
-		} else if (activeSelector === 'avatar2') {
-			avatar2SequenceId = sequenceId;
-		}
-		activeSelector = null;
-		searchQuery = '';
-	}
+  function selectSequence(sequenceId: string) {
+    if (activeSelector === "avatar1") {
+      avatar1SequenceId = sequenceId;
+    } else if (activeSelector === "avatar2") {
+      avatar2SequenceId = sequenceId;
+    }
+    activeSelector = null;
+    searchQuery = "";
+  }
 
-	async function handleSave() {
-		if (!duetPersister || !avatar1SequenceId || !avatar2SequenceId) return;
+  async function handleSave() {
+    if (!duetPersister || !avatar1SequenceId || !avatar2SequenceId) return;
 
-		isSaving = true;
-		error = null;
+    isSaving = true;
+    error = null;
 
-		try {
-			const input: CreateDuetInput = {
-				name: name.trim(),
-				description: description.trim() || undefined,
-				avatar1SequenceId,
-				avatar2SequenceId,
-				beatOffset,
-				positioning
-			};
+    try {
+      const input: CreateDuetInput = {
+        name: name.trim(),
+        description: description.trim() || undefined,
+        avatar1SequenceId,
+        avatar2SequenceId,
+        beatOffset,
+        positioning,
+      };
 
-			const duetId = await duetPersister.saveDuet(input);
-			onCreated(duetId);
-		} catch (e) {
-			error = 'Failed to save duet';
-			console.error('[DuetCreatorPanel] Save error:', e);
-		} finally {
-			isSaving = false;
-		}
-	}
+      const duetId = await duetPersister.saveDuet(input);
+      onCreated(duetId);
+    } catch (e) {
+      error = "Failed to save duet";
+      console.error("[DuetCreatorPanel] Save error:", e);
+    } finally {
+      isSaving = false;
+    }
+  }
 
-	function adjustOffset(delta: number) {
-		beatOffset = Math.max(-10, Math.min(10, beatOffset + delta));
-	}
+  function adjustOffset(delta: number) {
+    beatOffset = Math.max(-10, Math.min(10, beatOffset + delta));
+  }
 </script>
 
 <div class="duet-creator">
-	<header class="header">
-		<h2>Create Duet</h2>
-		<button class="close-btn" onclick={onCancel} title="Cancel">
-			<i class="fas fa-times" aria-hidden="true"></i>
-		</button>
-	</header>
+  <header class="header">
+    <h2>Create Duet</h2>
+    <button class="close-btn" onclick={onCancel} title="Cancel">
+      <i class="fas fa-times" aria-hidden="true"></i>
+    </button>
+  </header>
 
-	{#if activeSelector}
-		<!-- Sequence Selector Mode -->
-		<div class="sequence-selector">
-			<div class="selector-header">
-				<button class="back-btn" onclick={() => (activeSelector = null)} aria-label="Go back">
-					<i class="fas fa-arrow-left" aria-hidden="true"></i>
-				</button>
-				<span>Select for Avatar {activeSelector === 'avatar1' ? '1' : '2'}</span>
-			</div>
+  {#if activeSelector}
+    <!-- Sequence Selector Mode -->
+    <div class="sequence-selector">
+      <div class="selector-header">
+        <button
+          class="back-btn"
+          onclick={() => (activeSelector = null)}
+          aria-label="Go back"
+        >
+          <i class="fas fa-arrow-left" aria-hidden="true"></i>
+        </button>
+        <span>Select for Avatar {activeSelector === "avatar1" ? "1" : "2"}</span
+        >
+      </div>
 
-			<div class="search-box">
-				<i class="fas fa-search" aria-hidden="true"></i>
-				<input
-					type="text"
-					placeholder="Search sequences..."
-					bind:value={searchQuery}
-				/>
-			</div>
+      <div class="search-box">
+        <i class="fas fa-search" aria-hidden="true"></i>
+        <input
+          type="text"
+          placeholder="Search sequences..."
+          bind:value={searchQuery}
+        />
+      </div>
 
-			{#if isLoadingSequences}
-				<div class="loading">
-					<i class="fas fa-spinner fa-spin" aria-hidden="true"></i>
-					Loading...
-				</div>
-			{:else}
-				<div class="sequence-list">
-					{#each filteredSequences.slice(0, 50) as seq (seq.id)}
-						<button
-							class="sequence-item"
-							class:selected={seq.id === avatar1SequenceId || seq.id === avatar2SequenceId}
-							onclick={() => selectSequence(seq.id)}
-						>
-							<span class="seq-word">{seq.word || seq.name || 'Untitled'}</span>
-							<span class="seq-meta">
-								{#if seq.author}
-									<span class="author">{seq.author}</span>
-								{/if}
-								<span class="beats">{seq.beats?.length || 0} beats</span>
-							</span>
-						</button>
-					{/each}
-					{#if filteredSequences.length > 50}
-						<p class="more-hint">Showing first 50 of {filteredSequences.length}</p>
-					{/if}
-				</div>
-			{/if}
-		</div>
-	{:else}
-		<!-- Main Form -->
-		<div class="form-content">
-			{#if error}
-				<div class="error-banner">
-					<i class="fas fa-exclamation-circle" aria-hidden="true"></i>
-					{error}
-				</div>
-			{/if}
+      {#if isLoadingSequences}
+        <div class="loading">
+          <i class="fas fa-spinner fa-spin" aria-hidden="true"></i>
+          Loading...
+        </div>
+      {:else}
+        <div class="sequence-list">
+          {#each filteredSequences.slice(0, 50) as seq (seq.id)}
+            <button
+              class="sequence-item"
+              class:selected={seq.id === avatar1SequenceId ||
+                seq.id === avatar2SequenceId}
+              onclick={() => selectSequence(seq.id)}
+            >
+              <span class="seq-word">{seq.word || seq.name || "Untitled"}</span>
+              <span class="seq-meta">
+                {#if seq.author}
+                  <span class="author">{seq.author}</span>
+                {/if}
+                <span class="beats">{seq.beats?.length || 0} beats</span>
+              </span>
+            </button>
+          {/each}
+          {#if filteredSequences.length > 50}
+            <p class="more-hint">
+              Showing first 50 of {filteredSequences.length}
+            </p>
+          {/if}
+        </div>
+      {/if}
+    </div>
+  {:else}
+    <!-- Main Form -->
+    <div class="form-content">
+      {#if error}
+        <div class="error-banner">
+          <i class="fas fa-exclamation-circle" aria-hidden="true"></i>
+          {error}
+        </div>
+      {/if}
 
-			<!-- Name -->
-			<div class="form-group">
-				<label for="duet-name">Name</label>
-				<input
-					id="duet-name"
-					type="text"
-					placeholder="My Duet"
-					bind:value={name}
-				/>
-			</div>
+      <!-- Name -->
+      <div class="form-group">
+        <label for="duet-name">Name</label>
+        <input
+          id="duet-name"
+          type="text"
+          placeholder="My Duet"
+          bind:value={name}
+        />
+      </div>
 
-			<!-- Description -->
-			<div class="form-group">
-				<label for="duet-desc">Description (optional)</label>
-				<textarea
-					id="duet-desc"
-					placeholder="Describe this duet..."
-					rows="2"
-					bind:value={description}
-				></textarea>
-			</div>
+      <!-- Description -->
+      <div class="form-group">
+        <label for="duet-desc">Description (optional)</label>
+        <textarea
+          id="duet-desc"
+          placeholder="Describe this duet..."
+          rows="2"
+          bind:value={description}
+        ></textarea>
+      </div>
 
-			<!-- Sequence Pickers -->
-			<div class="sequence-pickers">
-				<div class="picker-group">
-					<span class="picker-label">Avatar 1 Sequence</span>
-					<button
-						class="picker-btn"
-						class:has-selection={avatar1Sequence}
-						onclick={() => (activeSelector = 'avatar1')}
-					>
-						{#if avatar1Sequence}
-							<span class="selection-name">
-								{avatar1Sequence.word || avatar1Sequence.name || 'Untitled'}
-							</span>
-							<span class="selection-beats">{avatar1Sequence.beats?.length || 0} beats</span>
-						{:else}
-							<i class="fas fa-plus" aria-hidden="true"></i>
-							<span>Select sequence</span>
-						{/if}
-					</button>
-				</div>
+      <!-- Sequence Pickers -->
+      <div class="sequence-pickers">
+        <div class="picker-group">
+          <span class="picker-label">Avatar 1 Sequence</span>
+          <button
+            class="picker-btn"
+            class:has-selection={avatar1Sequence}
+            onclick={() => (activeSelector = "avatar1")}
+          >
+            {#if avatar1Sequence}
+              <span class="selection-name">
+                {avatar1Sequence.word || avatar1Sequence.name || "Untitled"}
+              </span>
+              <span class="selection-beats"
+                >{avatar1Sequence.beats?.length || 0} beats</span
+              >
+            {:else}
+              <i class="fas fa-plus" aria-hidden="true"></i>
+              <span>Select sequence</span>
+            {/if}
+          </button>
+        </div>
 
-				<div class="picker-group">
-					<span class="picker-label">Avatar 2 Sequence</span>
-					<button
-						class="picker-btn"
-						class:has-selection={avatar2Sequence}
-						onclick={() => (activeSelector = 'avatar2')}
-					>
-						{#if avatar2Sequence}
-							<span class="selection-name">
-								{avatar2Sequence.word || avatar2Sequence.name || 'Untitled'}
-							</span>
-							<span class="selection-beats">{avatar2Sequence.beats?.length || 0} beats</span>
-						{:else}
-							<i class="fas fa-plus" aria-hidden="true"></i>
-							<span>Select sequence</span>
-						{/if}
-					</button>
-				</div>
-			</div>
+        <div class="picker-group">
+          <span class="picker-label">Avatar 2 Sequence</span>
+          <button
+            class="picker-btn"
+            class:has-selection={avatar2Sequence}
+            onclick={() => (activeSelector = "avatar2")}
+          >
+            {#if avatar2Sequence}
+              <span class="selection-name">
+                {avatar2Sequence.word || avatar2Sequence.name || "Untitled"}
+              </span>
+              <span class="selection-beats"
+                >{avatar2Sequence.beats?.length || 0} beats</span
+              >
+            {:else}
+              <i class="fas fa-plus" aria-hidden="true"></i>
+              <span>Select sequence</span>
+            {/if}
+          </button>
+        </div>
+      </div>
 
-			<!-- Beat Offset -->
-			<div class="form-group">
-				<span class="form-label">Beat Offset (Avatar 2)</span>
-				<div class="offset-control">
-					<button
-						class="offset-btn"
-						onclick={() => adjustOffset(-0.5)}
-						disabled={beatOffset <= -10}
-						aria-label="Decrease offset"
-					>
-						<i class="fas fa-minus" aria-hidden="true"></i>
-					</button>
-					<span class="offset-value">
-						{beatOffset === 0 ? 'Synced' : `${beatOffset > 0 ? '+' : ''}${beatOffset}`}
-					</span>
-					<button
-						class="offset-btn"
-						onclick={() => adjustOffset(0.5)}
-						disabled={beatOffset >= 10}
-						aria-label="Increase offset"
-					>
-						<i class="fas fa-plus" aria-hidden="true"></i>
-					</button>
-				</div>
-				<p class="help-text">
-					Positive = Avatar 2 starts later
-				</p>
-			</div>
+      <!-- Beat Offset -->
+      <div class="form-group">
+        <span class="form-label">Beat Offset (Avatar 2)</span>
+        <div class="offset-control">
+          <button
+            class="offset-btn"
+            onclick={() => adjustOffset(-0.5)}
+            disabled={beatOffset <= -10}
+            aria-label="Decrease offset"
+          >
+            <i class="fas fa-minus" aria-hidden="true"></i>
+          </button>
+          <span class="offset-value">
+            {beatOffset === 0
+              ? "Synced"
+              : `${beatOffset > 0 ? "+" : ""}${beatOffset}`}
+          </span>
+          <button
+            class="offset-btn"
+            onclick={() => adjustOffset(0.5)}
+            disabled={beatOffset >= 10}
+            aria-label="Increase offset"
+          >
+            <i class="fas fa-plus" aria-hidden="true"></i>
+          </button>
+        </div>
+        <p class="help-text">Positive = Avatar 2 starts later</p>
+      </div>
 
-			<!-- Positioning -->
-			<div class="form-group">
-				<span class="form-label">Positioning</span>
-				<div class="positioning-options">
-					<button
-						class="pos-btn"
-						class:active={positioning === 'side-by-side'}
-						onclick={() => (positioning = 'side-by-side')}
-					>
-						<i class="fas fa-arrows-alt-h" aria-hidden="true"></i>
-						Side by Side
-					</button>
-					<button
-						class="pos-btn"
-						class:active={positioning === 'face-to-face'}
-						onclick={() => (positioning = 'face-to-face')}
-					>
-						<i class="fas fa-exchange-alt" aria-hidden="true"></i>
-						Face to Face
-					</button>
-				</div>
-			</div>
-		</div>
+      <!-- Positioning -->
+      <div class="form-group">
+        <span class="form-label">Positioning</span>
+        <div class="positioning-options">
+          <button
+            class="pos-btn"
+            class:active={positioning === "side-by-side"}
+            onclick={() => (positioning = "side-by-side")}
+          >
+            <i class="fas fa-arrows-alt-h" aria-hidden="true"></i>
+            Side by Side
+          </button>
+          <button
+            class="pos-btn"
+            class:active={positioning === "face-to-face"}
+            onclick={() => (positioning = "face-to-face")}
+          >
+            <i class="fas fa-exchange-alt" aria-hidden="true"></i>
+            Face to Face
+          </button>
+        </div>
+      </div>
+    </div>
 
-		<!-- Footer -->
-		<footer class="footer">
-			<button class="cancel-btn" onclick={onCancel}>
-				Cancel
-			</button>
-			<button
-				class="save-btn"
-				disabled={!canSave}
-				onclick={handleSave}
-			>
-				{#if isSaving}
-					<i class="fas fa-spinner fa-spin" aria-hidden="true"></i>
-					Saving...
-				{:else}
-					<i class="fas fa-check" aria-hidden="true"></i>
-					Create Duet
-				{/if}
-			</button>
-		</footer>
-	{/if}
+    <!-- Footer -->
+    <footer class="footer">
+      <button class="cancel-btn" onclick={onCancel}> Cancel </button>
+      <button class="save-btn" disabled={!canSave} onclick={handleSave}>
+        {#if isSaving}
+          <i class="fas fa-spinner fa-spin" aria-hidden="true"></i>
+          Saving...
+        {:else}
+          <i class="fas fa-check" aria-hidden="true"></i>
+          Create Duet
+        {/if}
+      </button>
+    </footer>
+  {/if}
 </div>
 
 <style>
-	.duet-creator {
-		display: flex;
-		flex-direction: column;
-		height: 100%;
-		background: var(--theme-panel-bg, rgba(18, 18, 28, 0.98));
-	}
+  .duet-creator {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background: var(--theme-panel-bg, rgba(18, 18, 28, 0.98));
+  }
 
-	/* Header */
-	.header {
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-		padding: 1rem;
-		border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
-	}
+  /* Header */
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem;
+    border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+  }
 
-	.header h2 {
-		margin: 0;
-		font-size: var(--font-size-lg, 18px);
-		font-weight: 600;
-		color: var(--theme-text, #ffffff);
-	}
+  .header h2 {
+    margin: 0;
+    font-size: var(--font-size-lg, 18px);
+    font-weight: 600;
+    color: var(--theme-text, #ffffff);
+  }
 
-	.close-btn {
-		padding: 0.5rem;
-		background: transparent;
-		border: none;
-		border-radius: 8px;
-		color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
-		font-size: 1rem;
-		cursor: pointer;
-		transition: all 0.15s ease;
-	}
+  .close-btn {
+    padding: 0.5rem;
+    background: transparent;
+    border: none;
+    border-radius: 8px;
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
 
-	.close-btn:hover {
-		background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
-		color: var(--theme-text, #ffffff);
-	}
+  .close-btn:hover {
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
+    color: var(--theme-text, #ffffff);
+  }
 
-	/* Form Content */
-	.form-content {
-		flex: 1;
-		overflow-y: auto;
-		padding: 1rem;
-		display: flex;
-		flex-direction: column;
-		gap: 1rem;
-	}
+  /* Form Content */
+  .form-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
 
-	.form-group {
-		display: flex;
-		flex-direction: column;
-		gap: 0.375rem;
-	}
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+  }
 
-	.form-group label {
-		font-size: var(--font-size-compact, 12px);
-		font-weight: 500;
-		color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
-		text-transform: uppercase;
-		letter-spacing: 0.05em;
-	}
+  .form-group label {
+    font-size: var(--font-size-compact, 12px);
+    font-weight: 500;
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
 
-	.form-group input,
-	.form-group textarea {
-		padding: 0.625rem 0.75rem;
-		background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
-		border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
-		border-radius: 8px;
-		color: var(--theme-text, #ffffff);
-		font-size: var(--font-size-sm, 14px);
-		resize: none;
-	}
+  .form-group input,
+  .form-group textarea {
+    padding: 0.625rem 0.75rem;
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    border-radius: 8px;
+    color: var(--theme-text, #ffffff);
+    font-size: var(--font-size-sm, 14px);
+    resize: none;
+  }
 
-	.form-group input:focus,
-	.form-group textarea:focus {
-		outline: none;
-		border-color: var(--theme-accent, #64b5f6);
-	}
+  .form-group input:focus,
+  .form-group textarea:focus {
+    outline: none;
+    border-color: var(--theme-accent, #64b5f6);
+  }
 
-	.help-text {
-		margin: 0;
-		font-size: var(--font-size-compact, 12px);
-		color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
-	}
+  .help-text {
+    margin: 0;
+    font-size: var(--font-size-compact, 12px);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+  }
 
-	/* Sequence Pickers */
-	.sequence-pickers {
-		display: flex;
-		flex-direction: column;
-		gap: 0.75rem;
-	}
+  /* Sequence Pickers */
+  .sequence-pickers {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
 
-	.picker-group {
-		display: flex;
-		flex-direction: column;
-		gap: 0.375rem;
-	}
+  .picker-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+  }
 
-	.picker-group span {
-		font-size: var(--font-size-compact, 12px);
-		font-weight: 500;
-		color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
-	}
+  .picker-group span {
+    font-size: var(--font-size-compact, 12px);
+    font-weight: 500;
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+  }
 
-	.picker-btn {
-		display: flex;
-		align-items: center;
-		gap: 0.5rem;
-		padding: 0.75rem;
-		background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
-		border: 1px dashed var(--theme-stroke, rgba(255, 255, 255, 0.2));
-		border-radius: 10px;
-		color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
-		font-size: var(--font-size-sm, 14px);
-		cursor: pointer;
-		transition: all 0.15s ease;
-	}
+  .picker-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem;
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
+    border: 1px dashed var(--theme-stroke, rgba(255, 255, 255, 0.2));
+    border-radius: 10px;
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    font-size: var(--font-size-sm, 14px);
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
 
-	.picker-btn:hover {
-		border-color: var(--theme-accent, #64b5f6);
-		color: var(--theme-text, #ffffff);
-	}
+  .picker-btn:hover {
+    border-color: var(--theme-accent, #64b5f6);
+    color: var(--theme-text, #ffffff);
+  }
 
-	.picker-btn.has-selection {
-		border-style: solid;
-		border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
-		color: var(--theme-text, #ffffff);
-	}
+  .picker-btn.has-selection {
+    border-style: solid;
+    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
+    color: var(--theme-text, #ffffff);
+  }
 
-	.selection-name {
-		flex: 1;
-		text-align: left;
-		font-weight: 500;
-	}
+  .selection-name {
+    flex: 1;
+    text-align: left;
+    font-weight: 500;
+  }
 
-	.selection-beats {
-		font-size: var(--font-size-compact, 12px);
-		color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
-	}
+  .selection-beats {
+    font-size: var(--font-size-compact, 12px);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+  }
 
-	/* Offset Control */
-	.offset-control {
-		display: flex;
-		align-items: center;
-		gap: 0.5rem;
-		background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
-		border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
-		border-radius: 10px;
-		padding: 0.25rem;
-	}
+  /* Offset Control */
+  .offset-control {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    border-radius: 10px;
+    padding: 0.25rem;
+  }
 
-	.offset-btn {
-		width: 40px;
-		height: 40px;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		background: transparent;
-		border: none;
-		border-radius: 8px;
-		color: var(--theme-text, #ffffff);
-		font-size: 0.875rem;
-		cursor: pointer;
-		transition: all 0.15s ease;
-	}
+  .offset-btn {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    border-radius: 8px;
+    color: var(--theme-text, #ffffff);
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
 
-	.offset-btn:hover:not(:disabled) {
-		background: var(--theme-accent, #64b5f6);
-		color: #000;
-	}
+  .offset-btn:hover:not(:disabled) {
+    background: var(--theme-accent, #64b5f6);
+    color: #000;
+  }
 
-	.offset-btn:disabled {
-		opacity: 0.3;
-		cursor: not-allowed;
-	}
+  .offset-btn:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+  }
 
-	.offset-value {
-		flex: 1;
-		text-align: center;
-		font-size: var(--font-size-lg, 18px);
-		font-weight: 600;
-		color: var(--theme-text, #ffffff);
-	}
+  .offset-value {
+    flex: 1;
+    text-align: center;
+    font-size: var(--font-size-lg, 18px);
+    font-weight: 600;
+    color: var(--theme-text, #ffffff);
+  }
 
-	/* Positioning Options */
-	.positioning-options {
-		display: flex;
-		gap: 0.5rem;
-	}
+  /* Positioning Options */
+  .positioning-options {
+    display: flex;
+    gap: 0.5rem;
+  }
 
-	.pos-btn {
-		flex: 1;
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		gap: 0.375rem;
-		padding: 0.75rem;
-		background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
-		border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
-		border-radius: 10px;
-		color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
-		font-size: var(--font-size-compact, 12px);
-		cursor: pointer;
-		transition: all 0.15s ease;
-	}
+  .pos-btn {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.75rem;
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    border-radius: 10px;
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    font-size: var(--font-size-compact, 12px);
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
 
-	.pos-btn:hover {
-		border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
-		color: var(--theme-text, #ffffff);
-	}
+  .pos-btn:hover {
+    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
+    color: var(--theme-text, #ffffff);
+  }
 
-	.pos-btn.active {
-		background: var(--theme-accent, #64b5f6);
-		border-color: var(--theme-accent, #64b5f6);
-		color: #000;
-	}
+  .pos-btn.active {
+    background: var(--theme-accent, #64b5f6);
+    border-color: var(--theme-accent, #64b5f6);
+    color: #000;
+  }
 
-	.pos-btn i {
-		font-size: 1.25rem;
-	}
+  .pos-btn i {
+    font-size: 1.25rem;
+  }
 
-	/* Footer */
-	.footer {
-		display: flex;
-		gap: 0.75rem;
-		padding: 1rem;
-		border-top: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
-	}
+  /* Footer */
+  .footer {
+    display: flex;
+    gap: 0.75rem;
+    padding: 1rem;
+    border-top: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+  }
 
-	.cancel-btn,
-	.save-btn {
-		flex: 1;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		gap: 0.5rem;
-		padding: 0.75rem;
-		border-radius: 10px;
-		font-size: var(--font-size-sm, 14px);
-		font-weight: 600;
-		cursor: pointer;
-		transition: all 0.15s ease;
-	}
+  .cancel-btn,
+  .save-btn {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.75rem;
+    border-radius: 10px;
+    font-size: var(--font-size-sm, 14px);
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
 
-	.cancel-btn {
-		background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
-		border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
-		color: var(--theme-text, #ffffff);
-	}
+  .cancel-btn {
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    color: var(--theme-text, #ffffff);
+  }
 
-	.cancel-btn:hover {
-		background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
-	}
+  .cancel-btn:hover {
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
+  }
 
-	.save-btn {
-		background: var(--theme-accent-strong, #7c3aed);
-		border: none;
-		color: white;
-	}
+  .save-btn {
+    background: var(--theme-accent-strong, #7c3aed);
+    border: none;
+    color: white;
+  }
 
-	.save-btn:hover:not(:disabled) {
-		background: #8b5cf6;
-	}
+  .save-btn:hover:not(:disabled) {
+    background: #8b5cf6;
+  }
 
-	.save-btn:disabled {
-		opacity: 0.5;
-		cursor: not-allowed;
-	}
+  .save-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
 
-	/* Error Banner */
-	.error-banner {
-		display: flex;
-		align-items: center;
-		gap: 0.5rem;
-		padding: 0.75rem;
-		background: rgba(239, 68, 68, 0.1);
-		border: 1px solid var(--semantic-error, #ef4444);
-		border-radius: 8px;
-		color: var(--semantic-error, #ef4444);
-		font-size: var(--font-size-sm, 14px);
-	}
+  /* Error Banner */
+  .error-banner {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem;
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid var(--semantic-error, #ef4444);
+    border-radius: 8px;
+    color: var(--semantic-error, #ef4444);
+    font-size: var(--font-size-sm, 14px);
+  }
 
-	/* Sequence Selector */
-	.sequence-selector {
-		flex: 1;
-		display: flex;
-		flex-direction: column;
-		overflow: hidden;
-	}
+  /* Sequence Selector */
+  .sequence-selector {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
 
-	.selector-header {
-		display: flex;
-		align-items: center;
-		gap: 0.75rem;
-		padding: 0.75rem 1rem;
-		border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
-		color: var(--theme-text, #ffffff);
-		font-weight: 500;
-	}
+  .selector-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    color: var(--theme-text, #ffffff);
+    font-weight: 500;
+  }
 
-	.back-btn {
-		padding: 0.5rem;
-		background: transparent;
-		border: none;
-		border-radius: 6px;
-		color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
-		cursor: pointer;
-		transition: all 0.15s ease;
-	}
+  .back-btn {
+    padding: 0.5rem;
+    background: transparent;
+    border: none;
+    border-radius: 6px;
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
 
-	.back-btn:hover {
-		background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
-		color: var(--theme-text, #ffffff);
-	}
+  .back-btn:hover {
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
+    color: var(--theme-text, #ffffff);
+  }
 
-	.search-box {
-		display: flex;
-		align-items: center;
-		gap: 0.5rem;
-		padding: 0.625rem 1rem;
-		border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
-		color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
-	}
+  .search-box {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.625rem 1rem;
+    border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+  }
 
-	.search-box input {
-		flex: 1;
-		background: transparent;
-		border: none;
-		color: var(--theme-text, #ffffff);
-		font-size: var(--font-size-sm, 14px);
-		outline: none;
-	}
+  .search-box input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: var(--theme-text, #ffffff);
+    font-size: var(--font-size-sm, 14px);
+    outline: none;
+  }
 
-	.search-box input::placeholder {
-		color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
-	}
+  .search-box input::placeholder {
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
+  }
 
-	.sequence-list {
-		flex: 1;
-		overflow-y: auto;
-		padding: 0.5rem;
-	}
+  .sequence-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 0.5rem;
+  }
 
-	.sequence-item {
-		width: 100%;
-		display: flex;
-		flex-direction: column;
-		align-items: flex-start;
-		gap: 0.25rem;
-		padding: 0.625rem 0.75rem;
-		background: transparent;
-		border: none;
-		border-radius: 8px;
-		text-align: left;
-		cursor: pointer;
-		transition: all 0.15s ease;
-	}
+  .sequence-item {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.25rem;
+    padding: 0.625rem 0.75rem;
+    background: transparent;
+    border: none;
+    border-radius: 8px;
+    text-align: left;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
 
-	.sequence-item:hover {
-		background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.06));
-	}
+  .sequence-item:hover {
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.06));
+  }
 
-	.sequence-item.selected {
-		background: var(--theme-accent, #64b5f6);
-		color: #000;
-	}
+  .sequence-item.selected {
+    background: var(--theme-accent, #64b5f6);
+    color: #000;
+  }
 
-	.seq-word {
-		font-size: var(--font-size-sm, 14px);
-		font-weight: 500;
-		color: var(--theme-text, #ffffff);
-	}
+  .seq-word {
+    font-size: var(--font-size-sm, 14px);
+    font-weight: 500;
+    color: var(--theme-text, #ffffff);
+  }
 
-	.sequence-item.selected .seq-word {
-		color: #000;
-	}
+  .sequence-item.selected .seq-word {
+    color: #000;
+  }
 
-	.seq-meta {
-		display: flex;
-		gap: 0.75rem;
-		font-size: var(--font-size-compact, 12px);
-		color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
-	}
+  .seq-meta {
+    display: flex;
+    gap: 0.75rem;
+    font-size: var(--font-size-compact, 12px);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+  }
 
-	.sequence-item.selected .seq-meta {
-		color: rgba(0, 0, 0, 0.6);
-	}
+  .sequence-item.selected .seq-meta {
+    color: rgba(0, 0, 0, 0.6);
+  }
 
-	.loading {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		gap: 0.5rem;
-		padding: 2rem;
-		color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
-	}
+  .loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 2rem;
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+  }
 
-	.more-hint {
-		text-align: center;
-		padding: 0.75rem;
-		font-size: var(--font-size-compact, 12px);
-		color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
-	}
+  .more-hint {
+    text-align: center;
+    padding: 0.75rem;
+    font-size: var(--font-size-compact, 12px);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+  }
 </style>

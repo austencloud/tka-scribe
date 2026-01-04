@@ -32,9 +32,7 @@ Features:
   }>();
 
   onMount(() => {
-    hapticService = tryResolve<IHapticFeedback>(
-      TYPES.IHapticFeedback
-    );
+    hapticService = tryResolve<IHapticFeedback>(TYPES.IHapticFeedback);
   });
 
   // Mode display
@@ -105,7 +103,10 @@ Features:
       />
     {:else}
       <div class="preview-placeholder">
-        <i class="fas {modeIcons[animation.mode]} placeholder-icon" aria-hidden="true"></i>
+        <i
+          class="fas {modeIcons[animation.mode]} placeholder-icon"
+          aria-hidden="true"
+        ></i>
         <p class="placeholder-text">No preview available</p>
       </div>
     {/if}
@@ -181,7 +182,9 @@ Features:
         ? "Remove from favorites"
         : "Add to favorites"}
     >
-      <i class="fas fa-heart" aria-hidden="true"
+      <i
+        class="fas fa-heart"
+        aria-hidden="true"
         class:filled={animation.isFavorite}
         class:outlined={!animation.isFavorite}
       ></i>

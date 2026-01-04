@@ -26,9 +26,7 @@ Fixed Questions mode (set number) and Countdown mode (timed challenge).
   let hapticService: IHapticFeedback;
 
   onMount(() => {
-    hapticService = resolve<IHapticFeedback>(
-      TYPES.IHapticFeedback
-    );
+    hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
   });
 
   // Calculate slider position based on selected mode

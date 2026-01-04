@@ -39,7 +39,9 @@
   onMount(async () => {
     const container = await getContainerInstance();
     userService = container.get<IUserRepository>(TYPES.IUserRepository);
-    videoService = container.get<ICollaborativeVideoManager>(TYPES.ICollaborativeVideoManager);
+    videoService = container.get<ICollaborativeVideoManager>(
+      TYPES.ICollaborativeVideoManager
+    );
     hapticService = container.get<IHapticFeedback>(TYPES.IHapticFeedback);
   });
 
@@ -75,7 +77,9 @@
   }
 
   function currentMessage(): string | undefined {
-    const message = useCustomMessage ? customMessage.trim() : (selectedMessage ?? "").trim();
+    const message = useCustomMessage
+      ? customMessage.trim()
+      : (selectedMessage ?? "").trim();
     return message.length > 0 ? message : undefined;
   }
 
@@ -83,7 +87,9 @@
   const existingUserIds = $derived(
     new Set([
       ...video.collaborators.map((c) => c.userId),
-      ...video.pendingInvites.filter((i) => i.status === "pending").map((i) => i.userId),
+      ...video.pendingInvites
+        .filter((i) => i.status === "pending")
+        .map((i) => i.userId),
     ])
   );
 
@@ -160,7 +166,7 @@
   onclose={handleClose}
   closeOnBackdrop={true}
   showHandle={isBottomPlacement}
-  placement={placement}
+  {placement}
   class="invite-collaborators-panel"
 >
   <div class="invite-panel">
@@ -185,7 +191,9 @@
         <track kind="captions" />
       </video>
       <div class="video-meta">
-        <span class="video-title">{video.sequenceName || "Performance video"}</span>
+        <span class="video-title"
+          >{video.sequenceName || "Performance video"}</span
+        >
         <span class="video-subtitle">Invite collaborators to this take.</span>
       </div>
     </section>
@@ -208,10 +216,7 @@
           <option value="__custom__">Custom message...</option>
         </select>
         <label class="custom-toggle">
-          <input
-            type="checkbox"
-            bind:checked={useCustomMessage}
-          />
+          <input type="checkbox" bind:checked={useCustomMessage} />
           Custom
         </label>
       </div>
@@ -253,8 +258,14 @@
               />
             </div>
             <div class="user-info">
-              <span class="user-name">{collaborator.displayName || "Unknown"}</span>
-              <span class="user-role">{collaborator.role === "creator" ? "Creator" : "Collaborator"}</span>
+              <span class="user-name"
+                >{collaborator.displayName || "Unknown"}</span
+              >
+              <span class="user-role"
+                >{collaborator.role === "creator"
+                  ? "Creator"
+                  : "Collaborator"}</span
+              >
             </div>
             {#if collaborator.role === "creator"}
               <span class="creator-badge">

@@ -39,11 +39,19 @@
     height: 200%;
     background-image:
       radial-gradient(circle, white 2px, transparent 2px),
-      radial-gradient(circle, rgba(255, 255, 255, 0.95) 1.5px, transparent 1.5px),
+      radial-gradient(
+        circle,
+        rgba(255, 255, 255, 0.95) 1.5px,
+        transparent 1.5px
+      ),
       radial-gradient(circle, var(--theme-text) 2px, transparent 2px),
       radial-gradient(circle, white 1.5px, transparent 1.5px),
       radial-gradient(circle, rgba(255, 255, 255, 0.85) 2px, transparent 2px),
-      radial-gradient(circle, rgba(255, 255, 255, 0.95) 1.5px, transparent 1.5px),
+      radial-gradient(
+        circle,
+        rgba(255, 255, 255, 0.95) 1.5px,
+        transparent 1.5px
+      ),
       radial-gradient(circle, white 1.5px, transparent 1.5px),
       radial-gradient(circle, var(--theme-text) 2px, transparent 2px);
     background-size:

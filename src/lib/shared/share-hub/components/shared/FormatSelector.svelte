@@ -14,10 +14,10 @@
   Domain: Share Hub - Single Media Format Selection
 -->
 <script lang="ts">
-  import type { MediaFormat } from '../../domain/models/MediaFormat';
+  import type { MediaFormat } from "../../domain/models/MediaFormat";
 
   let {
-    selectedFormat = 'animation',
+    selectedFormat = "animation",
     onFormatSelect,
   }: {
     selectedFormat?: MediaFormat;
@@ -27,8 +27,8 @@
   // MVP: Only Animation and Static available
   // Performance video not ready - requires camera/upload implementation
   const formats: Array<{ id: MediaFormat; label: string; icon: string }> = [
-    { id: 'animation', label: 'Animation', icon: 'fa-play-circle' },
-    { id: 'static', label: 'Static', icon: 'fa-image' },
+    { id: "animation", label: "Animation", icon: "fa-play-circle" },
+    { id: "static", label: "Static", icon: "fa-image" },
     // { id: 'performance', label: 'Performance', icon: 'fa-video' }, // TODO: Enable post-MVP
   ];
 
@@ -37,14 +37,18 @@
   }
 
   function handleKeydown(event: KeyboardEvent, format: MediaFormat) {
-    if (event.key === 'Enter' || event.key === ' ') {
+    if (event.key === "Enter" || event.key === " ") {
       event.preventDefault();
       handleFormatSelect(format);
     }
   }
 </script>
 
-<div class="format-selector" role="radiogroup" aria-label="Media format selection">
+<div
+  class="format-selector"
+  role="radiogroup"
+  aria-label="Media format selection"
+>
   {#each formats as format}
     <button
       class="format-chip"

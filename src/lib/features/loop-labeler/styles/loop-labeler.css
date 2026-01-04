@@ -38,11 +38,19 @@
 
 .component-btn:hover {
   background: var(--surface-hover);
-  border-color: color-mix(in srgb, var(--component-color, var(--primary-color)) 40%, transparent);
+  border-color: color-mix(
+    in srgb,
+    var(--component-color, var(--primary-color)) 40%,
+    transparent
+  );
 }
 
 .component-btn.selected {
-  background: color-mix(in srgb, var(--component-color, var(--primary-color)) 20%, transparent);
+  background: color-mix(
+    in srgb,
+    var(--component-color, var(--primary-color)) 20%,
+    transparent
+  );
   border-color: var(--component-color, var(--primary-color));
   color: var(--foreground);
 }
@@ -96,7 +104,11 @@
 }
 
 .interval-chip.active {
-  background: color-mix(in srgb, var(--chip-color, var(--primary-color)) 30%, transparent);
+  background: color-mix(
+    in srgb,
+    var(--chip-color, var(--primary-color)) 30%,
+    transparent
+  );
   border-color: var(--chip-color, var(--primary-color));
   color: var(--foreground);
 }
@@ -234,22 +246,38 @@
 }
 
 .designation-item.whole {
-  background: linear-gradient(135deg, rgba(99, 102, 241, 0.12) 0%, rgba(139, 92, 246, 0.08) 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(99, 102, 241, 0.12) 0%,
+    rgba(139, 92, 246, 0.08) 100%
+  );
   border-color: rgba(99, 102, 241, 0.25);
 }
 
 .designation-item.section {
-  background: linear-gradient(135deg, rgba(59, 130, 246, 0.12) 0%, rgba(99, 102, 241, 0.08) 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(59, 130, 246, 0.12) 0%,
+    rgba(99, 102, 241, 0.08) 100%
+  );
   border-color: rgba(59, 130, 246, 0.25);
 }
 
 .designation-item.beatpair {
-  background: linear-gradient(135deg, rgba(168, 85, 247, 0.12) 0%, rgba(139, 92, 246, 0.08) 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(168, 85, 247, 0.12) 0%,
+    rgba(139, 92, 246, 0.08) 100%
+  );
   border-color: rgba(168, 85, 247, 0.25);
 }
 
 .designation-item.freeform {
-  background: linear-gradient(135deg, rgba(239, 68, 68, 0.12) 0%, rgba(220, 38, 38, 0.08) 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(239, 68, 68, 0.12) 0%,
+    rgba(220, 38, 38, 0.08) 100%
+  );
   border-color: rgba(239, 68, 68, 0.25);
 }
 

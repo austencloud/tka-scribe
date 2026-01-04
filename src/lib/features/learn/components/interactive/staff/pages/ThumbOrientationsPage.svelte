@@ -82,9 +82,7 @@ ThumbOrientationsPage - Page 2: Thumb In/Out orientations
     </div>
   </div>
 
-  <button class="next-button" onclick={onNext}>
-    Next: Prospin Rotation
-  </button>
+  <button class="next-button" onclick={onNext}> Next: Prospin Rotation </button>
 </div>
 
 <style>

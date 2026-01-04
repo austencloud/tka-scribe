@@ -150,8 +150,7 @@ export function createSequenceBeatOperations(config: BeatOperationsConfig) {
         );
         // Process reversals to ensure correct reversal indicators
         if (ReversalDetector) {
-          updatedSequence =
-            ReversalDetector.processReversals(updatedSequence);
+          updatedSequence = ReversalDetector.processReversals(updatedSequence);
         }
         coreState.setCurrentSequence(updatedSequence);
         coreState.clearError();
@@ -170,8 +169,7 @@ export function createSequenceBeatOperations(config: BeatOperationsConfig) {
         );
         // Process reversals to ensure correct reversal indicators
         if (ReversalDetector) {
-          updatedSequence =
-            ReversalDetector.processReversals(updatedSequence);
+          updatedSequence = ReversalDetector.processReversals(updatedSequence);
         }
         coreState.setCurrentSequence(updatedSequence);
         selectionState.adjustSelectionForRemovedBeat(beatIndex);
@@ -232,8 +230,7 @@ export function createSequenceBeatOperations(config: BeatOperationsConfig) {
         );
         // Process reversals to ensure correct reversal indicators
         if (ReversalDetector) {
-          updatedSequence =
-            ReversalDetector.processReversals(updatedSequence);
+          updatedSequence = ReversalDetector.processReversals(updatedSequence);
         }
         coreState.setCurrentSequence(updatedSequence);
         selectionState.clearSelection();
@@ -321,8 +318,7 @@ export function createSequenceBeatOperations(config: BeatOperationsConfig) {
         );
         // Process reversals to ensure correct reversal indicators
         if (ReversalDetector) {
-          updatedSequence =
-            ReversalDetector.processReversals(updatedSequence);
+          updatedSequence = ReversalDetector.processReversals(updatedSequence);
         }
         console.log(
           `[SequenceBeatOperations.updateBeat] Before setCurrentSequence - selectedBeatNumber=${selectionState.selectedBeatNumber}`
@@ -351,8 +347,7 @@ export function createSequenceBeatOperations(config: BeatOperationsConfig) {
         );
         // Process reversals to ensure correct reversal indicators
         if (ReversalDetector) {
-          updatedSequence =
-            ReversalDetector.processReversals(updatedSequence);
+          updatedSequence = ReversalDetector.processReversals(updatedSequence);
         }
         coreState.setCurrentSequence(updatedSequence);
         selectionState.adjustSelectionForInsertedBeat(beatIndex);

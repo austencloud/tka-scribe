@@ -22,11 +22,15 @@ StaffQuizFeedback - Feedback display after answer
 >
   {#if answerState === "correct"}
     <span>
-      Correct! That's <strong style="color: {correctInfo.color}">{correctAnswer}</strong>.
+      Correct! That's <strong style="color: {correctInfo.color}"
+        >{correctAnswer}</strong
+      >.
     </span>
   {:else}
     <span>
-      Not quite! The answer is <strong style="color: {correctInfo.color}">{correctAnswer}</strong>.
+      Not quite! The answer is <strong style="color: {correctInfo.color}"
+        >{correctAnswer}</strong
+      >.
     </span>
   {/if}
 </div>

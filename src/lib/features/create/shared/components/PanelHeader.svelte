@@ -318,7 +318,9 @@
 
     :global(.panel-header .action-button i),
     .panel-header .close-button i {
-      font-size: var(--font-size-sm); /* Slightly smaller icon, but same touch target */
+      font-size: var(
+        --font-size-sm
+      ); /* Slightly smaller icon, but same touch target */
     }
   }
 

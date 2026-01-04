@@ -35,10 +35,13 @@ The next pictograph's start position must match the initial pictograph's end pos
   let error = $state<string | null>(null);
   let questionKey = $state(0);
 
-  let currentPictograph = $derived(questionData?.questionContent as PictographData | null);
+  let currentPictograph = $derived(
+    questionData?.questionContent as PictographData | null
+  );
   let isCorrectAnswer = $derived(
     selectedAnswerId
-      ? (questionData?.answerOptions.find((o) => o.id === selectedAnswerId)?.isCorrect ?? false)
+      ? (questionData?.answerOptions.find((o) => o.id === selectedAnswerId)
+          ?.isCorrect ?? false)
       : false
   );
 
@@ -51,7 +54,9 @@ The next pictograph's start position must match the initial pictograph's end pos
     isLoading = true;
     error = null;
     try {
-      questionData = await QuestionGeneratorService.generateQuestion(QuizType.VALID_NEXT_PICTOGRAPH);
+      questionData = await QuestionGeneratorService.generateQuestion(
+        QuizType.VALID_NEXT_PICTOGRAPH
+      );
       questionKey++;
     } catch (err) {
       console.error("Failed to load question:", err);
@@ -84,7 +89,10 @@ The next pictograph's start position must match the initial pictograph's end pos
     onNextQuestion?.();
   }
 
-  function getButtonState(optionId: string, isCorrect: boolean): "default" | "correct" | "incorrect" | "dimmed" {
+  function getButtonState(
+    optionId: string,
+    isCorrect: boolean
+  ): "default" | "correct" | "incorrect" | "dimmed" {
     if (!isAnswered) return "default";
     if (isCorrect) return "correct";
     if (selectedAnswerId === optionId) return "incorrect";

@@ -120,15 +120,16 @@
     <p class="hint">You can change this anytime in settings</p>
 
     <div class="button-row">
-      <button type="button" class="back-button" onclick={onBack} aria-label="Go back">
+      <button
+        type="button"
+        class="back-button"
+        onclick={onBack}
+        aria-label="Go back"
+      >
         <i class="fas fa-arrow-left" aria-hidden="true"></i>
       </button>
 
-      <button
-        type="submit"
-        class="next-button"
-        disabled={!currentName}
-      >
+      <button type="submit" class="next-button" disabled={!currentName}>
         Continue <i class="fas fa-arrow-right" aria-hidden="true"></i>
       </button>
     </div>
@@ -201,8 +202,13 @@
     align-items: center;
     gap: 12px;
     padding: 16px 20px;
-    background: color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 12%, transparent);
-    border: 2px solid color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 30%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--theme-accent-strong, #8b5cf6) 12%,
+      transparent
+    );
+    border: 2px solid
+      color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 30%, transparent);
     border-radius: 14px;
     width: 100%;
     justify-content: center;

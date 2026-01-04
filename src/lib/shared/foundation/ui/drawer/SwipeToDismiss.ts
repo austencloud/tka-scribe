@@ -123,7 +123,10 @@ export class SwipeToDismiss {
   attach(element: HTMLElement) {
     this.detach(); // Clean up any previous listeners
     this.element = element;
-    console.log('[SwipeToDismiss] attach called for drawer:', this.options.drawerId);
+    console.log(
+      "[SwipeToDismiss] attach called for drawer:",
+      this.options.drawerId
+    );
 
     const handleStart = (e: TouchEvent | MouseEvent) =>
       this.handleTouchStart(e);
@@ -230,23 +233,28 @@ export class SwipeToDismiss {
   }
 
   private handleTouchStart(event: TouchEvent | MouseEvent) {
-    console.log('[SwipeToDismiss] handleTouchStart for drawer:', this.options.drawerId);
+    console.log(
+      "[SwipeToDismiss] handleTouchStart for drawer:",
+      this.options.drawerId
+    );
 
     if (!this.options.dismissible) {
-      console.log('[SwipeToDismiss] blocked: not dismissible');
+      console.log("[SwipeToDismiss] blocked: not dismissible");
       return;
     }
 
     // Ignore right-click (context menu) - allow browser default behavior
     if (event instanceof MouseEvent && event.button !== 0) {
-      console.log('[SwipeToDismiss] blocked: right-click');
+      console.log("[SwipeToDismiss] blocked: right-click");
       return;
     }
 
     // Only process if this drawer is the top drawer (prevents nested drawer conflicts)
     // If not the top drawer, delegate swipe to dismiss the top drawer instead
     if (this.options.drawerId && !isTopDrawer(this.options.drawerId)) {
-      console.log('[SwipeToDismiss] not top drawer, delegating to dismissTopDrawer');
+      console.log(
+        "[SwipeToDismiss] not top drawer, delegating to dismissTopDrawer"
+      );
       // Don't start a drag on this drawer - instead, when gesture completes,
       // we'll dismiss the top drawer. For now, track the gesture but don't
       // apply visuals to this drawer.
@@ -411,7 +419,7 @@ export class SwipeToDismiss {
       }
 
       if (wasAboveThreshold) {
-        console.log('[SwipeToDismiss] delegating dismiss to top drawer');
+        console.log("[SwipeToDismiss] delegating dismiss to top drawer");
         dismissTopDrawer();
       }
 

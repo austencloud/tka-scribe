@@ -33,7 +33,12 @@
 
 <!-- svelte-ignore a11y_click_events_have_key_events a11y_no_static_element_interactions -->
 <div class="tour-prompt-backdrop" onclick={handleBackdropClick}>
-  <div class="tour-prompt-modal" role="dialog" aria-modal="true" aria-labelledby="tour-title">
+  <div
+    class="tour-prompt-modal"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="tour-title"
+  >
     <div class="tour-icon">
       <i class="fas fa-map-signs" aria-hidden="true"></i>
     </div>

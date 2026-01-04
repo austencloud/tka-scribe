@@ -9,9 +9,7 @@ Settings dialog for camera configuration including mirror toggle and camera sour
   import { TYPES } from "$lib/shared/inversify/types";
 
   // Services
-  const hapticService = resolve<IHapticFeedback>(
-    TYPES.IHapticFeedback
-  );
+  const hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
 
   // Props
   const {

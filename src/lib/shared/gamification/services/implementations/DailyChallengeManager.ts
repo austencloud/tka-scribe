@@ -151,7 +151,10 @@ export class DailyChallengeManager implements IDailyChallengeManager {
 
       return progressDoc.data() as UserChallengeProgress;
     } catch (error) {
-      console.error("[DailyChallengeManager] Failed to get challenge progress:", error);
+      console.error(
+        "[DailyChallengeManager] Failed to get challenge progress:",
+        error
+      );
       toast.error("Failed to load challenge progress.");
       return null;
     }
@@ -242,7 +245,10 @@ export class DailyChallengeManager implements IDailyChallengeManager {
         return { completed: false, progress: updatedProgress };
       }
     } catch (error) {
-      console.error("[DailyChallengeManager] Failed to update challenge progress:", error);
+      console.error(
+        "[DailyChallengeManager] Failed to update challenge progress:",
+        error
+      );
       toast.error("Failed to update challenge progress.");
       throw error;
     }
@@ -376,7 +382,10 @@ export class DailyChallengeManager implements IDailyChallengeManager {
         longestStreak,
       };
     } catch (error) {
-      console.error("[DailyChallengeManager] Failed to get challenge stats:", error);
+      console.error(
+        "[DailyChallengeManager] Failed to get challenge stats:",
+        error
+      );
       toast.error("Failed to load challenge statistics.");
       return {
         totalChallengesCompleted: 0,

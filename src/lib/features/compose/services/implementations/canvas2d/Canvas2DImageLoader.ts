@@ -25,8 +25,14 @@ export class Canvas2DImageLoader {
   private previousGlyphImage: HTMLImageElement | null = null;
 
   // Track prop dimensions (from SVG viewBox)
-  private bluePropDimensions: { width: number; height: number } = { width: 0, height: 0 };
-  private redPropDimensions: { width: number; height: number } = { width: 0, height: 0 };
+  private bluePropDimensions: { width: number; height: number } = {
+    width: 0,
+    height: 0,
+  };
+  private redPropDimensions: { width: number; height: number } = {
+    width: 0,
+    height: 0,
+  };
 
   async loadPropImages(propType: string): Promise<{
     blue: HTMLImageElement;
@@ -45,13 +51,27 @@ export class Canvas2DImageLoader {
 
       // Create new images BEFORE releasing old ones
       const [newBlueImage, newRedImage] = await Promise.all([
-        this.createImageFromSVG(bluePropData.svg, bluePropData.width, bluePropData.height),
-        this.createImageFromSVG(redPropData.svg, redPropData.width, redPropData.height),
+        this.createImageFromSVG(
+          bluePropData.svg,
+          bluePropData.width,
+          bluePropData.height
+        ),
+        this.createImageFromSVG(
+          redPropData.svg,
+          redPropData.width,
+          redPropData.height
+        ),
       ]);
 
       // Store dimensions
-      this.bluePropDimensions = { width: bluePropData.width, height: bluePropData.height };
-      this.redPropDimensions = { width: redPropData.width, height: redPropData.height };
+      this.bluePropDimensions = {
+        width: bluePropData.width,
+        height: bluePropData.height,
+      };
+      this.redPropDimensions = {
+        width: redPropData.width,
+        height: redPropData.height,
+      };
 
       // Swap references (old images will be garbage collected)
       this.bluePropImage = newBlueImage;
@@ -87,13 +107,27 @@ export class Canvas2DImageLoader {
 
       // Create new images
       const [newBlueImage, newRedImage] = await Promise.all([
-        this.createImageFromSVG(bluePropData.svg, bluePropData.width, bluePropData.height),
-        this.createImageFromSVG(redPropData.svg, redPropData.width, redPropData.height),
+        this.createImageFromSVG(
+          bluePropData.svg,
+          bluePropData.width,
+          bluePropData.height
+        ),
+        this.createImageFromSVG(
+          redPropData.svg,
+          redPropData.width,
+          redPropData.height
+        ),
       ]);
 
       // Store dimensions
-      this.bluePropDimensions = { width: bluePropData.width, height: bluePropData.height };
-      this.redPropDimensions = { width: redPropData.width, height: redPropData.height };
+      this.bluePropDimensions = {
+        width: bluePropData.width,
+        height: bluePropData.height,
+      };
+      this.redPropDimensions = {
+        width: redPropData.width,
+        height: redPropData.height,
+      };
 
       // Swap references
       this.bluePropImage = newBlueImage;
@@ -104,7 +138,10 @@ export class Canvas2DImageLoader {
         red: this.redPropImage,
       };
     } catch (error) {
-      console.error("[Canvas2DImageLoader] Failed to load per-color prop images:", error);
+      console.error(
+        "[Canvas2DImageLoader] Failed to load per-color prop images:",
+        error
+      );
       throw error;
     }
   }
@@ -151,18 +188,23 @@ export class Canvas2DImageLoader {
         red: this.secondaryRedPropImage,
       };
     } catch (error) {
-      console.error("[Canvas2DImageLoader] Failed to load secondary prop images:", error);
+      console.error(
+        "[Canvas2DImageLoader] Failed to load secondary prop images:",
+        error
+      );
       throw error;
     }
   }
 
-  async loadGridImage(gridMode: string, canvasSize: number): Promise<HTMLImageElement> {
+  async loadGridImage(
+    gridMode: string,
+    canvasSize: number
+  ): Promise<HTMLImageElement> {
     try {
       const { TYPES } = await import("$lib/shared/inversify/types");
       const { resolve } = await import("$lib/shared/inversify/di");
-      const { GridMode } = await import(
-        "$lib/shared/pictograph/grid/domain/enums/grid-enums"
-      );
+      const { GridMode } =
+        await import("$lib/shared/pictograph/grid/domain/enums/grid-enums");
       const svgGenerator = resolve<ISVGGenerator>(TYPES.ISVGGenerator);
 
       // Convert gridMode string to GridMode enum
@@ -173,7 +215,11 @@ export class Canvas2DImageLoader {
       const gridSvg = svgGenerator.generateGridSvg(gridModeEnum);
 
       // Create new image
-      const newImage = await this.createImageFromSVG(gridSvg, canvasSize, canvasSize);
+      const newImage = await this.createImageFromSVG(
+        gridSvg,
+        canvasSize,
+        canvasSize
+      );
 
       // Swap reference
       this.gridImage = newImage;

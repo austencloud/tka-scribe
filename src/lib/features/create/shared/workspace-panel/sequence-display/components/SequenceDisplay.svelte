@@ -53,9 +53,7 @@
 
   // Initialize haptic service on mount
   onMount(() => {
-    hapticService = resolve<IHapticFeedback>(
-      TYPES.IHapticFeedback
-    );
+    hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
   });
 
   // Library save handler - use panelState for mutual exclusivity with other panels
@@ -66,9 +64,15 @@
   // Use $derived.by() to ensure Svelte tracks the getters properly
   // when sequenceState is passed as a prop (not a reactive state)
   const currentSequence = $derived.by(() => sequenceState.currentSequence);
-  const selectedStartPosition = $derived.by(() => sequenceState.selectedStartPosition);
-  const removingBeatIndex = $derived.by(() => sequenceState.getRemovingBeatIndex());
-  const removingBeatIndices = $derived.by(() => sequenceState.getRemovingBeatIndices());
+  const selectedStartPosition = $derived.by(
+    () => sequenceState.selectedStartPosition
+  );
+  const removingBeatIndex = $derived.by(() =>
+    sequenceState.getRemovingBeatIndex()
+  );
+  const removingBeatIndices = $derived.by(() =>
+    sequenceState.getRemovingBeatIndices()
+  );
   const isClearing = $derived.by(() => sequenceState.getIsClearing());
   const isShiftStartMode = $derived(panelState.isShiftStartMode);
 
@@ -114,7 +118,11 @@
           <UndoButton {CreateModuleState} />
         </div>
         <div class="word-label-area">
-          <WordLabel word={currentDisplayWord} scrollMode={false} {letterSources} />
+          <WordLabel
+            word={currentDisplayWord}
+            scrollMode={false}
+            {letterSources}
+          />
         </div>
         <div class="top-right-zone">
           <SaveToLibraryButton

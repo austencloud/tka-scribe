@@ -84,7 +84,8 @@
       // Store for use in formatAllForAI
       pictographDataState = pictographData;
 
-      const calculated = await arrowOrchestrator.calculateAllArrowPoints(pictographData);
+      const calculated =
+        await arrowOrchestrator.calculateAllArrowPoints(pictographData);
 
       calculatedData = {
         ...beatData,
@@ -103,7 +104,9 @@
 
   function calculateLookupKeys(pictographData: PictographData) {
     try {
-      const tupleGenerator = resolve<ITurnsTupleGenerator>(TYPES.ITurnsTupleGenerator);
+      const tupleGenerator = resolve<ITurnsTupleGenerator>(
+        TYPES.ITurnsTupleGenerator
+      );
       const gridModeDeriver = resolve<IGridModeDeriver>(TYPES.IGridModeDeriver);
       const rotationKeyGenerator = resolve<IRotationAngleOverrideKeyGenerator>(
         TYPES.IRotationAngleOverrideKeyGenerator
@@ -115,12 +118,18 @@
 
       let gridMode = "diamond";
       if (blueMotionData && redMotionData) {
-        gridMode = gridModeDeriver.deriveGridMode(blueMotionData, redMotionData);
+        gridMode = gridModeDeriver.deriveGridMode(
+          blueMotionData,
+          redMotionData
+        );
       }
 
       let oriKey = "unknown";
       if (blueMotionData) {
-        oriKey = oriKeyGenerator.generateOrientationKey(blueMotionData, pictographData);
+        oriKey = oriKeyGenerator.generateOrientationKey(
+          blueMotionData,
+          pictographData
+        );
       }
 
       const turnsTuple = tupleGenerator.generateTurnsTuple(pictographData);
@@ -131,20 +140,22 @@
       if (blueMotionData) {
         const motionType = blueMotionData.motionType?.toLowerCase();
         if (motionType === "static" || motionType === "dash") {
-          blueRotationOverrideKey = rotationKeyGenerator.generateRotationAngleOverrideKey(
-            blueMotionData,
-            pictographData
-          );
+          blueRotationOverrideKey =
+            rotationKeyGenerator.generateRotationAngleOverrideKey(
+              blueMotionData,
+              pictographData
+            );
         }
       }
 
       if (redMotionData) {
         const motionType = redMotionData.motionType?.toLowerCase();
         if (motionType === "static" || motionType === "dash") {
-          redRotationOverrideKey = rotationKeyGenerator.generateRotationAngleOverrideKey(
-            redMotionData,
-            pictographData
-          );
+          redRotationOverrideKey =
+            rotationKeyGenerator.generateRotationAngleOverrideKey(
+              redMotionData,
+              pictographData
+            );
         }
       }
 
@@ -355,8 +366,12 @@
   }
 
   @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
   }
 
   @keyframes slideUp {

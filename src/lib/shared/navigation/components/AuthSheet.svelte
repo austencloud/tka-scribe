@@ -33,9 +33,7 @@
 
   onMount(async () => {
     try {
-      hapticService = await resolve<IHapticFeedback>(
-        TYPES.IHapticFeedback
-      );
+      hapticService = await resolve<IHapticFeedback>(TYPES.IHapticFeedback);
       authService = await resolve<IAuthenticator>(TYPES.IAuthenticator);
     } catch (error) {
       console.error("❌ [AuthSheet] Failed to resolve services:", error);
@@ -149,8 +147,7 @@
 
     /* Hide scrollbar but keep functionality */
     scrollbar-width: thin;
-    scrollbar-color: var(--theme-stroke-strong)
-      transparent;
+    scrollbar-color: var(--theme-stroke-strong) transparent;
   }
 
   .auth-sheet__content::-webkit-scrollbar {

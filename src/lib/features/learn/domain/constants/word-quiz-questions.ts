@@ -115,11 +115,13 @@ export const WORD_QUIZ_QUESTIONS: WordQuizQuestion[] = [
     letters: [SAMPLE_LETTERS.A, SAMPLE_LETTERS.A],
     options: ["AB", "AA", "BB", "CC"],
     correctAnswer: 1,
-    explanation: "This shows the letter A performed twice in sequence, forming the word 'AA'.",
+    explanation:
+      "This shows the letter A performed twice in sequence, forming the word 'AA'.",
   },
   {
     type: "position-transition",
-    question: "In Alpha (α) position, where are the hands relative to each other?",
+    question:
+      "In Alpha (α) position, where are the hands relative to each other?",
     options: [
       "Same point (together)",
       "Opposite sides (180°)",
@@ -162,7 +164,8 @@ export const WORD_QUIZ_QUESTIONS: WordQuizQuestion[] = [
     letters: [SAMPLE_LETTERS.A, SAMPLE_LETTERS.B],
     options: ["AA", "AB", "BA", "BB"],
     correctAnswer: 1,
-    explanation: "First a Pro motion (letter A), then an Anti motion (letter B), forming 'AB'.",
+    explanation:
+      "First a Pro motion (letter A), then an Anti motion (letter B), forming 'AB'.",
   },
   {
     type: "motion-pattern",
@@ -183,7 +186,8 @@ export const WORD_QUIZ_QUESTIONS: WordQuizQuestion[] = [
       "Diagonal corners",
     ],
     correctAnswer: 2,
-    explanation: "Beta position has both hands at the same point on the grid (0° apart).",
+    explanation:
+      "Beta position has both hands at the same point on the grid (0° apart).",
   },
   {
     type: "letter-sequence",

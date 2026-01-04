@@ -182,7 +182,11 @@
     align-items: center;
     gap: 0.25rem;
     padding: 0.25rem 0.5rem;
-    background: linear-gradient(135deg, var(--semantic-info) 0%, var(--theme-accent-strong) 100%);
+    background: linear-gradient(
+      135deg,
+      var(--semantic-info) 0%,
+      var(--theme-accent-strong) 100%
+    );
     border-radius: 4px;
     font-size: 0.7rem;
     font-weight: 600;

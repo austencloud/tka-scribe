@@ -193,7 +193,11 @@
     outline: none;
     border-color: var(--theme-accent, var(--theme-accent));
     box-shadow: 0 0 0 3px
-      color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 20%, transparent);
+      color-mix(
+        in srgb,
+        var(--theme-accent, var(--theme-accent)) 20%,
+        transparent
+      );
   }
 
   .search-input::placeholder {
@@ -237,11 +241,7 @@
   }
 
   .result-item:hover {
-    background: color-mix(
-      in srgb,
-      var(--theme-accent) 15%,
-      transparent
-    );
+    background: color-mix(in srgb, var(--theme-accent) 15%, transparent);
   }
 
   .result-info {

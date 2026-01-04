@@ -81,7 +81,10 @@ The hand overlay shows the current position and animates between positions.
    *   W(1,0)   C(1,1)  E(1,2)
    *   SW(2,0)  S(2,1)  SE(2,2)
    */
-  const positionToGridCoords: Record<GridLocation, { row: number; col: number }> = {
+  const positionToGridCoords: Record<
+    GridLocation,
+    { row: number; col: number }
+  > = {
     [GridLocation.NORTHWEST]: { row: 0, col: 0 },
     [GridLocation.NORTH]: { row: 0, col: 1 },
     [GridLocation.NORTHEAST]: { row: 0, col: 2 },
@@ -217,8 +220,10 @@ The hand overlay shows the current position and animates between positions.
               isCurrent={currentPosition === position}
               showGhostHand={isSelectingStartPosition}
               ghostHandColor={handColor}
-              isGhostFadingOut={isAnimatingGhostSelection && selectedGhostPosition !== position}
-              isGhostFadingIn={isAnimatingGhostSelection && selectedGhostPosition === position}
+              isGhostFadingOut={isAnimatingGhostSelection &&
+                selectedGhostPosition !== position}
+              isGhostFadingIn={isAnimatingGhostSelection &&
+                selectedGhostPosition === position}
               entranceDelay={getEntranceDelay(position)}
               onSelect={handlePositionSelect}
             />
@@ -295,8 +300,9 @@ The hand overlay shows the current position and animates between positions.
     top: calc(var(--hand-row) * (var(--cell-size) + var(--gap)));
 
     /* Smooth animation when position changes */
-    transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-                top 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition:
+      left 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+      top 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
     display: flex;
     align-items: center;
@@ -306,8 +312,9 @@ The hand overlay shows the current position and animates between positions.
   .hand-icon {
     width: 60%;
     height: 60%;
-    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-                filter 0.3s ease;
+    transition:
+      transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+      filter 0.3s ease;
   }
 
   /* SVG path fill using CSS */
@@ -328,12 +335,12 @@ The hand overlay shows the current position and animates between positions.
   /* Color-matched glow for each phase */
   .hand-overlay.blue .hand-icon {
     filter: drop-shadow(0 4px 16px rgba(59, 130, 246, 0.6))
-            drop-shadow(0 0 8px rgba(59, 130, 246, 0.4));
+      drop-shadow(0 0 8px rgba(59, 130, 246, 0.4));
   }
 
   .hand-overlay.red .hand-icon {
     filter: drop-shadow(0 4px 16px rgba(239, 68, 68, 0.6))
-            drop-shadow(0 0 8px rgba(239, 68, 68, 0.4));
+      drop-shadow(0 0 8px rgba(239, 68, 68, 0.4));
   }
 
   /* Phase transition animation */

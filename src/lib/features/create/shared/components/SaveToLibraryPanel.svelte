@@ -444,11 +444,7 @@
 
   .input-field::placeholder,
   .textarea-field::placeholder {
-    color: color-mix(
-      in srgb,
-      var(--theme-text-dim) 70%,
-      transparent
-    );
+    color: color-mix(in srgb, var(--theme-text-dim) 70%, transparent);
   }
 
   .textarea-field {
@@ -498,7 +494,11 @@
     );
     color: white;
     box-shadow: 0 4px 12px
-      color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent-strong)) 40%, transparent);
+      color-mix(
+        in srgb,
+        var(--theme-accent-strong, var(--theme-accent-strong)) 40%,
+        transparent
+      );
   }
 
   .button-primary:hover:not(:disabled) {
@@ -508,7 +508,11 @@
       var(--theme-accent-strong) 100%
     );
     box-shadow: 0 6px 16px
-      color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent-strong)) 60%, transparent);
+      color-mix(
+        in srgb,
+        var(--theme-accent-strong, var(--theme-accent-strong)) 60%,
+        transparent
+      );
     transform: translateY(-1px);
   }
 

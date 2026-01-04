@@ -68,8 +68,12 @@ Props:
 
   // Centralized colors for SVG filters - based on pictograph background mode
   // ledMode=true (dark background) → use bright colors, ledMode=false (white background) → use original dark colors
-  const BLUE_COLOR = $derived(getMotionColor(MotionColor.BLUE, ledMode ? "dark" : "light"));
-  const RED_COLOR = $derived(getMotionColor(MotionColor.RED, ledMode ? "dark" : "light"));
+  const BLUE_COLOR = $derived(
+    getMotionColor(MotionColor.BLUE, ledMode ? "dark" : "light")
+  );
+  const RED_COLOR = $derived(
+    getMotionColor(MotionColor.RED, ledMode ? "dark" : "light")
+  );
 
   // Service instance for color interpretation
   const colorInterpreter = new TurnColorInterpreter();
@@ -166,96 +170,96 @@ Props:
      NOTE: We check visibility here (not just CSS) because when exporting to SVG/image,
      CSS classes don't carry over - only the raw SVG markup is captured. -->
 {#if visible || previewMode}
-<g
-  class="turns-column"
-  class:visible
-  class:preview-mode={previewMode}
-  class:interactive={onToggle !== undefined}
-  class:led-mode={ledMode}
-  data-letter={letter}
-  data-led-mode={ledMode}
-  transform="translate({x}, {y}) scale({scale})"
-  onclick={onToggle}
-  {...onToggle
-    ? {
-        role: "button",
-        tabindex: 0,
-        "aria-label": "Toggle turn numbers visibility",
-      }
-    : {}}
->
-  <!-- SVG Recoloring Filter Definitions -->
-  <defs>
-    <!-- Blue color filter - uses centralized MOTION_COLOR_MAP -->
-    <filter id="turn-color-blue" color-interpolation-filters="sRGB">
-      <!-- Extract alpha channel -->
-      <feColorMatrix
-        type="matrix"
-        values="0 0 0 0 0
+  <g
+    class="turns-column"
+    class:visible
+    class:preview-mode={previewMode}
+    class:interactive={onToggle !== undefined}
+    class:led-mode={ledMode}
+    data-letter={letter}
+    data-led-mode={ledMode}
+    transform="translate({x}, {y}) scale({scale})"
+    onclick={onToggle}
+    {...onToggle
+      ? {
+          role: "button",
+          tabindex: 0,
+          "aria-label": "Toggle turn numbers visibility",
+        }
+      : {}}
+  >
+    <!-- SVG Recoloring Filter Definitions -->
+    <defs>
+      <!-- Blue color filter - uses centralized MOTION_COLOR_MAP -->
+      <filter id="turn-color-blue" color-interpolation-filters="sRGB">
+        <!-- Extract alpha channel -->
+        <feColorMatrix
+          type="matrix"
+          values="0 0 0 0 0
                 0 0 0 0 0
                 0 0 0 0 0
                 0 0 0 1 0"
-        result="alpha-only"
-      />
-      <!-- Fill with target blue color from MOTION_COLOR_MAP -->
-      <feFlood flood-color={BLUE_COLOR} result="blue-flood" />
-      <!-- Composite the color with the alpha mask -->
-      <feComposite in="blue-flood" in2="alpha-only" operator="in" />
-    </filter>
-    <!-- Red color filter - uses centralized MOTION_COLOR_MAP -->
-    <filter id="turn-color-red" color-interpolation-filters="sRGB">
-      <!-- Extract alpha channel -->
-      <feColorMatrix
-        type="matrix"
-        values="0 0 0 0 0
+          result="alpha-only"
+        />
+        <!-- Fill with target blue color from MOTION_COLOR_MAP -->
+        <feFlood flood-color={BLUE_COLOR} result="blue-flood" />
+        <!-- Composite the color with the alpha mask -->
+        <feComposite in="blue-flood" in2="alpha-only" operator="in" />
+      </filter>
+      <!-- Red color filter - uses centralized MOTION_COLOR_MAP -->
+      <filter id="turn-color-red" color-interpolation-filters="sRGB">
+        <!-- Extract alpha channel -->
+        <feColorMatrix
+          type="matrix"
+          values="0 0 0 0 0
                 0 0 0 0 0
                 0 0 0 0 0
                 0 0 0 1 0"
-        result="alpha-only"
-      />
-      <!-- Fill with target red color from MOTION_COLOR_MAP -->
-      <feFlood flood-color={RED_COLOR} result="red-flood" />
-      <!-- Composite the color with the alpha mask -->
-      <feComposite in="red-flood" in2="alpha-only" operator="in" />
-    </filter>
-  </defs>
+          result="alpha-only"
+        />
+        <!-- Fill with target red color from MOTION_COLOR_MAP -->
+        <feFlood flood-color={RED_COLOR} result="red-flood" />
+        <!-- Composite the color with the alpha mask -->
+        <feComposite in="red-flood" in2="alpha-only" operator="in" />
+      </filter>
+    </defs>
 
-  <!-- Top Number -->
-  {#if showTop()}
-    <g
-      class="turn-number top"
-      transform="translate({positions().top.x}, {positions().top.y})"
-    >
-      <image
-        href={topImagePath()}
-        width={columnWidth()}
-        height={numberHeight}
-        filter="url(#{turnColors().top === '#ED1C24'
-          ? 'turn-color-red'
-          : 'turn-color-blue'})"
-        preserveAspectRatio="xMidYMin meet"
-      />
-    </g>
-  {/if}
+    <!-- Top Number -->
+    {#if showTop()}
+      <g
+        class="turn-number top"
+        transform="translate({positions().top.x}, {positions().top.y})"
+      >
+        <image
+          href={topImagePath()}
+          width={columnWidth()}
+          height={numberHeight}
+          filter="url(#{turnColors().top === '#ED1C24'
+            ? 'turn-color-red'
+            : 'turn-color-blue'})"
+          preserveAspectRatio="xMidYMin meet"
+        />
+      </g>
+    {/if}
 
-  <!-- Bottom Number -->
-  {#if showBottom()}
-    <g
-      class="turn-number bottom"
-      transform="translate({positions().bottom.x}, {positions().bottom.y})"
-    >
-      <image
-        href={bottomImagePath()}
-        width={columnWidth()}
-        height={numberHeight}
-        filter="url(#{turnColors().bottom === '#ED1C24'
-          ? 'turn-color-red'
-          : 'turn-color-blue'})"
-        preserveAspectRatio="xMidYMin meet"
-      />
-    </g>
-  {/if}
-</g>
+    <!-- Bottom Number -->
+    {#if showBottom()}
+      <g
+        class="turn-number bottom"
+        transform="translate({positions().bottom.x}, {positions().bottom.y})"
+      >
+        <image
+          href={bottomImagePath()}
+          width={columnWidth()}
+          height={numberHeight}
+          filter="url(#{turnColors().bottom === '#ED1C24'
+            ? 'turn-color-red'
+            : 'turn-color-blue'})"
+          preserveAspectRatio="xMidYMin meet"
+        />
+      </g>
+    {/if}
+  </g>
 {/if}
 
 <style>

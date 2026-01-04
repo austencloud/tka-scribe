@@ -21,7 +21,9 @@ class UserProportionsState {
   // User inputs
   private _heightCm = $state(DEFAULT_USER_PROPORTIONS.heightCm);
   private _staffLengthCm = $state(DEFAULT_USER_PROPORTIONS.staffLengthCm);
-  private _build = $state<UserProportions["build"]>(DEFAULT_USER_PROPORTIONS.build);
+  private _build = $state<UserProportions["build"]>(
+    DEFAULT_USER_PROPORTIONS.build
+  );
 
   // Derived dimensions (automatically recalculated)
   private _dimensions = $derived(
@@ -98,7 +100,8 @@ class UserProportionsState {
   // Set all at once
   setProportions(props: Partial<UserProportions>): void {
     if (props.heightCm !== undefined) this.setHeightCm(props.heightCm);
-    if (props.staffLengthCm !== undefined) this.setStaffLengthCm(props.staffLengthCm);
+    if (props.staffLengthCm !== undefined)
+      this.setStaffLengthCm(props.staffLengthCm);
     if (props.build !== undefined) this.setBuild(props.build);
   }
 

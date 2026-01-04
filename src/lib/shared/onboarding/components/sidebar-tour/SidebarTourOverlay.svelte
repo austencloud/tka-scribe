@@ -102,7 +102,10 @@
 </script>
 
 {#if sidebarTourState.phase === "prompt"}
-  <SidebarTourPrompt onTakeTour={handleTakeTour} onExploreOwn={handleExploreOwn} />
+  <SidebarTourPrompt
+    onTakeTour={handleTakeTour}
+    onExploreOwn={handleExploreOwn}
+  />
 {/if}
 
 {#if sidebarTourState.phase === "touring" && sidebarTourState.currentStepData}

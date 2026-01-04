@@ -10,14 +10,24 @@
     onSubscribe: () => void;
   }
 
-  let { price, period, isLoading = false, disabled = false, onSubscribe }: Props = $props();
+  let {
+    price,
+    period,
+    isLoading = false,
+    disabled = false,
+    onSubscribe,
+  }: Props = $props();
 </script>
 
 <div class="sticky-cta">
   <div class="price-info">
     <span class="price">${price}/{period}</span>
   </div>
-  <button class="cta-button" onclick={onSubscribe} disabled={isLoading || disabled}>
+  <button
+    class="cta-button"
+    onclick={onSubscribe}
+    disabled={isLoading || disabled}
+  >
     {#if isLoading}
       <i class="fas fa-spinner fa-spin" aria-hidden="true"></i>
     {:else}
@@ -37,7 +47,14 @@
     justify-content: space-between;
     gap: var(--spacing-md, 16px);
     padding: var(--spacing-md, 16px);
-    background: var(--gradient-primary, linear-gradient(135deg, var(--theme-accent) 0%, var(--theme-accent-strong) 100%));
+    background: var(
+      --gradient-primary,
+      linear-gradient(
+        135deg,
+        var(--theme-accent) 0%,
+        var(--theme-accent-strong) 100%
+      )
+    );
     border-top: 1px solid rgba(255, 255, 255, 0.2);
     backdrop-filter: blur(10px);
     z-index: 1000;

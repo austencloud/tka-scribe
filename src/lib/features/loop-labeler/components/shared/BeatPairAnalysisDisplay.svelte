@@ -19,7 +19,13 @@
     axisAlternatingPattern?: AxisAlternatingPattern | null;
   }
 
-  let { beatPairs, beatPairGroups, collapsed = false, isAxisAlternating = false, axisAlternatingPattern = null }: Props = $props();
+  let {
+    beatPairs,
+    beatPairGroups,
+    collapsed = false,
+    isAxisAlternating = false,
+    axisAlternatingPattern = null,
+  }: Props = $props();
 
   // Initialize as expanded (true), then apply collapsed prop via effect
   let isExpanded = $state(true);
@@ -72,10 +78,12 @@
   ): string {
     const defaultColor = "#6b7280";
     if (!rel) return defaultColor;
-    if (rel.relationships.isCompound) return letterRelationshipColors.compound ?? defaultColor;
+    if (rel.relationships.isCompound)
+      return letterRelationshipColors.compound ?? defaultColor;
     if (rel.relationships.isAlphaBetaCounterpart)
       return letterRelationshipColors.alpha_beta_counterpart ?? defaultColor;
-    if (rel.relationships.isInverted) return letterRelationshipColors.inverted ?? defaultColor;
+    if (rel.relationships.isInverted)
+      return letterRelationshipColors.inverted ?? defaultColor;
     return defaultColor;
   }
 
@@ -141,7 +149,9 @@
         />
         <span class="title">Beat-Pair Analysis</span>
         {#if isAxisAlternating && axisAlternatingPattern}
-          <span class="axis-alternating-badge">{axisAlternatingPattern.metaPatternType}</span>
+          <span class="axis-alternating-badge"
+            >{axisAlternatingPattern.metaPatternType}</span
+          >
         {:else if isModular}
           <span class="modular-badge">Modular ({groupCount} patterns)</span>
         {/if}
@@ -176,9 +186,9 @@
             {#each beatPairs as pair}
               {@const primaryTransform =
                 pair.detectedTransformations[0] || "UNKNOWN"}
-              {@const alternatives = (pair.allValidTransformations || []).filter(
-                (t) => t !== primaryTransform
-              )}
+              {@const alternatives = (
+                pair.allValidTransformations || []
+              ).filter((t) => t !== primaryTransform)}
               <div class="pair-row">
                 <div class="pair-beats">
                   <span class="beat-num">{pair.keyBeat}</span>
@@ -189,7 +199,9 @@
                   <div class="pair-transforms">
                     <span
                       class="transform-tag primary"
-                      style="--tag-color: {getColorForPattern(primaryTransform)}"
+                      style="--tag-color: {getColorForPattern(
+                        primaryTransform
+                      )}"
                     >
                       {primaryTransform}
                     </span>
@@ -353,7 +365,11 @@
 
   .axis-alternating-badge {
     padding: 2px 8px;
-    background: linear-gradient(135deg, rgba(20, 184, 166, 0.2) 0%, rgba(168, 85, 247, 0.2) 100%);
+    background: linear-gradient(
+      135deg,
+      rgba(20, 184, 166, 0.2) 0%,
+      rgba(168, 85, 247, 0.2) 100%
+    );
     border: 1px solid rgba(20, 184, 166, 0.4);
     border-radius: 12px;
     font-size: var(--font-size-xs);

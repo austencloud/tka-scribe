@@ -65,7 +65,7 @@
 
   // For single-prop mode, use the blue prop (or red if blue isn't set, or default to staff)
   const effectivePropType = $derived(
-    isCatDog ? null : (bluePropType || redPropType || PropType.STAFF)
+    isCatDog ? null : bluePropType || redPropType || PropType.STAFF
   );
 
   // Intersection Observer for lazy loading
@@ -125,9 +125,7 @@
       );
 
       // Determine the cloud cache key based on mode
-      const cloudKey = isCatDog
-        ? getCatDogCloudKey()
-        : getSinglePropCloudKey();
+      const cloudKey = isCatDog ? getCatDogCloudKey() : getSinglePropCloudKey();
 
       if (!cloudKey) {
         throw new Error("Could not determine prop configuration");
@@ -192,10 +190,7 @@
 
       loadingStatus = "";
     } catch (error) {
-      console.error(
-        `Failed to load thumbnail for ${sequenceName}:`,
-        error
-      );
+      console.error(`Failed to load thumbnail for ${sequenceName}:`, error);
       hasError = true;
       loadingStatus = "";
     } finally {
@@ -238,7 +233,9 @@
   async function renderThumbnail(): Promise<Blob> {
     const container = await getContainerInstance();
     const renderer = container.get<ISequenceRenderer>(TYPES.ISequenceRenderer);
-    const startPositionDeriver = container.get<IStartPositionDeriver>(TYPES.IStartPositionDeriver);
+    const startPositionDeriver = container.get<IStartPositionDeriver>(
+      TYPES.IStartPositionDeriver
+    );
 
     // Use the sequence prop directly if it has beat data (Library sequences)
     // Otherwise fall back to loading from the Gallery index
@@ -259,22 +256,28 @@
     // Start positions are no longer stored - they're derived dynamically
     const firstBeat = fullSequence.beats?.[0];
     const existingStartPos = fullSequence.startPosition;
-    const hasValidStartPosition = existingStartPos &&
+    const hasValidStartPosition =
+      existingStartPos &&
       existingStartPos.motions?.blue &&
       existingStartPos.motions?.red;
 
-    const firstBeatHasValidMotions = firstBeat?.motions?.blue?.startLocation &&
+    const firstBeatHasValidMotions =
+      firstBeat?.motions?.blue?.startLocation &&
       firstBeat?.motions?.red?.startLocation;
 
     if (!hasValidStartPosition && firstBeat && firstBeatHasValidMotions) {
       try {
-        const derivedStartPos = startPositionDeriver.deriveFromFirstBeat(firstBeat);
+        const derivedStartPos =
+          startPositionDeriver.deriveFromFirstBeat(firstBeat);
         fullSequence = {
           ...fullSequence,
           startPosition: derivedStartPos,
         };
       } catch (err) {
-        console.warn(`Failed to derive start position for ${sequenceName}:`, err);
+        console.warn(
+          `Failed to derive start position for ${sequenceName}:`,
+          err
+        );
       }
     }
 
@@ -290,7 +293,7 @@
       addReversalSymbols: true,
       backgroundColor: lightMode ? "#ffffff" : "#1a1a2e",
       // For single-prop mode, override all props to the selected type
-      propTypeOverride: isCatDog ? undefined : effectivePropType ?? undefined,
+      propTypeOverride: isCatDog ? undefined : (effectivePropType ?? undefined),
       // For cat-dog mode, override each color independently
       bluePropTypeOverride: isCatDog ? bluePropType : undefined,
       redPropTypeOverride: isCatDog ? redPropType : undefined,
@@ -306,19 +309,26 @@
       },
     };
 
-    console.log(`[PropAwareThumbnail] Rendering ${sequenceName} with options:`, {
-      propTypeOverride: renderOptions.propTypeOverride,
-      bluePropTypeOverride: renderOptions.bluePropTypeOverride,
-      redPropTypeOverride: renderOptions.redPropTypeOverride,
-      sequenceHasBeats: fullSequence.beats.length,
-      sequenceHasStartPosition: !!fullSequence.startPosition,
-      startPositionGridPos:
-        fullSequence.startPosition && 'gridPosition' in fullSequence.startPosition
-          ? fullSequence.startPosition.gridPosition
-          : 'none',
-    });
+    console.log(
+      `[PropAwareThumbnail] Rendering ${sequenceName} with options:`,
+      {
+        propTypeOverride: renderOptions.propTypeOverride,
+        bluePropTypeOverride: renderOptions.bluePropTypeOverride,
+        redPropTypeOverride: renderOptions.redPropTypeOverride,
+        sequenceHasBeats: fullSequence.beats.length,
+        sequenceHasStartPosition: !!fullSequence.startPosition,
+        startPositionGridPos:
+          fullSequence.startPosition &&
+          "gridPosition" in fullSequence.startPosition
+            ? fullSequence.startPosition.gridPosition
+            : "none",
+      }
+    );
 
-    const blob = await renderer.renderSequenceToBlob(fullSequence, renderOptions);
+    const blob = await renderer.renderSequenceToBlob(
+      fullSequence,
+      renderOptions
+    );
 
     return blob;
   }

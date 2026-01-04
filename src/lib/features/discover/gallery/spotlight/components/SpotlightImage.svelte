@@ -15,9 +15,7 @@
   let hapticService: IHapticFeedback;
 
   onMount(() => {
-    hapticService = resolve<IHapticFeedback>(
-      TYPES.IHapticFeedback
-    );
+    hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
   });
 
   // Track current and previous image URLs for crossfade effect
@@ -85,7 +83,12 @@
       </div>
     {:else}
       {#if spotlightState.isImageLoading && !isTransitioning}
-        <div class="loading-spinner" role="status" aria-live="polite" aria-busy="true">
+        <div
+          class="loading-spinner"
+          role="status"
+          aria-live="polite"
+          aria-busy="true"
+        >
           <div class="spinner" aria-hidden="true"></div>
           <p>Loading image...</p>
         </div>

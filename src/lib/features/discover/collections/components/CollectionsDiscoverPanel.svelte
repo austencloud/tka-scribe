@@ -86,9 +86,7 @@ Uses singleton state for caching - data persists across tab switches.
       userService = resolve<IUserRepository>(TYPES.IUserRepository);
       collectionService = resolve<ICollectionManager>(TYPES.ICollectionManager);
       libraryService = resolve<ILibraryRepository>(TYPES.ILibraryRepository);
-      hapticService = resolve<IHapticFeedback>(
-        TYPES.IHapticFeedback
-      );
+      hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
 
       // Load data (uses cache if already loaded)
       await collectionsBrowseState.loadCreatorLibraries(

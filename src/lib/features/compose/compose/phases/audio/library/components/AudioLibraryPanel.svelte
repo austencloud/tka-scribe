@@ -21,9 +21,7 @@
     onClose: () => void;
   } = $props();
 
-  const audioLibrary = container.get<IAudioLibrary>(
-    AudioTypes.IAudioLibrary
-  );
+  const audioLibrary = container.get<IAudioLibrary>(AudioTypes.IAudioLibrary);
 
   let tracks = $state<AudioTrackLocal[]>([]);
   let isLoading = $state(true);
@@ -181,7 +179,12 @@
       aria-label="Upload audio file"
       class="sr-only"
     />
-    <button class="upload-btn" onclick={openFilePicker} disabled={isUploading} aria-busy={isUploading}>
+    <button
+      class="upload-btn"
+      onclick={openFilePicker}
+      disabled={isUploading}
+      aria-busy={isUploading}
+    >
       {#if isUploading}
         <i class="fas fa-spinner fa-spin" aria-hidden="true"></i>
         {uploadProgress}

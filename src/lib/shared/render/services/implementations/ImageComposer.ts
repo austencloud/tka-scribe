@@ -60,13 +60,15 @@ export class ImageComposer implements IImageComposer {
     overrides?: SequenceExportOptions["visibilityOverrides"]
   ): Promise<PictographVisibilityOptions> {
     // If all required overrides are provided, use them directly (no async needed)
-    if (overrides &&
-        overrides.showTKA !== undefined &&
-        overrides.showVTG !== undefined &&
-        overrides.showElemental !== undefined &&
-        overrides.showPositions !== undefined &&
-        overrides.showReversals !== undefined &&
-        overrides.showNonRadialPoints !== undefined) {
+    if (
+      overrides &&
+      overrides.showTKA !== undefined &&
+      overrides.showVTG !== undefined &&
+      overrides.showElemental !== undefined &&
+      overrides.showPositions !== undefined &&
+      overrides.showReversals !== undefined &&
+      overrides.showNonRadialPoints !== undefined
+    ) {
       return {
         showTKA: overrides.showTKA, // TKA Glyph includes turn numbers
         showVTG: overrides.showVTG,
@@ -83,7 +85,7 @@ export class ImageComposer implements IImageComposer {
     const visibilityManager = getVisibilityStateManager();
     await visibilityManager.ensureSettingsLoaded();
 
-    // Get animation visibility for Lights Off and Prop Glow settings
+    // Get animation visibility for Dark Mode and Prop Glow settings
     const animVisibilityManager = getAnimationVisibilityManager();
 
     const globalSettings: PictographVisibilityOptions = {
@@ -94,7 +96,7 @@ export class ImageComposer implements IImageComposer {
       showReversals: visibilityManager.getGlyphVisibility("reversalIndicators"),
       showNonRadialPoints: visibilityManager.getNonRadialVisibility(),
       lightsOff: animVisibilityManager.isLightsOff(),
-      // Prop glow is automatically enabled when Lights Off is on
+      // Prop glow is automatically enabled when Dark Mode is on
       propGlow: animVisibilityManager.isLightsOff(),
     };
 
@@ -106,7 +108,8 @@ export class ImageComposer implements IImageComposer {
         showElemental: overrides.showElemental ?? globalSettings.showElemental,
         showPositions: overrides.showPositions ?? globalSettings.showPositions,
         showReversals: overrides.showReversals ?? globalSettings.showReversals,
-        showNonRadialPoints: overrides.showNonRadialPoints ?? globalSettings.showNonRadialPoints,
+        showNonRadialPoints:
+          overrides.showNonRadialPoints ?? globalSettings.showNonRadialPoints,
         lightsOff: overrides.lightsOff ?? globalSettings.lightsOff,
         propGlow: overrides.propGlow ?? globalSettings.propGlow,
       };
@@ -131,7 +134,9 @@ export class ImageComposer implements IImageComposer {
     // Get visibility settings ONCE at the start of composition
     // Uses explicit overrides from options if provided, otherwise falls back to global settings
     // NOTE: await ensures settings are loaded from persistence before reading (when no overrides)
-    const visibilitySettings = await this.getVisibilitySettings(options.visibilityOverrides);
+    const visibilitySettings = await this.getVisibilitySettings(
+      options.visibilityOverrides
+    );
 
     // Step 1: Calculate layout using LayoutCalculator
     // This service has the proper lookup tables matching the desktop application
@@ -189,7 +194,7 @@ export class ImageComposer implements IImageComposer {
 
     // Step 3: Fill background for the grid area (offset by header height)
     // Note: Footer background is drawn by renderUserInfo with gray matching header style
-    // Lights Off uses dark background (#0a0a0f), normal mode uses white
+    // Dark Mode uses dark background (#0a0a0f), normal mode uses white
     const isLightsOff = visibilitySettings.lightsOff ?? false;
     ctx.fillStyle = isLightsOff ? "#0a0a0f" : "white";
     ctx.fillRect(0, headerHeight, canvasWidth, rows * beatSize);
@@ -645,16 +650,16 @@ export class ImageComposer implements IImageComposer {
     const result = {
       ...data,
       motions: {
-        blue: data.motions.blue && finalBlueProp
-          ? { ...data.motions.blue, propType: finalBlueProp }
-          : data.motions.blue,
-        red: data.motions.red && finalRedProp
-          ? { ...data.motions.red, propType: finalRedProp }
-          : data.motions.red,
+        blue:
+          data.motions.blue && finalBlueProp
+            ? { ...data.motions.blue, propType: finalBlueProp }
+            : data.motions.blue,
+        red:
+          data.motions.red && finalRedProp
+            ? { ...data.motions.red, propType: finalRedProp }
+            : data.motions.red,
       },
     };
-
-
 
     return result;
   }

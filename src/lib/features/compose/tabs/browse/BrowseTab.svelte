@@ -40,9 +40,7 @@ Features:
   const drawerWidth = "min(600px, 90vw)";
 
   onMount(() => {
-    hapticService = tryResolve<IHapticFeedback>(
-      TYPES.IHapticFeedback
-    );
+    hapticService = tryResolve<IHapticFeedback>(TYPES.IHapticFeedback);
 
     // Load animations
     browseState.loadAnimations();
@@ -141,7 +139,8 @@ Features:
   <div class="grid-section">
     {#if browseState.error}
       <div class="error-state" role="alert" aria-live="assertive">
-        <i class="fas fa-exclamation-triangle error-icon" aria-hidden="true"></i>
+        <i class="fas fa-exclamation-triangle error-icon" aria-hidden="true"
+        ></i>
         <p class="error-message">{browseState.error}</p>
         <button class="retry-btn" onclick={() => browseState.loadAnimations()}>
           <i class="fas fa-redo" aria-hidden="true"></i>

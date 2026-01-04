@@ -20,29 +20,29 @@
       question: "What exactly do I get with premium?",
       answer:
         "Unlimited sequence generation, full access to Compose and Train modules, and priority support. All premium features are clearly marked throughout the app.",
-      category: "features"
+      category: "features",
     },
     {
       id: "cancel",
       question: "Can I cancel anytime?",
       answer:
         "Yes, absolutely. Cancel your subscription anytime from your account settings. You'll keep access until the end of your billing period.",
-      category: "billing"
+      category: "billing",
     },
     {
       id: "secure",
       question: "Is my payment secure?",
       answer:
         "All payments are processed by Stripe, the industry standard for secure online payments. We never see or store your payment information.",
-      category: "billing"
+      category: "billing",
     },
     {
       id: "refund",
       question: "What if I'm not satisfied?",
       answer:
         "We offer a 30-day money-back guarantee. If premium isn't right for you, email support@tka.com within 30 days for a full refund.",
-      category: "billing"
-    }
+      category: "billing",
+    },
   ];
 
   const displayItems = $derived(items.length > 0 ? items : defaultFAQs);
@@ -52,7 +52,9 @@
   // Sync open items when defaultExpanded or items change
   $effect(() => {
     const currentItems = items.length > 0 ? items : defaultFAQs;
-    openItems = defaultExpanded ? new Set(currentItems.map((i) => i.id)) : new Set();
+    openItems = defaultExpanded
+      ? new Set(currentItems.map((i) => i.id))
+      : new Set();
   });
 
   function toggle(id: string) {
@@ -73,7 +75,10 @@
       <div class="faq-item">
         <button class="faq-question" onclick={() => toggle(item.id)}>
           <span>{item.question}</span>
-          <i class="fas fa-chevron-{openItems.has(item.id) ? 'up' : 'down'}" aria-hidden="true"></i>
+          <i
+            class="fas fa-chevron-{openItems.has(item.id) ? 'up' : 'down'}"
+            aria-hidden="true"
+          ></i>
         </button>
         {#if openItems.has(item.id)}
           <div class="faq-answer">

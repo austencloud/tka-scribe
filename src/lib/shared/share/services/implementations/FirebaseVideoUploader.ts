@@ -34,9 +34,8 @@ export class FirebaseVideoUploader implements IFirebaseVideoUploader {
     videoFile: File | Blob,
     onProgress?: (percent: number) => void
   ): Promise<VideoUploadResult> {
-    const { ref, uploadBytesResumable, getDownloadURL } = await import(
-      "firebase/storage"
-    );
+    const { ref, uploadBytesResumable, getDownloadURL } =
+      await import("firebase/storage");
     const storage = await getStorageInstance();
     const userId = this.getUserId();
 
@@ -100,9 +99,8 @@ export class FirebaseVideoUploader implements IFirebaseVideoUploader {
     animationBlob: Blob,
     format: "webp" | "gif"
   ): Promise<VideoUploadResult> {
-    const { ref, uploadBytes, getDownloadURL } = await import(
-      "firebase/storage"
-    );
+    const { ref, uploadBytes, getDownloadURL } =
+      await import("firebase/storage");
     const storage = await getStorageInstance();
     const userId = this.getUserId();
 
@@ -181,9 +179,8 @@ export class FirebaseVideoUploader implements IFirebaseVideoUploader {
     thumbnailBlob: Blob,
     videoTimestamp: number
   ): Promise<VideoUploadResult> {
-    const { ref, uploadBytes, getDownloadURL } = await import(
-      "firebase/storage"
-    );
+    const { ref, uploadBytes, getDownloadURL } =
+      await import("firebase/storage");
     const storage = await getStorageInstance();
     const userId = this.getUserId();
 
@@ -216,9 +213,8 @@ export class FirebaseVideoUploader implements IFirebaseVideoUploader {
     thumbnailBlob: Blob,
     format: "png" | "jpeg" | "webp" = "png"
   ): Promise<VideoUploadResult> {
-    const { ref, uploadBytes, getDownloadURL } = await import(
-      "firebase/storage"
-    );
+    const { ref, uploadBytes, getDownloadURL } =
+      await import("firebase/storage");
     const storage = await getStorageInstance();
     const userId = this.getUserId();
 

@@ -149,7 +149,8 @@ export class AvatarCustomizer implements IAvatarCustomizer {
   ) {
     // Get Austen preset (index 2)
     const austenPreset = PROPORTION_PRESETS.find((p) => p.id === "tall-male");
-    const defaultProportions = austenPreset?.proportions ?? deriveProportionsInternal(178, "masculine");
+    const defaultProportions =
+      austenPreset?.proportions ?? deriveProportionsInternal(178, "masculine");
 
     // Initialize with defaults
     this.state = {

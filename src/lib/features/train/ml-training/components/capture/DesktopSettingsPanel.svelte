@@ -104,7 +104,8 @@
     {:else if canStopRecording}
       <div class="recording-active">
         <button class="btn-pause-desktop" onclick={onTogglePause}>
-          <i class="fa {isPaused ? 'fa-play' : 'fa-pause'}" aria-hidden="true"></i>
+          <i class="fa {isPaused ? 'fa-play' : 'fa-pause'}" aria-hidden="true"
+          ></i>
           {isPaused ? "Resume" : "Pause"}
         </button>
 
@@ -205,11 +206,23 @@
       padding: 1.25rem;
       background: linear-gradient(
         135deg,
-        color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 10%, transparent),
-        color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 10%, transparent)
+        color-mix(
+          in srgb,
+          var(--theme-accent, var(--theme-accent)) 10%,
+          transparent
+        ),
+        color-mix(
+          in srgb,
+          var(--theme-accent, var(--theme-accent)) 10%,
+          transparent
+        )
       );
       border: 1px solid
-        color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 20%, transparent);
+        color-mix(
+          in srgb,
+          var(--theme-accent, var(--theme-accent)) 20%,
+          transparent
+        );
       border-radius: 12px;
     }
 
@@ -257,7 +270,11 @@
     }
 
     .btn-record-desktop {
-      background: linear-gradient(135deg, var(--semantic-error), var(--semantic-error));
+      background: linear-gradient(
+        135deg,
+        var(--semantic-error),
+        var(--semantic-error)
+      );
       color: white;
       box-shadow: 0 4px 16px rgba(239, 68, 68, 0.3);
     }

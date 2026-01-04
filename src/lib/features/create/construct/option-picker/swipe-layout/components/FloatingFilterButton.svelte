@@ -30,9 +30,7 @@ that triggers the filter panel dropdown.
   }>();
 
   // Resolve service safely (tryResolve returns null if not available)
-  const hapticService = tryResolve<IHapticFeedback>(
-    TYPES.IHapticFeedback
-  );
+  const hapticService = tryResolve<IHapticFeedback>(TYPES.IHapticFeedback);
 
   /**
    * Calculate safe padding for floating button that won't overlap the grid.
@@ -198,7 +196,11 @@ that triggers the filter panel dropdown.
     right: 6px;
     width: 8px;
     height: 8px;
-    background: linear-gradient(135deg, var(--semantic-info) 0%, var(--semantic-info) 100%);
+    background: linear-gradient(
+      135deg,
+      var(--semantic-info) 0%,
+      var(--semantic-info) 100%
+    );
     border: 2px solid rgba(255, 255, 255, 0.3);
     border-radius: 50%;
     box-shadow: 0 2px 6px rgba(59, 130, 246, 0.5);

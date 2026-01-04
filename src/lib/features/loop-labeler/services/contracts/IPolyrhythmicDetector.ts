@@ -73,5 +73,7 @@ export interface IPolyrhythmicDetector {
    * @param rawSequence The raw sequence data array (including metadata at index 0)
    * @returns Analysis result with detected polyrhythm information
    */
-  detectPolyrhythmic(rawSequence: Record<string, unknown>[]): PolyrhythmicLOOPResult;
+  detectPolyrhythmic(
+    rawSequence: Record<string, unknown>[]
+  ): PolyrhythmicLOOPResult;
 }

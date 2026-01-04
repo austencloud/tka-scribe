@@ -22,7 +22,11 @@
   .dependency-warning {
     background: var(--semantic-warning-dim);
     border: 2px solid
-      color-mix(in srgb, var(--semantic-warning, var(--semantic-warning)) 30%, transparent);
+      color-mix(
+        in srgb,
+        var(--semantic-warning, var(--semantic-warning)) 30%,
+        transparent
+      );
     border-radius: 8px;
     padding: 12px;
     color: var(--semantic-warning, var(--semantic-warning));

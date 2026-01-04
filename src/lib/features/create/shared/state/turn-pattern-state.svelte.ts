@@ -24,7 +24,9 @@ let _initialized = false;
 let _turnPatternManager: ITurnPatternManager | null = null;
 function getTurnPatternManager(): ITurnPatternManager {
   if (!_turnPatternManager) {
-    _turnPatternManager = resolve<ITurnPatternManager>(TYPES.ITurnPatternManager);
+    _turnPatternManager = resolve<ITurnPatternManager>(
+      TYPES.ITurnPatternManager
+    );
   }
   return _turnPatternManager;
 }
@@ -91,7 +93,10 @@ export const turnPatternState = {
         sequence as any,
         name
       );
-      const saved = await getTurnPatternManager().savePattern(patternData, userId);
+      const saved = await getTurnPatternManager().savePattern(
+        patternData,
+        userId
+      );
 
       // Add to local state
       _patterns = [saved, ..._patterns];

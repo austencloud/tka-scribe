@@ -31,7 +31,9 @@
   <div class="header-left">
     <i class="fas fa-magnifying-glass" aria-hidden="true"></i>
     <h2>Pictograph Inspector</h2>
-    <span class="beat-badge">Beat {displayData?.beatNumber ?? beatData.beatNumber}</span>
+    <span class="beat-badge"
+      >Beat {displayData?.beatNumber ?? beatData.beatNumber}</span
+    >
     {#if displayData?.letter ?? beatData.letter}
       <span class="letter-badge">{displayData?.letter ?? beatData.letter}</span>
     {/if}
@@ -42,19 +44,11 @@
     {/if}
   </div>
   <div class="header-actions">
-    <button
-      class="copy-all-btn"
-      onclick={onCopyAll}
-      disabled={isCalculating}
-    >
+    <button class="copy-all-btn" onclick={onCopyAll} disabled={isCalculating}>
       <i class="fas fa-copy" aria-hidden="true"></i>
       {copiedSection === "all" ? "Copied!" : "Copy All for AI"}
     </button>
-    <button
-      class="copy-json-btn"
-      onclick={onCopyJson}
-      disabled={isCalculating}
-    >
+    <button class="copy-json-btn" onclick={onCopyJson} disabled={isCalculating}>
       <i class="fas fa-code" aria-hidden="true"></i>
       {copiedSection === "json" ? "Copied!" : "Copy JSON"}
     </button>

@@ -47,17 +47,12 @@ Pure reactive approach - grid mode determines styling, rotation provides animati
   let previousGridMode: GridMode | null = null;
 
   // Get SVG preload service
-  const SvgPreloader = resolve(
-    TYPES.ISvgPreloader
-  ) as ISvgPreloader;
+  const SvgPreloader = resolve(TYPES.ISvgPreloader) as ISvgPreloader;
 
   // Load diamond grid (we rotate it to create box appearance)
   async function loadGrid(): Promise<void> {
     try {
-      const svgText = await SvgPreloader.getSvgContent(
-        "grid",
-        "diamond_grid"
-      );
+      const svgText = await SvgPreloader.getSvgContent("grid", "diamond_grid");
       baseGridSvg = svgText;
       onLoaded?.();
     } catch (error) {
@@ -75,7 +70,13 @@ Pure reactive approach - grid mode determines styling, rotation provides animati
     // In preview mode, always pass false for showNonRadial since CSS classes handle visibility
     // This prevents SVG re-rendering when toggling, allowing CSS transitions to work
     const effectiveShowNonRadial = previewMode ? false : showNonRadialPoints;
-    return applyGridModeStyles(baseGridSvg, gridMode, effectiveShowNonRadial, ledMode, previewMode);
+    return applyGridModeStyles(
+      baseGridSvg,
+      gridMode,
+      effectiveShowNonRadial,
+      ledMode,
+      previewMode
+    );
   });
 
   // Load grid on mount
@@ -300,10 +301,7 @@ Pure reactive approach - grid mode determines styling, rotation provides animati
           requestAnimationFrame(animate);
         } else {
           // Ensure final value is exact
-          element.setAttribute(
-            "transform",
-            `rotate(${newRotation}, 475, 475)`
-          );
+          element.setAttribute("transform", `rotate(${newRotation}, 475, 475)`);
         }
       };
 
@@ -438,10 +436,18 @@ Pure reactive approach - grid mode determines styling, rotation provides animati
   }
 
   /* Preview mode: show "off" non-radial points at 40% opacity instead of hidden */
-  :global(.grid-container.preview-mode:not(.show-non-radial) #ne_diamond_layer2_point),
-  :global(.grid-container.preview-mode:not(.show-non-radial) #se_diamond_layer2_point),
-  :global(.grid-container.preview-mode:not(.show-non-radial) #sw_diamond_layer2_point),
-  :global(.grid-container.preview-mode:not(.show-non-radial) #nw_diamond_layer2_point) {
+  :global(
+    .grid-container.preview-mode:not(.show-non-radial) #ne_diamond_layer2_point
+  ),
+  :global(
+    .grid-container.preview-mode:not(.show-non-radial) #se_diamond_layer2_point
+  ),
+  :global(
+    .grid-container.preview-mode:not(.show-non-radial) #sw_diamond_layer2_point
+  ),
+  :global(
+    .grid-container.preview-mode:not(.show-non-radial) #nw_diamond_layer2_point
+  ) {
     opacity: 0.4;
   }
 

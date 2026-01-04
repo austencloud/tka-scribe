@@ -6,8 +6,8 @@
  */
 
 export interface PerformerPosition {
-	x: number;
-	z: number;
+  x: number;
+  z: number;
 }
 
 const GRID_SPACING = 400; // Units between performers
@@ -28,46 +28,49 @@ export const WALL_OFFSET = -60;
  * For 4 performers: full 2x2 grid
  */
 export function getDefaultPositions(count: number): PerformerPosition[] {
-	if (count <= 0) return [];
-	if (count > 4) count = 4;
+  if (count <= 0) return [];
+  if (count > 4) count = 4;
 
-	// Single performer: centered, offset back from wall plane
-	if (count === 1) {
-		return [{ x: 0, z: WALL_OFFSET }];
-	}
+  // Single performer: centered, offset back from wall plane
+  if (count === 1) {
+    return [{ x: 0, z: WALL_OFFSET }];
+  }
 
-	// Two performers: side by side
-	if (count === 2) {
-		return [
-			{ x: -GRID_SPACING / 2, z: WALL_OFFSET }, // Left
-			{ x: GRID_SPACING / 2, z: WALL_OFFSET } // Right
-		];
-	}
+  // Two performers: side by side
+  if (count === 2) {
+    return [
+      { x: -GRID_SPACING / 2, z: WALL_OFFSET }, // Left
+      { x: GRID_SPACING / 2, z: WALL_OFFSET }, // Right
+    ];
+  }
 
-	// Three performers: 2 front, 1 back center
-	if (count === 3) {
-		return [
-			{ x: -GRID_SPACING / 2, z: WALL_OFFSET }, // Front-left
-			{ x: GRID_SPACING / 2, z: WALL_OFFSET }, // Front-right
-			{ x: 0, z: -GRID_SPACING + WALL_OFFSET } // Back-center
-		];
-	}
+  // Three performers: 2 front, 1 back center
+  if (count === 3) {
+    return [
+      { x: -GRID_SPACING / 2, z: WALL_OFFSET }, // Front-left
+      { x: GRID_SPACING / 2, z: WALL_OFFSET }, // Front-right
+      { x: 0, z: -GRID_SPACING + WALL_OFFSET }, // Back-center
+    ];
+  }
 
-	// Four performers: full 2x2 grid
-	return [
-		{ x: -GRID_SPACING / 2, z: WALL_OFFSET }, // Front-left
-		{ x: GRID_SPACING / 2, z: WALL_OFFSET }, // Front-right
-		{ x: -GRID_SPACING / 2, z: -GRID_SPACING + WALL_OFFSET }, // Back-left
-		{ x: GRID_SPACING / 2, z: -GRID_SPACING + WALL_OFFSET } // Back-right
-	];
+  // Four performers: full 2x2 grid
+  return [
+    { x: -GRID_SPACING / 2, z: WALL_OFFSET }, // Front-left
+    { x: GRID_SPACING / 2, z: WALL_OFFSET }, // Front-right
+    { x: -GRID_SPACING / 2, z: -GRID_SPACING + WALL_OFFSET }, // Back-left
+    { x: GRID_SPACING / 2, z: -GRID_SPACING + WALL_OFFSET }, // Back-right
+  ];
 }
 
 /**
  * Get position for a specific performer index
  */
-export function getPerformerPosition(index: number, totalCount: number): PerformerPosition {
-	const positions = getDefaultPositions(totalCount);
-	return positions[index] ?? { x: 0, z: 0 };
+export function getPerformerPosition(
+  index: number,
+  totalCount: number
+): PerformerPosition {
+  const positions = getDefaultPositions(totalCount);
+  return positions[index] ?? { x: 0, z: 0 };
 }
 
 /**

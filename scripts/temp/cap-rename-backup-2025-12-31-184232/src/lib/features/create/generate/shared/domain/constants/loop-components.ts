@@ -4,7 +4,10 @@
  */
 
 // Re-export domain models
-export { LOOPComponent, type LOOPComponentInfo } from "../models/generate-models";
+export {
+  LOOPComponent,
+  type LOOPComponentInfo,
+} from "../models/generate-models";
 
 // Re-export constants
 export { LOOP_COMPONENTS } from "./loop-constants";

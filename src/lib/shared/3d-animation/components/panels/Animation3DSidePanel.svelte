@@ -80,7 +80,8 @@
   <!-- Sequence Info -->
   {#if hasSequence}
     <div class="sequence-header">
-      <span class="mode-label">Beat {currentBeatIndex + 1} of {totalBeats}</span>
+      <span class="mode-label">Beat {currentBeatIndex + 1} of {totalBeats}</span
+      >
     </div>
   {:else}
     <div class="empty-state">
@@ -104,7 +105,11 @@
       >
         <i class="fas fa-person" aria-hidden="true"></i>
         <span>Avatar</span>
-        <i class="fas fa-chevron-down chevron" class:rotated={!expandedSections.has("avatar")} aria-hidden="true"></i>
+        <i
+          class="fas fa-chevron-down chevron"
+          class:rotated={!expandedSections.has("avatar")}
+          aria-hidden="true"
+        ></i>
       </button>
       {#if expandedSections.has("avatar")}
         <div class="section-content">
@@ -124,14 +129,20 @@
         class="section-header"
         onclick={() => {
           const next = new Set(expandedSections);
-          next.has("proportions") ? next.delete("proportions") : next.add("proportions");
+          next.has("proportions")
+            ? next.delete("proportions")
+            : next.add("proportions");
           expandedSections = next;
         }}
         aria-expanded={expandedSections.has("proportions")}
       >
         <i class="fas fa-ruler-vertical" aria-hidden="true"></i>
         <span>Proportions</span>
-        <i class="fas fa-chevron-down chevron" class:rotated={!expandedSections.has("proportions")} aria-hidden="true"></i>
+        <i
+          class="fas fa-chevron-down chevron"
+          class:rotated={!expandedSections.has("proportions")}
+          aria-hidden="true"
+        ></i>
       </button>
       {#if expandedSections.has("proportions")}
         <div class="section-content">
@@ -146,14 +157,20 @@
         class="section-header"
         onclick={() => {
           const next = new Set(expandedSections);
-          next.has("environment") ? next.delete("environment") : next.add("environment");
+          next.has("environment")
+            ? next.delete("environment")
+            : next.add("environment");
           expandedSections = next;
         }}
         aria-expanded={expandedSections.has("environment")}
       >
         <i class="fas fa-mountain-sun" aria-hidden="true"></i>
         <span>Environment</span>
-        <i class="fas fa-chevron-down chevron" class:rotated={!expandedSections.has("environment")} aria-hidden="true"></i>
+        <i
+          class="fas fa-chevron-down chevron"
+          class:rotated={!expandedSections.has("environment")}
+          aria-hidden="true"
+        ></i>
       </button>
       {#if expandedSections.has("environment")}
         <div class="section-content">
@@ -175,7 +192,11 @@
       >
         <i class="fas fa-sparkles" aria-hidden="true"></i>
         <span>Effects</span>
-        <i class="fas fa-chevron-down chevron" class:rotated={!expandedSections.has("effects")} aria-hidden="true"></i>
+        <i
+          class="fas fa-chevron-down chevron"
+          class:rotated={!expandedSections.has("effects")}
+          aria-hidden="true"
+        ></i>
       </button>
       {#if expandedSections.has("effects")}
         <div class="section-content">
@@ -197,7 +218,11 @@
       >
         <i class="fas fa-border-all" aria-hidden="true"></i>
         <span>Grid</span>
-        <i class="fas fa-chevron-down chevron" class:rotated={!expandedSections.has("grid")} aria-hidden="true"></i>
+        <i
+          class="fas fa-chevron-down chevron"
+          class:rotated={!expandedSections.has("grid")}
+          aria-hidden="true"
+        ></i>
       </button>
       {#if expandedSections.has("grid")}
         <div class="section-content">
@@ -221,7 +246,9 @@
     flex-direction: column;
     background: var(--theme-panel-bg);
     border-left: 1px solid var(--theme-stroke);
-    transition: width 0.3s ease, opacity 0.3s ease;
+    transition:
+      width 0.3s ease,
+      opacity 0.3s ease;
   }
 
   .side-panel.collapsed {

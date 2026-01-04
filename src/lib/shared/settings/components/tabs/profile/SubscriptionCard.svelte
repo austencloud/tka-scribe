@@ -151,7 +151,11 @@
     width: 100%;
     padding: 16px 20px;
     min-height: var(--min-touch-target);
-    background: linear-gradient(135deg, var(--theme-accent) 0%, var(--theme-accent-strong) 100%);
+    background: linear-gradient(
+      135deg,
+      var(--theme-accent) 0%,
+      var(--theme-accent-strong) 100%
+    );
     border: none;
     border-radius: 12px;
     color: white;
@@ -215,7 +219,11 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(135deg, var(--theme-accent) 0%, var(--theme-accent-strong) 100%);
+    background: linear-gradient(
+      135deg,
+      var(--theme-accent) 0%,
+      var(--theme-accent-strong) 100%
+    );
     border-radius: 10px;
     color: white;
     font-size: var(--font-size-base);

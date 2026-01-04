@@ -24,9 +24,7 @@
     onGridModeChange?: ((gridMode: GridMode) => void) | undefined;
   } = $props();
 
-  const hapticService = resolve<IHapticFeedback>(
-    TYPES.IHapticFeedback
-  );
+  const hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
 
   function handleBackClick() {
     hapticService?.trigger("selection");

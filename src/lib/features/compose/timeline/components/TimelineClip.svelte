@@ -188,7 +188,13 @@
   </div>
 
   <!-- Main clip body -->
-  <div class="clip-body" onmousedown={handleMoveStart} role="button" tabindex="0" aria-label="Drag to move clip">
+  <div
+    class="clip-body"
+    onmousedown={handleMoveStart}
+    role="button"
+    tabindex="0"
+    aria-label="Drag to move clip"
+  >
     <div class="clip-preview">
       {#if clip.sequence.thumbnails?.[0]}
         <img src={clip.sequence.thumbnails[0]} alt="" draggable="false" />
@@ -270,11 +276,7 @@
     box-shadow: 0 2px 6px var(--theme-shadow);
     user-select: none;
     border: 1px solid
-      color-mix(
-        in srgb,
-        var(--clip-color, var(--theme-accent)) 70%,
-        white
-      );
+      color-mix(in srgb, var(--clip-color, var(--theme-accent)) 70%, white);
   }
 
   .timeline-clip:hover {
@@ -437,31 +439,19 @@
   }
 
   .badge.speed {
-    background: color-mix(
-      in srgb,
-      var(--semantic-success) 25%,
-      transparent
-    );
+    background: color-mix(in srgb, var(--semantic-success) 25%, transparent);
     color: var(--semantic-success);
     border-color: var(--semantic-success);
   }
 
   .badge.trim {
-    background: color-mix(
-      in srgb,
-      var(--semantic-warning) 25%,
-      transparent
-    );
+    background: color-mix(in srgb, var(--semantic-warning) 25%, transparent);
     color: var(--semantic-warning);
     border-color: var(--semantic-warning);
   }
 
   .badge.loop {
-    background: color-mix(
-      in srgb,
-      var(--semantic-info) 25%,
-      transparent
-    );
+    background: color-mix(in srgb, var(--semantic-info) 25%, transparent);
     color: var(--semantic-info);
     border-color: var(--semantic-info);
   }

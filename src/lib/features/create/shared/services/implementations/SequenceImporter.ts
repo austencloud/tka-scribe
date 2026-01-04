@@ -60,7 +60,6 @@ export class SequenceImporter implements ISequenceImporter {
    * Replaces 100+ lines of manual type assertions with validated parsing.
    */
   convertPngMetadata(id: string, pngMetadata: unknown[]): SequenceData {
-
     // Validate PNG structure first - throws if malformed
     const validatedSteps = parseStrict(
       PngMetadataArraySchema,

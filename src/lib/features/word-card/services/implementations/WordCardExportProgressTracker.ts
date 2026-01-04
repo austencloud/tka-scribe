@@ -21,9 +21,7 @@ interface ProgressOperation {
 }
 
 @injectable()
-export class WordCardExportProgressTracker
-  implements IWordCardExportProgressTracker
-{
+export class WordCardExportProgressTracker implements IWordCardExportProgressTracker {
   private operations = new Map<string, ProgressOperation>();
 
   /**

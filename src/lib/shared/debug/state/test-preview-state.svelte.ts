@@ -4,13 +4,7 @@
  * Uses direct Firestore queries; never marks notifications as read.
  */
 import { browser } from "$app/environment";
-import {
-  collection,
-  getDocs,
-  query,
-  orderBy,
-  limit,
-} from "firebase/firestore";
+import { collection, getDocs, query, orderBy, limit } from "firebase/firestore";
 import { getFirestoreInstance } from "$lib/shared/auth/firebase";
 
 type PreviewNotification = {
@@ -84,7 +78,9 @@ export async function loadPreviewNotifications(
     testPreviewState.isActive = true;
   } catch (err: unknown) {
     testPreviewState.error =
-      err instanceof Error ? err.message : "Failed to load preview notifications";
+      err instanceof Error
+        ? err.message
+        : "Failed to load preview notifications";
     testPreviewState.isActive = false;
     testPreviewState.notifications = [];
   } finally {

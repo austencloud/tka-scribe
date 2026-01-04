@@ -12,10 +12,17 @@
     onCancel: () => void;
   }
 
-  let { isOpen, providerConfig, providerEmail, canUnlink, onDisconnect, onCancel }: Props = $props();
+  let {
+    isOpen,
+    providerConfig,
+    providerEmail,
+    canUnlink,
+    onDisconnect,
+    onCancel,
+  }: Props = $props();
 </script>
 
-<Drawer bind:isOpen={isOpen} placement="bottom" ariaLabel="Manage connected account">
+<Drawer bind:isOpen placement="bottom" ariaLabel="Manage connected account">
   {#if providerConfig}
     <div class="provider-drawer-content">
       <div class="drawer-provider-header">
@@ -44,14 +51,12 @@
             <span>Disconnect {providerConfig.name}</span>
           </button>
           <p class="disconnect-warning">
-            You won't be able to sign in with {providerConfig.name} after
-            disconnecting.
+            You won't be able to sign in with {providerConfig.name} after disconnecting.
           </p>
         {:else}
           <p class="cannot-disconnect-msg">
             <i class="fas fa-info-circle" aria-hidden="true"></i>
-            This is your only sign-in method. Link another account before
-            disconnecting.
+            This is your only sign-in method. Link another account before disconnecting.
           </p>
         {/if}
       </div>

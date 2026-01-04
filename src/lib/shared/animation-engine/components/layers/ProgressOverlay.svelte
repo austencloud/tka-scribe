@@ -20,7 +20,12 @@ Shows pre-render progress and perfect playback badge.
 
 <!-- Pre-render progress indicator -->
 {#if isPreRendering && preRenderProgress}
-  <div class="pre-render-badge" role="status" aria-live="polite" aria-busy="true">
+  <div
+    class="pre-render-badge"
+    role="status"
+    aria-live="polite"
+    aria-busy="true"
+  >
     <div class="badge-content">
       <div class="spinner-small" aria-hidden="true"></div>
       <span>Optimizing... {Math.round(preRenderProgress.percent)}%</span>

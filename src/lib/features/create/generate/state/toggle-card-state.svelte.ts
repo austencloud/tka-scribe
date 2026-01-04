@@ -61,9 +61,7 @@ export function createToggleCardState<T>(props: {
   async function initialize(): Promise<() => void> {
     try {
       // Resolve services from DI container
-      hapticService = resolve<IHapticFeedback>(
-        TYPES.IHapticFeedback
-      );
+      hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
       rippleService = resolve<IRippleEffect>(TYPES.IRippleEffect);
       deviceDetector = resolve<IDeviceDetector>(TYPES.IDeviceDetector);
 

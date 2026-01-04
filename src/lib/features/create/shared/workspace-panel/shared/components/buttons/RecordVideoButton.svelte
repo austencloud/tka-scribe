@@ -22,9 +22,7 @@
   let hapticService: IHapticFeedback;
 
   onMount(() => {
-    hapticService = resolve<IHapticFeedback>(
-      TYPES.IHapticFeedback
-    );
+    hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
   });
 
   function handleClick() {
@@ -62,24 +60,48 @@
 
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 90%, transparent),
-      color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 90%, transparent)
+      color-mix(
+        in srgb,
+        var(--semantic-error, var(--semantic-error)) 90%,
+        transparent
+      ),
+      color-mix(
+        in srgb,
+        var(--semantic-error, var(--semantic-error)) 90%,
+        transparent
+      )
     );
     border: 1px solid var(--theme-stroke-strong);
     box-shadow:
       0 2px 8px
-        color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 35%, transparent),
+        color-mix(
+          in srgb,
+          var(--semantic-error, var(--semantic-error)) 35%,
+          transparent
+        ),
       0 6px 18px
-        color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 25%, transparent);
+        color-mix(
+          in srgb,
+          var(--semantic-error, var(--semantic-error)) 25%,
+          transparent
+        );
   }
 
   .panel-button:hover:not(:disabled) {
     transform: scale(1.05);
     box-shadow:
       0 4px 12px
-        color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 45%, transparent),
+        color-mix(
+          in srgb,
+          var(--semantic-error, var(--semantic-error)) 45%,
+          transparent
+        ),
       0 8px 22px
-        color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 35%, transparent);
+        color-mix(
+          in srgb,
+          var(--semantic-error, var(--semantic-error)) 35%,
+          transparent
+        );
   }
 
   .panel-button:active:not(:disabled) {
@@ -89,7 +111,11 @@
 
   .panel-button:focus-visible {
     outline: 2px solid
-      color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 70%, white);
+      color-mix(
+        in srgb,
+        var(--semantic-error, var(--semantic-error)) 70%,
+        white
+      );
     outline-offset: 2px;
   }
 
@@ -103,13 +129,25 @@
     background: linear-gradient(
       135deg,
       var(--semantic-error, var(--semantic-error)),
-      color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 85%, #b91c1c)
+      color-mix(
+        in srgb,
+        var(--semantic-error, var(--semantic-error)) 85%,
+        #b91c1c
+      )
     );
     box-shadow:
       0 4px 14px
-        color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 55%, transparent),
+        color-mix(
+          in srgb,
+          var(--semantic-error, var(--semantic-error)) 55%,
+          transparent
+        ),
       0 10px 26px
-        color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 40%, transparent);
+        color-mix(
+          in srgb,
+          var(--semantic-error, var(--semantic-error)) 40%,
+          transparent
+        );
   }
 
   /* Mobile responsive - ALWAYS 48px minimum per iOS/Android guidelines */

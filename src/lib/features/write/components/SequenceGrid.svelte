@@ -33,7 +33,11 @@
     onSequenceClicked?.(index);
   }
 
-  function handleSequenceRemove(sequence: SequenceData, index: number, event: Event) {
+  function handleSequenceRemove(
+    sequence: SequenceData,
+    index: number,
+    event: Event
+  ) {
     event.stopPropagation();
     hapticService?.trigger("selection");
     onSequenceRemoveRequested?.(index);
@@ -41,7 +45,9 @@
 
   function getThumbnailUrl(sequence: SequenceData): string {
     if (sequence.thumbnails && sequence.thumbnails.length > 0) {
-      return sequence.thumbnails[0] || "/static/thumbnails/default-sequence.png";
+      return (
+        sequence.thumbnails[0] || "/static/thumbnails/default-sequence.png"
+      );
     }
     return "/static/thumbnails/default-sequence.png";
   }
@@ -70,8 +76,11 @@
           onclick={() => handleSequenceClick(sequence, index)}
           tabindex="0"
           role="button"
-          aria-label="Select sequence {sequence.name || `Sequence ${index + 1}`}"
-          onkeydown={(e) => (e.key === "Enter" || e.key === " ") && handleSequenceClick(sequence, index)}
+          aria-label="Select sequence {sequence.name ||
+            `Sequence ${index + 1}`}"
+          onkeydown={(e) =>
+            (e.key === "Enter" || e.key === " ") &&
+            handleSequenceClick(sequence, index)}
         >
           <!-- Sequence thumbnail -->
           <div class="sequence-thumbnail">
@@ -85,14 +94,17 @@
 
           <!-- Sequence info -->
           <div class="sequence-info">
-            <div class="sequence-title">{sequence.name || `Sequence ${index + 1}`}</div>
+            <div class="sequence-title">
+              {sequence.name || `Sequence ${index + 1}`}
+            </div>
             <div class="sequence-details">
               <span class="sequence-duration">
                 <i class="fas fa-clock" aria-hidden="true"></i>
                 {formatDuration(sequence.sequenceLength)}
               </span>
               {#if sequence.beats && sequence.beats.length > 0}
-                <span class="sequence-beats">{sequence.beats.length} beats</span>
+                <span class="sequence-beats">{sequence.beats.length} beats</span
+                >
               {/if}
             </div>
           </div>
@@ -115,7 +127,10 @@
         <i class="fas fa-film" aria-hidden="true"></i>
       </div>
       <h3>No Sequences</h3>
-      <p>This act doesn't have any sequences yet. Add sequences from the sequence builder or import them.</p>
+      <p>
+        This act doesn't have any sequences yet. Add sequences from the sequence
+        builder or import them.
+      </p>
     </div>
   {/if}
 </div>

@@ -17,11 +17,11 @@
   Domain: Share Hub - Settings Panel Wrapper
 -->
 <script lang="ts">
-  import type { Snippet } from 'svelte';
+  import type { Snippet } from "svelte";
 
   let {
     isOpen = false,
-    title = 'Settings',
+    title = "Settings",
     onClose,
     children,
   }: {
@@ -54,19 +54,20 @@
   // Get all focusable elements within the panel
   function getFocusableElements(): HTMLElement[] {
     if (!panelElement) return [];
-    const selector = 'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
+    const selector =
+      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
     return Array.from(panelElement.querySelectorAll<HTMLElement>(selector));
   }
 
   // Handle keyboard events (Escape to close, Tab for focus trap)
   function handleKeydown(event: KeyboardEvent) {
-    if (event.key === 'Escape' && isOpen) {
+    if (event.key === "Escape" && isOpen) {
       onClose?.();
       return;
     }
 
     // Focus trap: cycle through focusable elements
-    if (event.key === 'Tab' && isOpen) {
+    if (event.key === "Tab" && isOpen) {
       const focusable = getFocusableElements();
       if (focusable.length === 0) return;
 

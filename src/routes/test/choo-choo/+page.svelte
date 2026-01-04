@@ -42,7 +42,9 @@
   let servicesReady = $state(false);
 
   // Detection results
-  let detectionResults = $state<Map<string, ReturnType<typeof detectChooChoo>>>(new Map());
+  let detectionResults = $state<Map<string, ReturnType<typeof detectChooChoo>>>(
+    new Map()
+  );
 
   onMount(() => {
     const init = async () => {
@@ -50,8 +52,12 @@
       try {
         await loadFeatureModule("animate");
         await loadAnimationModule();
-        playbackController = resolve(TYPES.IAnimationPlaybackController) as IAnimationPlaybackController;
-        motionQueryHandler = resolve(TYPES.IMotionQueryHandler) as IMotionQueryHandler;
+        playbackController = resolve(
+          TYPES.IAnimationPlaybackController
+        ) as IAnimationPlaybackController;
+        motionQueryHandler = resolve(
+          TYPES.IMotionQueryHandler
+        ) as IMotionQueryHandler;
         servicesReady = true;
 
         // Generate initial variations after services are ready
@@ -69,7 +75,9 @@
   });
 
   async function doGenerateVariations() {
-    sequences = await generateChooChooVariations(motionQueryHandler ?? undefined);
+    sequences = await generateChooChooVariations(
+      motionQueryHandler ?? undefined
+    );
 
     // Run detection on each sequence
     const results = new Map<string, ReturnType<typeof detectChooChoo>>();
@@ -80,7 +88,10 @@
   }
 
   async function generateCustom() {
-    const newSeq = await generateChooChoo(config, motionQueryHandler ?? undefined);
+    const newSeq = await generateChooChoo(
+      config,
+      motionQueryHandler ?? undefined
+    );
     sequences = [newSeq, ...sequences];
     detectionResults.set(newSeq.id, detectChooChoo(newSeq));
     selectSequence(0);
@@ -110,7 +121,9 @@
   }
 
   function handleValidation(seqId: string, isValid: boolean) {
-    console.log(`Sequence ${seqId} marked as ${isValid ? "VALID" : "INVALID"} Choo Choo`);
+    console.log(
+      `Sequence ${seqId} marked as ${isValid ? "VALID" : "INVALID"} Choo Choo`
+    );
     // Could store this for training data later
   }
 
@@ -125,7 +138,10 @@
 
     if (animationState.sequenceData.beats?.length) {
       const beatIndex = Math.max(0, Math.ceil(currentBeat - 1) - 1);
-      const clampedIndex = Math.min(beatIndex, animationState.sequenceData.beats.length - 1);
+      const clampedIndex = Math.min(
+        beatIndex,
+        animationState.sequenceData.beats.length - 1
+      );
       return animationState.sequenceData.beats[clampedIndex] || null;
     }
 
@@ -190,7 +206,11 @@
         </label>
       </div>
 
-      <button class="generate-btn" onclick={() => generateCustom()} disabled={!servicesReady}>
+      <button
+        class="generate-btn"
+        onclick={() => generateCustom()}
+        disabled={!servicesReady}
+      >
         Generate Choo Choo
       </button>
     </section>
@@ -269,7 +289,11 @@
           >
             <div class="card-header">
               <span class="seq-type">
-                {detection?.type === "full" ? "Full" : detection?.type === "half" ? "Half" : "?"}
+                {detection?.type === "full"
+                  ? "Full"
+                  : detection?.type === "half"
+                    ? "Half"
+                    : "?"}
               </span>
               <span class="seq-beats">{seq.beats.length} beats</span>
             </div>
@@ -287,7 +311,11 @@
         {/each}
       </div>
 
-      <button class="regenerate-btn" onclick={() => doGenerateVariations()} disabled={!servicesReady}>
+      <button
+        class="regenerate-btn"
+        onclick={() => doGenerateVariations()}
+        disabled={!servicesReady}
+      >
         Regenerate All Variations
       </button>
     </section>
@@ -384,7 +412,9 @@
     color: white;
     font-weight: 600;
     cursor: pointer;
-    transition: transform 0.2s, box-shadow 0.2s;
+    transition:
+      transform 0.2s,
+      box-shadow 0.2s;
   }
 
   .generate-btn:hover {
@@ -450,7 +480,8 @@
     gap: 1rem;
   }
 
-  .valid-btn, .invalid-btn {
+  .valid-btn,
+  .invalid-btn {
     flex: 1;
     padding: 0.75rem;
     border: none;
@@ -469,7 +500,8 @@
     color: white;
   }
 
-  .loading, .empty {
+  .loading,
+  .empty {
     display: flex;
     align-items: center;
     justify-content: center;

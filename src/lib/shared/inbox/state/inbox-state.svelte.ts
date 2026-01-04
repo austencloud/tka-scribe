@@ -4,7 +4,10 @@
  * Svelte 5 runes-based state for the combined messages + notifications inbox.
  */
 
-import type { ConversationPreview, Conversation } from "$lib/shared/messaging/domain/models/conversation-models";
+import type {
+  ConversationPreview,
+  Conversation,
+} from "$lib/shared/messaging/domain/models/conversation-models";
 import type { Message } from "$lib/shared/messaging/domain/models/message-models";
 import type { UserNotification } from "$lib/features/feedback/domain/models/notification-models";
 
@@ -18,166 +21,166 @@ export type InboxView = "list" | "thread" | "compose";
  * Reactive inbox state using Svelte 5 runes
  */
 class InboxState {
-	// Drawer state
-	isOpen = $state(false);
-	activeTab = $state<InboxTab>("messages");
-	currentView = $state<InboxView>("list");
+  // Drawer state
+  isOpen = $state(false);
+  activeTab = $state<InboxTab>("messages");
+  currentView = $state<InboxView>("list");
 
-	// Message state
-	conversations = $state<ConversationPreview[]>([]);
-	selectedConversation = $state<Conversation | null>(null);
-	messages = $state<Message[]>([]);
+  // Message state
+  conversations = $state<ConversationPreview[]>([]);
+  selectedConversation = $state<Conversation | null>(null);
+  messages = $state<Message[]>([]);
 
-	// Notification state
-	notifications = $state<UserNotification[]>([]);
+  // Notification state
+  notifications = $state<UserNotification[]>([]);
 
-	// Derived unread counts from actual data - using arrow functions for reactivity
-	unreadMessageCount = $derived.by(() => {
-		return this.conversations.reduce((sum, c) => sum + (c.unreadCount || 0), 0);
-	});
+  // Derived unread counts from actual data - using arrow functions for reactivity
+  unreadMessageCount = $derived.by(() => {
+    return this.conversations.reduce((sum, c) => sum + (c.unreadCount || 0), 0);
+  });
 
-	unreadNotificationCount = $derived.by(() => {
-		return this.notifications.filter((n) => !n.read).length;
-	});
+  unreadNotificationCount = $derived.by(() => {
+    return this.notifications.filter((n) => !n.read).length;
+  });
 
-	// Loading states
-	isLoadingConversations = $state(false);
-	isLoadingMessages = $state(false);
-	isLoadingNotifications = $state(false);
+  // Loading states
+  isLoadingConversations = $state(false);
+  isLoadingMessages = $state(false);
+  isLoadingNotifications = $state(false);
 
-	// Compose state (for new message)
-	composeRecipientId = $state<string | null>(null);
-	composeRecipientName = $state<string | null>(null);
+  // Compose state (for new message)
+  composeRecipientId = $state<string | null>(null);
+  composeRecipientName = $state<string | null>(null);
 
-	// Pending navigation - allows dashboard widgets to request direct navigation
-	// The InboxDrawer will pick this up and handle the actual loading
-	pendingConversationId = $state<string | null>(null);
-	pendingNotificationId = $state<string | null>(null);
+  // Pending navigation - allows dashboard widgets to request direct navigation
+  // The InboxDrawer will pick this up and handle the actual loading
+  pendingConversationId = $state<string | null>(null);
+  pendingNotificationId = $state<string | null>(null);
 
-	// Derived state - using $derived.by for proper reactivity
-	totalUnreadCount = $derived.by(() => {
-		return this.unreadMessageCount + this.unreadNotificationCount;
-	});
+  // Derived state - using $derived.by for proper reactivity
+  totalUnreadCount = $derived.by(() => {
+    return this.unreadMessageCount + this.unreadNotificationCount;
+  });
 
-	hasUnread = $derived.by(() => {
-		return this.totalUnreadCount > 0;
-	});
+  hasUnread = $derived.by(() => {
+    return this.totalUnreadCount > 0;
+  });
 
-	// Actions
-	open(tab?: InboxTab) {
-		this.isOpen = true;
-		if (tab) {
-			this.activeTab = tab;
-		}
-		this.currentView = "list";
-	}
+  // Actions
+  open(tab?: InboxTab) {
+    this.isOpen = true;
+    if (tab) {
+      this.activeTab = tab;
+    }
+    this.currentView = "list";
+  }
 
-	close() {
-		this.isOpen = false;
-		this.selectedConversation = null;
-		this.messages = [];
-		this.currentView = "list";
-		this.composeRecipientId = null;
-		this.composeRecipientName = null;
-	}
+  close() {
+    this.isOpen = false;
+    this.selectedConversation = null;
+    this.messages = [];
+    this.currentView = "list";
+    this.composeRecipientId = null;
+    this.composeRecipientName = null;
+  }
 
-	setTab(tab: InboxTab) {
-		this.activeTab = tab;
-		this.currentView = "list";
-		this.selectedConversation = null;
-		this.messages = [];
-	}
+  setTab(tab: InboxTab) {
+    this.activeTab = tab;
+    this.currentView = "list";
+    this.selectedConversation = null;
+    this.messages = [];
+  }
 
-	selectConversation(conversation: Conversation) {
-		this.selectedConversation = conversation;
-		this.currentView = "thread";
-	}
+  selectConversation(conversation: Conversation) {
+    this.selectedConversation = conversation;
+    this.currentView = "thread";
+  }
 
-	/**
-	 * Open inbox directly to a specific conversation
-	 * Used from dashboard widgets for one-click access
-	 */
-	openToConversation(conversation: Conversation) {
-		this.isOpen = true;
-		this.activeTab = "messages";
-		this.selectedConversation = conversation;
-		this.currentView = "thread";
-	}
+  /**
+   * Open inbox directly to a specific conversation
+   * Used from dashboard widgets for one-click access
+   */
+  openToConversation(conversation: Conversation) {
+    this.isOpen = true;
+    this.activeTab = "messages";
+    this.selectedConversation = conversation;
+    this.currentView = "thread";
+  }
 
-	/**
-	 * Open inbox directly to a specific conversation by ID
-	 * Opens directly to thread view (shows loading state while conversation loads)
-	 */
-	openToConversationById(conversationId: string) {
-		this.pendingConversationId = conversationId;
-		this.isOpen = true;
-		this.activeTab = "messages";
-		this.currentView = "thread"; // Go directly to thread view
-		this.isLoadingMessages = true; // Show loading state
-		// InboxDrawer will detect pendingConversationId and load the conversation
-	}
+  /**
+   * Open inbox directly to a specific conversation by ID
+   * Opens directly to thread view (shows loading state while conversation loads)
+   */
+  openToConversationById(conversationId: string) {
+    this.pendingConversationId = conversationId;
+    this.isOpen = true;
+    this.activeTab = "messages";
+    this.currentView = "thread"; // Go directly to thread view
+    this.isLoadingMessages = true; // Show loading state
+    // InboxDrawer will detect pendingConversationId and load the conversation
+  }
 
-	/**
-	 * Open inbox to handle a specific notification
-	 * Sets pendingNotificationId so InboxDrawer can handle the action
-	 */
-	openToNotification(notificationId: string) {
-		this.pendingNotificationId = notificationId;
-		this.isOpen = true;
-		this.activeTab = "notifications";
-		// InboxDrawer will detect pendingNotificationId and handle the action
-	}
+  /**
+   * Open inbox to handle a specific notification
+   * Sets pendingNotificationId so InboxDrawer can handle the action
+   */
+  openToNotification(notificationId: string) {
+    this.pendingNotificationId = notificationId;
+    this.isOpen = true;
+    this.activeTab = "notifications";
+    // InboxDrawer will detect pendingNotificationId and handle the action
+  }
 
-	/**
-	 * Clear pending navigation after it's been handled
-	 */
-	clearPendingNavigation() {
-		this.pendingConversationId = null;
-		this.pendingNotificationId = null;
-	}
+  /**
+   * Clear pending navigation after it's been handled
+   */
+  clearPendingNavigation() {
+    this.pendingConversationId = null;
+    this.pendingNotificationId = null;
+  }
 
-	backToList() {
-		this.selectedConversation = null;
-		this.messages = [];
-		this.currentView = "list";
-	}
+  backToList() {
+    this.selectedConversation = null;
+    this.messages = [];
+    this.currentView = "list";
+  }
 
-	startCompose(recipientId?: string, recipientName?: string) {
-		this.composeRecipientId = recipientId || null;
-		this.composeRecipientName = recipientName || null;
-		this.currentView = "compose";
-	}
+  startCompose(recipientId?: string, recipientName?: string) {
+    this.composeRecipientId = recipientId || null;
+    this.composeRecipientName = recipientName || null;
+    this.currentView = "compose";
+  }
 
-	cancelCompose() {
-		this.composeRecipientId = null;
-		this.composeRecipientName = null;
-		this.currentView = "list";
-	}
+  cancelCompose() {
+    this.composeRecipientId = null;
+    this.composeRecipientName = null;
+    this.currentView = "list";
+  }
 
-	// Update methods for subscriptions
-	setConversations(conversations: ConversationPreview[]) {
-		this.conversations = conversations;
-	}
+  // Update methods for subscriptions
+  setConversations(conversations: ConversationPreview[]) {
+    this.conversations = conversations;
+  }
 
-	setMessages(messages: Message[]) {
-		this.messages = messages;
-	}
+  setMessages(messages: Message[]) {
+    this.messages = messages;
+  }
 
-	setNotifications(notifications: UserNotification[]) {
-		this.notifications = notifications;
-	}
+  setNotifications(notifications: UserNotification[]) {
+    this.notifications = notifications;
+  }
 
-	setLoadingConversations(loading: boolean) {
-		this.isLoadingConversations = loading;
-	}
+  setLoadingConversations(loading: boolean) {
+    this.isLoadingConversations = loading;
+  }
 
-	setLoadingMessages(loading: boolean) {
-		this.isLoadingMessages = loading;
-	}
+  setLoadingMessages(loading: boolean) {
+    this.isLoadingMessages = loading;
+  }
 
-	setLoadingNotifications(loading: boolean) {
-		this.isLoadingNotifications = loading;
-	}
+  setLoadingNotifications(loading: boolean) {
+    this.isLoadingNotifications = loading;
+  }
 }
 
 // Export singleton instance

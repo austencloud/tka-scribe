@@ -22,11 +22,7 @@ export const MY_MODULE_TAB_INTROS: Record<string, TabIntroContent> = {
     color: "#8b5cf6",
     title: "My Tab",
     description: "Brief explanation of what this tab does.",
-    features: [
-      "Key feature one",
-      "Key feature two",
-      "Key feature three",
-    ],
+    features: ["Key feature one", "Key feature two", "Key feature three"],
   },
 };
 ```
@@ -67,7 +63,7 @@ export const MY_MODULE_TAB_INTROS: Record<string, TabIntroContent> = {
   let showIntro = $state(false);
 </script>
 
-<button onclick={() => showIntro = true}>
+<button onclick={() => (showIntro = true)}>
   <i class="fas fa-question-circle"></i>
 </button>
 
@@ -77,7 +73,7 @@ export const MY_MODULE_TAB_INTROS: Record<string, TabIntroContent> = {
     tabId="myTab"
     {...introContent}
     forceShow={showIntro}
-    onDismiss={() => showIntro = false}
+    onDismiss={() => (showIntro = false)}
   />
 {/if}
 ```

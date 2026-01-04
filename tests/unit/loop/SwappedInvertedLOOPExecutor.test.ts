@@ -163,13 +163,23 @@ describe("SwappedInvertedLOOPExecutor", () => {
 
       // Motion locations should be swapped pattern with inversion:
       // Blue does what Red did (s→e), Red does what Blue did (s→w)
-      expect(beat3!.motions[MotionColor.BLUE]?.startLocation).toBe(GridLocation.SOUTH);
-      expect(beat3!.motions[MotionColor.BLUE]?.endLocation).toBe(GridLocation.EAST);
-      expect(beat3!.motions[MotionColor.RED]?.startLocation).toBe(GridLocation.SOUTH);
-      expect(beat3!.motions[MotionColor.RED]?.endLocation).toBe(GridLocation.WEST);
+      expect(beat3!.motions[MotionColor.BLUE]?.startLocation).toBe(
+        GridLocation.SOUTH
+      );
+      expect(beat3!.motions[MotionColor.BLUE]?.endLocation).toBe(
+        GridLocation.EAST
+      );
+      expect(beat3!.motions[MotionColor.RED]?.startLocation).toBe(
+        GridLocation.SOUTH
+      );
+      expect(beat3!.motions[MotionColor.RED]?.endLocation).toBe(
+        GridLocation.WEST
+      );
 
       // Motion types should be inverted: PRO → ANTI
-      expect(beat3!.motions[MotionColor.BLUE]?.motionType).toBe(MotionType.ANTI);
+      expect(beat3!.motions[MotionColor.BLUE]?.motionType).toBe(
+        MotionType.ANTI
+      );
       expect(beat3!.motions[MotionColor.RED]?.motionType).toBe(MotionType.ANTI);
 
       // Beat 4 checks
@@ -181,13 +191,23 @@ describe("SwappedInvertedLOOPExecutor", () => {
 
       // Blue should continue from where Blue ended (east → south)
       // Red should continue from where Red ended (west → south)
-      expect(beat4!.motions[MotionColor.BLUE]?.startLocation).toBe(GridLocation.EAST);
-      expect(beat4!.motions[MotionColor.BLUE]?.endLocation).toBe(GridLocation.SOUTH);
-      expect(beat4!.motions[MotionColor.RED]?.startLocation).toBe(GridLocation.WEST);
-      expect(beat4!.motions[MotionColor.RED]?.endLocation).toBe(GridLocation.SOUTH);
+      expect(beat4!.motions[MotionColor.BLUE]?.startLocation).toBe(
+        GridLocation.EAST
+      );
+      expect(beat4!.motions[MotionColor.BLUE]?.endLocation).toBe(
+        GridLocation.SOUTH
+      );
+      expect(beat4!.motions[MotionColor.RED]?.startLocation).toBe(
+        GridLocation.WEST
+      );
+      expect(beat4!.motions[MotionColor.RED]?.endLocation).toBe(
+        GridLocation.SOUTH
+      );
 
       // Motion types should be inverted: PRO → ANTI
-      expect(beat4!.motions[MotionColor.BLUE]?.motionType).toBe(MotionType.ANTI);
+      expect(beat4!.motions[MotionColor.BLUE]?.motionType).toBe(
+        MotionType.ANTI
+      );
       expect(beat4!.motions[MotionColor.RED]?.motionType).toBe(MotionType.ANTI);
     });
 

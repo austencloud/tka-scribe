@@ -28,9 +28,7 @@ Follows Svelte 5 runes + microservices architecture.
 
   let hapticService: IHapticFeedback;
   onMount(() => {
-    hapticService = resolve<IHapticFeedback>(
-      TYPES.IHapticFeedback
-    );
+    hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
   });
 
   // Filter sections matching actual data

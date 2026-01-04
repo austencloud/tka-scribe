@@ -114,7 +114,9 @@ Shows all pictographs for a selected letter with:
               <div
                 class="pictograph-item"
                 onclick={() => handlePictographClick(pictograph)}
-                onkeydown={(e) => (e.key === "Enter" || e.key === " ") && handlePictographClick(pictograph)}
+                onkeydown={(e) =>
+                  (e.key === "Enter" || e.key === " ") &&
+                  handlePictographClick(pictograph)}
                 role="button"
                 tabindex="0"
                 aria-label="View pictograph details"
@@ -225,7 +227,11 @@ Shows all pictographs for a selected letter with:
       transparent
     );
     border: 1px solid
-      color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent-strong)) 20%, transparent);
+      color-mix(
+        in srgb,
+        var(--theme-accent-strong, var(--theme-accent-strong)) 20%,
+        transparent
+      );
     border-radius: 12px;
   }
 

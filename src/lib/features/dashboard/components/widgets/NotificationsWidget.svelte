@@ -20,7 +20,9 @@
 
   // Check if there's any content to show
   const hasContent = $derived(
-    activeTab === "messages" ? conversations.length > 0 : notifications.length > 0
+    activeTab === "messages"
+      ? conversations.length > 0
+      : notifications.length > 0
   );
 
   function openDrawerToMessages() {
@@ -58,7 +60,8 @@
       <i class="fas fa-envelope" aria-hidden="true"></i>
       <span>Messages</span>
       {#if unreadMessages > 0}
-        <span class="badge">{unreadMessages > 99 ? "99+" : unreadMessages}</span>
+        <span class="badge">{unreadMessages > 99 ? "99+" : unreadMessages}</span
+        >
       {/if}
     </button>
 
@@ -70,7 +73,9 @@
       <i class="fas fa-bell" aria-hidden="true"></i>
       <span>Alerts</span>
       {#if unreadNotifications > 0}
-        <span class="badge">{unreadNotifications > 99 ? "99+" : unreadNotifications}</span>
+        <span class="badge"
+          >{unreadNotifications > 99 ? "99+" : unreadNotifications}</span
+        >
       {/if}
     </button>
   </div>
@@ -84,7 +89,10 @@
       </div>
     {:else if !hasContent}
       <div class="empty-state">
-        <i class="fas {activeTab === 'messages' ? 'fa-envelope' : 'fa-bell'}" aria-hidden="true"></i>
+        <i
+          class="fas {activeTab === 'messages' ? 'fa-envelope' : 'fa-bell'}"
+          aria-hidden="true"
+        ></i>
         <p>No {activeTab === "messages" ? "messages" : "alerts"} yet</p>
       </div>
     {:else if activeTab === "messages"}
@@ -104,8 +112,12 @@
             />
             <div class="item-content">
               <div class="item-header">
-                <span class="item-name">{conversation.otherParticipant.displayName}</span>
-                <span class="item-time">{formatTimeAgo(conversation.updatedAt)}</span>
+                <span class="item-name"
+                  >{conversation.otherParticipant.displayName}</span
+                >
+                <span class="item-time"
+                  >{formatTimeAgo(conversation.updatedAt)}</span
+                >
               </div>
               <span class="item-preview">
                 {conversation.lastMessage?.content || "No messages yet"}
@@ -143,7 +155,9 @@
             </div>
             <div class="item-content">
               <span class="item-preview">{notification.message}</span>
-              <span class="item-time">{formatTimeAgo(notification.createdAt)}</span>
+              <span class="item-time"
+                >{formatTimeAgo(notification.createdAt)}</span
+              >
             </div>
             {#if !notification.read}
               <span class="unread-dot"></span>
@@ -206,8 +220,16 @@
   }
 
   .tab-btn.active {
-    background: color-mix(in srgb, var(--semantic-info, var(--semantic-info)) 20%, var(--theme-card-bg));
-    border-color: color-mix(in srgb, var(--semantic-info, var(--semantic-info)) 40%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--semantic-info, var(--semantic-info)) 20%,
+      var(--theme-card-bg)
+    );
+    border-color: color-mix(
+      in srgb,
+      var(--semantic-info, var(--semantic-info)) 40%,
+      transparent
+    );
     color: var(--theme-text);
   }
 
@@ -297,8 +319,16 @@
   }
 
   .list-item.unread {
-    background: color-mix(in srgb, var(--semantic-info, var(--semantic-info)) 15%, var(--theme-card-bg));
-    border-color: color-mix(in srgb, var(--semantic-info, var(--semantic-info)) 30%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--semantic-info, var(--semantic-info)) 15%,
+      var(--theme-card-bg)
+    );
+    border-color: color-mix(
+      in srgb,
+      var(--semantic-info, var(--semantic-info)) 30%,
+      transparent
+    );
   }
 
   /* Icon for alerts */
@@ -306,7 +336,11 @@
     width: 32px;
     height: 32px;
     border-radius: 8px;
-    background: color-mix(in srgb, var(--semantic-info, var(--semantic-info)) 25%, var(--theme-card-bg));
+    background: color-mix(
+      in srgb,
+      var(--semantic-info, var(--semantic-info)) 25%,
+      var(--theme-card-bg)
+    );
     display: flex;
     align-items: center;
     justify-content: center;

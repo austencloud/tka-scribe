@@ -19,9 +19,7 @@ Shown when sequence is empty.
   const isDiamond = $derived(gridMode === GridMode.DIAMOND);
 
   // Resolve haptic feedback service
-  const hapticService = resolve<IHapticFeedback>(
-    TYPES.IHapticFeedback
-  );
+  const hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
 
   function handleStart() {
     hapticService?.trigger("selection");
@@ -324,14 +322,22 @@ Shown when sequence is empty.
     cursor: pointer;
     transition: all 0.2s ease;
     box-shadow: 0 4px 16px
-      color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent-strong)) 30%, transparent);
+      color-mix(
+        in srgb,
+        var(--theme-accent-strong, var(--theme-accent-strong)) 30%,
+        transparent
+      );
     margin-top: 8px;
   }
 
   .start-button:hover {
     transform: translateY(-2px);
     box-shadow: 0 6px 20px
-      color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent-strong)) 40%, transparent);
+      color-mix(
+        in srgb,
+        var(--theme-accent-strong, var(--theme-accent-strong)) 40%,
+        transparent
+      );
   }
 
   .start-button:active {

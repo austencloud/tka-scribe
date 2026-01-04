@@ -32,9 +32,7 @@
   }>();
 
   // Services
-  const TurnController = resolve(
-    TYPES.ITurnController
-  ) as ITurnController;
+  const TurnController = resolve(TYPES.ITurnController) as ITurnController;
   let hapticService: IHapticFeedback;
 
   // Display helpers
@@ -146,9 +144,7 @@
   }
 
   onMount(() => {
-    hapticService = resolve<IHapticFeedback>(
-      TYPES.IHapticFeedback
-    );
+    hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
   });
 </script>
 
@@ -286,7 +282,8 @@
     border-style: solid;
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--prop-blue, var(--semantic-info)) 5%, transparent) 0%,
+      color-mix(in srgb, var(--prop-blue, var(--semantic-info)) 5%, transparent)
+        0%,
       var(--theme-panel-bg, white) 100%
     );
   }
@@ -296,7 +293,8 @@
     border-style: solid;
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--prop-red, var(--semantic-error)) 5%, transparent) 0%,
+      color-mix(in srgb, var(--prop-red, var(--semantic-error)) 5%, transparent)
+        0%,
       var(--theme-panel-bg, white) 100%
     );
   }
@@ -606,7 +604,11 @@
     border-color: var(--prop-blue, var(--semantic-info));
     color: var(--theme-text, white);
     box-shadow: 0 3px 10px
-      color-mix(in srgb, var(--prop-blue, var(--semantic-info)) 50%, transparent);
+      color-mix(
+        in srgb,
+        var(--prop-blue, var(--semantic-info)) 50%,
+        transparent
+      );
   }
 
   .turn-panel.red .rotation-btn.active {
@@ -614,6 +616,10 @@
     border-color: var(--prop-red, var(--semantic-error));
     color: var(--theme-text, white);
     box-shadow: 0 3px 10px
-      color-mix(in srgb, var(--prop-red, var(--semantic-error)) 50%, transparent);
+      color-mix(
+        in srgb,
+        var(--prop-red, var(--semantic-error)) 50%,
+        transparent
+      );
   }
 </style>

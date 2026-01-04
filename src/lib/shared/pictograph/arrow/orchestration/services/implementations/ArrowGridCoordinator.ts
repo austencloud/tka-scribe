@@ -24,7 +24,8 @@ export class ArrowGridCoordinator implements IArrowGridCoordinator {
     const motionType = motion.motionType.toLowerCase();
     // Infer grid mode from location if not explicitly set
     // Box mode uses intercardinal (NE, SE, SW, NW), diamond uses cardinal (N, E, S, W)
-    const gridMode = motion.gridMode || this.inferGridModeFromLocation(location);
+    const gridMode =
+      motion.gridMode || this.inferGridModeFromLocation(location);
 
     if (["pro", "anti", "float"].includes(motionType || "")) {
       // Shift arrows use layer2 points
@@ -162,7 +163,8 @@ export class ArrowGridCoordinator implements IArrowGridCoordinator {
 
     // If not found, try the opposite mode (data may have gridMode/location mismatch)
     if (!coords) {
-      const altMode = gridMode === GridMode.DIAMOND ? GridMode.BOX : GridMode.DIAMOND;
+      const altMode =
+        gridMode === GridMode.DIAMOND ? GridMode.BOX : GridMode.DIAMOND;
       layer2Points = this.getAllLayer2Points(altMode);
       coords = layer2Points[location];
 
@@ -192,7 +194,8 @@ export class ArrowGridCoordinator implements IArrowGridCoordinator {
 
     // If not found, try the opposite mode (data may have gridMode/location mismatch)
     if (!coords) {
-      const altMode = gridMode === GridMode.DIAMOND ? GridMode.BOX : GridMode.DIAMOND;
+      const altMode =
+        gridMode === GridMode.DIAMOND ? GridMode.BOX : GridMode.DIAMOND;
       handPoints = this.getAllHandPoints(altMode);
       coords = handPoints[location];
 

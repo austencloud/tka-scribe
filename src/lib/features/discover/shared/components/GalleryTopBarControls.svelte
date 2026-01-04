@@ -70,9 +70,7 @@ Gallery Top Bar Controls - 2026 Modern Design (Compact)
   ];
 
   onMount(() => {
-    hapticService = tryResolve<IHapticFeedback>(
-      TYPES.IHapticFeedback
-    );
+    hapticService = tryResolve<IHapticFeedback>(TYPES.IHapticFeedback);
   });
 
   function handleSortChange(method: ExploreSortMethod) {
@@ -249,7 +247,11 @@ Gallery Top Bar Controls - 2026 Modern Design (Compact)
       transparent
     );
     border: 1px solid
-      color-mix(in srgb, var(--semantic-info, var(--semantic-info)) 30%, transparent);
+      color-mix(
+        in srgb,
+        var(--semantic-info, var(--semantic-info)) 30%,
+        transparent
+      );
     border-radius: 100px;
     color: var(--semantic-info, var(--semantic-info));
     font-size: var(--font-size-compact);

@@ -28,9 +28,7 @@ import {
 } from "./sequence-transforms";
 
 @injectable()
-export class SequenceTransformer
-  implements ISequenceTransformer
-{
+export class SequenceTransformer implements ISequenceTransformer {
   constructor(
     @inject(TYPES.IMotionQueryHandler)
     private readonly motionQueryHandler: IMotionQueryHandler,

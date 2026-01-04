@@ -80,11 +80,15 @@
         disabled={isSubmitting}
         tabindex={-1}
       >
-        <i class="fas {showPassword ? 'fa-eye-slash' : 'fa-eye'}" aria-hidden="true"></i>
+        <i
+          class="fas {showPassword ? 'fa-eye-slash' : 'fa-eye'}"
+          aria-hidden="true"
+        ></i>
       </button>
     </div>
     <span class="field-hint">
-      <i class="fas fa-eye" aria-hidden="true"></i> Use the eye icon to verify your password
+      <i class="fas fa-eye" aria-hidden="true"></i> Use the eye icon to verify your
+      password
     </span>
   </div>
 
@@ -178,7 +182,11 @@
     outline: none;
     border-color: var(--theme-accent-strong, var(--theme-accent-strong));
     box-shadow: 0 0 0 3px
-      color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent-strong)) 15%, transparent);
+      color-mix(
+        in srgb,
+        var(--theme-accent-strong, var(--theme-accent-strong)) 15%,
+        transparent
+      );
   }
 
   .form-group input:disabled {
@@ -235,7 +243,11 @@
       transparent
     );
     border: 1px solid
-      color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 30%, transparent);
+      color-mix(
+        in srgb,
+        var(--semantic-error, var(--semantic-error)) 30%,
+        transparent
+      );
     border-radius: 10px;
     color: #fca5a5;
     font-size: var(--font-size-sm);
@@ -301,7 +313,11 @@
   .submit-btn:hover:not(:disabled) {
     transform: translateY(-1px);
     box-shadow: 0 4px 20px
-      color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent-strong)) 40%, transparent);
+      color-mix(
+        in srgb,
+        var(--theme-accent-strong, var(--theme-accent-strong)) 40%,
+        transparent
+      );
   }
 
   .submit-btn:active:not(:disabled) {

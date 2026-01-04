@@ -13,10 +13,7 @@ Mobile-first design:
   import SessionList from "./SessionList.svelte";
   import LabelingSession from "./LabelingSession.svelte";
   import { getMLTrainingStorage } from "../services/MLTrainingStorageManager";
-  import {
-    exportSessionToCoco,
-    downloadBlob,
-  } from "../services/CocoExporter";
+  import { exportSessionToCoco, downloadBlob } from "../services/CocoExporter";
   import type { CaptureSession, CapturedFrame } from "../domain/models";
   import {
     navigationState,
@@ -207,7 +204,12 @@ Mobile-first design:
       <div class="preview-section">
         <h3>Captured Frames</h3>
         {#if isLoadingPreview}
-          <div class="preview-loading" role="status" aria-live="polite" aria-busy="true">
+          <div
+            class="preview-loading"
+            role="status"
+            aria-live="polite"
+            aria-busy="true"
+          >
             <div class="spinner" aria-hidden="true"></div>
             <span>Loading preview...</span>
           </div>
@@ -275,14 +277,18 @@ Mobile-first design:
           onclick={() => handleExport(selectedSession!)}
           disabled={isExporting}
         >
-          <i class="fa {isExporting ? 'fa-spinner fa-spin' : 'fa-download'}" aria-hidden="true"
+          <i
+            class="fa {isExporting ? 'fa-spinner fa-spin' : 'fa-download'}"
+            aria-hidden="true"
           ></i>
           {isExporting ? "Exporting..." : "Export Dataset"}
         </button>
       </div>
 
       {#if exportError}
-        <p class="export-error" role="alert" aria-live="assertive">{exportError}</p>
+        <p class="export-error" role="alert" aria-live="assertive">
+          {exportError}
+        </p>
       {/if}
     </div>
   {/if}

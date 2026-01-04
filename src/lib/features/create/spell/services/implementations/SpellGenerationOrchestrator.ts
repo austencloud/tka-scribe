@@ -48,7 +48,8 @@ export class SpellGenerationOrchestrator implements ISpellGenerationOrchestrator
       }
 
       // Fetch ALL extension options (pictograph-first UX)
-      let extensionOptions: import("$lib/features/create/shared/services/contracts/ISequenceExtender").CircularizationOption[] = [];
+      let extensionOptions: import("$lib/features/create/shared/services/contracts/ISequenceExtender").CircularizationOption[] =
+        [];
       try {
         const extender = await this.serviceLoader.getSequenceExtender();
         extensionOptions = await extender.getAllExtensionOptions({
@@ -57,7 +58,10 @@ export class SpellGenerationOrchestrator implements ISpellGenerationOrchestrator
           word: result.expandedWord,
         });
       } catch (extErr) {
-        console.warn("[SpellGenerationOrchestrator] Failed to fetch extension options:", extErr);
+        console.warn(
+          "[SpellGenerationOrchestrator] Failed to fetch extension options:",
+          extErr
+        );
       }
 
       return {
@@ -72,7 +76,10 @@ export class SpellGenerationOrchestrator implements ISpellGenerationOrchestrator
         extensionOptions,
       };
     } catch (error) {
-      console.error("[SpellGenerationOrchestrator] Failed to generate sequence:", error);
+      console.error(
+        "[SpellGenerationOrchestrator] Failed to generate sequence:",
+        error
+      );
       return {
         success: false,
         error: error instanceof Error ? error.message : "Unknown error",

@@ -8,7 +8,12 @@
     formatDate: (date: Date) => string;
   }
 
-  let { announcement, dismissed = false, severityColor, formatDate }: Props = $props();
+  let {
+    announcement,
+    dismissed = false,
+    severityColor,
+    formatDate,
+  }: Props = $props();
 </script>
 
 <div class="announcement-item" class:dismissed>
@@ -117,7 +122,11 @@
       transparent
     );
     border: 1px solid
-      color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 30%, transparent);
+      color-mix(
+        in srgb,
+        var(--theme-accent, var(--theme-accent)) 30%,
+        transparent
+      );
     border-radius: 10px;
     color: var(--theme-accent);
     font-size: var(--font-size-compact);
@@ -129,11 +138,7 @@
   }
 
   .action-link:hover {
-    background: color-mix(
-      in srgb,
-      var(--theme-accent) 25%,
-      transparent
-    );
+    background: color-mix(in srgb, var(--theme-accent) 25%, transparent);
     transform: translateY(-1px);
   }
 

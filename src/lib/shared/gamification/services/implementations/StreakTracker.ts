@@ -99,7 +99,11 @@ export class StreakTracker implements IStreakTracker {
 
       if (!streakDoc.exists()) {
         await this.initializeUserStreak(user.uid);
-        return { streakIncremented: false, currentStreak: 0, isNewRecord: false };
+        return {
+          streakIncremented: false,
+          currentStreak: 0,
+          isNewRecord: false,
+        };
       }
 
       const currentData = streakDoc.data() as UserStreak;

@@ -55,9 +55,7 @@ Matches the desktop Python app navigation pattern exactly.
   }
 
   onMount(() => {
-    hapticService = resolve<IHapticFeedback>(
-      TYPES.IHapticFeedback
-    );
+    hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
   });
 
   // Get display text for section button - remove counts and extract clean text

@@ -136,7 +136,8 @@ export class SequenceFramePreRenderer {
     document.body.appendChild(this.offscreenContainer);
 
     // Import Canvas2DAnimationRenderer class directly
-    const { Canvas2DAnimationRenderer } = await import("./Canvas2DAnimationRenderer");
+    const { Canvas2DAnimationRenderer } =
+      await import("./Canvas2DAnimationRenderer");
     const offscreenRenderer = new Canvas2DAnimationRenderer();
 
     // Initialize with offscreen container
@@ -501,8 +502,16 @@ export class SequenceFramePreRenderer {
       const settingsState = resolve<ISettingsState>(TYPES.ISettingsState);
       const settings = settingsState.currentSettings;
       const buugengFamily = ["buugeng", "bigbuugeng", "fractalgeng"];
-      const bluePropType = (settings?.bluePropType || settings?.propType || "staff").toLowerCase();
-      const redPropType = (settings?.redPropType || settings?.propType || "staff").toLowerCase();
+      const bluePropType = (
+        settings?.bluePropType ||
+        settings?.propType ||
+        "staff"
+      ).toLowerCase();
+      const redPropType = (
+        settings?.redPropType ||
+        settings?.propType ||
+        "staff"
+      ).toLowerCase();
       bluePropFlipped = buugengFamily.includes(bluePropType)
         ? (settings?.blueBuugengFlipped ?? false)
         : false;
@@ -625,16 +634,24 @@ export class SequenceFramePreRenderer {
       try {
         this.offscreenRenderer.destroy();
       } catch (e) {
-        console.warn('[SequenceFramePreRenderer] Error destroying offscreen renderer:', e);
+        console.warn(
+          "[SequenceFramePreRenderer] Error destroying offscreen renderer:",
+          e
+        );
       }
       this.offscreenRenderer = null;
     }
 
     if (this.offscreenContainer?.parentElement) {
       try {
-        this.offscreenContainer.parentElement.removeChild(this.offscreenContainer);
+        this.offscreenContainer.parentElement.removeChild(
+          this.offscreenContainer
+        );
       } catch (e) {
-        console.warn('[SequenceFramePreRenderer] Error removing offscreen container:', e);
+        console.warn(
+          "[SequenceFramePreRenderer] Error removing offscreen container:",
+          e
+        );
       }
       this.offscreenContainer = null;
     }

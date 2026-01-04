@@ -93,7 +93,8 @@
               'var(--theme-accent-strong, var(--theme-accent-strong))'}"
           >
             <div class="card-icon">
-              <i class="fas {collection.icon || 'fa-folder'}" aria-hidden="true"></i>
+              <i class="fas {collection.icon || 'fa-folder'}" aria-hidden="true"
+              ></i>
             </div>
             <div class="card-content">
               <h3>{collection.name}</h3>
@@ -187,7 +188,10 @@
 
   .collection-card:hover {
     background: rgba(255, 255, 255, 0.08);
-    border-color: var(--card-color, var(--theme-accent-strong, var(--theme-accent-strong)));
+    border-color: var(
+      --card-color,
+      var(--theme-accent-strong, var(--theme-accent-strong))
+    );
     transform: translateY(-2px);
   }
 
@@ -197,7 +201,10 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: var(--card-color, var(--theme-accent-strong, var(--theme-accent-strong)));
+    background: var(
+      --card-color,
+      var(--theme-accent-strong, var(--theme-accent-strong))
+    );
     border-radius: 12px;
     margin-bottom: 12px;
   }

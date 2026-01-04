@@ -70,8 +70,12 @@ console.log(`CM_TO_UNITS: ${CM_TO_UNITS}`);
 console.log("");
 
 console.log("=== Height-dependent values ===\n");
-console.log("Height        | HeightCm | avatarScale | groundY    | targetHeight");
-console.log("------------- | -------- | ----------- | ---------- | ------------");
+console.log(
+  "Height        | HeightCm | avatarScale | groundY    | targetHeight"
+);
+console.log(
+  "------------- | -------- | ----------- | ---------- | ------------"
+);
 
 for (const { label, feet, inches } of testHeights) {
   const heightCm = feetInchesToCm(feet, inches);
@@ -104,7 +108,8 @@ for (let i = -3; i <= 3; i++) {
   const inches = heightInches % 12;
   const label = `${feet}'${inches}"`;
 
-  const delta = prevGroundY !== null ? (result.groundY - prevGroundY).toFixed(2) : "N/A";
+  const delta =
+    prevGroundY !== null ? (result.groundY - prevGroundY).toFixed(2) : "N/A";
   prevGroundY = result.groundY;
 
   console.log(
@@ -113,8 +118,12 @@ for (let i = -3; i <= 3; i++) {
 }
 
 console.log("\n=== What setHeight receives vs what scale should be ===\n");
-console.log("The setHeight() method receives targetHeight and divides by originalHeight (model bounding box)");
-console.log("If the model's bounding box is X units tall, scale = targetHeight / X\n");
+console.log(
+  "The setHeight() method receives targetHeight and divides by originalHeight (model bounding box)"
+);
+console.log(
+  "If the model's bounding box is X units tall, scale = targetHeight / X\n"
+);
 
 console.log("Height | targetHeight | If bbox=2  | If bbox=100 | If bbox=188");
 console.log("------ | ------------ | ---------- | ----------- | -----------");
@@ -124,22 +133,38 @@ for (const { label, feet, inches } of testHeights) {
   const targetHeight = heightCm * CM_TO_UNITS;
 
   console.log(
-    `${label.padEnd(6)} | ${targetHeight.toFixed(1).padStart(12)} | ${(targetHeight/2).toFixed(1).padStart(10)} | ${(targetHeight/100).toFixed(3).padStart(11)} | ${(targetHeight/188).toFixed(4).padStart(11)}`
+    `${label.padEnd(6)} | ${targetHeight.toFixed(1).padStart(12)} | ${(targetHeight / 2).toFixed(1).padStart(10)} | ${(targetHeight / 100).toFixed(3).padStart(11)} | ${(targetHeight / 188).toFixed(4).padStart(11)}`
   );
 }
 
 console.log("\n=== The key insight ===");
-console.log("If the model's bounding box is ~2 units (typical normalized GLTF),");
+console.log(
+  "If the model's bounding box is ~2 units (typical normalized GLTF),"
+);
 console.log("then a 6'3\" person (190.5cm) would have scale = 381/2 = 190.5x");
-console.log("This makes the model 190.5 * 2 = 381 units tall, which is CORRECT.");
+console.log(
+  "This makes the model 190.5 * 2 = 381 units tall, which is CORRECT."
+);
 console.log("");
-console.log("The issue might be that groundY changes significantly with height:");
-const groundY_5ft = calculateSceneDimensions(feetInchesToCm(5, 0), standardStaffCm).groundY;
-const groundY_6ft6 = calculateSceneDimensions(feetInchesToCm(6, 6), standardStaffCm).groundY;
+console.log(
+  "The issue might be that groundY changes significantly with height:"
+);
+const groundY_5ft = calculateSceneDimensions(
+  feetInchesToCm(5, 0),
+  standardStaffCm
+).groundY;
+const groundY_6ft6 = calculateSceneDimensions(
+  feetInchesToCm(6, 6),
+  standardStaffCm
+).groundY;
 console.log(`  groundY at 5'0": ${groundY_5ft.toFixed(1)}`);
 console.log(`  groundY at 6'6": ${groundY_6ft6.toFixed(1)}`);
 console.log(`  Difference: ${(groundY_6ft6 - groundY_5ft).toFixed(1)} units`);
 console.log("");
-console.log("That's a ~62 unit difference in Y position for a 18-inch height change.");
-console.log("If the avatar AND ground both move together, this should be fine.");
+console.log(
+  "That's a ~62 unit difference in Y position for a 18-inch height change."
+);
+console.log(
+  "If the avatar AND ground both move together, this should be fine."
+);
 console.log("But if only the avatar moves, it would appear to 'jump'.");

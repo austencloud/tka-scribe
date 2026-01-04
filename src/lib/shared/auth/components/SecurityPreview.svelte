@@ -73,7 +73,8 @@
           {#each mfaFactors as factor}
             <div class="factor-card">
               <div class="factor-icon">
-                <i class={getFactorIcon(factor.factorId)} aria-hidden="true"></i>
+                <i class={getFactorIcon(factor.factorId)} aria-hidden="true"
+                ></i>
               </div>
               <div class="factor-info">
                 <span class="factor-name">

@@ -334,7 +334,6 @@ export class WordCardCache implements IWordCardCache {
       freedSpace += entry.size;
       removedCount++;
     }
-
   }
 
   /**

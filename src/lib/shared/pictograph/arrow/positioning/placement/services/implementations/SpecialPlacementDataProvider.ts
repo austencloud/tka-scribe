@@ -10,9 +10,7 @@ import { jsonCache } from "$lib/shared/pictograph/shared/services/implementation
 import type { ISpecialPlacementDataProvider } from "../contracts/ISpecialPlacementDataProvider";
 
 @injectable()
-export class SpecialPlacementDataProvider
-  implements ISpecialPlacementDataProvider
-{
+export class SpecialPlacementDataProvider implements ISpecialPlacementDataProvider {
   // Structure: [gridMode][oriKey][letter] -> Record<string, unknown>
   private cache: Record<
     string,

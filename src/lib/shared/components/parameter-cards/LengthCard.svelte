@@ -44,12 +44,8 @@ Can operate as stepper (inline) or panel opener (click to select)
   let cardElement: HTMLDivElement | null = $state(null);
 
   onMount(() => {
-    hapticService = tryResolve<IHapticFeedback>(
-      TYPES.IHapticFeedback
-    );
-    rippleService = tryResolve<IRippleEffect>(
-      TYPES.IRippleEffect
-    );
+    hapticService = tryResolve<IHapticFeedback>(TYPES.IHapticFeedback);
+    rippleService = tryResolve<IRippleEffect>(TYPES.IRippleEffect);
 
     if (mode === "panel-opener" && cardElement && rippleService) {
       return rippleService.attachRipple(cardElement, {

@@ -331,13 +331,16 @@
       playbackController
     ) {
       // Check if this is the same sequence (prop type change only)
-      const currentSequenceId = sequence.id || sequence.word || sequence.name || "unknown";
+      const currentSequenceId =
+        sequence.id || sequence.word || sequence.name || "unknown";
       const isSameSequence = currentSequenceId === lastLoadedSequenceId;
 
       if (isSameSequence) {
         // Same sequence, just prop type or other metadata change
         // Don't trigger loading state - AnimationEngine hot-swap handles prop changes
-        debug.log("Same sequence, skipping reload (prop type change handled by hot-swap)");
+        debug.log(
+          "Same sequence, skipping reload (prop type change handled by hot-swap)"
+        );
         return undefined;
       }
 
@@ -503,7 +506,8 @@
     if (
       !isAnimationActive &&
       urlState.currentBeat !== undefined &&
-      Math.floor(urlState.currentBeat) !== Math.floor(animationPanelState.currentBeat)
+      Math.floor(urlState.currentBeat) !==
+        Math.floor(animationPanelState.currentBeat)
     ) {
       animationPanelState.setCurrentBeat(urlState.currentBeat);
     }
@@ -561,7 +565,10 @@
       // 1. It changes ~60 times/second, causing excessive URL updates
       // 2. The route-change event can interfere with the animation loop
       // 3. Beat position during playback isn't meaningful to bookmark
-      if (currentSpeed !== previousSpeed || currentPlaying !== previousPlaying) {
+      if (
+        currentSpeed !== previousSpeed ||
+        currentPlaying !== previousPlaying
+      ) {
         // Double-check that the current route is actually showing animation sheet
         // This prevents "Cannot update animation panel state when animation sheet is not open" errors
         const currentState =

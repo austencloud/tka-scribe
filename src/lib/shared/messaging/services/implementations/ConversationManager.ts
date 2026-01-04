@@ -194,7 +194,10 @@ export class ConversationManager implements IConversationManager {
         isNew: true,
       };
     } catch (error) {
-      console.error("[ConversationManager] Failed to get or create conversation:", error);
+      console.error(
+        "[ConversationManager] Failed to get or create conversation:",
+        error
+      );
       toast.error("Failed to start conversation.");
       throw error;
     }
@@ -251,7 +254,10 @@ export class ConversationManager implements IConversationManager {
         )
         .filter((preview): preview is ConversationPreview => preview !== null);
     } catch (error) {
-      console.error("[ConversationManager] Failed to get conversations:", error);
+      console.error(
+        "[ConversationManager] Failed to get conversations:",
+        error
+      );
       toast.error("Failed to load conversations.");
       return [];
     }
@@ -274,7 +280,10 @@ export class ConversationManager implements IConversationManager {
     (async () => {
       try {
         const firestore = await getFirestoreInstance();
-        const conversationsRef = collection(firestore, CONVERSATIONS_COLLECTION);
+        const conversationsRef = collection(
+          firestore,
+          CONVERSATIONS_COLLECTION
+        );
         const q = query(
           conversationsRef,
           where("participants", "array-contains", currentUserId),
@@ -295,12 +304,18 @@ export class ConversationManager implements IConversationManager {
             callback(conversations);
           },
           (error) => {
-            console.error("[ConversationManager] Conversations subscription error:", error);
+            console.error(
+              "[ConversationManager] Conversations subscription error:",
+              error
+            );
             toast.error("Lost connection to messages. Please refresh.");
           }
         );
       } catch (error) {
-        console.error("[ConversationManager] Failed to initialize conversations subscription:", error);
+        console.error(
+          "[ConversationManager] Failed to initialize conversations subscription:",
+          error
+        );
         toast.error("Failed to connect to messages.");
       }
     })();
@@ -361,7 +376,10 @@ export class ConversationManager implements IConversationManager {
     (async () => {
       try {
         const firestore = await getFirestoreInstance();
-        const conversationsRef = collection(firestore, CONVERSATIONS_COLLECTION);
+        const conversationsRef = collection(
+          firestore,
+          CONVERSATIONS_COLLECTION
+        );
         const q = query(
           conversationsRef,
           where("participants", "array-contains", currentUserId)
@@ -383,11 +401,17 @@ export class ConversationManager implements IConversationManager {
             callback(total);
           },
           (error) => {
-            console.error("[ConversationManager] Unread count subscription error:", error);
+            console.error(
+              "[ConversationManager] Unread count subscription error:",
+              error
+            );
           }
         );
       } catch (error) {
-        console.error("[ConversationManager] Failed to initialize unread count subscription:", error);
+        console.error(
+          "[ConversationManager] Failed to initialize unread count subscription:",
+          error
+        );
       }
     })();
 
@@ -418,7 +442,10 @@ export class ConversationManager implements IConversationManager {
       const snapshot = await getDoc(conversationRef);
       return snapshot.exists() ? conversationId : null;
     } catch (error) {
-      console.error("[ConversationManager] Failed to check conversation exists:", error);
+      console.error(
+        "[ConversationManager] Failed to check conversation exists:",
+        error
+      );
       return null;
     }
   }
@@ -439,7 +466,10 @@ export class ConversationManager implements IConversationManager {
         [`archived.${currentUserId}`]: true,
       });
     } catch (error) {
-      console.error("[ConversationManager] Failed to archive conversation:", error);
+      console.error(
+        "[ConversationManager] Failed to archive conversation:",
+        error
+      );
       toast.error("Failed to archive conversation.");
       throw error;
     }
@@ -461,7 +491,10 @@ export class ConversationManager implements IConversationManager {
         [`archived.${currentUserId}`]: false,
       });
     } catch (error) {
-      console.error("[ConversationManager] Failed to unarchive conversation:", error);
+      console.error(
+        "[ConversationManager] Failed to unarchive conversation:",
+        error
+      );
       toast.error("Failed to unarchive conversation.");
       throw error;
     }

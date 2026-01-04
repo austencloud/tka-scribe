@@ -56,9 +56,7 @@
   const isActive = $derived(enabled && velocity > threshold);
 
   // Base opacity for the effect
-  const baseOpacity = $derived(
-    isActive ? normalizedVelocity * intensity : 0
-  );
+  const baseOpacity = $derived(isActive ? normalizedVelocity * intensity : 0);
 
   // Update position history when position changes
   $effect(() => {

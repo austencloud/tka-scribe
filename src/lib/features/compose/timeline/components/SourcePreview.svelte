@@ -13,7 +13,11 @@
 <script lang="ts">
   import { onMount, onDestroy, untrack } from "svelte";
   import AnimatorCanvas from "$lib/shared/animation-engine/components/AnimatorCanvas.svelte";
-  import { resolve, loadPixiModule, loadFeatureModule } from "$lib/shared/inversify/di";
+  import {
+    resolve,
+    loadPixiModule,
+    loadFeatureModule,
+  } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import { animationSettings } from "$lib/shared/animation-engine/state/animation-settings-state.svelte";
   import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
@@ -33,7 +37,9 @@
   let { sequence = null, onAddToTimeline }: Props = $props();
 
   // Animation orchestrator for calculating prop states
-  let animationOrchestrator = $state<ISequenceAnimationOrchestrator | null>(null);
+  let animationOrchestrator = $state<ISequenceAnimationOrchestrator | null>(
+    null
+  );
   let startPositionDeriver = $state<IStartPositionDeriver | null>(null);
   let initialized = $state(false);
   let loading = $state(true);
@@ -57,7 +63,9 @@
   // A 4-beat sequence has range 0-5: [0-1) start, [1-2) beat 1, [2-3) beat 2, [3-4) beat 3, [4-5) beat 4
   const totalBeats = $derived(sequence?.beats?.length || 0);
   const fullBeatRange = $derived(totalBeats + 1); // +1 for start position
-  const displayName = $derived(sequence?.word || sequence?.name || "No sequence loaded");
+  const displayName = $derived(
+    sequence?.word || sequence?.name || "No sequence loaded"
+  );
 
   // Check if we're at start position (before beat 1)
   const isAtStartPosition = $derived(currentBeat < 1);
@@ -86,7 +94,10 @@
     if (sequence.beats && sequence.beats.length > 0) {
       const beatNumber = Math.floor(currentBeat); // 1, 2, 3, etc.
       const arrayIndex = beatNumber - 1; // beats[0] = beat 1, beats[1] = beat 2, etc.
-      const clampedIndex = Math.max(0, Math.min(arrayIndex, sequence.beats.length - 1));
+      const clampedIndex = Math.max(
+        0,
+        Math.min(arrayIndex, sequence.beats.length - 1)
+      );
       return sequence.beats[clampedIndex]?.letter || null;
     }
     return null;
@@ -105,7 +116,10 @@
     if (sequence.beats && sequence.beats.length > 0) {
       const beatNumber = Math.floor(currentBeat); // 1, 2, 3, etc.
       const arrayIndex = beatNumber - 1; // beats[0] = beat 1, beats[1] = beat 2, etc.
-      const clampedIndex = Math.max(0, Math.min(arrayIndex, sequence.beats.length - 1));
+      const clampedIndex = Math.max(
+        0,
+        Math.min(arrayIndex, sequence.beats.length - 1)
+      );
       return sequence.beats[clampedIndex] || null;
     }
     return null;
@@ -117,8 +131,12 @@
       loading = true;
       await loadFeatureModule("animate");
       await loadPixiModule();
-      animationOrchestrator = resolve(TYPES.ISequenceAnimationOrchestrator) as ISequenceAnimationOrchestrator;
-      startPositionDeriver = resolve(TYPES.IStartPositionDeriver) as IStartPositionDeriver;
+      animationOrchestrator = resolve(
+        TYPES.ISequenceAnimationOrchestrator
+      ) as ISequenceAnimationOrchestrator;
+      startPositionDeriver = resolve(
+        TYPES.IStartPositionDeriver
+      ) as IStartPositionDeriver;
       initialized = true;
       loading = false;
     } catch (err) {
@@ -154,7 +172,8 @@
 
   // Update prop states when beat changes
   $effect(() => {
-    if (!animationOrchestrator || !sequence || loadedSequenceId !== sequence.id) return;
+    if (!animationOrchestrator || !sequence || loadedSequenceId !== sequence.id)
+      return;
 
     const beat = currentBeat;
 
@@ -163,7 +182,6 @@
       const propStates = animationOrchestrator!.getCurrentPropStates();
       bluePropState = propStates.blue;
       redPropState = propStates.red;
-
     });
   });
 
@@ -180,7 +198,6 @@
       const propStates = animationOrchestrator.getCurrentPropStates();
       bluePropState = propStates.blue;
       redPropState = propStates.red;
-
     } catch (err) {
       console.error("SourcePreview: animation init failed:", err);
     }
@@ -343,26 +360,61 @@
     <div class="control-buttons-wrapper">
       <!-- Centered transport buttons -->
       <div class="control-buttons">
-        <button class="transport-btn" onclick={goToStart} title="Go to start" aria-label="Go to start" disabled={!sequence}>
+        <button
+          class="transport-btn"
+          onclick={goToStart}
+          title="Go to start"
+          aria-label="Go to start"
+          disabled={!sequence}
+        >
           <i class="fas fa-backward-fast" aria-hidden="true"></i>
         </button>
-        <button class="transport-btn" onclick={stepBackward} title="Previous beat" aria-label="Previous beat" disabled={!sequence}>
+        <button
+          class="transport-btn"
+          onclick={stepBackward}
+          title="Previous beat"
+          aria-label="Previous beat"
+          disabled={!sequence}
+        >
           <i class="fas fa-backward-step" aria-hidden="true"></i>
         </button>
-        <button class="transport-btn play-btn" onclick={togglePlayback} title={isPlaying ? "Pause" : "Play"} aria-label={isPlaying ? "Pause" : "Play"} disabled={!sequence}>
-          <i class="fas {isPlaying ? 'fa-pause' : 'fa-play'}" aria-hidden="true"></i>
+        <button
+          class="transport-btn play-btn"
+          onclick={togglePlayback}
+          title={isPlaying ? "Pause" : "Play"}
+          aria-label={isPlaying ? "Pause" : "Play"}
+          disabled={!sequence}
+        >
+          <i class="fas {isPlaying ? 'fa-pause' : 'fa-play'}" aria-hidden="true"
+          ></i>
         </button>
-        <button class="transport-btn" onclick={stepForward} title="Next beat" aria-label="Next beat" disabled={!sequence}>
+        <button
+          class="transport-btn"
+          onclick={stepForward}
+          title="Next beat"
+          aria-label="Next beat"
+          disabled={!sequence}
+        >
           <i class="fas fa-forward-step" aria-hidden="true"></i>
         </button>
-        <button class="transport-btn" onclick={goToEnd} title="Go to end" aria-label="Go to end" disabled={!sequence}>
+        <button
+          class="transport-btn"
+          onclick={goToEnd}
+          title="Go to end"
+          aria-label="Go to end"
+          disabled={!sequence}
+        >
           <i class="fas fa-forward-fast" aria-hidden="true"></i>
         </button>
       </div>
 
       <!-- Add to timeline button (only when sequence loaded) -->
       {#if sequence}
-        <button class="add-btn" onclick={handleAddToTimeline} title="Add to timeline at playhead">
+        <button
+          class="add-btn"
+          onclick={handleAddToTimeline}
+          title="Add to timeline at playhead"
+        >
           <i class="fas fa-plus" aria-hidden="true"></i>
           <span>Add</span>
         </button>
@@ -477,7 +529,9 @@
   }
 
   @keyframes spin {
-    to { transform: rotate(360deg); }
+    to {
+      transform: rotate(360deg);
+    }
   }
 
   .playback-status {
@@ -498,8 +552,15 @@
   }
 
   @keyframes pulse {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.7; transform: scale(0.95); }
+    0%,
+    100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 0.7;
+      transform: scale(0.95);
+    }
   }
 
   /* Transport Controls */
@@ -626,4 +687,3 @@
     font-size: var(--font-size-compact);
   }
 </style>
-

@@ -63,7 +63,11 @@
       };
     }
 
-    return { type: "verified", icon: "circle-check", color: "var(--semantic-success)" };
+    return {
+      type: "verified",
+      icon: "circle-check",
+      color: "var(--semantic-success)",
+    };
   }
 
   // Get designation label
@@ -123,7 +127,11 @@
       >
         <div class="thumbnail-container">
           {#if seq.thumbnails?.[0]}
-            <img src={seq.thumbnails[0]} alt={seq.word} class="sequence-thumbnail" />
+            <img
+              src={seq.thumbnails[0]}
+              alt={seq.word}
+              class="sequence-thumbnail"
+            />
           {:else}
             <div class="thumbnail-placeholder">
               <FontAwesomeIcon icon="image" size="2em" color="var(--muted)" />
@@ -133,14 +141,19 @@
         <div class="sequence-details">
           <div class="sequence-item-header">
             <span class="sequence-word">{seq.word}</span>
-            <FontAwesomeIcon icon={status.icon} size="0.85em" color={status.color} />
+            <FontAwesomeIcon
+              icon={status.icon}
+              size="0.85em"
+              color={status.color}
+            />
           </div>
           <div class="sequence-info-row">
             {#if designation}
               <div class="sequence-designation">{designation}</div>
             {/if}
             <div class="sequence-meta">
-              {seq.sequenceLength} beats · {seq.gridMode?.toUpperCase() || "DIAMOND"}
+              {seq.sequenceLength} beats · {seq.gridMode?.toUpperCase() ||
+                "DIAMOND"}
             </div>
           </div>
         </div>

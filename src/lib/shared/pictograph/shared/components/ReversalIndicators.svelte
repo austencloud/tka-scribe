@@ -85,8 +85,12 @@ colored according to the motion that is reversing between pictographs.
 
   // Match arrow and prop colors for consistency - based on pictograph background mode
   // ledMode=true (dark background) → use bright colors, ledMode=false (white background) → use original dark colors
-  const BLUE_COLOR = $derived(getMotionColor(MotionColor.BLUE, ledMode ? "dark" : "light"));
-  const RED_COLOR = $derived(getMotionColor(MotionColor.RED, ledMode ? "dark" : "light"));
+  const BLUE_COLOR = $derived(
+    getMotionColor(MotionColor.BLUE, ledMode ? "dark" : "light")
+  );
+  const RED_COLOR = $derived(
+    getMotionColor(MotionColor.RED, ledMode ? "dark" : "light")
+  );
 
   // Relative positioning - scales with pictograph size
   // Using percentages of the standard 1000px pictograph dimensions

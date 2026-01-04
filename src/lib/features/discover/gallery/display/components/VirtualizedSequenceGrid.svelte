@@ -1,6 +1,9 @@
 <script lang="ts">
   import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
-  import { createVirtualizer, type VirtualItem } from "@tanstack/svelte-virtual";
+  import {
+    createVirtualizer,
+    type VirtualItem,
+  } from "@tanstack/svelte-virtual";
   import { onMount, onDestroy, untrack } from "svelte";
   import { get } from "svelte/store";
   import type { IDiscoverThumbnailProvider } from "../services/contracts/IDiscoverThumbnailProvider";
@@ -217,10 +220,7 @@
   role="grid"
   aria-rowcount={rowCount}
 >
-  <div
-    class="virtual-content"
-    style:height="{totalHeight}px"
-  >
+  <div class="virtual-content" style:height="{totalHeight}px">
     {#each virtualRows as virtualRow (virtualRow.key)}
       <div
         class="virtual-row"
@@ -238,7 +238,8 @@
             <SequenceCard
               {sequence}
               coverUrl={getCoverUrl(sequence)}
-              onPrimaryAction={(seq) => handleSequenceAction("view-detail", seq)}
+              onPrimaryAction={(seq) =>
+                handleSequenceAction("view-detail", seq)}
               bluePropType={propSettings.bluePropType}
               redPropType={propSettings.redPropType}
               catDogModeEnabled={isCatDog}

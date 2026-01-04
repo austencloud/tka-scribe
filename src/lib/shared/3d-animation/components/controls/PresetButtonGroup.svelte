@@ -16,13 +16,13 @@
   let { presets, color = "blue", onSelect }: Props = $props();
 </script>
 
-<div class="preset-group" class:blue={color === "blue"} class:red={color === "red"}>
+<div
+  class="preset-group"
+  class:blue={color === "blue"}
+  class:red={color === "red"}
+>
   {#each presets as preset}
-    <button
-      type="button"
-      class="preset-btn"
-      onclick={() => onSelect(preset)}
-    >
+    <button type="button" class="preset-btn" onclick={() => onSelect(preset)}>
       {preset}
     </button>
   {/each}

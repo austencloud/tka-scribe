@@ -113,7 +113,11 @@
     justify-content: center;
     width: 72px;
     height: 72px;
-    background: linear-gradient(135deg, var(--theme-accent), var(--theme-accent-strong));
+    background: linear-gradient(
+      135deg,
+      var(--theme-accent),
+      var(--theme-accent-strong)
+    );
     border-radius: 18px;
     font-size: var(--font-size-3xl);
     color: white;
@@ -175,7 +179,11 @@
     justify-content: center;
     gap: 10px;
     padding: 16px 24px;
-    background: linear-gradient(135deg, var(--theme-accent), var(--theme-accent-strong));
+    background: linear-gradient(
+      135deg,
+      var(--theme-accent),
+      var(--theme-accent-strong)
+    );
     border: none;
     border-radius: 12px;
     font-size: var(--font-size-base);

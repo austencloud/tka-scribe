@@ -379,11 +379,7 @@ Allows user to set name, visibility, tags, collections, and notes.
 
   .input-field::placeholder,
   .textarea-field::placeholder {
-    color: color-mix(
-      in srgb,
-      var(--theme-text-dim) 70%,
-      transparent
-    );
+    color: color-mix(in srgb, var(--theme-text-dim) 70%, transparent);
   }
 
   .textarea-field {
@@ -433,7 +429,11 @@ Allows user to set name, visibility, tags, collections, and notes.
       transparent
     );
     border: 1px solid
-      color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent-strong)) 30%, transparent);
+      color-mix(
+        in srgb,
+        var(--theme-accent-strong, var(--theme-accent-strong)) 30%,
+        transparent
+      );
     border-radius: 8px;
     color: var(--theme-accent-strong, var(--theme-accent-strong));
     cursor: pointer;
@@ -444,11 +444,7 @@ Allows user to set name, visibility, tags, collections, and notes.
   }
 
   .add-tag-button:hover:not(:disabled) {
-    background: color-mix(
-      in srgb,
-      var(--theme-accent-strong) 30%,
-      transparent
-    );
+    background: color-mix(in srgb, var(--theme-accent-strong) 30%, transparent);
     border-color: color-mix(
       in srgb,
       var(--theme-accent-strong, var(--theme-accent-strong)) 50%,
@@ -480,7 +476,11 @@ Allows user to set name, visibility, tags, collections, and notes.
       transparent
     );
     border: 1px solid
-      color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent-strong)) 30%, transparent);
+      color-mix(
+        in srgb,
+        var(--theme-accent-strong, var(--theme-accent-strong)) 30%,
+        transparent
+      );
     border-radius: 16px;
     color: var(--theme-accent-strong, var(--theme-accent-strong));
     font-size: var(--font-size-compact);
@@ -579,7 +579,11 @@ Allows user to set name, visibility, tags, collections, and notes.
     );
     color: white;
     box-shadow: 0 4px 12px
-      color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent-strong)) 40%, transparent);
+      color-mix(
+        in srgb,
+        var(--theme-accent-strong, var(--theme-accent-strong)) 40%,
+        transparent
+      );
   }
 
   .button-primary:hover:not(:disabled) {
@@ -589,7 +593,11 @@ Allows user to set name, visibility, tags, collections, and notes.
       var(--theme-accent-strong) 100%
     );
     box-shadow: 0 6px 16px
-      color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent-strong)) 60%, transparent);
+      color-mix(
+        in srgb,
+        var(--theme-accent-strong, var(--theme-accent-strong)) 60%,
+        transparent
+      );
     transform: translateY(-1px);
   }
 

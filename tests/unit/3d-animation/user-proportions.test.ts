@@ -68,7 +68,9 @@ describe("User Proportions Calculations", () => {
         const expectedScale = heightCm / BASE_MODEL_HEIGHT_CM;
         expect(result.avatarScale).toBeCloseTo(expectedScale, 4);
 
-        console.log(`${label} (${heightCm.toFixed(1)}cm): avatarScale = ${result.avatarScale.toFixed(4)}`);
+        console.log(
+          `${label} (${heightCm.toFixed(1)}cm): avatarScale = ${result.avatarScale.toFixed(4)}`
+        );
       }
     });
 
@@ -89,7 +91,9 @@ describe("User Proportions Calculations", () => {
 
         expect(result.groundY).toBeCloseTo(expectedGroundY, 1);
 
-        console.log(`${label}: groundY = ${result.groundY.toFixed(1)} (shoulder at Y=0, feet at Y=${result.groundY.toFixed(1)})`);
+        console.log(
+          `${label}: groundY = ${result.groundY.toFixed(1)} (shoulder at Y=0, feet at Y=${result.groundY.toFixed(1)})`
+        );
       }
     });
 
@@ -109,7 +113,9 @@ describe("User Proportions Calculations", () => {
         expect(result.staffLength).toBe(firstStaffLength);
       }
 
-      console.log(`Staff length (34"): ${firstStaffLength.toFixed(1)} scene units`);
+      console.log(
+        `Staff length (34"): ${firstStaffLength.toFixed(1)} scene units`
+      );
     });
 
     it("should keep gridSize constant regardless of height (staff-only)", () => {
@@ -147,7 +153,9 @@ describe("User Proportions Calculations", () => {
         expect(result.handPointRadius).toBe(firstHandRadius);
       }
 
-      console.log(`Hand point radius: ${firstHandRadius.toFixed(1)} scene units`);
+      console.log(
+        `Hand point radius: ${firstHandRadius.toFixed(1)} scene units`
+      );
     });
 
     it("should produce smooth groundY transitions for 1-inch height changes", () => {
@@ -170,7 +178,9 @@ describe("User Proportions Calculations", () => {
 
         const feet = Math.floor(heightInches / 12);
         const inches = heightInches % 12;
-        console.log(`${feet}'${inches}" (${heightCm.toFixed(1)}cm): groundY = ${result.groundY.toFixed(2)}`);
+        console.log(
+          `${feet}'${inches}" (${heightCm.toFixed(1)}cm): groundY = ${result.groundY.toFixed(2)}`
+        );
       }
 
       // Check that transitions are smooth (roughly linear)
@@ -180,7 +190,10 @@ describe("User Proportions Calculations", () => {
         deltas.push(groundYValues[i] - groundYValues[i - 1]);
       }
 
-      console.log("\nGroundY deltas per inch:", deltas.map(d => d.toFixed(2)));
+      console.log(
+        "\nGroundY deltas per inch:",
+        deltas.map((d) => d.toFixed(2))
+      );
 
       // All deltas should be similar (within 0.1 of each other)
       const avgDelta = deltas.reduce((a, b) => a + b, 0) / deltas.length;
@@ -188,7 +201,9 @@ describe("User Proportions Calculations", () => {
         expect(Math.abs(delta - avgDelta)).toBeLessThan(0.1);
       }
 
-      console.log(`Average groundY change per inch: ${avgDelta.toFixed(2)} scene units`);
+      console.log(
+        `Average groundY change per inch: ${avgDelta.toFixed(2)} scene units`
+      );
     });
   });
 
@@ -200,7 +215,9 @@ describe("User Proportions Calculations", () => {
         const heightCm = feetInchesToCm(feet, inches);
         const targetHeight = heightCm * CM_TO_UNITS; // This is what gets passed to setHeight()
 
-        console.log(`${label} (${heightCm.toFixed(1)}cm): targetHeight = ${targetHeight.toFixed(1)} scene units`);
+        console.log(
+          `${label} (${heightCm.toFixed(1)}cm): targetHeight = ${targetHeight.toFixed(1)} scene units`
+        );
       }
     });
 

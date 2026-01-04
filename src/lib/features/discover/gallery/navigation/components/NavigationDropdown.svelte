@@ -169,9 +169,7 @@ Responsive behavior:
   });
 
   onMount(() => {
-    hapticService = resolve<IHapticFeedback>(
-      TYPES.IHapticFeedback
-    );
+    hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
 
     // Initialize DeviceDetector
     let cleanup: (() => void) | undefined;
@@ -212,7 +210,10 @@ Responsive behavior:
   >
     <i class="fas fa-bars" aria-hidden="true"></i>
     <span class="toggle-label">{getButtonLabel(currentSortMethod)}</span>
-    <i class="fas fa-chevron-{isOpen ? 'up' : 'down'} chevron-icon" aria-hidden="true"></i>
+    <i
+      class="fas fa-chevron-{isOpen ? 'up' : 'down'} chevron-icon"
+      aria-hidden="true"
+    ></i>
   </button>
 
   <!-- Desktop: Dropdown Menu -->
@@ -361,11 +362,7 @@ Responsive behavior:
     min-width: 280px;
     max-width: 360px;
     max-height: 500px;
-    background: color-mix(
-      in srgb,
-      var(--theme-panel-bg) 95%,
-      transparent
-    );
+    background: color-mix(in srgb, var(--theme-panel-bg) 95%, transparent);
     border: 1px solid var(--theme-stroke-strong);
     border-radius: 12px;
     box-shadow: 0 8px 32px var(--theme-shadow);

@@ -20,7 +20,8 @@
     hapticService: IHapticFeedback | null;
   }
 
-  let { user, hasPasswordProvider, onChangePassword, hapticService }: Props = $props();
+  let { user, hasPasswordProvider, onChangePassword, hapticService }: Props =
+    $props();
 
   // Display name editing state
   // svelte-ignore state_referenced_locally
@@ -194,7 +195,9 @@
                 type="button"
                 class="toggle-visibility"
                 onclick={toggleCurrentPassword}
-                aria-label={showCurrentPassword ? "Hide password" : "Show password"}
+                aria-label={showCurrentPassword
+                  ? "Hide password"
+                  : "Show password"}
               >
                 <i
                   class="fas {showCurrentPassword ? 'fa-eye-slash' : 'fa-eye'}"
@@ -203,7 +206,8 @@
               </button>
             </div>
             <p class="hint-message subtle">
-              If you have passkeys enabled, you can leave this blank and verify with your device.
+              If you have passkeys enabled, you can leave this blank and verify
+              with your device.
             </p>
           </div>
 
@@ -241,7 +245,10 @@
           </div>
 
           <div class="button-row">
-            <button class="button button--secondary" onclick={handlePasswordCancel}>
+            <button
+              class="button button--secondary"
+              onclick={handlePasswordCancel}
+            >
               Cancel
             </button>
             <button
@@ -520,13 +527,15 @@
       var(--theme-accent-strong)
     );
     color: white;
-    box-shadow: 0 2px 8px color-mix(in srgb, var(--theme-accent) 30%, transparent);
+    box-shadow: 0 2px 8px
+      color-mix(in srgb, var(--theme-accent) 30%, transparent);
   }
 
   .button--primary:hover:not(:disabled) {
     filter: brightness(1.1);
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px color-mix(in srgb, var(--theme-accent) 40%, transparent);
+    box-shadow: 0 4px 12px
+      color-mix(in srgb, var(--theme-accent) 40%, transparent);
   }
 
   .button--secondary {

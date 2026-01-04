@@ -24,8 +24,8 @@
   <h2>Words in Motion: AABB</h2>
 
   <p class="page-intro">
-    Watch how the word <strong>AABB</strong> flows through 4 beats, returning to
-    its starting position!
+    Watch how the word <strong>AABB</strong> flows through 4 beats, returning to its
+    starting position!
   </p>
 
   <div class="word-demo">

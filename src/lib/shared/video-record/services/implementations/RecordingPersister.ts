@@ -56,9 +56,7 @@ export interface IRecordingPersister {
 }
 
 @injectable()
-export class RecordingPersister
-  implements IRecordingPersister
-{
+export class RecordingPersister implements IRecordingPersister {
   private getUserId(): string {
     const user = auth.currentUser;
     if (!user) {
@@ -179,9 +177,14 @@ export class RecordingPersister
       );
 
       const snapshot = await getDocs(q);
-      return snapshot.docs.map((doc) => this.docToRecording(doc.data(), doc.id));
+      return snapshot.docs.map((doc) =>
+        this.docToRecording(doc.data(), doc.id)
+      );
     } catch (error) {
-      console.error("[RecordingPersister] Failed to get recordings for sequence:", error);
+      console.error(
+        "[RecordingPersister] Failed to get recordings for sequence:",
+        error
+      );
       toast.error("Failed to load recordings.");
       return [];
     }
@@ -201,9 +204,14 @@ export class RecordingPersister
       );
 
       const snapshot = await getDocs(q);
-      return snapshot.docs.map((doc) => this.docToRecording(doc.data(), doc.id));
+      return snapshot.docs.map((doc) =>
+        this.docToRecording(doc.data(), doc.id)
+      );
     } catch (error) {
-      console.error("[RecordingPersister] Failed to get all recordings:", error);
+      console.error(
+        "[RecordingPersister] Failed to get all recordings:",
+        error
+      );
       toast.error("Failed to load recordings.");
       return [];
     }
@@ -233,7 +241,10 @@ export class RecordingPersister
         `🗑️ Deleted ${recordings.length} recordings for sequence ${sequenceId}`
       );
     } catch (error) {
-      console.error("[RecordingPersister] Failed to delete recordings for sequence:", error);
+      console.error(
+        "[RecordingPersister] Failed to delete recordings for sequence:",
+        error
+      );
       toast.error("Failed to delete recordings. Please try again.");
       throw error;
     }

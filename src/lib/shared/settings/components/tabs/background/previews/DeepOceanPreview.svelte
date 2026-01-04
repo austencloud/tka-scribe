@@ -38,7 +38,11 @@
     height: 120%;
     background-image:
       radial-gradient(circle, rgba(147, 197, 253, 0.5) 2px, transparent 2px),
-      radial-gradient(circle, rgba(147, 197, 253, 0.4) 1.5px, transparent 1.5px),
+      radial-gradient(
+        circle,
+        rgba(147, 197, 253, 0.4) 1.5px,
+        transparent 1.5px
+      ),
       radial-gradient(circle, rgba(147, 197, 253, 0.35) 1px, transparent 1px),
       radial-gradient(circle, rgba(147, 197, 253, 0.6) 3px, transparent 3px),
       radial-gradient(circle, rgba(147, 197, 253, 0.3) 1px, transparent 1px),

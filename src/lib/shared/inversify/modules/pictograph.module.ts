@@ -66,13 +66,13 @@ export const pictographModule = new ContainerModule(
     // === ARROW SERVICES ===
     options.bind(TYPES.IArrowPlacer).to(ArrowPlacer);
     options.bind(TYPES.IArrowLocator).to(ArrowLocator);
-    options.bind(TYPES.IArrowPlacementKeyGenerator).to(ArrowPlacementKeyGenerator);
+    options
+      .bind(TYPES.IArrowPlacementKeyGenerator)
+      .to(ArrowPlacementKeyGenerator);
     options.bind(TYPES.IArrowRenderer).to(ArrowRenderer);
     options.bind(TYPES.IArrowLifecycleManager).to(ArrowLifecycleManager);
     options.bind(TYPES.IArrowPathResolutionService).to(ArrowPathResolver);
-    options
-      .bind(TYPES.IArrowGridCoordinator)
-      .to(ArrowGridCoordinator);
+    options.bind(TYPES.IArrowGridCoordinator).to(ArrowGridCoordinator);
 
     // === ARROW RENDERING SERVICES ===
     options.bind(TYPES.IArrowPathResolver).to(ArrowPathResolver);
@@ -102,15 +102,9 @@ export const pictographModule = new ContainerModule(
     options
       .bind(TYPES.ISpecialPlacementDataProvider)
       .to(SpecialPlacementDataProvider);
-    options
-      .bind(TYPES.ILetterClassifier)
-      .to(LetterClassifier);
-    options
-      .bind(TYPES.ITurnsTupleGenerator)
-      .to(TurnsTupleGenerator);
-    options
-      .bind(TYPES.ISpecialPlacementLookup)
-      .to(SpecialPlacementLookup);
+    options.bind(TYPES.ILetterClassifier).to(LetterClassifier);
+    options.bind(TYPES.ITurnsTupleGenerator).to(TurnsTupleGenerator);
+    options.bind(TYPES.ISpecialPlacementLookup).to(SpecialPlacementLookup);
     options.bind(TYPES.IDefaultPlacer).to(DefaultPlacer);
 
     // === KEY GENERATORS AND PROCESSORS ===
@@ -154,10 +148,7 @@ export const pictographModule = new ContainerModule(
     options.bind(TYPES.IPictographPreparer).to(PictographPreparer);
 
     // === SVG SERVICES ===
-    options
-      .bind(TYPES.ISvgPreloader)
-      .to(SvgPreloader)
-      .inSingletonScope();
+    options.bind(TYPES.ISvgPreloader).to(SvgPreloader).inSingletonScope();
 
     // === QUERY HANDLERS ===
     options.bind(TYPES.IMotionQueryHandler).to(MotionQueryHandler);

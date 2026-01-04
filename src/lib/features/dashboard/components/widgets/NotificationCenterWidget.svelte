@@ -112,9 +112,8 @@
     if (!user) return;
 
     // Call service to delete all notifications
-    const { notificationService } = await import(
-      "$lib/features/feedback/services/implementations/Notifier"
-    );
+    const { notificationService } =
+      await import("$lib/features/feedback/services/implementations/Notifier");
     await notificationService.deleteAllNotifications(user.uid);
   }
 
@@ -300,7 +299,11 @@
     min-width: 24px;
     height: 24px;
     padding: 0 8px;
-    background: linear-gradient(135deg, var(--semantic-error) 0%, var(--semantic-error) 100%);
+    background: linear-gradient(
+      135deg,
+      var(--semantic-error) 0%,
+      var(--semantic-error) 100%
+    );
     color: white;
     font-size: var(--font-size-compact);
     font-weight: 700;

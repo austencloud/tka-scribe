@@ -39,18 +39,26 @@ export class GalleryRenderer implements IGalleryRenderer {
     console.log(`[GalleryRenderer] Rendering ${seqName}`);
 
     // Check if beats need parsing - old format has blueAttributes, modern has motions.blue
-    const firstBeatRaw = sequence.beats?.[0] as Record<string, unknown> | undefined;
-    const needsParsing = !sequence.beats?.length ||
-      (firstBeatRaw && 'blueAttributes' in firstBeatRaw && !firstBeatRaw.motions);
+    const firstBeatRaw = sequence.beats?.[0] as
+      | Record<string, unknown>
+      | undefined;
+    const needsParsing =
+      !sequence.beats?.length ||
+      (firstBeatRaw &&
+        "blueAttributes" in firstBeatRaw &&
+        !firstBeatRaw.motions);
 
-    console.log(`[GalleryRenderer] needsParsing=${needsParsing}, beats.length=${sequence.beats?.length}, hasBlueAttributes=${'blueAttributes' in (firstBeatRaw || {})}`);
+    console.log(
+      `[GalleryRenderer] needsParsing=${needsParsing}, beats.length=${sequence.beats?.length}, hasBlueAttributes=${"blueAttributes" in (firstBeatRaw || {})}`
+    );
 
     // Load full sequence data if not loaded OR if beats are in old format
     if (needsParsing) {
-      console.log(`[GalleryRenderer] Loading full sequence data for ${seqName}...`);
-      const fullSequence = await this.loaderService.loadFullSequenceData(
-        seqName
+      console.log(
+        `[GalleryRenderer] Loading full sequence data for ${seqName}...`
       );
+      const fullSequence =
+        await this.loaderService.loadFullSequenceData(seqName);
       if (fullSequence) {
         console.log(`[GalleryRenderer] fullSequence returned:`, {
           beatsLength: fullSequence.beats?.length,
@@ -65,7 +73,9 @@ export class GalleryRenderer implements IGalleryRenderer {
           firstBeatMotionsBlue: sequence.beats?.[0]?.motions?.blue,
         });
       } else {
-        console.error(`[GalleryRenderer] loadFullSequenceData returned null for ${seqName}`);
+        console.error(
+          `[GalleryRenderer] loadFullSequenceData returned null for ${seqName}`
+        );
       }
     }
 
@@ -76,13 +86,15 @@ export class GalleryRenderer implements IGalleryRenderer {
 
     // Check if existing start position is valid (has motion data for both hands)
     const existingStartPos = sequence.startPosition;
-    const hasValidStartPosition = existingStartPos &&
+    const hasValidStartPosition =
+      existingStartPos &&
       existingStartPos.motions?.blue &&
       existingStartPos.motions?.red;
 
     // Check if first beat has valid motion data for derivation
     // Must have both blue and red motions with startLocation defined
-    const firstBeatHasValidMotions = firstBeat?.motions?.blue?.startLocation &&
+    const firstBeatHasValidMotions =
+      firstBeat?.motions?.blue?.startLocation &&
       firstBeat?.motions?.red?.startLocation;
 
     console.log(`[GalleryRenderer] Pre-derivation check:`, {
@@ -90,8 +102,9 @@ export class GalleryRenderer implements IGalleryRenderer {
       hasValidStartPosition,
       hasFirstBeat: !!firstBeat,
       firstBeatHasValidMotions: !!firstBeatHasValidMotions,
-      firstBeatBlueStartLoc: firstBeat?.motions?.blue?.startLocation ?? 'MISSING',
-      firstBeatRedStartLoc: firstBeat?.motions?.red?.startLocation ?? 'MISSING',
+      firstBeatBlueStartLoc:
+        firstBeat?.motions?.blue?.startLocation ?? "MISSING",
+      firstBeatRedStartLoc: firstBeat?.motions?.red?.startLocation ?? "MISSING",
     });
 
     if (!hasValidStartPosition && firstBeat && firstBeatHasValidMotions) {
@@ -101,14 +114,15 @@ export class GalleryRenderer implements IGalleryRenderer {
           beatLetter: firstBeat.letter,
           motions: firstBeat.motions,
         });
-        const derivedStartPos = this.startPositionDeriver.deriveFromFirstBeat(
-          firstBeat
-        );
+        const derivedStartPos =
+          this.startPositionDeriver.deriveFromFirstBeat(firstBeat);
         sequenceWithStartPos = {
           ...sequence,
           startPosition: derivedStartPos,
         };
-        console.log(`[GalleryRenderer] ✅ Derived start position: gridPosition=${derivedStartPos.gridPosition}`);
+        console.log(
+          `[GalleryRenderer] ✅ Derived start position: gridPosition=${derivedStartPos.gridPosition}`
+        );
       } catch (err) {
         console.error(
           `[GalleryRenderer] ❌ Failed to derive start position for ${seqName}:`,
@@ -119,14 +133,19 @@ export class GalleryRenderer implements IGalleryRenderer {
       if (hasValidStartPosition) {
         console.log(`[GalleryRenderer] Using existing valid start position`);
       } else if (!firstBeat) {
-        console.warn(`[GalleryRenderer] Cannot derive start position: no first beat available`);
+        console.warn(
+          `[GalleryRenderer] Cannot derive start position: no first beat available`
+        );
       } else if (!firstBeatHasValidMotions) {
-        console.warn(`[GalleryRenderer] Cannot derive start position: first beat missing motion data or startLocation`, {
-          hasBlueMotion: !!firstBeat.motions?.blue,
-          hasRedMotion: !!firstBeat.motions?.red,
-          blueStartLocation: firstBeat.motions?.blue?.startLocation,
-          redStartLocation: firstBeat.motions?.red?.startLocation,
-        });
+        console.warn(
+          `[GalleryRenderer] Cannot derive start position: first beat missing motion data or startLocation`,
+          {
+            hasBlueMotion: !!firstBeat.motions?.blue,
+            hasRedMotion: !!firstBeat.motions?.red,
+            blueStartLocation: firstBeat.motions?.blue?.startLocation,
+            redStartLocation: firstBeat.motions?.red?.startLocation,
+          }
+        );
       }
     }
 
@@ -134,9 +153,18 @@ export class GalleryRenderer implements IGalleryRenderer {
 
     // Final check before rendering
     console.log(`[GalleryRenderer] FINAL CHECK for ${seqName}:`);
-    console.log(`  - sequenceWithStartPos.startPosition:`, sequenceWithStartPos.startPosition);
-    console.log(`  - sequenceWithStartPos.beats.length:`, sequenceWithStartPos.beats?.length);
-    console.log(`  - First beat motions.blue:`, sequenceWithStartPos.beats?.[0]?.motions?.blue);
+    console.log(
+      `  - sequenceWithStartPos.startPosition:`,
+      sequenceWithStartPos.startPosition
+    );
+    console.log(
+      `  - sequenceWithStartPos.beats.length:`,
+      sequenceWithStartPos.beats?.length
+    );
+    console.log(
+      `  - First beat motions.blue:`,
+      sequenceWithStartPos.beats?.[0]?.motions?.blue
+    );
 
     const options: Partial<SequenceExportOptions> = {
       beatSize: 240,
@@ -165,7 +193,7 @@ export class GalleryRenderer implements IGalleryRenderer {
         showReversals: true,
         showNonRadialPoints: showNonRadial,
         showTurnNumbers: true,
-        // Lights Off inverts glyph colors for dark backgrounds
+        // Dark Mode inverts glyph colors for dark backgrounds
         lightsOff: !lightMode,
         propGlow: !lightMode, // Enable prop glow when in dark mode
       },

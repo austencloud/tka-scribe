@@ -30,7 +30,8 @@
     onVisibilityChange: (visible: boolean) => void;
   }
 
-  let { color, config, visible, onConfigChange, onVisibilityChange }: Props = $props();
+  let { color, config, visible, onConfigChange, onVisibilityChange }: Props =
+    $props();
 
   // Use semantic prop colors from CSS variables - derived from prop
   const colorLabel = $derived(color === "blue" ? "Blue" : "Red");
@@ -45,7 +46,11 @@
   }
 </script>
 
-<div class="config-card" class:blue={color === "blue"} class:red={color === "red"}>
+<div
+  class="config-card"
+  class:blue={color === "blue"}
+  class:red={color === "red"}
+>
   <CardHeader title={colorLabel} {color}>
     {#snippet action()}
       <IconButton

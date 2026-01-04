@@ -20,7 +20,7 @@
     darkMode,
     onToggleDarkMode,
     onChangeProp,
-    onRandomize
+    onRandomize,
   }: Props = $props();
 
   const isDisabled = $derived(!servicesReady || isLoading);
@@ -32,13 +32,13 @@
     class:dark-mode={darkMode}
     onclick={onToggleDarkMode}
     disabled={isDisabled}
-    aria-label={darkMode ? 'Switch to light mode' : 'Switch to dark mode'}
-    title={darkMode ? 'Switch to light mode' : 'Switch to dark mode'}
+    aria-label={darkMode ? "Switch to light mode" : "Switch to dark mode"}
+    title={darkMode ? "Switch to light mode" : "Switch to dark mode"}
   >
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
       <path
         d="M9 18h6M10 22h4M12 2a7 7 0 0 0-4 12.7V18h8v-3.3A7 7 0 0 0 12 2z"
-        fill={darkMode ? 'none' : 'currentColor'}
+        fill={darkMode ? "none" : "currentColor"}
       />
     </svg>
   </button>
@@ -164,7 +164,11 @@
     align-items: center;
     gap: 10px;
     padding: 14px 28px;
-    background: linear-gradient(135deg, var(--primary, #6366f1) 0%, #818cf8 100%);
+    background: linear-gradient(
+      135deg,
+      var(--primary, #6366f1) 0%,
+      #818cf8 100%
+    );
     border: none;
     border-radius: 100px;
     color: white;

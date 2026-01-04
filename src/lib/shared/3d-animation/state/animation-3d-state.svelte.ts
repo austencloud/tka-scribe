@@ -86,7 +86,7 @@ export function createAnimation3DState(deps: Animation3DStateDeps) {
 
   // Current beat info for display
   let currentBeat = $derived<BeatMotionConfigs | null>(
-    beatConfigs.length > 0 ? beatConfigs[currentBeatIndex] ?? null : null
+    beatConfigs.length > 0 ? (beatConfigs[currentBeatIndex] ?? null) : null
   );
   let totalBeats = $derived(beatConfigs.length);
 
@@ -116,7 +116,10 @@ export function createAnimation3DState(deps: Animation3DStateDeps) {
    */
   function loadSequence(sequence: SequenceData) {
     loadedSequence = sequence;
-    beatConfigs = sequenceConverter.sequenceToMotionConfigs(sequence, Plane.WALL);
+    beatConfigs = sequenceConverter.sequenceToMotionConfigs(
+      sequence,
+      Plane.WALL
+    );
     currentBeatIndex = 0;
     playback.reset();
     updateVisibilityFromBeat(beatConfigs[0]);
@@ -166,33 +169,67 @@ export function createAnimation3DState(deps: Animation3DStateDeps) {
 
   return {
     // Sequence loaded state
-    get hasSequence() { return hasSequence; },
+    get hasSequence() {
+      return hasSequence;
+    },
 
     // Playback (delegate to playback state)
-    get isPlaying() { return playback.isPlaying; },
-    get progress() { return playback.progress; },
-    get speed() { return playback.speed; },
-    set speed(value: number) { playback.speed = value; },
-    get loop() { return playback.loop; },
-    set loop(value: boolean) { playback.loop = value; },
+    get isPlaying() {
+      return playback.isPlaying;
+    },
+    get progress() {
+      return playback.progress;
+    },
+    get speed() {
+      return playback.speed;
+    },
+    set speed(value: number) {
+      playback.speed = value;
+    },
+    get loop() {
+      return playback.loop;
+    },
+    set loop(value: boolean) {
+      playback.loop = value;
+    },
 
     // Active configs (read-only, from current beat)
-    get activeBlueConfig() { return activeBlueConfig; },
-    get activeRedConfig() { return activeRedConfig; },
+    get activeBlueConfig() {
+      return activeBlueConfig;
+    },
+    get activeRedConfig() {
+      return activeRedConfig;
+    },
 
     // Visibility
-    get showBlue() { return showBlue; },
-    get showRed() { return showRed; },
+    get showBlue() {
+      return showBlue;
+    },
+    get showRed() {
+      return showRed;
+    },
 
     // Computed states (null when no sequence)
-    get bluePropState() { return bluePropState; },
-    get redPropState() { return redPropState; },
+    get bluePropState() {
+      return bluePropState;
+    },
+    get redPropState() {
+      return redPropState;
+    },
 
     // Sequence state
-    get loadedSequence() { return loadedSequence; },
-    get currentBeatIndex() { return currentBeatIndex; },
-    get currentBeat() { return currentBeat; },
-    get totalBeats() { return totalBeats; },
+    get loadedSequence() {
+      return loadedSequence;
+    },
+    get currentBeatIndex() {
+      return currentBeatIndex;
+    },
+    get currentBeat() {
+      return currentBeat;
+    },
+    get totalBeats() {
+      return totalBeats;
+    },
 
     // Playback methods
     play: playback.play,

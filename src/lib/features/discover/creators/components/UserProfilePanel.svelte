@@ -113,9 +113,7 @@
       // Resolve services
       userService = resolve<IUserRepository>(TYPES.IUserRepository);
       libraryService = resolve<ILibraryRepository>(TYPES.ILibraryRepository);
-      hapticService = resolve<IHapticFeedback>(
-        TYPES.IHapticFeedback
-      );
+      hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
       leaderboardService = resolve<ILeaderboardManager>(
         TYPES.ILeaderboardManager
       );
@@ -353,7 +351,11 @@
 
       <!-- Admin Controls (only visible to admins, not on own profile) -->
       {#if isAdmin && !isOwnProfile}
-        <ProfileAdminSection {userProfile} onUserUpdated={handleAdminUpdate} {onUserDeleted} />
+        <ProfileAdminSection
+          {userProfile}
+          onUserUpdated={handleAdminUpdate}
+          {onUserDeleted}
+        />
       {/if}
     </div>
   {/if}

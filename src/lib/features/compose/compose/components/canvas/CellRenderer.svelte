@@ -99,7 +99,6 @@
     if (!primarySequence || !playbackController) return;
 
     try {
-
       const success = playbackController.initialize(
         primarySequence,
         animationState

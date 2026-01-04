@@ -23,7 +23,12 @@
   let { value, onchange, label = "", color = "blue" }: Props = $props();
 
   // Grid point positions (relative to 100x100 viewbox)
-  const points: Array<{ loc: GridLocation; x: number; y: number; label: string }> = [
+  const points: Array<{
+    loc: GridLocation;
+    x: number;
+    y: number;
+    label: string;
+  }> = [
     { loc: GridLocation.NORTH, x: 50, y: 10, label: "N" },
     { loc: GridLocation.NORTHEAST, x: 85, y: 15, label: "NE" },
     { loc: GridLocation.EAST, x: 90, y: 50, label: "E" },
@@ -39,7 +44,11 @@
   }
 </script>
 
-<div class="grid-selector" class:blue={color === "blue"} class:red={color === "red"}>
+<div
+  class="grid-selector"
+  class:blue={color === "blue"}
+  class:red={color === "red"}
+>
   {#if label}
     <span class="label">{label}</span>
   {/if}
@@ -57,7 +66,7 @@
         class="point-group"
         class:selected={value === point.loc}
         onclick={() => handleClick(point.loc)}
-        onkeydown={(e) => e.key === 'Enter' && handleClick(point.loc)}
+        onkeydown={(e) => e.key === "Enter" && handleClick(point.loc)}
         tabindex="0"
         role="button"
         aria-label="Select {point.label}"
@@ -66,7 +75,7 @@
         <circle
           cx={point.x}
           cy={point.y}
-          r={value === point.loc ? '9' : '6'}
+          r={value === point.loc ? "9" : "6"}
           class="point-dot"
         />
         <text x={point.x} y={point.y} class="point-label">{point.label}</text>

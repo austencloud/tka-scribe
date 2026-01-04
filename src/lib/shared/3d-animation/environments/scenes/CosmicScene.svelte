@@ -53,11 +53,7 @@
 />
 
 <!-- Asteroid platform - small rocky surface at avatar feet level -->
-<GroundPlane
-  color={palette.asteroid}
-  opacity={1}
-  size={250}
-/>
+<GroundPlane color={palette.asteroid} opacity={1} size={250} />
 
 <!-- Drifting stars - larger and more numerous for cosmic feel -->
 <FallingParticles

@@ -76,7 +76,8 @@
 
   const selectionStatus = $derived.by(() => {
     if (firstBeat === null) return "Click first beat (key beat)";
-    if (secondBeat === null) return `Beat ${firstBeat} selected → Click second beat`;
+    if (secondBeat === null)
+      return `Beat ${firstBeat} selected → Click second beat`;
     return `Beat ${firstBeat} ↔ Beat ${secondBeat}`;
   });
 
@@ -92,7 +93,11 @@
   <div class="beat-selection" class:complete={hasBothBeats}>
     <span class="selection-text">{selectionStatus}</span>
     {#if firstBeat !== null}
-      <button class="clear-btn" onclick={onClearSelection} title="Clear selection">
+      <button
+        class="clear-btn"
+        onclick={onClearSelection}
+        title="Clear selection"
+      >
         <FontAwesomeIcon icon="xmark" size="0.85em" />
       </button>
     {/if}
@@ -118,7 +123,9 @@
             />
             <span class="component-name">{component.label}</span>
             {#if isSelected && hasInterval(component.id)}
-              <span class="interval-badge">{getIntervalDisplay(component.id)}</span>
+              <span class="interval-badge"
+                >{getIntervalDisplay(component.id)}</span
+              >
             {/if}
           </button>
 
@@ -126,16 +133,20 @@
             <div class="interval-row">
               <button
                 class="interval-chip"
-                class:active={transformationIntervals[intervalConfig.key] === "halved"}
+                class:active={transformationIntervals[intervalConfig.key] ===
+                  "halved"}
                 style="--chip-color: {intervalConfig.color}"
                 onclick={() => onSetInterval(intervalConfig.key, "halved")}
-              >½</button>
+                >½</button
+              >
               <button
                 class="interval-chip"
-                class:active={transformationIntervals[intervalConfig.key] === "quartered"}
+                class:active={transformationIntervals[intervalConfig.key] ===
+                  "quartered"}
                 style="--chip-color: {intervalConfig.color}"
                 onclick={() => onSetInterval(intervalConfig.key, "quartered")}
-              >¼</button>
+                >¼</button
+              >
             </div>
           {/if}
         </div>

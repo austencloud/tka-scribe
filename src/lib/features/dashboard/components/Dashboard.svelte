@@ -16,7 +16,10 @@
   import type { ResponsiveSettings } from "$lib/shared/device/domain/models/device-models";
   import { handleModuleChange } from "$lib/shared/navigation-coordinator/navigation-coordinator.svelte";
   import type { ModuleId } from "$lib/shared/navigation/domain/types";
-  import { userPreviewState, getEffectiveUserId } from "$lib/shared/debug/state/user-preview-state.svelte";
+  import {
+    userPreviewState,
+    getEffectiveUserId,
+  } from "$lib/shared/debug/state/user-preview-state.svelte";
   import { authState } from "$lib/shared/auth/state/authState.svelte";
 
   // Components
@@ -33,7 +36,10 @@
   import MessagesDrawer from "./drawers/MessagesDrawer.svelte";
   import NotificationsDrawer from "./drawers/NotificationsDrawer.svelte";
   import { createDashboard } from "../state/dashboard-state.svelte";
-  import type { FeedbackItem, FeedbackType } from "$lib/features/feedback/domain/models/feedback-models";
+  import type {
+    FeedbackItem,
+    FeedbackType,
+  } from "$lib/features/feedback/domain/models/feedback-models";
 
   // Services
   let deviceDetector: IDeviceDetector | null = null;
@@ -82,15 +88,15 @@
   );
 
   // Reactive: get effective user ID (preview mode or authenticated user)
-  const effectiveUserId = $derived(getEffectiveUserId(authState.user?.uid || null));
+  const effectiveUserId = $derived(
+    getEffectiveUserId(authState.user?.uid || null)
+  );
 
   onMount(() => {
     let cleanup: (() => void) | undefined;
     try {
       deviceDetector = resolve<IDeviceDetector>(TYPES.IDeviceDetector);
-      hapticService = resolve<IHapticFeedback>(
-        TYPES.IHapticFeedback
-      );
+      hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
       responsiveSettings = deviceDetector.getResponsiveSettings();
 
       cleanup = deviceDetector.onCapabilitiesChanged(() => {
@@ -129,10 +135,16 @@
       );
       if (feedService) {
         hasFollowing = await feedService.hasFollowing(effectiveUserId);
-        console.log(`[Dashboard] hasFollowing check for user ${effectiveUserId}:`, hasFollowing);
+        console.log(
+          `[Dashboard] hasFollowing check for user ${effectiveUserId}:`,
+          hasFollowing
+        );
       } else if (retryCount < 3) {
         // Service not available yet (Tier 2 still loading), retry after delay
-        console.log("[Dashboard] Feed service not ready, retrying...", retryCount + 1);
+        console.log(
+          "[Dashboard] Feed service not ready, retrying...",
+          retryCount + 1
+        );
         setTimeout(() => checkHasFollowing(retryCount + 1), 500);
       }
     } catch (error) {
@@ -152,9 +164,8 @@
     appendMode?: boolean
   ): Promise<FeedbackItem> {
     // Dynamically import feedback service
-    const { feedbackService } = await import(
-      "$lib/features/feedback/services/implementations/FeedbackRepository"
-    );
+    const { feedbackService } =
+      await import("$lib/features/feedback/services/implementations/FeedbackRepository");
 
     const updatedItem = await feedbackService.updateUserFeedback(
       feedbackId,
@@ -172,9 +183,8 @@
 
   async function handleFeedbackDelete(feedbackId: string): Promise<void> {
     // Dynamically import feedback service
-    const { feedbackService } = await import(
-      "$lib/features/feedback/services/implementations/FeedbackRepository"
-    );
+    const { feedbackService } =
+      await import("$lib/features/feedback/services/implementations/FeedbackRepository");
 
     await feedbackService.deleteUserFeedback(feedbackId);
 
@@ -509,7 +519,6 @@
     .community-grid {
       gap: 12px;
     }
-
   }
 
   @media (prefers-reduced-motion: reduce) {

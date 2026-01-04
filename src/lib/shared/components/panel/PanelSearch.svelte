@@ -74,7 +74,11 @@
     background: var(--theme-card-hover-bg, var(--theme-card-bg));
     border-color: var(--theme-stroke-strong);
     box-shadow: 0 0 0 3px
-      color-mix(in srgb, var(--theme-accent, var(--theme-accent-strong)) 15%, transparent);
+      color-mix(
+        in srgb,
+        var(--theme-accent, var(--theme-accent-strong)) 15%,
+        transparent
+      );
   }
 
   .panel-search__input::placeholder {

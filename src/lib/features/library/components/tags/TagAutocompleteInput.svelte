@@ -362,8 +362,17 @@
 
   /* Selected tags - colored to indicate selection */
   .tag-chip.selected {
-    background: color-mix(in srgb, var(--tag-color, var(--theme-accent-strong)) 20%, transparent);
-    border: 1px solid color-mix(in srgb, var(--tag-color, var(--theme-accent-strong)) 50%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--tag-color, var(--theme-accent-strong)) 20%,
+      transparent
+    );
+    border: 1px solid
+      color-mix(
+        in srgb,
+        var(--tag-color, var(--theme-accent-strong)) 50%,
+        transparent
+      );
     color: var(--tag-color, var(--theme-accent-strong));
   }
 
@@ -398,7 +407,11 @@
   .tag-count {
     margin-left: auto;
     padding: 4px 8px;
-    background: color-mix(in srgb, var(--tag-color, var(--theme-accent-strong)) 20%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--tag-color, var(--theme-accent-strong)) 20%,
+      transparent
+    );
     border-radius: var(--radius-2026-sm, 10px);
     font-size: var(--font-size-compact);
     font-weight: 600;
@@ -583,7 +596,8 @@
     margin: 0;
     padding: 10px 12px;
     background: color-mix(in srgb, var(--semantic-warning) 10%, transparent);
-    border: 1px solid color-mix(in srgb, var(--semantic-warning) 30%, transparent);
+    border: 1px solid
+      color-mix(in srgb, var(--semantic-warning) 30%, transparent);
     border-radius: var(--radius-2026-sm, 10px);
     color: var(--semantic-warning);
     font-size: var(--font-size-compact);

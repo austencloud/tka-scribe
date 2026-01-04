@@ -105,9 +105,7 @@ export class AnimationPrecomputer implements IAnimationPrecomputer {
         });
 
         // Wire cache to trail capture service for backfill support
-        this.TrailCapturer.setAnimationCacheService(
-          this.pathCache as any
-        );
+        this.TrailCapturer.setAnimationCacheService(this.pathCache as any);
       }
 
       // CRITICAL: Initialize orchestrator with sequence data BEFORE pre-computation!

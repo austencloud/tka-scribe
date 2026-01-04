@@ -64,7 +64,6 @@
     padding-left: 8px;
   }
 
-
   /* Celebrate animation - tabs revealed after tutorial */
   .section-item.celebrate {
     animation: sectionCelebrate 0.6s ease-out forwards;

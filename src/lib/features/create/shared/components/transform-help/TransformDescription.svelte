@@ -70,7 +70,10 @@
     aria-label={expanded ? `Collapse ${item.name}` : `Expand ${item.name}`}
     type="button"
   >
-    <i class="fas {expanded ? 'fa-chevron-up' : 'fa-chevron-down'}" aria-hidden="true"></i>
+    <i
+      class="fas {expanded ? 'fa-chevron-up' : 'fa-chevron-down'}"
+      aria-hidden="true"
+    ></i>
   </button>
 </div>
 

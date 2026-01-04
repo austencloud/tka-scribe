@@ -54,11 +54,14 @@ export class AccountManager implements IAccountManager {
   async deleteAccount(): Promise<void> {
     this.haptics.trigger("warning");
 
-    await this.stepUpCoordinator.executeSensitive(async () => {
-      await this.apiClient.request("/api/account/delete");
-      await signOut(auth).catch(() => {});
-      alert("Account deleted successfully.");
-    }, { allowPasswordReauth: true });
+    await this.stepUpCoordinator.executeSensitive(
+      async () => {
+        await this.apiClient.request("/api/account/delete");
+        await signOut(auth).catch(() => {});
+        alert("Account deleted successfully.");
+      },
+      { allowPasswordReauth: true }
+    );
   }
 
   async clearCache(): Promise<void> {

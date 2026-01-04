@@ -207,8 +207,7 @@ export class DeepLinker implements IDeepLinker {
 
     // Check if data is stale
     const isStale =
-      Date.now() - this.storedData.timestamp >
-      DeepLinker.STALE_THRESHOLD_MS;
+      Date.now() - this.storedData.timestamp > DeepLinker.STALE_THRESHOLD_MS;
     if (isStale) {
       this.storedData = null;
       return null;
@@ -229,8 +228,7 @@ export class DeepLinker implements IDeepLinker {
     }
 
     const isStale =
-      Date.now() - this.storedData.timestamp >
-      DeepLinker.STALE_THRESHOLD_MS;
+      Date.now() - this.storedData.timestamp > DeepLinker.STALE_THRESHOLD_MS;
     return !isStale;
   }
 

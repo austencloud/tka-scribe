@@ -26,12 +26,14 @@ PremiumModule.svelte (entry point)
 ### Responsive Strategy
 
 **Mobile (<768px):**
+
 - `PriceHighlight` visible above fold
 - `StickyPremiumCTA` always visible at bottom (no scrolling required)
 - `PremiumCTA` hidden (desktop-only)
 - Tighter vertical spacing
 
 **Desktop (≥768px):**
+
 - `PremiumCTA` inline after About section
 - `PriceHighlight` hidden
 - `StickyPremiumCTA` hidden
@@ -39,34 +41,38 @@ PremiumModule.svelte (entry point)
 
 ### Component Responsibilities
 
-| Component | Purpose | Lines | Mobile | Desktop |
-|-----------|---------|-------|--------|---------|
-| `PremiumShowcase.svelte` | Orchestration, subscription logic | ~220 | ✓ | ✓ |
-| `PremiumHero.svelte` | Hero headline + developer photo | 88 | ✓ | ✓ |
-| `PremiumCTA.svelte` | Primary CTA with pricing | 98 | ✗ | ✓ |
-| `StickyPremiumCTA.svelte` | Floating bottom CTA | 94 | ✓ | ✗ |
-| `PriceHighlight.svelte` | Above-fold price badge | 63 | ✓ | ✗ |
-| `FeatureComparisonTable.svelte` | Feature comparison table | 156 | ✓ | ✓ |
-| `EarlyAccessBanner.svelte` | Beta context banner | 43 | ✓ | ✓ |
-| `InfoCard.svelte` | Reusable card wrapper | 49 | ✓ | ✓ |
+| Component                       | Purpose                           | Lines | Mobile | Desktop |
+| ------------------------------- | --------------------------------- | ----- | ------ | ------- |
+| `PremiumShowcase.svelte`        | Orchestration, subscription logic | ~220  | ✓      | ✓       |
+| `PremiumHero.svelte`            | Hero headline + developer photo   | 88    | ✓      | ✓       |
+| `PremiumCTA.svelte`             | Primary CTA with pricing          | 98    | ✗      | ✓       |
+| `StickyPremiumCTA.svelte`       | Floating bottom CTA               | 94    | ✓      | ✗       |
+| `PriceHighlight.svelte`         | Above-fold price badge            | 63    | ✓      | ✗       |
+| `FeatureComparisonTable.svelte` | Feature comparison table          | 156   | ✓      | ✓       |
+| `EarlyAccessBanner.svelte`      | Beta context banner               | 43    | ✓      | ✓       |
+| `InfoCard.svelte`               | Reusable card wrapper             | 49    | ✓      | ✓       |
 
 ### Integration Points
 
 **Services (Inversify DI):**
+
 - `ISubscriptionService` - Stripe checkout session creation
 - `IHapticFeedbackService` - Mobile haptic feedback on CTA click
 
 **Environment Variables:**
+
 - `PUBLIC_STRIPE_PRICE_ID` - Stripe price ID for subscription
 - Fallback: `price_1SgbRTLZdzgHfpQbEp99bKp7`
 
 **Navigation:**
+
 - Module visibility controlled by `featureFlagService.isAdmin` (navigation-coordinator.svelte.ts:200-206)
 - Currently admin-only until premium features are ready
 
 ### Design Tokens
 
 All components use `app.css` design tokens:
+
 - **Spacing:** `--spacing-{xs,sm,md,lg,xl}`
 - **Typography:** `--font-size-{min,compact,base,lg,xl}`
 - **Colors:** `--theme-{text,accent,card-bg}`, `--gradient-primary`
@@ -87,6 +93,7 @@ All components use `app.css` design tokens:
 See `CONVERSION-STRATEGY.md` for detailed roadmap.
 
 **Critical missing components:**
+
 - Social proof (testimonials, user count, trust badges)
 - Risk reversal (FAQ, money-back guarantee, cancel anytime)
 - Value communication (benefit-focused copy, demo videos)
@@ -94,6 +101,7 @@ See `CONVERSION-STRATEGY.md` for detailed roadmap.
 - Checkout flow UX (loading states, error handling, success confirmation)
 
 **Content needs:**
+
 - Developer photo (`/images/austen.jpg`)
 - User testimonials
 - Video tutorials explaining premium features
@@ -124,6 +132,7 @@ src/lib/features/premium/
 ## Testing
 
 **Manual verification checklist:**
+
 - [ ] Mobile: CTA visible without scrolling
 - [ ] Desktop: Inline CTA displays correctly
 - [ ] Stripe checkout session creates successfully

@@ -68,15 +68,15 @@
       transparent
     );
     border: 1px solid
-      color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 30%, transparent);
+      color-mix(
+        in srgb,
+        var(--semantic-error, var(--semantic-error)) 30%,
+        transparent
+      );
   }
 
   .conflict-warning.warning {
-    background: color-mix(
-      in srgb,
-      var(--semantic-warning) 10%,
-      transparent
-    );
+    background: color-mix(in srgb, var(--semantic-warning) 10%, transparent);
     border: 1px solid
       color-mix(in srgb, var(--semantic-warning) 30%, transparent);
   }
@@ -147,7 +147,11 @@
   }
 
   .conflict-btn.replace:hover {
-    background: color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 85%, #000);
+    background: color-mix(
+      in srgb,
+      var(--semantic-error, var(--semantic-error)) 85%,
+      #000
+    );
   }
 
   .conflict-btn.swap {

@@ -37,9 +37,7 @@
   let hapticService: IHapticFeedback | null = null;
 
   onMount(() => {
-    hapticService = tryResolve<IHapticFeedback>(
-      TYPES.IHapticFeedback
-    );
+    hapticService = tryResolve<IHapticFeedback>(TYPES.IHapticFeedback);
   });
 
   // Get icon for current display view
@@ -156,7 +154,10 @@
     onclick={handleSequence}
     aria-label={hasSequence ? "Change sequence" : "Select sequence"}
   >
-    <i class="fas {hasSequence ? 'fa-exchange-alt' : 'fa-folder-open'}" aria-hidden="true"></i>
+    <i
+      class="fas {hasSequence ? 'fa-exchange-alt' : 'fa-folder-open'}"
+      aria-hidden="true"
+    ></i>
   </button>
 </div>
 
@@ -207,7 +208,11 @@
         transparent
       );
       box-shadow: 0 4px 12px
-        color-mix(in srgb, var(--semantic-info, var(--semantic-info)) 20%, transparent);
+        color-mix(
+          in srgb,
+          var(--semantic-info, var(--semantic-info)) 20%,
+          transparent
+        );
       transform: translateY(-2px);
       color: var(--semantic-info);
     }
@@ -231,11 +236,7 @@
       var(--semantic-success, var(--semantic-success)) 30%,
       transparent
     );
-    color: color-mix(
-      in srgb,
-      var(--semantic-success) 90%,
-      transparent
-    );
+    color: color-mix(in srgb, var(--semantic-success) 90%, transparent);
   }
 
   .sequence-btn.has-sequence:hover {
@@ -250,7 +251,11 @@
       transparent
     );
     box-shadow: 0 4px 12px
-      color-mix(in srgb, var(--semantic-success, var(--semantic-success)) 20%, transparent);
+      color-mix(
+        in srgb,
+        var(--semantic-success, var(--semantic-success)) 20%,
+        transparent
+      );
   }
 
   /* Mode button accent colors based on mode */

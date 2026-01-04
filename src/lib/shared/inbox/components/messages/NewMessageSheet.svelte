@@ -55,9 +55,7 @@
   });
 
   onMount(async () => {
-    hapticService = resolve<IHapticFeedback>(
-      TYPES.IHapticFeedback
-    );
+    hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
 
     try {
       userService = resolve<IUserRepository>(TYPES.IUserRepository);
@@ -224,7 +222,10 @@
                     customSize={40}
                   />
                   <span class="suggestion-row-name">{user.displayName}</span>
-                  <i class="fas fa-chevron-right suggestion-arrow" aria-hidden="true"></i>
+                  <i
+                    class="fas fa-chevron-right suggestion-arrow"
+                    aria-hidden="true"
+                  ></i>
                 </button>
               {/each}
             </div>

@@ -109,7 +109,9 @@
     <!-- Daily Challenge Card -->
     <div class="daily-challenge glass-surface">
       <div class="challenge-header">
-        <h3><i class="fas fa-bullseye" aria-hidden="true"></i> Daily Challenge</h3>
+        <h3>
+          <i class="fas fa-bullseye" aria-hidden="true"></i> Daily Challenge
+        </h3>
         <span class="difficulty-badge {dailyChallenge.difficulty}">
           {dailyChallenge.difficulty}
         </span>
@@ -132,7 +134,8 @@
       </div>
 
       <div class="challenge-reward">
-        <i class="fas fa-trophy" aria-hidden="true"></i> +{dailyChallenge.xpReward} XP
+        <i class="fas fa-trophy" aria-hidden="true"></i>
+        +{dailyChallenge.xpReward} XP
       </div>
     </div>
 

@@ -15,9 +15,7 @@ for SHIFT motions in the completed hand paths.
   }>();
 
   // Resolve haptic feedback service
-  const hapticService = resolve<IHapticFeedback>(
-    TYPES.IHapticFeedback
-  );
+  const hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
 
   function selectClockwise() {
     hapticService?.trigger("success");

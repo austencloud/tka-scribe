@@ -47,20 +47,25 @@ Now with intelligent rotation animation matching prop behavior!
   // LED mode glow colors - based on pictograph background mode
   // ledMode=true (dark background) → use bright colors, ledMode=false (white background) → use original dark colors
   const LED_GLOW_COLORS = $derived({
-    [MotionColor.BLUE]: getMotionColor(MotionColor.BLUE, ledMode ? "dark" : "light"),
-    [MotionColor.RED]: getMotionColor(MotionColor.RED, ledMode ? "dark" : "light"),
+    [MotionColor.BLUE]: getMotionColor(
+      MotionColor.BLUE,
+      ledMode ? "dark" : "light"
+    ),
+    [MotionColor.RED]: getMotionColor(
+      MotionColor.RED,
+      ledMode ? "dark" : "light"
+    ),
   });
 
   // Get the glow color based on motion color
   const glowColor = $derived(
-    LED_GLOW_COLORS[motionData.color as MotionColor.BLUE | MotionColor.RED] ?? LED_GLOW_COLORS[MotionColor.BLUE]
+    LED_GLOW_COLORS[motionData.color as MotionColor.BLUE | MotionColor.RED] ??
+      LED_GLOW_COLORS[MotionColor.BLUE]
   );
 
   // White stroke for visibility against light backgrounds (when NOT in dark mode)
   const lightModeStroke = $derived(
-    !ledMode
-      ? "drop-shadow(0 0 1.5px white) drop-shadow(0 0 1.5px white)"
-      : ""
+    !ledMode ? "drop-shadow(0 0 1.5px white) drop-shadow(0 0 1.5px white)" : ""
   );
 
   // ============================================================================
@@ -284,9 +289,7 @@ Now with intelligent rotation animation matching prop behavior!
   $effect(() => {
     if (isClickable && !hapticService) {
       try {
-        hapticService = resolve<IHapticFeedback>(
-          TYPES.IHapticFeedback
-        );
+        hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
       } catch (error) {
         console.warn("Haptic service not available:", error);
       }
@@ -317,7 +320,9 @@ Now with intelligent rotation animation matching prop behavior!
     class:led-mode={ledMode}
     data-led-mode={ledMode}
     onclick={isClickable ? handleArrowClick : undefined}
-    onkeydown={isClickable ? (e) => (e.key === "Enter" || e.key === " ") && handleArrowClick(e) : undefined}
+    onkeydown={isClickable
+      ? (e) => (e.key === "Enter" || e.key === " ") && handleArrowClick(e)
+      : undefined}
     role={isClickable ? "button" : undefined}
     tabindex={isClickable ? 0 : undefined}
     aria-label={isClickable

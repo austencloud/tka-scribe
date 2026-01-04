@@ -235,7 +235,8 @@
       ? (Math.random() - 0.5) * 5
       : (Math.random() - 0.5) * 10;
 
-    const baseSize = sizeRange[0] + Math.random() * (sizeRange[1] - sizeRange[0]);
+    const baseSize =
+      sizeRange[0] + Math.random() * (sizeRange[1] - sizeRange[0]);
 
     return {
       position: new Vector3(x, y, z),
@@ -246,21 +247,31 @@
       baseSize,
       colorIndex: Math.floor(Math.random() * colors.length),
       swayPhase: Math.random() * Math.PI * 2,
-      swaySpeed: isFirefly ? 0.15 + Math.random() * 0.25 : 1 + Math.random() * 2,
+      swaySpeed: isFirefly
+        ? 0.15 + Math.random() * 0.25
+        : 1 + Math.random() * 2,
       // Firefly pulse timing - slow, gentle glow
       pulsePhase: Math.random() * Math.PI * 2,
-      pulseSpeed: isFirefly ? 0.2 + Math.random() * 0.4 : 0.5 + Math.random() * 1.5,
+      pulseSpeed: isFirefly
+        ? 0.2 + Math.random() * 0.4
+        : 0.5 + Math.random() * 1.5,
     };
   }
 
   function getShapeIndex(): number {
     switch (config.shape) {
-      case "circle": return 0;
-      case "diamond": return 1;
-      case "petal": return 2;
-      case "star": return 3;
-      case "glow": return 4;
-      default: return 0;
+      case "circle":
+        return 0;
+      case "diamond":
+        return 1;
+      case "petal":
+        return 2;
+      case "star":
+        return 3;
+      case "glow":
+        return 4;
+      default:
+        return 0;
     }
   }
 
@@ -272,10 +283,19 @@
     const colorIndexBuffer = new Float32Array(count);
 
     geometry = new BufferGeometry();
-    geometry.setAttribute("position", new Float32BufferAttribute(positionBuffer, 3));
+    geometry.setAttribute(
+      "position",
+      new Float32BufferAttribute(positionBuffer, 3)
+    );
     geometry.setAttribute("size", new Float32BufferAttribute(sizeBuffer, 1));
-    geometry.setAttribute("rotation", new Float32BufferAttribute(rotationBuffer, 1));
-    geometry.setAttribute("colorIndex", new Float32BufferAttribute(colorIndexBuffer, 1));
+    geometry.setAttribute(
+      "rotation",
+      new Float32BufferAttribute(rotationBuffer, 1)
+    );
+    geometry.setAttribute(
+      "colorIndex",
+      new Float32BufferAttribute(colorIndexBuffer, 1)
+    );
 
     // Convert color strings to Color objects
     const colorArray = colors.slice(0, 4).map((c) => new Color(c));
@@ -356,10 +376,15 @@
       }
 
       // Apply sway - fireflies also sway in Z direction for 3D wandering
-      const sway = Math.sin(time * p.swaySpeed + p.swayPhase) * config.swayAmount * delta;
+      const sway =
+        Math.sin(time * p.swaySpeed + p.swayPhase) * config.swayAmount * delta;
       p.position.x += sway;
       if (isFirefly) {
-        const swayZ = Math.cos(time * p.swaySpeed * 0.7 + p.swayPhase) * config.swayAmount * delta * 0.5;
+        const swayZ =
+          Math.cos(time * p.swaySpeed * 0.7 + p.swayPhase) *
+          config.swayAmount *
+          delta *
+          0.5;
         p.position.z += swayZ;
       }
 
@@ -376,9 +401,11 @@
         const flashThreshold = 0.5;
         if (pulseValue > flashThreshold) {
           // Map threshold-1.0 to 0-1 for intensity
-          const rawIntensity = (pulseValue - flashThreshold) / (1 - flashThreshold);
+          const rawIntensity =
+            (pulseValue - flashThreshold) / (1 - flashThreshold);
           // Apply smoothstep for gentle fade in/out
-          const smoothedIntensity = rawIntensity * rawIntensity * (3 - 2 * rawIntensity);
+          const smoothedIntensity =
+            rawIntensity * rawIntensity * (3 - 2 * rawIntensity);
           p.size = p.baseSize * smoothedIntensity;
         } else {
           // Dark/invisible when not flashing

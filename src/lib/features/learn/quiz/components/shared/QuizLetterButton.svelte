@@ -50,7 +50,8 @@ QuizLetterButton - Answer button displaying a letter
     background: rgba(255, 255, 255, 0.1);
     border-color: color-mix(in srgb, var(--theme-accent) 40%, transparent);
     transform: translateY(-3px);
-    box-shadow: 0 8px 24px color-mix(in srgb, var(--theme-accent) 20%, transparent);
+    box-shadow: 0 8px 24px
+      color-mix(in srgb, var(--theme-accent) 20%, transparent);
   }
 
   .answer-btn:active:not(:disabled) {
@@ -93,9 +94,18 @@ QuizLetterButton - Answer button displaying a letter
   }
 
   @keyframes incorrectShake {
-    0%, 100% { transform: translateX(0); }
-    20%, 60% { transform: translateX(-5px); }
-    40%, 80% { transform: translateX(5px); }
+    0%,
+    100% {
+      transform: translateX(0);
+    }
+    20%,
+    60% {
+      transform: translateX(-5px);
+    }
+    40%,
+    80% {
+      transform: translateX(5px);
+    }
   }
 
   .answer-btn.dimmed {

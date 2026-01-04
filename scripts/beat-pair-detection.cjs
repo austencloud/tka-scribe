@@ -70,10 +70,17 @@ function extractBeats(sequence) {
  * Returns array of transformation types
  */
 function compareBeatPair(beat1, beat2) {
-  const b1Blue = beat1.blue, b1Red = beat1.red;
-  const b2Blue = beat2.blue, b2Red = beat2.red;
+  const b1Blue = beat1.blue,
+    b1Red = beat1.red;
+  const b2Blue = beat2.blue,
+    b2Red = beat2.red;
 
-  if (!b1Blue?.startLoc || !b2Blue?.startLoc || !b1Red?.startLoc || !b2Red?.startLoc) {
+  if (
+    !b1Blue?.startLoc ||
+    !b2Blue?.startLoc ||
+    !b1Red?.startLoc ||
+    !b2Red?.startLoc
+  ) {
     return [];
   }
 
@@ -81,9 +88,11 @@ function compareBeatPair(beat1, beat2) {
 
   // Check if beats are identical (repeated)
   if (
-    b1Blue.startLoc === b2Blue.startLoc && b1Blue.endLoc === b2Blue.endLoc &&
+    b1Blue.startLoc === b2Blue.startLoc &&
+    b1Blue.endLoc === b2Blue.endLoc &&
     b1Blue.motionType === b2Blue.motionType &&
-    b1Red.startLoc === b2Red.startLoc && b1Red.endLoc === b2Red.endLoc &&
+    b1Red.startLoc === b2Red.startLoc &&
+    b1Red.endLoc === b2Red.endLoc &&
     b1Red.motionType === b2Red.motionType
   ) {
     transformations.push("repeated");
@@ -141,8 +150,10 @@ function compareBeatPair(beat1, beat2) {
 
   // Check if colors are swapped
   const colorsSwapped =
-    b1Blue.startLoc === b2Red.startLoc && b1Blue.endLoc === b2Red.endLoc &&
-    b1Red.startLoc === b2Blue.startLoc && b1Red.endLoc === b2Blue.endLoc;
+    b1Blue.startLoc === b2Red.startLoc &&
+    b1Blue.endLoc === b2Red.endLoc &&
+    b1Red.startLoc === b2Blue.startLoc &&
+    b1Red.endLoc === b2Blue.endLoc;
 
   // Check if motion types are inverted
   const motionInverted =
@@ -228,7 +239,8 @@ function analyzeLetterGroupPattern(beatNumbers, graph) {
   }
 
   // Also check last to first (circular)
-  const lastToFirst = graph[beatNumbers[beatNumbers.length - 1]]?.[beatNumbers[0]] || [];
+  const lastToFirst =
+    graph[beatNumbers[beatNumbers.length - 1]]?.[beatNumbers[0]] || [];
   transformationSequence.push({
     from: beatNumbers[beatNumbers.length - 1],
     to: beatNumbers[0],
@@ -266,7 +278,11 @@ function detectLOOPWithBeatPairs(sequence) {
   // Check if different letters have different patterns (= modular)
   const uniquePatterns = new Set();
   for (const [letter, analysis] of Object.entries(letterPatterns)) {
-    const patternSig = JSON.stringify(analysis.transformationSequence.map(t => t.transformations.sort().join("+")));
+    const patternSig = JSON.stringify(
+      analysis.transformationSequence.map((t) =>
+        t.transformations.sort().join("+")
+      )
+    );
     uniquePatterns.add(patternSig);
   }
 
@@ -313,13 +329,19 @@ function testSequence(sequence, name) {
  * Test with multiple sequences
  */
 async function runTests() {
-  const sequenceIndexPath = path.join(__dirname, "..", "static", "data", "sequence-index.json");
+  const sequenceIndexPath = path.join(
+    __dirname,
+    "..",
+    "static",
+    "data",
+    "sequence-index.json"
+  );
   const sequenceIndex = JSON.parse(fs.readFileSync(sequenceIndexPath, "utf8"));
 
   const testWords = ["ABC", "AAKE", "AABB", "AKE", "BBKE", "ALFALGGF"];
 
   for (const word of testWords) {
-    const sequence = sequenceIndex.sequences.find(s => s.word === word);
+    const sequence = sequenceIndex.sequences.find((s) => s.word === word);
     if (sequence) {
       testSequence(sequence, word);
     } else {

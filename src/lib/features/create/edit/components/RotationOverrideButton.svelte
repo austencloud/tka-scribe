@@ -94,9 +94,7 @@
   }
 
   onMount(() => {
-    hapticService = resolve<IHapticFeedback>(
-      TYPES.IHapticFeedback
-    );
+    hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
     rotationOverrideManager = resolve<IRotationOverrideManager>(
       TYPES.IRotationOverrideManager
     );

@@ -47,9 +47,9 @@
   // Safely check if we have enough valid points
   const validPositions = $derived.by(() => {
     if (!positions || !Array.isArray(positions)) return [];
-    return positions.filter((p): p is Vector3 =>
-      p instanceof Vector3 &&
-      !isNaN(p.x) && !isNaN(p.y) && !isNaN(p.z)
+    return positions.filter(
+      (p): p is Vector3 =>
+        p instanceof Vector3 && !isNaN(p.x) && !isNaN(p.y) && !isNaN(p.z)
     );
   });
 
@@ -154,5 +154,5 @@
 </script>
 
 {#if hasEnoughPoints && tubeGeometry}
-  <T.Mesh geometry={tubeGeometry} material={material} />
+  <T.Mesh geometry={tubeGeometry} {material} />
 {/if}

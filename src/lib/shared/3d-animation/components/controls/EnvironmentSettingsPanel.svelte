@@ -95,7 +95,11 @@
     <span>Environment</span>
   </header>
 
-  <div class="environment-grid" role="radiogroup" aria-label="Select environment">
+  <div
+    class="environment-grid"
+    role="radiogroup"
+    aria-label="Select environment"
+  >
     {#each backgroundOptions as option}
       <button
         class="env-card"

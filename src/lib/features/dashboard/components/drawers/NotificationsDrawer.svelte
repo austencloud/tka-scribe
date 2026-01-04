@@ -40,9 +40,7 @@
   }
 
   onMount(() => {
-    hapticService = resolve<IHapticFeedback>(
-      TYPES.IHapticFeedback
-    );
+    hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
 
     mediaQuery = window.matchMedia("(max-width: 768px)");
     isMobile = mediaQuery.matches;
@@ -143,7 +141,11 @@
   class="notifications-drawer"
   ariaLabel="Notifications"
 >
-  <div class="notifications-container" role="dialog" aria-labelledby="notifications-title">
+  <div
+    class="notifications-container"
+    role="dialog"
+    aria-labelledby="notifications-title"
+  >
     <!-- Header -->
     <header class="notifications-header">
       <h2 id="notifications-title">Notifications</h2>

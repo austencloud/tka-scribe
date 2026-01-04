@@ -28,9 +28,7 @@ Shows letters A-V with their start/end positions and prospin/antispin motions
     size?: "small" | "medium" | "large";
   }>();
 
-  const hapticService = resolve<IHapticFeedback>(
-    TYPES.IHapticFeedback
-  );
+  const hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
 
   // State for loaded pictograph data
   let pictographData = $state<PictographData | null>(null);

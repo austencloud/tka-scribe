@@ -120,8 +120,8 @@
     font-size: 0.875rem;
     font-weight: 500;
     text-align: left;
-    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui,
-      sans-serif;
+    font-family:
+      -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
   }
 
   .expand-btn:hover {

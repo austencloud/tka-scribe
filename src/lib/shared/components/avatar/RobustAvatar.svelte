@@ -159,11 +159,7 @@
     border-radius: 50%;
     overflow: hidden;
     flex-shrink: 0;
-    background: linear-gradient(
-      135deg,
-      var(--semantic-info) 0%,
-      #764ba2 100%
-    );
+    background: linear-gradient(135deg, var(--semantic-info) 0%, #764ba2 100%);
   }
 
   .robust-avatar.ring {

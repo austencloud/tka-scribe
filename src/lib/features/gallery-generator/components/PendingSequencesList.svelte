@@ -20,7 +20,9 @@
   <h2>
     Pending ({state.pendingSequences.length})
     {#if state.renderingSequences.length > 0}
-      <span class="rendering-count">· {state.renderingSequences.length} rendering</span>
+      <span class="rendering-count"
+        >· {state.renderingSequences.length} rendering</span
+      >
     {/if}
   </h2>
 
@@ -35,7 +37,9 @@
         {@const isRenderingThis = state.isSequenceRendering(seqName)}
         <div class="sequence-item" class:rendering={isRenderingThis}>
           <span class="name">{seqName}</span>
-          <span class="meta">L{sequence.level || 1} · {sequence.sequenceLength}b</span>
+          <span class="meta"
+            >L{sequence.level || 1} · {sequence.sequenceLength}b</span
+          >
           {#if isRenderingThis}
             <span class="spinner" title="Rendering..."></span>
           {:else}
@@ -51,7 +55,9 @@
         </div>
       {/each}
       {#if state.pendingSequences.length > 100}
-        <p class="more-text">...and {state.pendingSequences.length - 100} more</p>
+        <p class="more-text">
+          ...and {state.pendingSequences.length - 100} more
+        </p>
       {/if}
     </div>
   {/if}
@@ -81,8 +87,13 @@
   }
 
   @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.6; }
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.6;
+    }
   }
 
   .pending-column {

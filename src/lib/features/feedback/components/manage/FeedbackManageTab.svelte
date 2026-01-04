@@ -194,11 +194,7 @@
     align-items: center;
     justify-content: center;
     padding: 24px;
-    background: color-mix(
-      in srgb,
-      var(--theme-panel-bg) 30%,
-      transparent
-    );
+    background: color-mix(in srgb, var(--theme-panel-bg) 30%, transparent);
   }
 
   .release-panel-container > :global(*) {

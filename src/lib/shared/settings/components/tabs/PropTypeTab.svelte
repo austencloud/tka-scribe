@@ -32,9 +32,7 @@
   let hapticService: IHapticFeedback;
 
   onMount(async () => {
-    hapticService = await resolve<IHapticFeedback>(
-      TYPES.IHapticFeedback
-    );
+    hapticService = await resolve<IHapticFeedback>(TYPES.IHapticFeedback);
     setTimeout(() => (isVisible = true), 30);
   });
 
@@ -56,8 +54,10 @@
 
   // Sync from settings prop
   $effect(() => {
-    selectedBluePropType = settings.bluePropType || settings.propType || PropType.STAFF;
-    selectedRedPropType = settings.redPropType || settings.propType || PropType.STAFF;
+    selectedBluePropType =
+      settings.bluePropType || settings.propType || PropType.STAFF;
+    selectedRedPropType =
+      settings.redPropType || settings.propType || PropType.STAFF;
     catDogMode = settings.catDogMode ?? false;
     propPresets = settings.propPresets || [];
     selectedPresetIndex = settings.selectedPresetIndex ?? -1;
@@ -297,7 +297,9 @@
 <div class="prop-type-tab" class:visible={isVisible}>
   <section class="settings-panel">
     <header class="panel-header">
-      <span class="panel-icon"><i class="fas fa-wand-sparkles" aria-hidden="true"></i></span>
+      <span class="panel-icon"
+        ><i class="fas fa-wand-sparkles" aria-hidden="true"></i></span
+      >
       <div class="panel-header-text">
         <h3 class="panel-title">Prop Type</h3>
         <p class="panel-subtitle">Choose your flow props</p>
@@ -581,13 +583,8 @@
     height: 44px;
     border-radius: 12px;
     font-size: var(--font-size-lg);
-    background: color-mix(
-      in srgb,
-      var(--theme-accent) 20%,
-      transparent
-    );
-    border: 1px solid
-      color-mix(in srgb, var(--theme-accent) 35%, transparent);
+    background: color-mix(in srgb, var(--theme-accent) 20%, transparent);
+    border: 1px solid color-mix(in srgb, var(--theme-accent) 35%, transparent);
     color: var(--theme-accent);
   }
 
@@ -679,20 +676,12 @@
   }
 
   .prop-card.blue {
-    border-color: color-mix(
-      in srgb,
-      var(--prop-blue) 30%,
-      transparent
-    );
+    border-color: color-mix(in srgb, var(--prop-blue) 30%, transparent);
     background: color-mix(in srgb, var(--prop-blue) 8%, transparent);
   }
 
   .prop-card.blue:hover {
-    border-color: color-mix(
-      in srgb,
-      var(--prop-blue) 50%,
-      transparent
-    );
+    border-color: color-mix(in srgb, var(--prop-blue) 50%, transparent);
     background: color-mix(in srgb, var(--prop-blue) 15%, transparent);
   }
 

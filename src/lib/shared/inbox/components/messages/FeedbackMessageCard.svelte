@@ -45,9 +45,7 @@
 
   // Check if feedback exists on mount
   onMount(async () => {
-    hapticService = resolve<IHapticFeedback>(
-      TYPES.IHapticFeedback
-    );
+    hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
 
     const feedbackId = attachment.metadata?.feedbackId;
     if (!feedbackId) {

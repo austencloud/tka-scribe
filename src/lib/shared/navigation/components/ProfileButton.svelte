@@ -32,13 +32,9 @@
   let sheetRouterService: ISheetRouter | null = null;
 
   onMount(async () => {
-    hapticService = await resolve<IHapticFeedback>(
-      TYPES.IHapticFeedback
-    );
+    hapticService = await resolve<IHapticFeedback>(TYPES.IHapticFeedback);
     try {
-      sheetRouterService = await resolve<ISheetRouter>(
-        TYPES.ISheetRouter
-      );
+      sheetRouterService = await resolve<ISheetRouter>(TYPES.ISheetRouter);
     } catch {
       // Service not available
     }
@@ -186,7 +182,9 @@
     height: 28px;
     min-width: 28px;
     min-height: 28px;
-    font-size: var(--font-size-base); /* Slightly smaller icon for compact layout */
+    font-size: var(
+      --font-size-base
+    ); /* Slightly smaller icon for compact layout */
     position: relative;
   }
 
@@ -231,7 +229,9 @@
 
   /* Smaller font in labeled button */
   .profile-button.with-label .profile-initial {
-    font-size: var(--font-size-compact); /* Proportionally smaller for 28px wrapper */
+    font-size: var(
+      --font-size-compact
+    ); /* Proportionally smaller for 28px wrapper */
   }
 
   /* Profile label */

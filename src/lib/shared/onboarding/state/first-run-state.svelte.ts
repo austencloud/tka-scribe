@@ -191,13 +191,11 @@ function createFirstRunState() {
       state.syncInProgress = true;
 
       try {
-        const { getFirestoreInstance } = await import(
-          "$lib/shared/auth/firebase"
-        );
+        const { getFirestoreInstance } =
+          await import("$lib/shared/auth/firebase");
         const { doc, getDoc } = await import("firebase/firestore");
-        const { authState } = await import(
-          "$lib/shared/auth/state/authState.svelte"
-        );
+        const { authState } =
+          await import("$lib/shared/auth/state/authState.svelte");
 
         const userId = authState.effectiveUserId;
         if (!userId) {
@@ -227,14 +225,19 @@ function createFirstRunState() {
               localStorage.setItem(FIRST_RUN_SKIPPED_KEY, "true");
             }
             if (data.completedAt) {
-              localStorage.setItem(FIRST_RUN_COMPLETED_AT_KEY, data.completedAt);
+              localStorage.setItem(
+                FIRST_RUN_COMPLETED_AT_KEY,
+                data.completedAt
+              );
             }
           }
         } else {
           // CRITICAL FIX: Document doesn't exist - this is a brand new user!
           // We must RESET local state to prevent inheriting previous user's first-run status
           // (happens when multiple users share the same browser)
-          console.log("📱 [firstRunState] New user detected - resetting first-run status");
+          console.log(
+            "📱 [firstRunState] New user detected - resetting first-run status"
+          );
           state.hasCompleted = false;
           state.wasSkipped = false;
           state.completedAt = null;
@@ -268,15 +271,12 @@ function createFirstRunState() {
       if (!isBrowser) return;
 
       try {
-        const { getFirestoreInstance } = await import(
-          "$lib/shared/auth/firebase"
-        );
-        const { doc, setDoc, serverTimestamp } = await import(
-          "firebase/firestore"
-        );
-        const { authState } = await import(
-          "$lib/shared/auth/state/authState.svelte"
-        );
+        const { getFirestoreInstance } =
+          await import("$lib/shared/auth/firebase");
+        const { doc, setDoc, serverTimestamp } =
+          await import("firebase/firestore");
+        const { authState } =
+          await import("$lib/shared/auth/state/authState.svelte");
 
         const userId = authState.effectiveUserId;
         if (!userId) return;

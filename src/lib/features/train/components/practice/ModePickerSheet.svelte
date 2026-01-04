@@ -179,7 +179,11 @@
       transparent
     );
     border: 1px solid
-      color-mix(in srgb, var(--theme-accent, var(--theme-accent-strong)) 30%, transparent);
+      color-mix(
+        in srgb,
+        var(--theme-accent, var(--theme-accent-strong)) 30%,
+        transparent
+      );
     border-radius: 10px;
     flex-shrink: 0;
   }
@@ -303,8 +307,7 @@
   /* Focus states */
   .close-btn:focus-visible,
   .mode-option:focus-visible {
-    outline: 2px solid
-      color-mix(in srgb, var(--theme-accent) 80%, transparent);
+    outline: 2px solid color-mix(in srgb, var(--theme-accent) 80%, transparent);
     outline-offset: 2px;
   }
 

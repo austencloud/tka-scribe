@@ -74,8 +74,7 @@
     gap: var(--fb-space-xs);
     padding: var(--fb-space-sm) var(--fb-space-md);
     background: transparent;
-    border: 1px solid
-      color-mix(in srgb, var(--semantic-error) 30%, transparent);
+    border: 1px solid color-mix(in srgb, var(--semantic-error) 30%, transparent);
     border-radius: var(--fb-radius-md);
     color: var(--semantic-error);
     cursor: pointer;
@@ -97,8 +96,7 @@
     gap: var(--fb-space-md);
     padding: var(--fb-space-md);
     background: color-mix(in srgb, var(--semantic-error) 5%, transparent);
-    border: 1px solid
-      color-mix(in srgb, var(--semantic-error) 30%, transparent);
+    border: 1px solid color-mix(in srgb, var(--semantic-error) 30%, transparent);
     border-radius: var(--fb-radius-md);
   }
 

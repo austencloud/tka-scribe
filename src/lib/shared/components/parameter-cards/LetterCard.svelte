@@ -29,12 +29,8 @@ Opens a sheet/panel for letter selection
   let cardElement: HTMLDivElement | null = $state(null);
 
   onMount(() => {
-    hapticService = tryResolve<IHapticFeedback>(
-      TYPES.IHapticFeedback
-    );
-    rippleService = tryResolve<IRippleEffect>(
-      TYPES.IRippleEffect
-    );
+    hapticService = tryResolve<IHapticFeedback>(TYPES.IHapticFeedback);
+    rippleService = tryResolve<IRippleEffect>(TYPES.IRippleEffect);
 
     if (cardElement && rippleService) {
       return rippleService.attachRipple(cardElement, {

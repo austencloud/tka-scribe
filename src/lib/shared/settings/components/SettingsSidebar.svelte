@@ -34,9 +34,7 @@
   const _shouldUseIconAboveText = $derived(tabs.length <= 8);
 
   onMount(() => {
-    hapticService = resolve<IHapticFeedback>(
-      TYPES.IHapticFeedback
-    );
+    hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
 
     // Track sidebar width changes with ResizeObserver
     if (sidebarElement) {
@@ -281,7 +279,9 @@
     }
 
     .sidebar-icon {
-      font-size: var(--font-size-xl); /* LARGER: Icons are the primary visual element */
+      font-size: var(
+        --font-size-xl
+      ); /* LARGER: Icons are the primary visual element */
       flex-shrink: 0;
       width: auto; /* Remove fixed width */
       margin: 0; /* Remove margin */

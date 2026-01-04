@@ -3,7 +3,11 @@
   import type { LetterSource } from "$lib/features/create/spell/domain/models/spell-models";
 
   // Props
-  let { word = "", scrollMode = false, letterSources = null } = $props<{
+  let {
+    word = "",
+    scrollMode = false,
+    letterSources = null,
+  } = $props<{
     word?: string;
     scrollMode?: boolean;
     /** Optional: When provided, renders letters with different styles for original vs bridge */
@@ -97,8 +101,8 @@
           <span
             class="letter"
             class:original={source.isOriginal}
-            class:bridge={!source.isOriginal}
-          >{source.letter}</span>
+            class:bridge={!source.isOriginal}>{source.letter}</span
+          >
         {/each}
       {:else}
         {displayWord}

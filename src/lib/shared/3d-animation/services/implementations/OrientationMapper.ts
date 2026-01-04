@@ -16,7 +16,10 @@ export class OrientationMapper implements IOrientationMapper {
   /**
    * Map orientation to angle relative to center path
    */
-  mapOrientationToAngle(orientation: Orientation, centerPathAngle: number): number {
+  mapOrientationToAngle(
+    orientation: Orientation,
+    centerPathAngle: number
+  ): number {
     switch (orientation) {
       case Orientation.IN:
         return centerPathAngle + PI;

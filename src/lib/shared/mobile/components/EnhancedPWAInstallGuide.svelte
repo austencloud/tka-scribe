@@ -43,9 +43,7 @@
 
   // Detect platform and browser on mount
   onMount(() => {
-    const platformService = resolve<IPlatformDetector>(
-      TYPES.IPlatformDetector
-    );
+    const platformService = resolve<IPlatformDetector>(TYPES.IPlatformDetector);
     const detected = platformService.detectPlatformAndBrowser();
     platform = detected.platform;
     browser = detected.browser;

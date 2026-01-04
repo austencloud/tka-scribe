@@ -217,7 +217,9 @@
         <!-- Stats Section -->
         <div class="stats-section">
           <div class="stat-card glass-surface">
-            <div class="stat-icon"><i class="fas fa-star" aria-hidden="true"></i></div>
+            <div class="stat-icon">
+              <i class="fas fa-star" aria-hidden="true"></i>
+            </div>
             <div class="stat-content">
               <div class="stat-value">{stats?.currentLevel || 0}</div>
               <div class="stat-label">Level</div>
@@ -237,7 +239,9 @@
           </div>
 
           <div class="stat-card glass-surface">
-            <div class="stat-icon"><i class="fas fa-bullseye" aria-hidden="true"></i></div>
+            <div class="stat-icon">
+              <i class="fas fa-bullseye" aria-hidden="true"></i>
+            </div>
             <div class="stat-content">
               <div class="stat-value">
                 {stats?.achievementsUnlocked || 0}/{stats?.totalAchievements ||
@@ -248,7 +252,9 @@
           </div>
 
           <div class="stat-card glass-surface">
-            <div class="stat-icon"><i class="fas fa-fire" aria-hidden="true"></i></div>
+            <div class="stat-icon">
+              <i class="fas fa-fire" aria-hidden="true"></i>
+            </div>
             <div class="stat-content">
               <div class="stat-value">{currentStreak}</div>
               <div class="stat-label">Day Streak</div>
@@ -260,7 +266,9 @@
         {#if dailyChallenge}
           <div class="daily-challenge glass-surface">
             <div class="challenge-header">
-              <h3><i class="fas fa-bullseye" aria-hidden="true"></i> Daily Challenge</h3>
+              <h3>
+                <i class="fas fa-bullseye" aria-hidden="true"></i> Daily Challenge
+              </h3>
               <span class="difficulty-badge {dailyChallenge.difficulty}"
                 >{dailyChallenge.difficulty}</span
               >
@@ -371,11 +379,7 @@
     display: flex;
     flex-direction: column;
     height: 100%;
-    background: color-mix(
-      in srgb,
-      var(--theme-panel-bg) 95%,
-      transparent
-    );
+    background: color-mix(in srgb, var(--theme-panel-bg) 95%, transparent);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
   }
@@ -520,7 +524,11 @@
     padding: clamp(12px, 3cqi, 24px);
     border-radius: clamp(12px, 3cqi, 16px);
     border: 2px solid
-      color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 30%, transparent);
+      color-mix(
+        in srgb,
+        var(--theme-accent, var(--theme-accent)) 30%,
+        transparent
+      );
   }
 
   .challenge-header {
@@ -550,29 +558,17 @@
   }
 
   .difficulty-badge.beginner {
-    background: color-mix(
-      in srgb,
-      var(--semantic-success) 20%,
-      transparent
-    );
+    background: color-mix(in srgb, var(--semantic-success) 20%, transparent);
     color: var(--semantic-success);
   }
 
   .difficulty-badge.intermediate {
-    background: color-mix(
-      in srgb,
-      var(--semantic-warning) 20%,
-      transparent
-    );
+    background: color-mix(in srgb, var(--semantic-warning) 20%, transparent);
     color: var(--semantic-warning);
   }
 
   .difficulty-badge.advanced {
-    background: color-mix(
-      in srgb,
-      var(--semantic-error) 20%,
-      transparent
-    );
+    background: color-mix(in srgb, var(--semantic-error) 20%, transparent);
     color: var(--semantic-error);
   }
 
@@ -632,8 +628,7 @@
     padding: 0 clamp(12px, 3cqi, 24px) clamp(10px, 2.5cqi, 16px);
     overflow-x: auto;
     scrollbar-width: thin;
-    scrollbar-color: var(--theme-stroke-strong)
-      transparent;
+    scrollbar-color: var(--theme-stroke-strong) transparent;
   }
 
   .category-tabs::-webkit-scrollbar {
@@ -719,8 +714,7 @@
     flex-direction: column;
     gap: clamp(10px, 2.5cqi, 16px);
     scrollbar-width: thin;
-    scrollbar-color: var(--theme-stroke-strong)
-      transparent;
+    scrollbar-color: var(--theme-stroke-strong) transparent;
   }
 
   .achievements-list::-webkit-scrollbar {
@@ -747,16 +741,8 @@
   }
 
   .achievement-card.completed {
-    border-color: color-mix(
-      in srgb,
-      var(--semantic-success) 30%,
-      transparent
-    );
-    background: color-mix(
-      in srgb,
-      var(--semantic-success) 5%,
-      transparent
-    );
+    border-color: color-mix(in srgb, var(--semantic-success) 30%, transparent);
+    background: color-mix(in srgb, var(--semantic-success) 5%, transparent);
   }
 
   .achievement-icon {
@@ -813,11 +799,7 @@
   }
 
   .tier-badge.gold {
-    background: color-mix(
-      in srgb,
-      var(--semantic-warning) 20%,
-      transparent
-    );
+    background: color-mix(in srgb, var(--semantic-warning) 20%, transparent);
     color: var(--semantic-warning);
   }
 

@@ -8,7 +8,9 @@
    */
 
   import type { Snippet } from "svelte";
-  import CameraPresetBar, { type CameraPreset } from "../controls/CameraPresetBar.svelte";
+  import CameraPresetBar, {
+    type CameraPreset,
+  } from "../controls/CameraPresetBar.svelte";
   import SpeedControlBar from "../controls/SpeedControlBar.svelte";
   import PlaybackControlBar from "../controls/PlaybackControlBar.svelte";
   import SequenceInfoBadge from "../controls/SequenceInfoBadge.svelte";

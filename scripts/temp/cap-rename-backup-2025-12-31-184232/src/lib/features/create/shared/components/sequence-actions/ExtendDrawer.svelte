@@ -80,9 +80,7 @@
   }
 
   // Header text based on current state
-  const headerTitle = $derived(
-    isDirectlyLoopable ? "Extend" : "Choose Bridge"
-  );
+  const headerTitle = $derived(isDirectlyLoopable ? "Extend" : "Choose Bridge");
 
   const headerSubtitle = $derived(() => {
     if (!isDirectlyLoopable) {

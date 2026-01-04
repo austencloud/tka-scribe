@@ -37,11 +37,7 @@
 <div class="controls-bar">
   <!-- Settings button -->
   {#if !isRecording}
-    <button
-      class="btn-settings"
-      onclick={onOpenSettings}
-      aria-label="Settings"
-    >
+    <button class="btn-settings" onclick={onOpenSettings} aria-label="Settings">
       <i class="fa fa-cog" aria-hidden="true"></i>
     </button>
   {/if}
@@ -63,7 +59,8 @@
         onclick={onTogglePause}
         aria-label={isPaused ? "Resume" : "Pause"}
       >
-        <i class="fa {isPaused ? 'fa-play' : 'fa-pause'}" aria-hidden="true"></i>
+        <i class="fa {isPaused ? 'fa-play' : 'fa-pause'}" aria-hidden="true"
+        ></i>
       </button>
 
       <button
@@ -131,7 +128,11 @@
   .btn-record {
     width: 72px !important;
     height: 72px !important;
-    background: linear-gradient(135deg, var(--semantic-error), var(--semantic-error));
+    background: linear-gradient(
+      135deg,
+      var(--semantic-error),
+      var(--semantic-error)
+    );
     color: white;
     box-shadow: 0 4px 16px rgba(239, 68, 68, 0.4);
   }

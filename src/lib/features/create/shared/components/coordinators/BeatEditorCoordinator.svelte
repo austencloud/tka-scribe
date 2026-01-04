@@ -37,16 +37,12 @@
 
   onMount(() => {
     try {
-      hapticService = resolve<IHapticFeedback>(
-        TYPES.IHapticFeedback
-      );
+      hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
     } catch {
       /* Optional service */
     }
     try {
-      BeatOperator = resolve<IBeatOperator>(
-        TYPES.IBeatOperator
-      );
+      BeatOperator = resolve<IBeatOperator>(TYPES.IBeatOperator);
     } catch {
       /* Optional service */
     }
@@ -64,9 +60,10 @@
   const selectedBeatNumber = $derived.by(
     () => activeSequenceState.selectedBeatNumber
   );
-  const selectedBeatData = $derived.by(() => activeSequenceState.selectedBeatData);
+  const selectedBeatData = $derived.by(
+    () => activeSequenceState.selectedBeatData
+  );
   const sequence = $derived.by(() => activeSequenceState.currentSequence);
-
 
   // Animation state for deletion visualization
   const removingBeatIndices = $derived.by(() =>
@@ -96,7 +93,9 @@
     hapticService?.trigger("selection");
 
     // Push undo snapshot BEFORE modifying
-    CreateModuleState.pushUndoSnapshot(UndoOperationType.MODIFY_BEAT_PROPERTIES);
+    CreateModuleState.pushUndoSnapshot(
+      UndoOperationType.MODIFY_BEAT_PROPERTIES
+    );
 
     const currentTurns =
       color === MotionColor.BLUE ? currentBlueTurns : currentRedTurns;
@@ -121,7 +120,9 @@
     hapticService?.trigger("selection");
 
     // Push undo snapshot BEFORE modifying
-    CreateModuleState.pushUndoSnapshot(UndoOperationType.MODIFY_BEAT_PROPERTIES);
+    CreateModuleState.pushUndoSnapshot(
+      UndoOperationType.MODIFY_BEAT_PROPERTIES
+    );
 
     const directionString =
       direction === RotationDirection.CLOCKWISE ? "cw" : "ccw";
@@ -139,7 +140,9 @@
     hapticService?.trigger("selection");
 
     // Push undo snapshot BEFORE modifying
-    CreateModuleState.pushUndoSnapshot(UndoOperationType.MODIFY_BEAT_PROPERTIES);
+    CreateModuleState.pushUndoSnapshot(
+      UndoOperationType.MODIFY_BEAT_PROPERTIES
+    );
 
     BeatOperator.updateBeatOrientation(
       selectedBeatNumber,

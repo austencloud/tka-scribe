@@ -221,7 +221,11 @@
     padding: 12px;
     background: var(--theme-card-bg, var(--theme-card-bg));
     border: 1px solid
-      color-mix(in srgb, var(--theme-accent, var(--theme-accent-strong)) 30%, transparent);
+      color-mix(
+        in srgb,
+        var(--theme-accent, var(--theme-accent-strong)) 30%,
+        transparent
+      );
     border-radius: 12px;
   }
 
@@ -309,16 +313,16 @@
       transparent
     );
     border: 1px solid
-      color-mix(in srgb, var(--theme-accent, var(--theme-accent-strong)) 40%, transparent);
+      color-mix(
+        in srgb,
+        var(--theme-accent, var(--theme-accent-strong)) 40%,
+        transparent
+      );
     color: var(--theme-accent);
   }
 
   .action-btn.save:hover:not(:disabled) {
-    background: color-mix(
-      in srgb,
-      var(--theme-accent) 30%,
-      transparent
-    );
+    background: color-mix(in srgb, var(--theme-accent) 30%, transparent);
     color: var(--theme-accent-strong);
   }
 

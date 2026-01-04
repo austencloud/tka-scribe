@@ -95,11 +95,8 @@ export class PictographDataDebugger {
     const identifier = `${pictographData.letter}_${Date.now()}`;
 
     // Analyze the pictograph data using the new beta detection
-    const BetaDetector = resolve<IBetaDetector>(
-      TYPES.IBetaDetector
-    );
-    const endsWithBetaPosition =
-      BetaDetector.endsWithBeta(pictographData);
+    const BetaDetector = resolve<IBetaDetector>(TYPES.IBetaDetector);
+    const endsWithBetaPosition = BetaDetector.endsWithBeta(pictographData);
     const hasValidMotionData = this.validateMotionData(pictographData);
     const hasValidPropPlacementData =
       this.validatePropPlacementData(pictographData);
@@ -187,10 +184,16 @@ export class PictographDataDebugger {
     if (debugInfo.dataFlowTrace.length > 0) {
       debugInfo.dataFlowTrace.forEach((trace, index) => {
         if (trace.warnings?.length) {
-          console.warn(`Step ${index + 1}: ${trace.step} - Warnings:`, trace.warnings);
+          console.warn(
+            `Step ${index + 1}: ${trace.step} - Warnings:`,
+            trace.warnings
+          );
         }
         if (trace.errors?.length) {
-          console.error(`Step ${index + 1}: ${trace.step} - Errors:`, trace.errors);
+          console.error(
+            `Step ${index + 1}: ${trace.step} - Errors:`,
+            trace.errors
+          );
         }
       });
     }

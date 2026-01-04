@@ -43,11 +43,7 @@
     display: flex;
     gap: clamp(4px, 1cqi, 8px);
     padding: clamp(3px, 0.8cqi, 5px);
-    background: color-mix(
-      in srgb,
-      var(--theme-panel-bg) 80%,
-      transparent
-    );
+    background: color-mix(in srgb, var(--theme-panel-bg) 80%, transparent);
     border-radius: clamp(8px, 2cqi, 12px);
     border: 1px solid var(--theme-stroke);
   }
@@ -127,5 +123,4 @@
   .segment.selected i {
     color: var(--type-color);
   }
-
 </style>

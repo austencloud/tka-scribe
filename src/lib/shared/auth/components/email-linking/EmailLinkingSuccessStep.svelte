@@ -106,7 +106,11 @@
       transparent
     );
     border: 1px solid
-      color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent-strong)) 30%, transparent);
+      color-mix(
+        in srgb,
+        var(--theme-accent-strong, var(--theme-accent-strong)) 30%,
+        transparent
+      );
     border-radius: 12px;
   }
 
@@ -132,7 +136,12 @@
     background: linear-gradient(
       135deg,
       var(--semantic-success, var(--semantic-success)) 0%,
-      color-mix(in srgb, var(--semantic-success, var(--semantic-success)) 80%, #000) 100%
+      color-mix(
+          in srgb,
+          var(--semantic-success, var(--semantic-success)) 80%,
+          #000
+        )
+        100%
     );
     border: none;
     border-radius: 12px;
@@ -146,7 +155,11 @@
   .done-btn:hover {
     transform: translateY(-1px);
     box-shadow: 0 4px 20px
-      color-mix(in srgb, var(--semantic-success, var(--semantic-success)) 40%, transparent);
+      color-mix(
+        in srgb,
+        var(--semantic-success, var(--semantic-success)) 40%,
+        transparent
+      );
   }
 
   .done-btn:active {

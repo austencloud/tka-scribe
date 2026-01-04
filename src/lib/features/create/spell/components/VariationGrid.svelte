@@ -9,7 +9,10 @@ Features:
 - Progress indicator during exploration
 -->
 <script lang="ts">
-  import type { ScoredVariation, VariationSortOption } from "../state/variation-state.svelte";
+  import type {
+    ScoredVariation,
+    VariationSortOption,
+  } from "../state/variation-state.svelte";
   import PictographContainer from "$lib/shared/pictograph/shared/components/PictographContainer.svelte";
 
   // Props
@@ -50,7 +53,9 @@ Features:
       matchesMotionPreference: boolean;
     };
     onSelect: (id: string) => void;
-    onToggleFilter: (key: "noReversals" | "highContinuity" | "matchesMotionPreference") => void;
+    onToggleFilter: (
+      key: "noReversals" | "highContinuity" | "matchesMotionPreference"
+    ) => void;
     onSetSortBy: (option: VariationSortOption) => void;
     onCancel: () => void;
   } = $props();
@@ -104,7 +109,8 @@ Features:
 
   // Get score display color based on ranking
   function getScoreColor(variation: ScoredVariation): string {
-    if (variation.score.total >= stats.bestScore) return "var(--semantic-success)";
+    if (variation.score.total >= stats.bestScore)
+      return "var(--semantic-success)";
     if (variation.score.reversalCount === 0) return "var(--theme-accent)";
     return "var(--theme-text-muted)";
   }
@@ -193,7 +199,10 @@ Features:
     <div class="progress-bar-container">
       <div
         class="progress-bar"
-        style="width: {Math.min(100, (progress.totalExplored / progress.estimatedTotal) * 100)}%"
+        style="width: {Math.min(
+          100,
+          (progress.totalExplored / progress.estimatedTotal) * 100
+        )}%"
       ></div>
     </div>
   {/if}
@@ -231,7 +240,10 @@ Features:
                 <i class="fas fa-check"></i>
               </div>
             {:else}
-              <div class="reversal-count" title="{variation.score.reversalCount} reversals">
+              <div
+                class="reversal-count"
+                title="{variation.score.reversalCount} reversals"
+              >
                 {variation.score.reversalCount}
               </div>
             {/if}
@@ -246,7 +258,9 @@ Features:
     <div class="empty-state">
       <i class="fas fa-layer-group"></i>
       <p>No variations to display</p>
-      <p class="hint">Enter a word and click "Generate All" to explore variations</p>
+      <p class="hint">
+        Enter a word and click "Generate All" to explore variations
+      </p>
     </div>
   {:else if !progress.isExploring && stats.totalFiltered === 0}
     <div class="empty-state">

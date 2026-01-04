@@ -1,8 +1,5 @@
 import { injectable } from "inversify";
-import type {
-  IRippleEffect,
-  RippleOptions,
-} from "../contracts/IRippleEffect";
+import type { IRippleEffect, RippleOptions } from "../contracts/IRippleEffect";
 
 /**
  * Ripple Effect Service Implementation

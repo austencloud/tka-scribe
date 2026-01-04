@@ -40,9 +40,7 @@ export class PlaneCoordinateMapper implements IPlaneCoordinateMapper {
   ): Vector3 {
     const angle = LOCATION_ANGLES[location];
     if (angle === undefined) {
-      console.warn(
-        `Unknown GridLocation: ${location}, defaulting to EAST (0)`
-      );
+      console.warn(`Unknown GridLocation: ${location}, defaulting to EAST (0)`);
       return this.angleToPosition3D(plane, 0, radius);
     }
     return this.angleToPosition3D(plane, angle, radius);
@@ -83,7 +81,10 @@ export class PlaneCoordinateMapper implements IPlaneCoordinateMapper {
     ];
 
     for (const location of locations) {
-      positions.set(location, this.gridLocationToPosition3D(plane, location, radius));
+      positions.set(
+        location,
+        this.gridLocationToPosition3D(plane, location, radius)
+      );
     }
 
     return positions;

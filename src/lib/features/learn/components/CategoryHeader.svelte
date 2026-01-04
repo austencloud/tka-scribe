@@ -27,7 +27,9 @@ Displays:
 </script>
 
 <div class="category-divider" style="--category-color: {categoryInfo.color}">
-  <span class="icon"><i class="fa-solid {categoryInfo.icon}" aria-hidden="true"></i></span>
+  <span class="icon"
+    ><i class="fa-solid {categoryInfo.icon}" aria-hidden="true"></i></span
+  >
   <span class="name">{categoryInfo.name}</span>
   <span class="count">{completedCount}/{totalCount}</span>
   <div class="line"></div>

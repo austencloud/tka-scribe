@@ -95,16 +95,22 @@ Controls moved below the grid for better UX
     try {
       const prefs = {
         showAdvanced: showAdvancedPicker,
-        gridMode: pickerState.currentGridMode === GridMode.DIAMOND ? "DIAMOND" : "BOX",
+        gridMode:
+          pickerState.currentGridMode === GridMode.DIAMOND ? "DIAMOND" : "BOX",
       };
       localStorage.setItem(STORAGE_KEY, JSON.stringify(prefs));
     } catch (error) {
-      console.warn("Failed to persist start position picker preferences:", error);
+      console.warn(
+        "Failed to persist start position picker preferences:",
+        error
+      );
     }
   }
 
   // Derived labels for action-oriented toggles
-  const viewModeLabel = $derived(showAdvancedPicker ? "Simple" : "All Variations");
+  const viewModeLabel = $derived(
+    showAdvancedPicker ? "Simple" : "All Variations"
+  );
   const gridModeLabel = $derived(
     pickerState.currentGridMode === GridMode.DIAMOND ? "Box" : "Diamond"
   );

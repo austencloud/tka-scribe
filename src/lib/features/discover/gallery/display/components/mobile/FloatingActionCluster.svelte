@@ -120,7 +120,8 @@
     background: linear-gradient(
       135deg,
       var(--semantic-info, var(--semantic-info)) 0%,
-      color-mix(in srgb, var(--semantic-info, var(--semantic-info)) 80%, black) 100%
+      color-mix(in srgb, var(--semantic-info, var(--semantic-info)) 80%, black)
+        100%
     );
     border-color: transparent;
   }
@@ -128,18 +129,29 @@
   .fab-primary:hover {
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--semantic-info, var(--semantic-info)) 85%, black) 0%,
-      color-mix(in srgb, var(--semantic-info, var(--semantic-info)) 70%, black) 100%
+      color-mix(in srgb, var(--semantic-info, var(--semantic-info)) 85%, black)
+        0%,
+      color-mix(in srgb, var(--semantic-info, var(--semantic-info)) 70%, black)
+        100%
     );
     box-shadow: 0 4px 24px
-      color-mix(in srgb, var(--semantic-info, var(--semantic-info)) 40%, transparent);
+      color-mix(
+        in srgb,
+        var(--semantic-info, var(--semantic-info)) 40%,
+        transparent
+      );
   }
 
   .fab-primary.favorited {
     background: linear-gradient(
       135deg,
       var(--semantic-error, var(--semantic-error)) 0%,
-      color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 100%, transparent) 100%
+      color-mix(
+          in srgb,
+          var(--semantic-error, var(--semantic-error)) 100%,
+          transparent
+        )
+        100%
     );
   }
 
@@ -147,9 +159,18 @@
     background: linear-gradient(
       135deg,
       var(--semantic-error, var(--semantic-error)) 0%,
-      color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 100%, transparent) 100%
+      color-mix(
+          in srgb,
+          var(--semantic-error, var(--semantic-error)) 100%,
+          transparent
+        )
+        100%
     );
     box-shadow: 0 4px 24px
-      color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 40%, transparent);
+      color-mix(
+        in srgb,
+        var(--semantic-error, var(--semantic-error)) 40%,
+        transparent
+      );
   }
 </style>

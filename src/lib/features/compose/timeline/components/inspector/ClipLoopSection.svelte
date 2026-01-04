@@ -30,7 +30,9 @@
 
   {#if loop}
     <div class="field">
-      <label class="field-label" for="loop-count">Loop Count (0 = infinite)</label>
+      <label class="field-label" for="loop-count"
+        >Loop Count (0 = infinite)</label
+      >
       <input
         id="loop-count"
         type="number"

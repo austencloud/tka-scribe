@@ -71,7 +71,11 @@
   }
 
   .plane-body {
-    fill: color-mix(in srgb, var(--theme-accent, var(--semantic-info)) 30%, transparent);
+    fill: color-mix(
+      in srgb,
+      var(--theme-accent, var(--semantic-info)) 30%,
+      transparent
+    );
     stroke: var(--theme-accent, var(--semantic-info));
     stroke-width: 2;
   }

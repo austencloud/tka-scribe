@@ -103,9 +103,7 @@
   // ============================================================================
 
   onMount(() => {
-    hapticService = resolve<IHapticFeedback>(
-      TYPES.IHapticFeedback
-    );
+    hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
     deviceDetector = resolve<IDeviceDetector>(TYPES.IDeviceDetector);
 
     // Initialize navigation layout
@@ -211,7 +209,6 @@
 
       // Sync picker state to match construct tab's sequence state
       constructTabState.syncPickerStateWithSequence();
-
     }
   });
 

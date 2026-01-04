@@ -51,7 +51,14 @@ export function registerDrawer(id: string, onDismiss?: () => void): number {
 
   const zIndex = BASE_Z_INDEX + (drawerStack.length - 1) * Z_INDEX_INCREMENT;
   // Debug logging for HMR swipe issue
-  console.log('[DrawerStack] registerDrawer:', id, '| stack now:', [...drawerStack], '| zIndex:', zIndex);
+  console.log(
+    "[DrawerStack] registerDrawer:",
+    id,
+    "| stack now:",
+    [...drawerStack],
+    "| zIndex:",
+    zIndex
+  );
   return zIndex;
 }
 
@@ -80,7 +87,7 @@ export function dismissTopDrawer(): boolean {
   const topDrawerId = drawerStack[drawerStack.length - 1]!;
   const dismissCallback = dismissCallbacks.get(topDrawerId);
 
-  console.log('[DrawerStack] dismissTopDrawer: dismissing', topDrawerId);
+  console.log("[DrawerStack] dismissTopDrawer: dismissing", topDrawerId);
 
   if (dismissCallback) {
     dismissCallback();
@@ -88,7 +95,7 @@ export function dismissTopDrawer(): boolean {
   }
 
   // No callback registered - drawer can't be dismissed this way
-  console.log('[DrawerStack] dismissTopDrawer: no callback for', topDrawerId);
+  console.log("[DrawerStack] dismissTopDrawer: no callback for", topDrawerId);
   return false;
 }
 
@@ -96,9 +103,17 @@ export function dismissTopDrawer(): boolean {
  * Check if a drawer is the topmost drawer
  */
 export function isTopDrawer(id: string): boolean {
-  const result = drawerStack.length > 0 && drawerStack[drawerStack.length - 1] === id;
+  const result =
+    drawerStack.length > 0 && drawerStack[drawerStack.length - 1] === id;
   // Debug logging for HMR swipe issue
-  console.log('[DrawerStack] isTopDrawer:', id, '| stack:', [...drawerStack], '| result:', result);
+  console.log(
+    "[DrawerStack] isTopDrawer:",
+    id,
+    "| stack:",
+    [...drawerStack],
+    "| result:",
+    result
+  );
   return result;
 }
 

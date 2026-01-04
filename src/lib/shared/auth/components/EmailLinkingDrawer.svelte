@@ -41,9 +41,7 @@
 
   onMount(() => {
     authService = resolve<IAuthenticator>(TYPES.IAuthenticator);
-    hapticService = resolve<IHapticFeedback>(
-      TYPES.IHapticFeedback
-    );
+    hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
   });
 
   onDestroy(() => {
@@ -190,13 +188,13 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background: color-mix(
-      in srgb,
-      var(--theme-panel-bg) 98%,
-      transparent
-    );
+    background: color-mix(in srgb, var(--theme-panel-bg) 98%, transparent);
     border: 1px solid
-      color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent-strong)) 30%, transparent);
+      color-mix(
+        in srgb,
+        var(--theme-accent-strong, var(--theme-accent-strong)) 30%,
+        transparent
+      );
     border-radius: 20px;
     padding: 32px;
     max-width: 480px;
@@ -205,10 +203,18 @@
     overflow-y: auto;
     box-shadow:
       0 0 0 1px
-        color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent-strong)) 10%, transparent),
+        color-mix(
+          in srgb,
+          var(--theme-accent-strong, var(--theme-accent-strong)) 10%,
+          transparent
+        ),
       0 20px 60px var(--theme-shadow),
       0 0 100px
-        color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent-strong)) 10%, transparent);
+        color-mix(
+          in srgb,
+          var(--theme-accent-strong, var(--theme-accent-strong)) 10%,
+          transparent
+        );
     z-index: 1001;
     animation: modalSlideIn 0.3s ease-out;
   }
@@ -253,7 +259,11 @@
       transparent
     );
     border: 1px solid
-      color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent-strong)) 30%, transparent);
+      color-mix(
+        in srgb,
+        var(--theme-accent-strong, var(--theme-accent-strong)) 30%,
+        transparent
+      );
     border-radius: 14px;
     flex-shrink: 0;
   }

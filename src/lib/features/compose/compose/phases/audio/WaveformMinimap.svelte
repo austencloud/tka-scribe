@@ -175,7 +175,8 @@
     if (e.key === "Enter" || e.key === " ") {
       e.preventDefault();
       const clickEvent = new MouseEvent("click", {
-        clientX: minimapEl.getBoundingClientRect().left + minimapEl.offsetWidth / 2,
+        clientX:
+          minimapEl.getBoundingClientRect().left + minimapEl.offsetWidth / 2,
       });
       handleClick(clickEvent as any);
     }

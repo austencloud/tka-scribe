@@ -107,7 +107,11 @@ export class PlatformDetector implements IPlatformDetector {
     }
 
     // TikTok: contains "tiktok" or "bytedance"
-    if (ua.includes("tiktok") || ua.includes("bytedance") || ua.includes("musical_ly")) {
+    if (
+      ua.includes("tiktok") ||
+      ua.includes("bytedance") ||
+      ua.includes("musical_ly")
+    ) {
       return "tiktok";
     }
 
@@ -141,17 +145,28 @@ export class PlatformDetector implements IPlatformDetector {
     if (typeof window === "undefined") return false;
 
     // Check display-mode media queries
-    const isStandalone = window.matchMedia("(display-mode: standalone)").matches;
-    const isFullscreen = window.matchMedia("(display-mode: fullscreen)").matches;
+    const isStandalone = window.matchMedia(
+      "(display-mode: standalone)"
+    ).matches;
+    const isFullscreen = window.matchMedia(
+      "(display-mode: fullscreen)"
+    ).matches;
     const isMinimalUI = window.matchMedia("(display-mode: minimal-ui)").matches;
 
     // iOS Safari standalone mode
-    const iOSStandalone = (window.navigator as VendorNavigator).standalone === true;
+    const iOSStandalone =
+      (window.navigator as VendorNavigator).standalone === true;
 
     // Android TWA (Trusted Web Activity)
     const isAndroidTWA = document.referrer.includes("android-app://");
 
-    return isStandalone || isFullscreen || isMinimalUI || iOSStandalone || isAndroidTWA;
+    return (
+      isStandalone ||
+      isFullscreen ||
+      isMinimalUI ||
+      iOSStandalone ||
+      isAndroidTWA
+    );
   }
 
   /**

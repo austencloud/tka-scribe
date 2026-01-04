@@ -64,9 +64,7 @@ interface IWordCardExportIntegrationService {
 }
 
 @injectable()
-export class WordCardExportIntegrationService
-  implements IWordCardExportIntegrationService
-{
+export class WordCardExportIntegrationService implements IWordCardExportIntegrationService {
   private isExporting = false;
   private abortController: AbortController | null = null;
 
@@ -125,7 +123,6 @@ export class WordCardExportIntegrationService
     } = {},
     onProgress?: (current: number, total: number, message: string) => void
   ): Promise<{ successCount: number; failureCount: number; errors: Error[] }> {
-
     // Validate export capability
     const validation = this.validateExportCapability();
     if (!validation.canExport) {
@@ -143,7 +140,6 @@ export class WordCardExportIntegrationService
       console.error("❌ No page elements found:", error);
       return { successCount: 0, failureCount: 1, errors: [error] };
     }
-
 
     try {
       this.isExporting = true;
@@ -166,7 +162,6 @@ export class WordCardExportIntegrationService
       if (!batchResult) {
         throw new Error("Export service not available");
       }
-
 
       // Prepare download data
       const downloadData: Array<{ blob: Blob; filename: string }> = [];
@@ -199,7 +194,6 @@ export class WordCardExportIntegrationService
           );
         }
       }
-
 
       // Download files
       if (downloadData.length > 0) {
@@ -262,7 +256,6 @@ export class WordCardExportIntegrationService
     } = {},
     onProgress?: (current: number, total: number, message: string) => void
   ): Promise<{ successCount: number; failureCount: number; errors: Error[] }> {
-
     // Get all page elements
     const allPageElements = this.getPrintablePageElements();
 
@@ -294,7 +287,6 @@ export class WordCardExportIntegrationService
   }
 
   getPrintablePageElements(): HTMLElement[] {
-
     // Look for page elements with the expected data attribute or class
     const selectors = [
       "[data-page-id]",

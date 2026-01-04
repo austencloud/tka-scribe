@@ -84,7 +84,10 @@ export class UserActivityTracker implements IUserActivityTracker {
   subscribeToAllUsers(
     callback: (users: UserPresenceWithId[]) => void
   ): () => void {
-    let allFirestoreUsers: Map<string, { displayName: string; email: string; photoURL: string | null }> = new Map();
+    let allFirestoreUsers: Map<
+      string,
+      { displayName: string; email: string; photoURL: string | null }
+    > = new Map();
     let presenceUsers: UserPresenceWithId[] = [];
     let isInitialized = false;
 
@@ -95,7 +98,7 @@ export class UserActivityTracker implements IUserActivityTracker {
         const usersRef = collection(firestore, "users");
         const snapshot = await getDocs(usersRef);
 
-        snapshot.docs.forEach(doc => {
+        snapshot.docs.forEach((doc) => {
           const data = doc.data();
           allFirestoreUsers.set(doc.id, {
             displayName: (data["displayName"] as string) ?? "Unknown",
@@ -107,21 +110,26 @@ export class UserActivityTracker implements IUserActivityTracker {
         isInitialized = true;
         mergeAndNotify();
       } catch (error) {
-        console.error("[UserActivityTracker] Failed to fetch all users:", error);
+        console.error(
+          "[UserActivityTracker] Failed to fetch all users:",
+          error
+        );
       }
     })();
 
     // Subscribe to presence updates
-    const unsubscribePresence = this.presenceService.subscribeToAllPresence((users) => {
-      presenceUsers = users;
-      if (isInitialized) {
-        mergeAndNotify();
+    const unsubscribePresence = this.presenceService.subscribeToAllPresence(
+      (users) => {
+        presenceUsers = users;
+        if (isInitialized) {
+          mergeAndNotify();
+        }
       }
-    });
+    );
 
     // Merge Firestore users with presence data and notify
     function mergeAndNotify() {
-      const presenceMap = new Map(presenceUsers.map(u => [u.userId, u]));
+      const presenceMap = new Map(presenceUsers.map((u) => [u.userId, u]));
       const merged: UserPresenceWithId[] = [];
 
       // Add all Firestore users

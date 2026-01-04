@@ -131,20 +131,38 @@
     background: linear-gradient(
       135deg,
       var(--theme-accent-strong) 0%,
-      color-mix(in srgb, var(--theme-accent-strong) 85%, var(--theme-accent-strong)) 100%
+      color-mix(
+          in srgb,
+          var(--theme-accent-strong) 85%,
+          var(--theme-accent-strong)
+        )
+        100%
     );
-    border: 1px solid color-mix(in srgb, var(--theme-accent-strong) 30%, transparent);
-    box-shadow: 0 4px 12px color-mix(in srgb, var(--theme-accent-strong) 40%, transparent);
+    border: 1px solid
+      color-mix(in srgb, var(--theme-accent-strong) 30%, transparent);
+    box-shadow: 0 4px 12px
+      color-mix(in srgb, var(--theme-accent-strong) 40%, transparent);
   }
 
   .undo-button:hover:not(:disabled) {
     transform: scale(1.05);
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--theme-accent-strong) 85%, var(--theme-accent-strong)) 0%,
-      color-mix(in srgb, var(--theme-accent-strong) 70%, var(--theme-accent-strong)) 100%
+      color-mix(
+          in srgb,
+          var(--theme-accent-strong) 85%,
+          var(--theme-accent-strong)
+        )
+        0%,
+      color-mix(
+          in srgb,
+          var(--theme-accent-strong) 70%,
+          var(--theme-accent-strong)
+        )
+        100%
     );
-    box-shadow: 0 6px 16px color-mix(in srgb, var(--theme-accent-strong) 60%, transparent);
+    box-shadow: 0 6px 16px
+      color-mix(in srgb, var(--theme-accent-strong) 60%, transparent);
   }
 
   .undo-button:active {

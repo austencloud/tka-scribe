@@ -38,9 +38,7 @@
   const inboxUnreadCount = $derived(inboxState.totalUnreadCount);
 
   onMount(() => {
-    hapticService = resolve<IHapticFeedback>(
-      TYPES.IHapticFeedback
-    );
+    hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
   });
 
   function handleClick() {
@@ -258,7 +256,11 @@
     background: linear-gradient(
       180deg,
       var(--module-color, var(--theme-accent)),
-      color-mix(in srgb, var(--module-color, var(--theme-accent)) 50%, transparent)
+      color-mix(
+        in srgb,
+        var(--module-color, var(--theme-accent)) 50%,
+        transparent
+      )
     );
   }
 
@@ -275,9 +277,17 @@
     border-radius: 3px;
     background: linear-gradient(
       90deg,
-      color-mix(in srgb, var(--module-color, var(--theme-accent)) 50%, transparent),
+      color-mix(
+        in srgb,
+        var(--module-color, var(--theme-accent)) 50%,
+        transparent
+      ),
       var(--module-color, var(--theme-accent)),
-      color-mix(in srgb, var(--module-color, var(--theme-accent)) 50%, transparent)
+      color-mix(
+        in srgb,
+        var(--module-color, var(--theme-accent)) 50%,
+        transparent
+      )
     );
   }
 

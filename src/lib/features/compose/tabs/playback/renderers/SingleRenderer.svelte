@@ -101,13 +101,16 @@
   $effect(() => {
     if (!sequence || !playbackController) return;
 
-    const currentSequenceId = sequence.id || sequence.word || sequence.name || "unknown";
+    const currentSequenceId =
+      sequence.id || sequence.word || sequence.name || "unknown";
     const isSameSequence = currentSequenceId === lastLoadedSequenceId;
 
     if (isSameSequence) {
       // Same sequence, just prop type or other metadata change
       // Don't trigger loading state - AnimationEngine hot-swap handles prop changes
-      console.log("🔄 SingleRenderer: Same sequence, skipping reload (prop type change handled by hot-swap)");
+      console.log(
+        "🔄 SingleRenderer: Same sequence, skipping reload (prop type change handled by hot-swap)"
+      );
       return;
     }
 

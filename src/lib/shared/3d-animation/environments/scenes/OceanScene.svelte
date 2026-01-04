@@ -30,11 +30,7 @@
 />
 
 <!-- Ocean floor - uses dynamic groundY from user proportions -->
-<GroundPlane
-  color={palette.ground}
-  opacity={0.9}
-  size={3000}
-/>
+<GroundPlane color={palette.ground} opacity={0.9} size={3000} />
 
 <!-- Rising bubbles -->
 <FallingParticles

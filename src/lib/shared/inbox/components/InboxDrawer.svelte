@@ -55,9 +55,7 @@
   );
 
   onMount(() => {
-    hapticService = resolve<IHapticFeedback>(
-      TYPES.IHapticFeedback
-    );
+    hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
 
     mediaQuery = window.matchMedia("(max-width: 768px)");
     isMobile = mediaQuery.matches;
@@ -112,11 +110,18 @@
 
   // Handle notification-specific actions (navigate to relevant location)
   async function handleNotificationAction(notificationId: string) {
-    const notification = inboxState.notifications.find(n => n.id === notificationId);
+    const notification = inboxState.notifications.find(
+      (n) => n.id === notificationId
+    );
     if (!notification) return;
 
     // Close inbox first for most navigations
-    const shouldCloseInbox = !["feedback-resolved", "feedback-in-progress", "feedback-needs-info", "feedback-response"].includes(notification.type);
+    const shouldCloseInbox = ![
+      "feedback-resolved",
+      "feedback-in-progress",
+      "feedback-needs-info",
+      "feedback-response",
+    ].includes(notification.type);
 
     switch (notification.type) {
       case "message-received": {
@@ -364,8 +369,6 @@
         />
       {/if}
     </section>
-
-
   </div>
 </Drawer>
 
@@ -469,8 +472,6 @@
       --sheet-width: 100%;
       width: 100% !important;
     }
-
-
 
     /* When expanded (thread/compose view), fill the viewport */
     :global(.drawer-content.inbox-drawer.inbox-expanded) {

@@ -41,7 +41,12 @@
       <span class="placeholder-hint">Add beats to generate preview</span>
     </div>
   {:else if isGenerating}
-    <div class="preview-loading" role="status" aria-live="polite" aria-busy="true">
+    <div
+      class="preview-loading"
+      role="status"
+      aria-live="polite"
+      aria-busy="true"
+    >
       <div class="loading-spinner" aria-hidden="true"></div>
       <p>Generating preview...</p>
     </div>

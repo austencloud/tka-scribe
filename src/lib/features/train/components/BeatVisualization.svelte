@@ -151,17 +151,33 @@
   }
 
   .reversal.blue {
-    background: color-mix(in srgb, var(--prop-blue, var(--semantic-info)) 20%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--prop-blue, var(--semantic-info)) 20%,
+      transparent
+    );
     color: var(--prop-blue, var(--semantic-info));
     border: 1px solid
-      color-mix(in srgb, var(--prop-blue, var(--semantic-info)) 30%, transparent);
+      color-mix(
+        in srgb,
+        var(--prop-blue, var(--semantic-info)) 30%,
+        transparent
+      );
   }
 
   .reversal.red {
-    background: color-mix(in srgb, var(--prop-red, var(--semantic-error)) 20%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--prop-red, var(--semantic-error)) 20%,
+      transparent
+    );
     color: var(--prop-red, var(--semantic-error));
     border: 1px solid
-      color-mix(in srgb, var(--prop-red, var(--semantic-error)) 30%, transparent);
+      color-mix(
+        in srgb,
+        var(--prop-red, var(--semantic-error)) 30%,
+        transparent
+      );
   }
 
   .positions {

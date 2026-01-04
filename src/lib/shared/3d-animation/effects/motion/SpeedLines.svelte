@@ -54,11 +54,13 @@
   });
 
   // Generate perpendicular vectors for line spread
-  function getPerpendicularVectors(dir: Vector3): { up: Vector3; right: Vector3 } {
+  function getPerpendicularVectors(dir: Vector3): {
+    up: Vector3;
+    right: Vector3;
+  } {
     // Find a vector not parallel to dir
-    const arbitrary = Math.abs(dir.y) < 0.9
-      ? new Vector3(0, 1, 0)
-      : new Vector3(1, 0, 0);
+    const arbitrary =
+      Math.abs(dir.y) < 0.9 ? new Vector3(0, 1, 0) : new Vector3(1, 0, 0);
 
     const right = new Vector3().crossVectors(dir, arbitrary).normalize();
     const up = new Vector3().crossVectors(right, dir).normalize();
@@ -82,9 +84,9 @@
 
     // Center line (strongest)
     const centerStart = currentPosition.clone();
-    const centerEnd = currentPosition.clone().sub(
-      direction.clone().multiplyScalar(lineLength)
-    );
+    const centerEnd = currentPosition
+      .clone()
+      .sub(direction.clone().multiplyScalar(lineLength));
     lines.push({
       start: [centerStart.x, centerStart.y, centerStart.z],
       end: [centerEnd.x, centerEnd.y, centerEnd.z],
@@ -100,9 +102,9 @@
       // Lines offset in the "up" direction
       const upOffset = up.clone().multiplyScalar(offsetDistance);
       const upStart = currentPosition.clone().add(upOffset);
-      const upEnd = upStart.clone().sub(
-        direction.clone().multiplyScalar(lineLength * (1 - i * 0.1))
-      );
+      const upEnd = upStart
+        .clone()
+        .sub(direction.clone().multiplyScalar(lineLength * (1 - i * 0.1)));
       lines.push({
         start: [upStart.x, upStart.y, upStart.z],
         end: [upEnd.x, upEnd.y, upEnd.z],
@@ -112,9 +114,9 @@
       // Lines offset in the "down" direction
       const downOffset = up.clone().multiplyScalar(-offsetDistance);
       const downStart = currentPosition.clone().add(downOffset);
-      const downEnd = downStart.clone().sub(
-        direction.clone().multiplyScalar(lineLength * (1 - i * 0.1))
-      );
+      const downEnd = downStart
+        .clone()
+        .sub(direction.clone().multiplyScalar(lineLength * (1 - i * 0.1)));
       lines.push({
         start: [downStart.x, downStart.y, downStart.z],
         end: [downEnd.x, downEnd.y, downEnd.z],
@@ -125,9 +127,9 @@
       if (i <= sideLineCount / 2) {
         const rightOffset = right.clone().multiplyScalar(offsetDistance * 0.7);
         const rightStart = currentPosition.clone().add(rightOffset);
-        const rightEnd = rightStart.clone().sub(
-          direction.clone().multiplyScalar(lineLength * (1 - i * 0.15))
-        );
+        const rightEnd = rightStart
+          .clone()
+          .sub(direction.clone().multiplyScalar(lineLength * (1 - i * 0.15)));
         lines.push({
           start: [rightStart.x, rightStart.y, rightStart.z],
           end: [rightEnd.x, rightEnd.y, rightEnd.z],
@@ -136,9 +138,9 @@
 
         const leftOffset = right.clone().multiplyScalar(-offsetDistance * 0.7);
         const leftStart = currentPosition.clone().add(leftOffset);
-        const leftEnd = leftStart.clone().sub(
-          direction.clone().multiplyScalar(lineLength * (1 - i * 0.15))
-        );
+        const leftEnd = leftStart
+          .clone()
+          .sub(direction.clone().multiplyScalar(lineLength * (1 - i * 0.15)));
         lines.push({
           start: [leftStart.x, leftStart.y, leftStart.z],
           end: [leftEnd.x, leftEnd.y, leftEnd.z],
@@ -156,10 +158,7 @@
     {@const positions = new Float32Array([...line.start, ...line.end])}
     <T.Line>
       <T.BufferGeometry>
-        <T.BufferAttribute
-          attach="attributes-position"
-          args={[positions, 3]}
-        />
+        <T.BufferAttribute attach="attributes-position" args={[positions, 3]} />
       </T.BufferGeometry>
       <T.LineBasicMaterial
         {color}

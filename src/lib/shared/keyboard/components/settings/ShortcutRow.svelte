@@ -170,7 +170,11 @@
   }
 
   .reset-btn:hover {
-    background: color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 15%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--semantic-error, var(--semantic-error)) 15%,
+      transparent
+    );
     color: var(--semantic-error, var(--semantic-error));
   }
 

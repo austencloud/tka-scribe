@@ -10,18 +10,12 @@ const hoistedModules = await (async () => {
   const typesModule = await import("../../src/lib/shared/inversify/types");
   // Import domain enums that are used in module-level object literals
   await import("../../src/lib/shared/pictograph/grid/domain/enums/grid-enums");
-  await import(
-    "../../src/lib/shared/pictograph/shared/domain/enums/pictograph-enums"
-  );
+  await import("../../src/lib/shared/pictograph/shared/domain/enums/pictograph-enums");
   await import("../../src/lib/shared/foundation/domain/models/LetterType");
   // Import files that use enums in module-level object literals
-  await import(
-    "../../src/lib/shared/pictograph/shared/domain/constants/pictograph-constants"
-  );
+  await import("../../src/lib/shared/pictograph/shared/domain/constants/pictograph-constants");
   // Import factory functions that are used by services
-  await import(
-    "../../src/lib/shared/pictograph/shared/domain/factories/createPictographData"
-  );
+  await import("../../src/lib/shared/pictograph/shared/domain/factories/createPictographData");
 
   // Verify TYPES is properly loaded
   if (!typesModule.TYPES || !typesModule.TYPES.IVideoExporter) {

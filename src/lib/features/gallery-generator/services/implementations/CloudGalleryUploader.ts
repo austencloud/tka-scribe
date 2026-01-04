@@ -35,7 +35,8 @@ export class CloudGalleryUploader {
     propType: PropType,
     lightMode: boolean
   ): Promise<string> {
-    const { ref, uploadBytes, getDownloadURL } = await import("firebase/storage");
+    const { ref, uploadBytes, getDownloadURL } =
+      await import("firebase/storage");
     const storage = await getStorageInstance();
 
     const modeSuffix = lightMode ? "_light" : "_dark";

@@ -31,7 +31,10 @@
         await completeSignIn();
       }
     } catch (err) {
-      console.error("❌ [email-link] Unexpected error during sign-in check:", err);
+      console.error(
+        "❌ [email-link] Unexpected error during sign-in check:",
+        err
+      );
       error = "An unexpected error occurred. Please try again.";
       toast.error("Sign-in failed. Please try again.");
     }
@@ -280,7 +283,11 @@
     outline: none;
     border-color: var(--theme-accent-strong, var(--theme-accent-strong));
     box-shadow: 0 0 0 3px
-      color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent-strong)) 15%, transparent);
+      color-mix(
+        in srgb,
+        var(--theme-accent-strong, var(--theme-accent-strong)) 15%,
+        transparent
+      );
   }
 
   input:disabled {
@@ -297,7 +304,12 @@
     background: linear-gradient(
       135deg,
       var(--theme-accent-strong, var(--theme-accent-strong)) 0%,
-      color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent-strong)) 85%, #000) 100%
+      color-mix(
+          in srgb,
+          var(--theme-accent-strong, var(--theme-accent-strong)) 85%,
+          #000
+        )
+        100%
     );
     color: var(--theme-text, white);
     border: none;
@@ -308,17 +320,35 @@
     transition: all 0.2s ease;
     min-height: var(--min-touch-target);
     box-shadow: 0 4px 6px
-      color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent-strong)) 20%, transparent);
+      color-mix(
+        in srgb,
+        var(--theme-accent-strong, var(--theme-accent-strong)) 20%,
+        transparent
+      );
   }
 
   .submit-button:hover:not(:disabled) {
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent-strong)) 85%, #000) 0%,
-      color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent-strong)) 70%, #000) 100%
+      color-mix(
+          in srgb,
+          var(--theme-accent-strong, var(--theme-accent-strong)) 85%,
+          #000
+        )
+        0%,
+      color-mix(
+          in srgb,
+          var(--theme-accent-strong, var(--theme-accent-strong)) 70%,
+          #000
+        )
+        100%
     );
     box-shadow: 0 6px 8px
-      color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent-strong)) 30%, transparent);
+      color-mix(
+        in srgb,
+        var(--theme-accent-strong, var(--theme-accent-strong)) 30%,
+        transparent
+      );
     transform: translateY(-1px);
   }
 
@@ -365,7 +395,11 @@
       transparent
     );
     border: 1px solid
-      color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 30%, transparent);
+      color-mix(
+        in srgb,
+        var(--semantic-error, var(--semantic-error)) 30%,
+        transparent
+      );
     border-radius: 0.5rem;
     margin: 0;
   }
@@ -385,7 +419,11 @@
       transparent
     );
     border: 1px solid
-      color-mix(in srgb, var(--semantic-success, var(--semantic-success)) 25%, transparent);
+      color-mix(
+        in srgb,
+        var(--semantic-success, var(--semantic-success)) 25%,
+        transparent
+      );
     border-radius: 0.5rem;
     margin: 0;
   }

@@ -10,7 +10,10 @@ import {
   markSidebarTourSkipped,
   resetSidebarTour,
 } from "../config/storage-keys";
-import { SIDEBAR_TOUR_STEPS, TOUR_STEP_COUNT } from "../config/sidebar-tour-content";
+import {
+  SIDEBAR_TOUR_STEPS,
+  TOUR_STEP_COUNT,
+} from "../config/sidebar-tour-content";
 
 export type TourPhase = "idle" | "prompt" | "touring" | "complete";
 

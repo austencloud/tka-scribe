@@ -1,9 +1,9 @@
 <!--
-  PictographModeStep - Choose lights on or lights off mode
+  PictographModeStep - Choose lights on or Dark Mode
 
   Shows real pictographs side by side demonstrating both modes.
   Lights On: standard display on light background
-  Lights Off: inverted colors, dark background, glow effects
+  Dark Mode: inverted colors, dark background, glow effects
 -->
 <script lang="ts">
   import PictographContainer from "$lib/shared/pictograph/shared/components/PictographContainer.svelte";
@@ -17,7 +17,13 @@
     onSkip: () => void;
   }
 
-  const { initialValue, isFinalStep = false, onComplete, onBack, onSkip }: Props = $props();
+  const {
+    initialValue,
+    isFinalStep = false,
+    onComplete,
+    onBack,
+    onSkip,
+  }: Props = $props();
 
   // svelte-ignore state_referenced_locally
   let selectedMode = $state<"light" | "dark" | null>(initialValue ?? null);
@@ -38,8 +44,7 @@
     <i class="fas fa-lightbulb" aria-hidden="true"></i>
   </div>
 
-  <h1 class="title">Lights on or lights off?</h1>
-
+  <h1 class="title">Lights on or Dark Mode?</h1>
 
   <div class="mode-options">
     <!-- Lights On Option -->
@@ -64,7 +69,7 @@
       {/if}
     </button>
 
-    <!-- Lights Off Option -->
+    <!-- Dark Mode Option -->
     <button
       class="mode-card"
       class:selected={selectedMode === "dark"}
@@ -78,7 +83,7 @@
           disableTransitions={true}
         />
       </div>
-      <span class="mode-label">Lights Off</span>
+      <span class="mode-label">Dark Mode</span>
       {#if selectedMode === "dark"}
         <div class="selected-badge">
           <i class="fas fa-check" aria-hidden="true"></i>
@@ -90,7 +95,12 @@
   <p class="hint">You can change this anytime in settings</p>
 
   <div class="button-row">
-    <button type="button" class="back-button" onclick={onBack} aria-label="Go back">
+    <button
+      type="button"
+      class="back-button"
+      onclick={onBack}
+      aria-label="Go back"
+    >
       <i class="fas fa-arrow-left" aria-hidden="true"></i>
     </button>
 
@@ -102,10 +112,12 @@
       onclick={handleContinue}
     >
       {isFinalStep ? "Finish" : "Continue"}
-      <i class="fas {isFinalStep ? 'fa-check' : 'fa-arrow-right'}" aria-hidden="true"></i>
+      <i
+        class="fas {isFinalStep ? 'fa-check' : 'fa-arrow-right'}"
+        aria-hidden="true"
+      ></i>
     </button>
   </div>
-
 </div>
 
 <style>
@@ -280,8 +292,13 @@
     align-items: center;
     gap: 10px;
     padding: 14px 24px;
-    background: color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 40%, transparent);
-    border: 2px solid color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 60%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--theme-accent-strong, #8b5cf6) 40%,
+      transparent
+    );
+    border: 2px solid
+      color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 60%, transparent);
     border-radius: 12px;
     color: white;
     font-size: 1rem;
@@ -291,8 +308,16 @@
   }
 
   .next-button:hover:not(:disabled) {
-    background: color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 50%, transparent);
-    border-color: color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 80%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--theme-accent-strong, #8b5cf6) 50%,
+      transparent
+    );
+    border-color: color-mix(
+      in srgb,
+      var(--theme-accent-strong, #8b5cf6) 80%,
+      transparent
+    );
   }
 
   .next-button:disabled {

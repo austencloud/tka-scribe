@@ -151,14 +151,8 @@ export class CollectionManager implements ICollectionManager {
     // Process in chunks of 30
     for (let i = 0; i < sequenceIds.length; i += BATCH_SIZE) {
       const chunk = sequenceIds.slice(i, i + BATCH_SIZE);
-      const sequencesRef = collection(
-        firestore,
-        `users/${userId}/sequences`
-      );
-      const batchQuery = query(
-        sequencesRef,
-        where(documentId(), "in", chunk)
-      );
+      const sequencesRef = collection(firestore, `users/${userId}/sequences`);
+      const batchQuery = query(sequencesRef, where(documentId(), "in", chunk));
       const batchSnapshot = await getDocs(batchQuery);
 
       for (const docSnap of batchSnapshot.docs) {
@@ -355,7 +349,11 @@ export class CollectionManager implements ICollectionManager {
     } catch (error) {
       console.error("[CollectionManager] Failed to delete collection:", error);
       toast.error("Failed to delete collection. Please try again.");
-      throw new CollectionError("Failed to delete collection", "NETWORK", collectionId);
+      throw new CollectionError(
+        "Failed to delete collection",
+        "NETWORK",
+        collectionId
+      );
     }
   }
 
@@ -517,7 +515,10 @@ export class CollectionManager implements ICollectionManager {
         );
       })
       .catch((error) => {
-        console.error("[CollectionManager] Failed to initialize collections subscription:", error);
+        console.error(
+          "[CollectionManager] Failed to initialize collections subscription:",
+          error
+        );
         toast.error("Failed to connect to collections.");
       });
 
@@ -563,7 +564,10 @@ export class CollectionManager implements ICollectionManager {
         );
       })
       .catch((error) => {
-        console.error("[CollectionManager] Failed to initialize collection subscription:", error);
+        console.error(
+          "[CollectionManager] Failed to initialize collection subscription:",
+          error
+        );
         toast.error("Failed to connect to collection.");
       });
 
@@ -598,7 +602,10 @@ export class CollectionManager implements ICollectionManager {
     try {
       await batch.commit();
     } catch (error) {
-      console.error("[CollectionManager] Failed to reorder collections:", error);
+      console.error(
+        "[CollectionManager] Failed to reorder collections:",
+        error
+      );
       toast.error("Failed to reorder collections. Please try again.");
       throw new CollectionError("Failed to reorder collections", "NETWORK");
     }
@@ -632,9 +639,7 @@ export class CollectionManager implements ICollectionManager {
    * Log a favorite/unfavorite action to the activity log
    */
   private logFavoriteAction(sequenceId: string, isFavorite: boolean): void {
-    const activityService = tryResolve<IActivityLogger>(
-      TYPES.IActivityLogger
-    );
+    const activityService = tryResolve<IActivityLogger>(TYPES.IActivityLogger);
     if (activityService) {
       activityService.log(
         isFavorite ? "sequence_favorite" : "sequence_unfavorite",

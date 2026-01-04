@@ -10,7 +10,9 @@
     PlaybackMode,
     StepPlaybackStepSize,
   } from "../../state/animation-panel-state.svelte";
-  import ModeTabBar, { type SettingsMode } from "./settings-panel/ModeTabBar.svelte";
+  import ModeTabBar, {
+    type SettingsMode,
+  } from "./settings-panel/ModeTabBar.svelte";
   import PlaybackPane from "./settings-panel/PlaybackPane.svelte";
   import VisualPane from "./settings-panel/VisualPane.svelte";
 

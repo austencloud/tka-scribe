@@ -187,7 +187,10 @@ export class VersionService implements IVersionService {
       const versionRef = doc(firestore, VERSIONS_COLLECTION, version);
       await updateDoc(versionRef, { changelogEntries });
     } catch (error) {
-      console.error("[VersionManager] Failed to update changelog entries:", error);
+      console.error(
+        "[VersionManager] Failed to update changelog entries:",
+        error
+      );
       toast.error("Failed to update changelog. Please try again.");
       throw error;
     }
@@ -220,7 +223,10 @@ export class VersionService implements IVersionService {
     try {
       await updateDoc(versionRef, { changelogEntries });
     } catch (error) {
-      console.error("[VersionManager] Failed to update changelog entry:", error);
+      console.error(
+        "[VersionManager] Failed to update changelog entry:",
+        error
+      );
       toast.error("Failed to update changelog entry. Please try again.");
       throw error;
     }
@@ -275,7 +281,10 @@ export class VersionService implements IVersionService {
     try {
       await updateDoc(versionRef, { changelogEntries });
     } catch (error) {
-      console.error("[VersionManager] Failed to delete changelog entry:", error);
+      console.error(
+        "[VersionManager] Failed to delete changelog entry:",
+        error
+      );
       toast.error("Failed to delete changelog entry. Please try again.");
       throw error;
     }

@@ -25,10 +25,16 @@
         // Filter to sequences from other users and sort by most recent
         const currentUserId = authState.user?.uid;
         recentSequences = allSequences
-          .filter(seq => seq.ownerId !== currentUserId)
+          .filter((seq) => seq.ownerId !== currentUserId)
           .sort((a, b) => {
-            const aDate = a.dateAdded instanceof Date ? a.dateAdded : new Date(a.dateAdded || 0);
-            const bDate = b.dateAdded instanceof Date ? b.dateAdded : new Date(b.dateAdded || 0);
+            const aDate =
+              a.dateAdded instanceof Date
+                ? a.dateAdded
+                : new Date(a.dateAdded || 0);
+            const bDate =
+              b.dateAdded instanceof Date
+                ? b.dateAdded
+                : new Date(b.dateAdded || 0);
             return bDate.getTime() - aDate.getTime();
           })
           .slice(0, 6); // Show up to 6 recent sequences
@@ -92,7 +98,11 @@
           <button class="sequence-card" onclick={() => viewSequence(seq)}>
             <div class="card-thumbnail">
               {#if thumbnail}
-                <img src={thumbnail} alt={seq.word || 'Sequence'} loading="lazy" />
+                <img
+                  src={thumbnail}
+                  alt={seq.word || "Sequence"}
+                  loading="lazy"
+                />
               {:else}
                 <div class="thumbnail-placeholder">
                   <i class="fas fa-layer-group" aria-hidden="true"></i>
@@ -142,7 +152,11 @@
     justify-content: center;
     width: 44px;
     height: 44px;
-    background: color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 25%, var(--theme-card-bg));
+    background: color-mix(
+      in srgb,
+      var(--theme-accent, var(--theme-accent)) 25%,
+      var(--theme-card-bg)
+    );
     border-radius: 14px;
     color: var(--theme-accent, var(--theme-accent));
     font-size: var(--font-size-lg);
@@ -175,9 +189,24 @@
     aspect-ratio: 1;
     background: linear-gradient(
       90deg,
-      color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 8%, transparent) 25%,
-      color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 15%, transparent) 50%,
-      color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 8%, transparent) 75%
+      color-mix(
+          in srgb,
+          var(--theme-accent, var(--theme-accent)) 8%,
+          transparent
+        )
+        25%,
+      color-mix(
+          in srgb,
+          var(--theme-accent, var(--theme-accent)) 15%,
+          transparent
+        )
+        50%,
+      color-mix(
+          in srgb,
+          var(--theme-accent, var(--theme-accent)) 8%,
+          transparent
+        )
+        75%
     );
     background-size: 200% 100%;
     animation: shimmer 2s infinite ease-in-out;
@@ -185,8 +214,12 @@
   }
 
   @keyframes shimmer {
-    0% { background-position: -200% 0; }
-    100% { background-position: 200% 0; }
+    0% {
+      background-position: -200% 0;
+    }
+    100% {
+      background-position: 200% 0;
+    }
   }
 
   .empty-state {
@@ -201,7 +234,11 @@
 
   .empty-state i {
     font-size: var(--font-size-3xl);
-    color: color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 40%, transparent);
+    color: color-mix(
+      in srgb,
+      var(--theme-accent, var(--theme-accent)) 40%,
+      transparent
+    );
   }
 
   .empty-state p {
@@ -234,8 +271,14 @@
     border-radius: 12px;
     overflow: hidden;
     cursor: pointer;
-    transition: transform 150ms ease, box-shadow 150ms ease;
-    background: color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 10%, transparent);
+    transition:
+      transform 150ms ease,
+      box-shadow 150ms ease;
+    background: color-mix(
+      in srgb,
+      var(--theme-accent, var(--theme-accent)) 10%,
+      transparent
+    );
     border: 1px solid transparent;
   }
 
@@ -262,7 +305,11 @@
     justify-content: center;
     width: 100%;
     height: 100%;
-    background: color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 15%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--theme-accent, var(--theme-accent)) 15%,
+      transparent
+    );
     color: var(--theme-accent, var(--theme-accent));
     font-size: var(--font-size-2xl);
   }
@@ -277,7 +324,8 @@
     background: linear-gradient(
       135deg,
       var(--theme-accent, var(--theme-accent)) 0%,
-      color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 80%, black) 100%
+      color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 80%, black)
+        100%
     );
     border: none;
     border-radius: 14px;

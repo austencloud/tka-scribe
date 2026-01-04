@@ -29,7 +29,10 @@
     if (diffMins < 60) return `${diffMins}m`;
     if (diffHours < 24) return `${diffHours}h`;
     if (diffDays < 7) return `${diffDays}d`;
-    return date.toLocaleDateString(undefined, { month: "short", day: "numeric" });
+    return date.toLocaleDateString(undefined, {
+      month: "short",
+      day: "numeric",
+    });
   }
 
   /**
@@ -81,7 +84,10 @@
   }
 
   async function handleClick() {
-    if (item.eventType === "sequence_create" || item.eventType === "sequence_favorite") {
+    if (
+      item.eventType === "sequence_create" ||
+      item.eventType === "sequence_favorite"
+    ) {
       // Navigate to discover to find the sequence
       await handleModuleChange("discover", "gallery");
     }
@@ -130,8 +136,17 @@
     gap: 12px;
     width: 100%;
     padding: 12px;
-    background: color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 5%, transparent);
-    border: 1px solid color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 10%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--theme-accent, var(--theme-accent)) 5%,
+      transparent
+    );
+    border: 1px solid
+      color-mix(
+        in srgb,
+        var(--theme-accent, var(--theme-accent)) 10%,
+        transparent
+      );
     border-radius: 12px;
     cursor: pointer;
     transition: all 150ms ease;
@@ -140,7 +155,11 @@
 
   .feed-item:hover {
     background: color-mix(in srgb, var(--theme-accent) 12%, transparent);
-    border-color: color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 25%, transparent);
+    border-color: color-mix(
+      in srgb,
+      var(--theme-accent, var(--theme-accent)) 25%,
+      transparent
+    );
     transform: translateX(2px);
   }
 

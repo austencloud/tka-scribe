@@ -290,7 +290,11 @@ Features:
       transparent
     );
     box-shadow: 0 0 0 2px
-      color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 40%, transparent);
+      color-mix(
+        in srgb,
+        var(--theme-accent, var(--theme-accent)) 40%,
+        transparent
+      );
   }
 
   /* Card Media */

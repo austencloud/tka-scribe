@@ -50,7 +50,10 @@
       <div class="progress-header">
         <div class="progress-icon-wrapper">
           <div class="progress-icon-ring"></div>
-          <i class="fas {steps[currentStep - 1]?.icon || 'fa-spinner'} progress-icon" aria-hidden="true"
+          <i
+            class="fas {steps[currentStep - 1]?.icon ||
+              'fa-spinner'} progress-icon"
+            aria-hidden="true"
           ></i>
         </div>
         <h3>
@@ -420,7 +423,10 @@
     .progress-icon-ring {
       animation: none;
       border-top-color: var(--theme-accent-strong, var(--theme-accent-strong));
-      border-right-color: var(--theme-accent-strong, var(--theme-accent-strong));
+      border-right-color: var(
+        --theme-accent-strong,
+        var(--theme-accent-strong)
+      );
     }
 
     .progress-icon {

@@ -129,7 +129,11 @@
   }
 
   .group-title.fixed {
-    color: color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 70%, white);
+    color: color-mix(
+      in srgb,
+      var(--semantic-error, var(--semantic-error)) 70%,
+      white
+    );
   }
   .group-title.fixed i {
     color: var(--semantic-error, var(--semantic-error));
@@ -175,11 +179,7 @@
   }
 
   .add-entry-btn:hover {
-    background: color-mix(
-      in srgb,
-      var(--theme-accent) 10%,
-      transparent
-    );
+    background: color-mix(in srgb, var(--theme-accent) 10%, transparent);
     border-color: color-mix(
       in srgb,
       var(--theme-accent, var(--theme-accent-strong)) 30%,
@@ -195,7 +195,11 @@
     padding: 10px;
     background: var(--theme-card-bg, var(--theme-card-bg));
     border: 1px solid
-      color-mix(in srgb, var(--theme-accent, var(--theme-accent-strong)) 30%, transparent);
+      color-mix(
+        in srgb,
+        var(--theme-accent, var(--theme-accent-strong)) 30%,
+        transparent
+      );
     border-radius: 8px;
   }
 
@@ -269,10 +273,6 @@
   }
 
   .glass-btn.primary:hover:not(:disabled) {
-    background: color-mix(
-      in srgb,
-      var(--theme-accent) 25%,
-      transparent
-    );
+    background: color-mix(in srgb, var(--theme-accent) 25%, transparent);
   }
 </style>

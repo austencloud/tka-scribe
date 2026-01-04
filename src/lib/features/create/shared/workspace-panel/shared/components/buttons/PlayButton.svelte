@@ -14,9 +14,7 @@
   }>();
 
   // Resolve haptic feedback service
-  const hapticService = resolve<IHapticFeedback>(
-    TYPES.IHapticFeedback
-  );
+  const hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
 
   function handleClick() {
     hapticService?.trigger("selection");
@@ -108,7 +106,9 @@
     }
 
     .play-button i {
-      font-size: var(--font-size-sm); /* Slightly smaller icon, but same touch target */
+      font-size: var(
+        --font-size-sm
+      ); /* Slightly smaller icon, but same touch target */
     }
   }
 

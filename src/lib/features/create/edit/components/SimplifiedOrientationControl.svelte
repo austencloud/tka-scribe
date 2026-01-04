@@ -80,9 +80,7 @@ Research-backed design for 352px portrait (Z Fold):
   }
 
   onMount(() => {
-    hapticService = resolve<IHapticFeedback>(
-      TYPES.IHapticFeedback
-    );
+    hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
   });
 </script>
 

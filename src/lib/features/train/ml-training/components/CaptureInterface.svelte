@@ -8,10 +8,7 @@ Hybrid sync: saves locally first, then syncs to Firebase in background.
 -->
 <script lang="ts">
   import { onMount, onDestroy } from "svelte";
-  import {
-    getDataCapturer,
-    type CaptureState,
-  } from "../services/DataCapturer";
+  import { getDataCapturer, type CaptureState } from "../services/DataCapturer";
   import {
     getFirebaseMLStorageManager,
     type SyncProgress,

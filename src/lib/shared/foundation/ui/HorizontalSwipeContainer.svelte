@@ -119,7 +119,9 @@
       // CRITICAL: Always assume arrow space when showArrows is true
       // This matches the navPadding calculation above and prevents layout shift
       // where content initially renders larger then shrinks when arrows appear
-      const navPaddingValue = showArrows ? measuredArrowWidth + ARROW_SPACING : 0;
+      const navPaddingValue = showArrows
+        ? measuredArrowWidth + ARROW_SPACING
+        : 0;
       const leftOffset = navPaddingValue;
       const rightOffset = navPaddingValue;
 

@@ -14,9 +14,7 @@ import { injectable } from "inversify";
 import type { IWordCardBatchProcessor } from "../contracts/word-card-contracts";
 
 @injectable()
-export class WordCardBatchProcessor
-  implements IWordCardBatchProcessor
-{
+export class WordCardBatchProcessor implements IWordCardBatchProcessor {
   private cancellationRequested = false;
   private readonly memoryThresholdBytes: number;
   private currentOperations = new Map<string, BatchExportProgress>();
@@ -40,7 +38,6 @@ export class WordCardBatchProcessor
     const startTime = Date.now();
 
     try {
-
       const optimalBatchSize = this.calculateOptimalBatchSize(
         items.length,
         this.estimateAverageItemSize(),

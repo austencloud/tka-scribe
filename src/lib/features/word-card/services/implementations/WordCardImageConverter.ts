@@ -13,9 +13,7 @@ import type { WordCardDimensions } from "../../domain/models/word-card-export";
 import type { IWordCardImageConverter } from "../contracts/word-card-contracts";
 
 @injectable()
-export class WordCardImageConverter
-  implements IWordCardImageConverter
-{
+export class WordCardImageConverter implements IWordCardImageConverter {
   private readonly defaultQuality = 0.95;
 
   /**

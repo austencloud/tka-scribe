@@ -19,7 +19,8 @@
     onPlaneToggle: (plane: Plane) => void;
   }
 
-  let { gridMode, visiblePlanes, onGridModeChange, onPlaneToggle }: Props = $props();
+  let { gridMode, visiblePlanes, onGridModeChange, onPlaneToggle }: Props =
+    $props();
 
   const allPlanes = [Plane.WALL, Plane.WHEEL, Plane.FLOOR];
 </script>

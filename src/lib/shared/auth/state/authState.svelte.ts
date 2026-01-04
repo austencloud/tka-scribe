@@ -222,11 +222,11 @@ export async function initializeAuthListener() {
   let redirectResultUser: User | null = null;
 
   // Check if we're returning from a link redirect
-  if (typeof window !== 'undefined') {
+  if (typeof window !== "undefined") {
     try {
-      const linkRedirectMarker = sessionStorage.getItem('tka_link_redirect');
+      const linkRedirectMarker = sessionStorage.getItem("tka_link_redirect");
       if (linkRedirectMarker) {
-        sessionStorage.removeItem('tka_link_redirect');
+        sessionStorage.removeItem("tka_link_redirect");
       }
     } catch (e) {
       console.warn("🔍 [authState] Could not read redirect marker:", e);
@@ -244,7 +244,9 @@ export async function initializeAuthListener() {
     const timeoutId = setTimeout(() => {
       if (!resolved) {
         resolved = true;
-        console.warn("⚠️ [authState] Auth state timed out after 10s - treating as signed out");
+        console.warn(
+          "⚠️ [authState] Auth state timed out after 10s - treating as signed out"
+        );
         resolve(null);
       }
     }, AUTH_TIMEOUT_MS);
@@ -274,7 +276,10 @@ export async function initializeAuthListener() {
     }
   } catch (error: unknown) {
     const errorCode = (error as { code?: string })?.code;
-    console.error("❌ [authState] getRedirectResult error:", errorCode || error);
+    console.error(
+      "❌ [authState] getRedirectResult error:",
+      errorCode || error
+    );
   }
 
   cleanupAuthListener = onAuthStateChanged(
@@ -294,9 +299,8 @@ export async function initializeAuthListener() {
       // This prevents race condition errors with the lazy-loaded Firestore Proxy
       if (user) {
         try {
-          const { getFirestoreInstance } = await import(
-            "$lib/shared/auth/firebase"
-          );
+          const { getFirestoreInstance } =
+            await import("$lib/shared/auth/firebase");
           await getFirestoreInstance();
         } catch (error) {
           console.error(
@@ -339,12 +343,18 @@ export async function initializeAuthListener() {
             profilePictureService
               .updateFacebookProfilePictureIfNeeded(user)
               .catch((error) => {
-                console.warn("⚠️ [authState] Facebook profile picture update failed:", error);
+                console.warn(
+                  "⚠️ [authState] Facebook profile picture update failed:",
+                  error
+                );
               });
             profilePictureService
               .updateGoogleProfilePictureIfNeeded(user)
               .catch((error) => {
-                console.warn("⚠️ [authState] Google profile picture update failed:", error);
+                console.warn(
+                  "⚠️ [authState] Google profile picture update failed:",
+                  error
+                );
               });
           }
 
@@ -389,7 +399,10 @@ export async function initializeAuthListener() {
           );
           if (activityService) {
             activityService.logSessionStart().catch((error) => {
-              console.warn("⚠️ [authState] Session start logging failed:", error);
+              console.warn(
+                "⚠️ [authState] Session start logging failed:",
+                error
+              );
             });
           }
         } catch {
@@ -408,30 +421,34 @@ export async function initializeAuthListener() {
             }
           })
           .catch((error) => {
-            console.warn("⚠️ [authState] Presence initialization failed:", error);
+            console.warn(
+              "⚠️ [authState] Presence initialization failed:",
+              error
+            );
           });
 
         // Initialize settings Firebase sync (non-blocking)
         import("$lib/shared/settings/state/SettingsState.svelte")
           .then(async (settingsModule) => {
             // Ensure Firestore is initialized before settings sync
-            const { getFirestoreInstance } = await import(
-              "$lib/shared/auth/firebase"
-            );
+            const { getFirestoreInstance } =
+              await import("$lib/shared/auth/firebase");
             await getFirestoreInstance();
             await settingsModule.settingsService.initializeFirebaseSync();
           })
           .catch((error) => {
-            console.warn("⚠️ [authState] Settings sync initialization failed:", error);
+            console.warn(
+              "⚠️ [authState] Settings sync initialization failed:",
+              error
+            );
           });
 
         // Sync first-run status FROM cloud (critical - must happen before UI renders)
         // This ensures returning users on new devices don't see the wizard again
         import("$lib/shared/onboarding/state/first-run-state.svelte")
           .then(async ({ firstRunState }) => {
-            const { getFirestoreInstance } = await import(
-              "$lib/shared/auth/firebase"
-            );
+            const { getFirestoreInstance } =
+              await import("$lib/shared/auth/firebase");
             await getFirestoreInstance();
             await firstRunState.syncFromCloud();
           })
@@ -440,9 +457,8 @@ export async function initializeAuthListener() {
             // CRITICAL: Mark sync as complete even on failure to prevent stuck loading screen
             // This allows new users to proceed to FirstRunWizard even if cloud sync fails
             try {
-              const { firstRunState } = await import(
-                "$lib/shared/onboarding/state/first-run-state.svelte"
-              );
+              const { firstRunState } =
+                await import("$lib/shared/onboarding/state/first-run-state.svelte");
               firstRunState.markCloudSyncComplete();
             } catch {
               // If even the import fails, app is in a very bad state - nothing more we can do
@@ -453,9 +469,8 @@ export async function initializeAuthListener() {
         import("$lib/shared/onboarding/config/storage-keys")
           .then(async (onboardingModule) => {
             // Ensure Firestore is initialized before onboarding sync
-            const { getFirestoreInstance } = await import(
-              "$lib/shared/auth/firebase"
-            );
+            const { getFirestoreInstance } =
+              await import("$lib/shared/auth/firebase");
             await getFirestoreInstance();
             await onboardingModule.syncOnboardingToCloud();
           })
@@ -467,9 +482,8 @@ export async function initializeAuthListener() {
         import("$lib/shared/inversify/di")
           .then(async ({ loadFeatureModule, tryResolve }) => {
             // Ensure Firestore is initialized before collection operations
-            const { getFirestoreInstance } = await import(
-              "$lib/shared/auth/firebase"
-            );
+            const { getFirestoreInstance } =
+              await import("$lib/shared/auth/firebase");
             await getFirestoreInstance();
 
             await loadFeatureModule("library");
@@ -481,7 +495,10 @@ export async function initializeAuthListener() {
             }
           })
           .catch((error) => {
-            console.warn("⚠️ [authState] System collections init failed:", error);
+            console.warn(
+              "⚠️ [authState] System collections init failed:",
+              error
+            );
           });
 
         // Initialize subscription listener for real-time role sync
@@ -543,9 +560,8 @@ export async function signOut() {
 
     // Reset first-run cloud sync so next signin will sync fresh
     try {
-      const { firstRunState } = await import(
-        "../../onboarding/state/first-run-state.svelte"
-      );
+      const { firstRunState } =
+        await import("../../onboarding/state/first-run-state.svelte");
       firstRunState.resetCloudSync();
     } catch {
       // First-run state may not be loaded - that's ok
@@ -572,9 +588,8 @@ export async function signOut() {
     // Clean up Firestore subscriptions BEFORE signing out
     // This prevents permission errors when Firebase auth is invalidated
     try {
-      const { settingsService } = await import(
-        "../../settings/state/SettingsState.svelte"
-      );
+      const { settingsService } =
+        await import("../../settings/state/SettingsState.svelte");
       settingsService.cleanup();
     } catch {
       // Settings service may not be loaded - that's ok

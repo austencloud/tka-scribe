@@ -8,9 +8,7 @@ import { injectable } from "inversify";
  * Generates ori_key matching SpecialPlacer's internal logic.
  */
 @injectable()
-export class SpecialPlacementOriKeyGenerator
-  implements ISpecialPlacementOriKeyGenerator
-{
+export class SpecialPlacementOriKeyGenerator implements ISpecialPlacementOriKeyGenerator {
   generateOrientationKey(
     _motionData: MotionData,
     pictographData: PictographData

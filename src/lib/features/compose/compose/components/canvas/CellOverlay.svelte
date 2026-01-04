@@ -55,7 +55,9 @@
       title="Toggle {cell.type === 'single' ? 'tunnel' : 'single'} mode"
       aria-label="Toggle cell type"
     >
-      <i class="fas {cell.type === 'tunnel' ? 'fa-square' : 'fa-layer-group'}" aria-hidden="true"
+      <i
+        class="fas {cell.type === 'tunnel' ? 'fa-square' : 'fa-layer-group'}"
+        aria-hidden="true"
       ></i>
     </button>
 

@@ -124,7 +124,11 @@
     border: 3px solid;
     border-color: var(--accent-color, var(--theme-accent-strong));
     box-shadow: 0 0 16px
-      color-mix(in srgb, var(--accent-color, var(--theme-accent-strong)) 40%, transparent);
+      color-mix(
+        in srgb,
+        var(--accent-color, var(--theme-accent-strong)) 40%,
+        transparent
+      );
   }
 
   /* Role badge - overlay on bottom-right */

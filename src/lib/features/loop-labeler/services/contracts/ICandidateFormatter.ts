@@ -1,65 +1,73 @@
-import type { ComponentId } from '../../domain/constants/loop-components';
-import type { CandidateDesignation, TransformationIntervals } from '../../domain/models/label-models';
-import type { CandidateInfo, InternalBeatPair } from '../../domain/models/internal-beat-models';
-import type { BeatPairRelationship } from './IBeatPairAnalyzer';
+import type { ComponentId } from "../../domain/constants/loop-components";
+import type {
+  CandidateDesignation,
+  TransformationIntervals,
+} from "../../domain/models/label-models";
+import type {
+  CandidateInfo,
+  InternalBeatPair,
+} from "../../domain/models/internal-beat-models";
+import type { BeatPairRelationship } from "./IBeatPairAnalyzer";
 
 /**
  * Result from formatting beat pair transformations.
  */
 export interface FormattedTransformations {
-	primary: string[];
-	all: string[];
+  primary: string[];
+  all: string[];
 }
 
 /**
  * Service for formatting transformations and building candidate designations.
  */
 export interface ICandidateFormatter {
-	/**
-	 * Format a single raw transformation into human-readable string.
-	 */
-	formatSingleTransformation(raw: string): string;
+  /**
+   * Format a single raw transformation into human-readable string.
+   */
+  formatSingleTransformation(raw: string): string;
 
-	/**
-	 * Format raw transformations into human-readable strings.
-	 * Returns both primary (highest-priority) and all valid transformations.
-	 */
-	formatBeatPairTransformations(rawTransformations: string[]): FormattedTransformations;
+  /**
+   * Format raw transformations into human-readable strings.
+   * Returns both primary (highest-priority) and all valid transformations.
+   */
+  formatBeatPairTransformations(
+    rawTransformations: string[]
+  ): FormattedTransformations;
 
-	/**
-	 * Derive components from a transformation pattern.
-	 */
-	deriveComponentsFromPattern(pattern: string): ComponentId[];
+  /**
+   * Derive components from a transformation pattern.
+   */
+  deriveComponentsFromPattern(pattern: string): ComponentId[];
 
-	/**
-	 * Extract rotation direction from a transformation pattern.
-	 */
-	extractRotationDirection(pattern: string): 'cw' | 'ccw' | null;
+  /**
+   * Extract rotation direction from a transformation pattern.
+   */
+  extractRotationDirection(pattern: string): "cw" | "ccw" | null;
 
-	/**
-	 * Format a human-readable description for a candidate designation.
-	 */
-	formatCandidateDescription(
-		transformation: string,
-		direction: 'cw' | 'ccw' | null
-	): string;
+  /**
+   * Format a human-readable description for a candidate designation.
+   */
+  formatCandidateDescription(
+    transformation: string,
+    direction: "cw" | "ccw" | null
+  ): string;
 
-	/**
-	 * Build candidate designations from common transformations.
-	 */
-	buildCandidateDesignations(
-		allCommon: string[],
-		interval: 'halved' | 'quartered',
-		rotationDirection: 'cw' | 'ccw' | null
-	): CandidateInfo[];
+  /**
+   * Build candidate designations from common transformations.
+   */
+  buildCandidateDesignations(
+    allCommon: string[],
+    interval: "halved" | "quartered",
+    rotationDirection: "cw" | "ccw" | null
+  ): CandidateInfo[];
 
-	/**
-	 * Convert CandidateInfo to CandidateDesignation.
-	 */
-	toCandidateDesignation(info: CandidateInfo): CandidateDesignation;
+  /**
+   * Convert CandidateInfo to CandidateDesignation.
+   */
+  toCandidateDesignation(info: CandidateInfo): CandidateDesignation;
 
-	/**
-	 * Convert internal beat pairs to public interface.
-	 */
-	toPublicBeatPairs(internal: InternalBeatPair[]): BeatPairRelationship[];
+  /**
+   * Convert internal beat pairs to public interface.
+   */
+  toPublicBeatPairs(internal: InternalBeatPair[]): BeatPairRelationship[];
 }

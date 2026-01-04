@@ -7,7 +7,10 @@
 <script lang="ts">
   import PictographContainer from "$lib/shared/pictograph/shared/components/PictographContainer.svelte";
   import { createMotionData } from "$lib/shared/pictograph/shared/domain/models/MotionData";
-  import { GridLocation, GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
+  import {
+    GridLocation,
+    GridMode,
+  } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
   import {
     MotionType,
     RotationDirection,
@@ -51,7 +54,9 @@
       ccw: RotationDirection.COUNTER_CLOCKWISE,
       norotation: RotationDirection.NO_ROTATION,
     };
-    return map[dir.toLowerCase().replace("_", "")] || RotationDirection.NO_ROTATION;
+    return (
+      map[dir.toLowerCase().replace("_", "")] || RotationDirection.NO_ROTATION
+    );
   }
 
   // Helper to convert lowercase motion type string to MotionType enum
@@ -190,7 +195,7 @@
       pictograph: xAtEast,
       staticLocation: "e",
       expectedAngle: expectedAngles.e,
-      description: "Red static CW at East, Blue anti CCW S→W"
+      description: "Red static CW at East, Blue anti CCW S→W",
     },
     {
       id: "west",
@@ -198,7 +203,7 @@
       pictograph: xAtWest,
       staticLocation: "w",
       expectedAngle: expectedAngles.w,
-      description: "Red static CW at West, Blue anti CCW N→E"
+      description: "Red static CW at West, Blue anti CCW N→E",
     },
     {
       id: "north",
@@ -206,14 +211,16 @@
       pictograph: xAtNorth,
       staticLocation: "n",
       expectedAngle: expectedAngles.n,
-      description: "Red static CW at North, Blue anti CCW E→S"
+      description: "Red static CW at North, Blue anti CCW E→S",
     },
   ];
 </script>
 
 <div class="debug-page">
   <h1>Arrow Rotation Debug - Real Pictographs</h1>
-  <p class="subtitle">Using actual X pictographs from sequence index with static CW red arrows</p>
+  <p class="subtitle">
+    Using actual X pictographs from sequence index with static CW red arrows
+  </p>
 
   <div class="legend">
     <p><strong>Expected angles (staticRadialClockwiseMap):</strong></p>
@@ -229,7 +236,8 @@
           <PictographContainer pictographData={pictograph} />
         </div>
         <div class="info">
-          <span>Static at: <strong>{staticLocation.toUpperCase()}</strong></span>
+          <span>Static at: <strong>{staticLocation.toUpperCase()}</strong></span
+          >
           <span>Expected rotation: <strong>{expectedAngle}°</strong></span>
         </div>
       </div>
@@ -241,17 +249,30 @@
     <ol>
       <li>Open browser console (F12)</li>
       <li>Look for <code>🔄 [StaticRotation]</code> messages</li>
-      <li>Compare the <code>mapAngle</code> in logs to expected angles above</li>
+      <li>
+        Compare the <code>mapAngle</code> in logs to expected angles above
+      </li>
       <li>The red arrow should visually "curl" clockwise from its position</li>
-      <li>If the angle is correct but visual is wrong → SVG or mirroring issue</li>
+      <li>
+        If the angle is correct but visual is wrong → SVG or mirroring issue
+      </li>
       <li>If the angle is wrong → rotation map or lookup issue</li>
     </ol>
 
     <h2>What to Look For</h2>
     <ul>
-      <li><strong>EAST (90°):</strong> Arrow should point right/down (curling CW from east)</li>
-      <li><strong>WEST (270°):</strong> Arrow should point left/up (curling CW from west)</li>
-      <li><strong>NORTH (0°):</strong> Arrow should point up/right (curling CW from north)</li>
+      <li>
+        <strong>EAST (90°):</strong> Arrow should point right/down (curling CW from
+        east)
+      </li>
+      <li>
+        <strong>WEST (270°):</strong> Arrow should point left/up (curling CW from
+        west)
+      </li>
+      <li>
+        <strong>NORTH (0°):</strong> Arrow should point up/right (curling CW from
+        north)
+      </li>
     </ul>
   </div>
 </div>

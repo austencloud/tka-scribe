@@ -55,7 +55,9 @@
   );
 
   // Get current trail style from visibility manager (global state)
-  let currentPreset = $state<TrailStyle>(animationVisibilityManager.getTrailStyle());
+  let currentPreset = $state<TrailStyle>(
+    animationVisibilityManager.getTrailStyle()
+  );
 
   // Register as observer to get notified when trail style changes
   onMount(() => {
@@ -230,20 +232,37 @@
   .preset-btn.active {
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--theme-accent, var(--semantic-info)) 22%, transparent) 0%,
-      color-mix(in srgb, var(--theme-accent-strong) 18%, transparent)
-        100%
+      color-mix(
+          in srgb,
+          var(--theme-accent, var(--semantic-info)) 22%,
+          transparent
+        )
+        0%,
+      color-mix(in srgb, var(--theme-accent-strong) 18%, transparent) 100%
     );
     border-color: color-mix(
       in srgb,
       var(--theme-accent, var(--semantic-info)) 55%,
       transparent
     );
-    color: color-mix(in srgb, var(--theme-accent, var(--semantic-info)) 35%, white);
+    color: color-mix(
+      in srgb,
+      var(--theme-accent, var(--semantic-info)) 35%,
+      white
+    );
     box-shadow:
       0 2px 12px
-        color-mix(in srgb, var(--theme-accent, var(--semantic-info)) 22%, transparent),
-      0 0 16px color-mix(in srgb, var(--theme-accent, var(--semantic-info)) 16%, transparent),
+        color-mix(
+          in srgb,
+          var(--theme-accent, var(--semantic-info)) 22%,
+          transparent
+        ),
+      0 0 16px
+        color-mix(
+          in srgb,
+          var(--theme-accent, var(--semantic-info)) 16%,
+          transparent
+        ),
       inset 0 1px 0 var(--theme-stroke);
   }
 
@@ -298,22 +317,37 @@
   .ends-toggle.active {
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent-strong)) 22%, transparent)
+      color-mix(
+          in srgb,
+          var(--theme-accent-strong, var(--theme-accent-strong)) 22%,
+          transparent
+        )
         0%,
-      color-mix(in srgb, var(--theme-accent-strong) 18%, transparent)
-        100%
+      color-mix(in srgb, var(--theme-accent-strong) 18%, transparent) 100%
     );
     border-color: color-mix(
       in srgb,
       var(--theme-accent-strong, var(--theme-accent-strong)) 55%,
       transparent
     );
-    color: color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent-strong)) 35%, white);
+    color: color-mix(
+      in srgb,
+      var(--theme-accent-strong, var(--theme-accent-strong)) 35%,
+      white
+    );
     box-shadow:
       0 2px 12px
-        color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent-strong)) 22%, transparent),
+        color-mix(
+          in srgb,
+          var(--theme-accent-strong, var(--theme-accent-strong)) 22%,
+          transparent
+        ),
       0 0 16px
-        color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent-strong)) 16%, transparent),
+        color-mix(
+          in srgb,
+          var(--theme-accent-strong, var(--theme-accent-strong)) 16%,
+          transparent
+        ),
       inset 0 1px 0 var(--theme-stroke);
   }
 

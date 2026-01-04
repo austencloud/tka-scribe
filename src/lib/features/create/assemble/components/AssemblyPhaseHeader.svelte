@@ -136,7 +136,6 @@ Undo is handled by the workspace-level undo button, not here.
     color: var(--theme-text);
   }
 
-
   .step-indicator {
     display: flex;
     align-items: baseline;

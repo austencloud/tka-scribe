@@ -28,9 +28,7 @@ Integrates the "Generate New" button into the card grid layout so it scales with
   let hapticService: IHapticFeedback | null = $state(null);
 
   onMount(() => {
-    hapticService = resolve<IHapticFeedback>(
-      TYPES.IHapticFeedback
-    );
+    hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
   });
 
   async function handleClick() {
@@ -67,14 +65,28 @@ Integrates the "Generate New" button into the card grid layout so it scales with
     /* 🟢 PURE GREEN MONOCHROMATIC: Green = GO psychology (no gold/yellow distraction) */
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--semantic-success, var(--semantic-success)) 85%, #065f46) 0%,
+      color-mix(
+          in srgb,
+          var(--semantic-success, var(--semantic-success)) 85%,
+          #065f46
+        )
+        0%,
       /* Deep green */ var(--semantic-success, var(--semantic-success)) 25%,
       /* Main green */
-        color-mix(in srgb, var(--semantic-success, var(--semantic-success)) 100%, #a7f3d0) 50%,
+      color-mix(
+          in srgb,
+          var(--semantic-success, var(--semantic-success)) 100%,
+          #a7f3d0
+        )
+        50%,
       /* Bright green */ var(--semantic-success, var(--semantic-success)) 75%,
       /* Main green */
-        color-mix(in srgb, var(--semantic-success, var(--semantic-success)) 85%, #065f46) 100%
-        /* Deep green */
+      color-mix(
+          in srgb,
+          var(--semantic-success, var(--semantic-success)) 85%,
+          #065f46
+        )
+        100% /* Deep green */
     );
 
     /* Flowing gradient animation + subtle pulse (NO glow animation to prevent overlay) */
@@ -101,7 +113,11 @@ Integrates the "Generate New" button into the card grid layout so it scales with
     /* 🔥 CONTAINED glow - stays within button boundaries */
     box-shadow:
       0 4px 12px
-        color-mix(in srgb, var(--semantic-success, var(--semantic-success)) 40%, transparent),
+        color-mix(
+          in srgb,
+          var(--semantic-success, var(--semantic-success)) 40%,
+          transparent
+        ),
       0 2px 6px var(--theme-shadow),
       inset 0 1px 0 var(--theme-stroke-strong),
       inset 0 -1px 0 var(--theme-shadow);
@@ -123,7 +139,11 @@ Integrates the "Generate New" button into the card grid layout so it scales with
     /* 🌟 ENHANCED but CONTAINED glow - no overlay on other cards */
     box-shadow:
       0 8px 20px
-        color-mix(in srgb, var(--semantic-success, var(--semantic-success)) 60%, transparent),
+        color-mix(
+          in srgb,
+          var(--semantic-success, var(--semantic-success)) 60%,
+          transparent
+        ),
       0 4px 12px var(--theme-shadow),
       inset 0 1px 0 var(--theme-stroke-strong),
       inset 0 -1px 0 var(--theme-shadow);

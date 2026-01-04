@@ -293,7 +293,10 @@ export class Messenger implements IMessenger {
 
         this.messageSubscriptions.set(conversationId, unsubscribe);
       } catch (error) {
-        console.error("[Messenger] Failed to initialize messages subscription:", error);
+        console.error(
+          "[Messenger] Failed to initialize messages subscription:",
+          error
+        );
         toast.error("Failed to connect to messages.");
       }
     })();

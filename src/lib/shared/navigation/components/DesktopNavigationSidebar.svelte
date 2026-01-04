@@ -81,8 +81,7 @@
   // Tutorial is active when in Create module AND tutorial not completed yet
   // This prevents the flash of tabs on initial load
   const isCreateTutorialActive = $derived(
-    navigationState.currentModule === "create" &&
-      !hasCompletedCreateTutorial()
+    navigationState.currentModule === "create" && !hasCompletedCreateTutorial()
   );
   // No Create tutorial implemented - always show tabs
   const isOnTutorialChoiceStep = $derived(false);
@@ -218,9 +217,7 @@
     initializeDesktopSidebarCollapsedState();
 
     // Initialize services
-    hapticService = resolve<IHapticFeedback>(
-      TYPES.IHapticFeedback
-    );
+    hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
 
     // Set up ResizeObserver to measure and report sidebar height
     let resizeObserver: ResizeObserver | null = null;
@@ -454,7 +451,8 @@
     z-index: 150;
     overflow: hidden;
     transition:
-      width var(--duration-emphasis, 280ms) var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1)),
+      width var(--duration-emphasis, 280ms)
+        var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1)),
       top 0.2s ease;
 
     /* Completely exclude from view transitions */

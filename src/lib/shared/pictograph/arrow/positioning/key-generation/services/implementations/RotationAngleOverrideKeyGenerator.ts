@@ -25,9 +25,7 @@ export interface IRotationAngleOverrideKeyGenerator {
 }
 
 @injectable()
-export class RotationAngleOverrideKeyGenerator
-  implements IRotationAngleOverrideKeyGenerator
-{
+export class RotationAngleOverrideKeyGenerator implements IRotationAngleOverrideKeyGenerator {
   /**
    * Generate rotation angle override key for special placement lookup.
    *

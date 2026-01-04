@@ -14,16 +14,15 @@
     onCancel: () => void;
   }
 
-  let { onRenderAll, onWriteAll, onUploadToCloud, onClear, onCancel }: Props = $props();
+  let { onRenderAll, onWriteAll, onUploadToCloud, onClear, onCancel }: Props =
+    $props();
 
   const state = galleryGeneratorState;
 </script>
 
 <div class="actions">
   {#if state.isRendering}
-    <button class="action-btn cancel" onclick={onCancel}>
-      Cancel
-    </button>
+    <button class="action-btn cancel" onclick={onCancel}> Cancel </button>
   {:else}
     <button
       class="action-btn primary"
@@ -41,9 +40,7 @@
   {/if}
 
   {#if state.hasResults && !state.isRendering}
-    <button class="action-btn secondary" onclick={onClear}>
-      Clear
-    </button>
+    <button class="action-btn secondary" onclick={onClear}> Clear </button>
   {/if}
 
   {#if state.previewCount > 0 && !state.isRendering}

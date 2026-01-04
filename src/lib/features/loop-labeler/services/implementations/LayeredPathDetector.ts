@@ -101,7 +101,9 @@ export class LayeredPathDetector implements ILayeredPathDetector {
     const length = beatRecords.length;
 
     if (length < 4) {
-      return this.noLayeredPathResult("Sequence too short for layered path analysis");
+      return this.noLayeredPathResult(
+        "Sequence too short for layered path analysis"
+      );
     }
 
     // Analyze each hand's path
@@ -256,7 +258,9 @@ export class LayeredPathDetector implements ILayeredPathDetector {
   /**
    * Analyze positional zone coverage
    */
-  analyzeZoneCoverage(rawSequence: Record<string, unknown>[]): ZoneCoverageAnalysis {
+  analyzeZoneCoverage(
+    rawSequence: Record<string, unknown>[]
+  ): ZoneCoverageAnalysis {
     const beatRecords = rawSequence.filter(
       (item) => typeof item.beat === "number" && item.beat > 0
     );
@@ -321,9 +325,11 @@ export class LayeredPathDetector implements ILayeredPathDetector {
     // Build summary
     let summary = "";
     if (hasLatinSquarePattern) {
-      summary = "Perfect Latin Square: each half has exactly one of each positional category";
+      summary =
+        "Perfect Latin Square: each half has exactly one of each positional category";
     } else if (hasCompleteCoverage) {
-      summary = "Complete coverage: each half visits all 4 positional categories";
+      summary =
+        "Complete coverage: each half visits all 4 positional categories";
     } else {
       const missingFirst = Object.entries(firstHalf)
         .filter(([_, count]) => count === 0)

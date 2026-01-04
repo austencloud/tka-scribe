@@ -14,14 +14,17 @@
   Domain: Share Hub - Single Media - Performance Video Format
 -->
 <script lang="ts">
-  import { onMount, onDestroy } from 'svelte';
-  import { browser } from '$app/environment';
-  import { getShareHubState } from '../../state/share-hub-state.svelte';
-  import { loadFeatureModule, resolve } from '$lib/shared/inversify/di';
-  import { TYPES } from '$lib/shared/inversify/types';
-  import type { ICameraManager } from '$lib/features/train/services/contracts/ICameraManager';
-  import { getVideoRecorder } from '$lib/shared/video-record/services/implementations/VideoRecorder';
-  import type { RecordingProgress, RecordingResult } from '$lib/shared/video-record/services/contracts/IVideoRecorder';
+  import { onMount, onDestroy } from "svelte";
+  import { browser } from "$app/environment";
+  import { getShareHubState } from "../../state/share-hub-state.svelte";
+  import { loadFeatureModule, resolve } from "$lib/shared/inversify/di";
+  import { TYPES } from "$lib/shared/inversify/types";
+  import type { ICameraManager } from "$lib/features/train/services/contracts/ICameraManager";
+  import { getVideoRecorder } from "$lib/shared/video-record/services/implementations/VideoRecorder";
+  import type {
+    RecordingProgress,
+    RecordingResult,
+  } from "$lib/shared/video-record/services/contracts/IVideoRecorder";
 
   const hubState = getShareHubState();
 
@@ -38,7 +41,9 @@
 
   // Recording state
   let recordingId = $state<string | null>(null);
-  let recordingState = $state<'idle' | 'recording' | 'paused' | 'stopped'>('idle');
+  let recordingState = $state<"idle" | "recording" | "paused" | "stopped">(
+    "idle"
+  );
   let recordingDuration = $state(0);
   let recordedVideo = $state<RecordingResult | null>(null);
   let playbackVideoElement = $state<HTMLVideoElement | null>(null);
@@ -49,23 +54,23 @@
 
   // Derived
   const modeIcon = $derived(
-    hubState.performanceSettings.mode === 'record' ? 'fa-video' : 'fa-upload'
+    hubState.performanceSettings.mode === "record" ? "fa-video" : "fa-upload"
   );
 
   const modeLabel = $derived(
-    hubState.performanceSettings.mode === 'record' ? 'Record' : 'Upload'
+    hubState.performanceSettings.mode === "record" ? "Record" : "Upload"
   );
 
   // Initialize camera
   async function initializeCamera() {
     if (!cameraService) {
-      error = 'Camera service not loaded';
+      error = "Camera service not loaded";
       return;
     }
 
     try {
       await cameraService.initialize({
-        facingMode: 'user',
+        facingMode: "user",
         width: 1280,
         height: 720,
         frameRate: 30,
@@ -76,7 +81,7 @@
       cameraInitialized = true;
       error = null;
     } catch (err) {
-      error = err instanceof Error ? err.message : 'Failed to access camera';
+      error = err instanceof Error ? err.message : "Failed to access camera";
     }
   }
 
@@ -96,12 +101,12 @@
       const stream = videoElement.srcObject as MediaStream;
       recordingId = await recordService.startRecording(
         stream,
-        { format: 'webm', quality: 0.9, maxDuration: 120 },
+        { format: "webm", quality: 0.9, maxDuration: 120 },
         handleProgress
       );
-      recordingState = 'recording';
+      recordingState = "recording";
     } catch (err) {
-      console.error('Failed to start recording:', err);
+      console.error("Failed to start recording:", err);
     }
   }
 
@@ -112,11 +117,11 @@
       const result = await recordService.stopRecording(recordingId);
       if (result.success) {
         recordedVideo = result;
-        recordingState = 'stopped';
+        recordingState = "stopped";
         if (videoElement) videoElement.pause();
       }
     } catch (err) {
-      console.error('Failed to stop recording:', err);
+      console.error("Failed to stop recording:", err);
     }
   }
 
@@ -124,7 +129,7 @@
     if (!recordingId) return;
     recordService.cancelRecording(recordingId);
     recordingId = null;
-    recordingState = 'idle';
+    recordingState = "idle";
     recordingDuration = 0;
   }
 
@@ -134,7 +139,7 @@
     }
     recordedVideo = null;
     recordingId = null;
-    recordingState = 'idle';
+    recordingState = "idle";
     recordingDuration = 0;
     if (videoElement) videoElement.play();
   }
@@ -146,7 +151,7 @@
   function formatDuration(seconds: number): string {
     const mins = Math.floor(seconds / 60);
     const secs = Math.floor(seconds % 60);
-    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
   }
 
   // Upload handling
@@ -185,18 +190,22 @@
 
   // Mode toggle
   function toggleMode() {
-    const newMode = hubState.performanceSettings.mode === 'record' ? 'upload' : 'record';
-    hubState.performanceSettings = { ...hubState.performanceSettings, mode: newMode };
+    const newMode =
+      hubState.performanceSettings.mode === "record" ? "upload" : "record";
+    hubState.performanceSettings = {
+      ...hubState.performanceSettings,
+      mode: newMode,
+    };
 
     // Stop any recording when switching modes
-    if (recordingState === 'recording') {
+    if (recordingState === "recording") {
       cancelRecording();
     }
   }
 
   function handleSettingsClick() {
     hubState.settingsPanelOpen = true;
-    hubState.settingsContext = { format: 'performance' };
+    hubState.settingsContext = { format: "performance" };
   }
 
   // Initialize
@@ -204,18 +213,20 @@
     if (!browser) return;
 
     try {
-      await loadFeatureModule('train');
+      await loadFeatureModule("train");
       cameraService = resolve<ICameraManager>(TYPES.ICameraManager);
       await initializeCamera();
     } catch (err) {
-      error = 'Failed to load camera service';
+      error = "Failed to load camera service";
     } finally {
       loading = false;
     }
 
     // Create URL for uploaded file if exists
     if (hubState.performanceSettings.uploadedFile) {
-      uploadedVideoUrl = URL.createObjectURL(hubState.performanceSettings.uploadedFile);
+      uploadedVideoUrl = URL.createObjectURL(
+        hubState.performanceSettings.uploadedFile
+      );
     }
   });
 
@@ -241,7 +252,7 @@
 
   <!-- Preview Area -->
   <div class="preview-area">
-    {#if hubState.performanceSettings.mode === 'record'}
+    {#if hubState.performanceSettings.mode === "record"}
       <!-- Camera Mode -->
       {#if loading}
         <div class="loading-state">
@@ -273,7 +284,7 @@
       {:else if cameraInitialized}
         <!-- Live camera feed -->
         <div class="video-container">
-          {#if recordingState === 'recording'}
+          {#if recordingState === "recording"}
             <div class="recording-indicator">
               <i class="fas fa-circle" aria-hidden="true"></i>
               <span>{formatDuration(recordingDuration)}</span>
@@ -300,7 +311,11 @@
             class="video-preview"
             aria-label="Uploaded performance video"
           ></video>
-          <button class="clear-upload" onclick={clearUploadedFile} aria-label="Remove video">
+          <button
+            class="clear-upload"
+            onclick={clearUploadedFile}
+            aria-label="Remove video"
+          >
             <i class="fas fa-times" aria-hidden="true"></i>
           </button>
         </div>
@@ -321,39 +336,49 @@
       <span>{modeLabel}</span>
     </button>
 
-    {#if hubState.performanceSettings.mode === 'record'}
+    {#if hubState.performanceSettings.mode === "record"}
       {#if recordedVideo}
         <!-- Playback controls -->
         <button class="control-button secondary" onclick={discardRecording}>
           <i class="fas fa-redo" aria-hidden="true"></i>
           <span>Re-record</span>
         </button>
-      {:else if recordingState === 'idle'}
-        <button class="control-button record-button" onclick={startRecording} disabled={!cameraInitialized}>
+      {:else if recordingState === "idle"}
+        <button
+          class="control-button record-button"
+          onclick={startRecording}
+          disabled={!cameraInitialized}
+        >
           <i class="fas fa-circle" aria-hidden="true"></i>
           <span>Record</span>
         </button>
-      {:else if recordingState === 'recording'}
+      {:else if recordingState === "recording"}
         <div class="recording-controls">
           <span class="duration-badge">
             <i class="fas fa-circle pulse" aria-hidden="true"></i>
             {formatDuration(recordingDuration)}
           </span>
-          <button class="control-button stop-button" onclick={stopRecording} aria-label="Stop recording">
+          <button
+            class="control-button stop-button"
+            onclick={stopRecording}
+            aria-label="Stop recording"
+          >
             <i class="fas fa-stop" aria-hidden="true"></i>
           </button>
-          <button class="control-button cancel-button" onclick={cancelRecording} aria-label="Cancel recording">
+          <button
+            class="control-button cancel-button"
+            onclick={cancelRecording}
+            aria-label="Cancel recording"
+          >
             <i class="fas fa-times" aria-hidden="true"></i>
           </button>
         </div>
       {/if}
-    {:else}
-      {#if !uploadedVideoUrl}
-        <button class="control-button upload-button" onclick={triggerFileSelect}>
-          <i class="fas fa-folder-open" aria-hidden="true"></i>
-          <span>Browse</span>
-        </button>
-      {/if}
+    {:else if !uploadedVideoUrl}
+      <button class="control-button upload-button" onclick={triggerFileSelect}>
+        <i class="fas fa-folder-open" aria-hidden="true"></i>
+        <span>Browse</span>
+      </button>
     {/if}
 
     <button
@@ -673,12 +698,21 @@
 
   /* Animations */
   @keyframes blink {
-    0%, 50%, 100% { opacity: 1; }
-    25%, 75% { opacity: 0.3; }
+    0%,
+    50%,
+    100% {
+      opacity: 1;
+    }
+    25%,
+    75% {
+      opacity: 0.3;
+    }
   }
 
   @keyframes spin {
-    to { transform: rotate(360deg); }
+    to {
+      transform: rotate(360deg);
+    }
   }
 
   /* Mobile optimization */

@@ -13,7 +13,10 @@ import {
 export const POST: RequestHandler = async ({ request, getClientAddress }) => {
   // Rate limit to prevent resource exhaustion
   const clientIp = getClientAddress();
-  const rateCheck = checkRateLimit(`test-render:${clientIp}`, RATE_LIMITS.GENERAL);
+  const rateCheck = checkRateLimit(
+    `test-render:${clientIp}`,
+    RATE_LIMITS.GENERAL
+  );
   if (!rateCheck.allowed) {
     return rateLimitResponse(rateCheck.resetAt);
   }
@@ -22,9 +25,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
     const beatSizeValue = body.beatSize;
 
     // Resolve services
-    const renderService = resolve<ISequenceRenderer>(
-      TYPES.ISequenceRenderer
-    );
+    const renderService = resolve<ISequenceRenderer>(TYPES.ISequenceRenderer);
     const persistenceService = resolve<ISequencePersister>(
       TYPES.ISequencePersister
     );

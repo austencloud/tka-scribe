@@ -25,9 +25,7 @@
   const uiState = createFilterBarUIState(() => manageState);
 
   onMount(() => {
-    hapticService = resolve<IHapticFeedback>(
-      TYPES.IHapticFeedback
-    );
+    hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
   });
 
   function clearSearch() {
@@ -202,7 +200,11 @@
     border-color: var(--semantic-success, var(--semantic-success));
     background: var(--theme-card-hover-bg, var(--theme-card-bg));
     box-shadow: 0 0 0 3px
-      color-mix(in srgb, var(--semantic-success, var(--semantic-success)) 15%, transparent);
+      color-mix(
+        in srgb,
+        var(--semantic-success, var(--semantic-success)) 15%,
+        transparent
+      );
   }
 
   .search-wrapper:focus-within .search-icon {

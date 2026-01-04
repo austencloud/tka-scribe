@@ -714,7 +714,12 @@
     background: linear-gradient(
       135deg,
       var(--semantic-success, var(--semantic-success)) 0%,
-      color-mix(in srgb, var(--semantic-success, var(--semantic-success)) 70%, black) 100%
+      color-mix(
+          in srgb,
+          var(--semantic-success, var(--semantic-success)) 70%,
+          black
+        )
+        100%
     );
     color: var(--theme-text, white);
   }
@@ -722,7 +727,11 @@
   .control-btn.danger {
     background: var(--semantic-error, var(--semantic-error));
     border: 1px solid
-      color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 80%, black);
+      color-mix(
+        in srgb,
+        var(--semantic-error, var(--semantic-error)) 80%,
+        black
+      );
     color: white;
   }
 
@@ -754,11 +763,7 @@
   }
 
   .record-btn:hover {
-    border-color: color-mix(
-      in srgb,
-      var(--theme-stroke-strong) 70%,
-      white
-    );
+    border-color: color-mix(in srgb, var(--theme-stroke-strong) 70%, white);
     transform: scale(1.05);
   }
 
@@ -777,7 +782,11 @@
   .record-btn:hover .record-dot {
     transform: scale(1.1);
     box-shadow: 0 0 20px
-      color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 50%, transparent);
+      color-mix(
+        in srgb,
+        var(--semantic-error, var(--semantic-error)) 50%,
+        transparent
+      );
   }
 
   /* Loading/Error States */

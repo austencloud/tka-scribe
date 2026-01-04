@@ -37,21 +37,13 @@ export const ExportTypes = {
     "IWordCardExportIntegrationService"
   ),
   IWordCardExportOrchestrator: Symbol.for("IWordCardExportOrchestrator"),
-  IWordCardImageGenerator: Symbol.for(
-    "IWordCardImageGenerator"
-  ),
-  IWordCardImageConverter: Symbol.for(
-    "IWordCardImageConverter"
-  ),
-  IWordCardBatchProcessor: Symbol.for(
-    "IWordCardBatchProcessor"
-  ),
+  IWordCardImageGenerator: Symbol.for("IWordCardImageGenerator"),
+  IWordCardImageConverter: Symbol.for("IWordCardImageConverter"),
+  IWordCardBatchProcessor: Symbol.for("IWordCardBatchProcessor"),
   IWordCardExportProgressTracker: Symbol.for("IWordCardExportProgressTracker"),
   IWordCardCache: Symbol.for("IWordCardCache"),
   IWordCardSVGComposer: Symbol.for("IWordCardSVGComposer"),
-  IWordCardMetadataOverlay: Symbol.for(
-    "IWordCardMetadataOverlay"
-  ),
+  IWordCardMetadataOverlay: Symbol.for("IWordCardMetadataOverlay"),
 
   // Format Conversion
   IImageFormatConverter: Symbol.for("IImageFormatConverter"),

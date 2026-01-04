@@ -157,7 +157,10 @@
 
   function detectConflict(keyCombo: string): ShortcutConflict | null {
     if (!customizationService || !editingItem) return null;
-    return customizationService.detectConflict(editingItem.shortcut.id, keyCombo);
+    return customizationService.detectConflict(
+      editingItem.shortcut.id,
+      keyCombo
+    );
   }
 
   function toggleContext(context: string) {
@@ -320,7 +323,12 @@
   .search-input:focus {
     border-color: var(--theme-accent);
     background: var(--theme-card-bg);
-    box-shadow: 0 0 0 3px color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 15%, transparent);
+    box-shadow: 0 0 0 3px
+      color-mix(
+        in srgb,
+        var(--theme-accent, var(--theme-accent)) 15%,
+        transparent
+      );
   }
 
   .clear-btn {
@@ -349,8 +357,17 @@
     flex-shrink: 0;
     padding: 12px 18px;
     height: 48px;
-    background: color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 12%, transparent);
-    border: 1px solid color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 30%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--semantic-error, var(--semantic-error)) 12%,
+      transparent
+    );
+    border: 1px solid
+      color-mix(
+        in srgb,
+        var(--semantic-error, var(--semantic-error)) 30%,
+        transparent
+      );
     border-radius: 12px;
     font-size: var(--font-size-sm);
     font-weight: 600;
@@ -361,8 +378,16 @@
   }
 
   .reset-all-btn:hover {
-    background: color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 20%, transparent);
-    border-color: color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 45%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--semantic-error, var(--semantic-error)) 20%,
+      transparent
+    );
+    border-color: color-mix(
+      in srgb,
+      var(--semantic-error, var(--semantic-error)) 45%,
+      transparent
+    );
     transform: translateY(-1px);
   }
 

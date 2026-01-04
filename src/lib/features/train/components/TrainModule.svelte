@@ -7,7 +7,7 @@
 <script lang="ts">
   import { navigationState } from "$lib/shared/navigation/state/navigation-state.svelte";
   import type { Section } from "$lib/shared/navigation/domain/types";
-  
+
   import PracticePanel from "./practice/PracticePanel.svelte";
   import ProgressPanel from "./progress/ProgressPanel.svelte";
   import ChallengesPanel from "./challenges/ChallengesPanel.svelte";
@@ -25,18 +25,18 @@
 </script>
 
 <div class="train-module">
-    {#key activeSection}
-      <div class="section-panel">
-        {#if activeSection === "practice"}
-          <PracticePanel />
-        {:else if activeSection === "challenges"}
-          <ChallengesPanel />
-        {:else if activeSection === "progress"}
-          <ProgressPanel />
-        {/if}
-      </div>
-    {/key}
-  </div>
+  {#key activeSection}
+    <div class="section-panel">
+      {#if activeSection === "practice"}
+        <PracticePanel />
+      {:else if activeSection === "challenges"}
+        <ChallengesPanel />
+      {:else if activeSection === "progress"}
+        <ProgressPanel />
+      {/if}
+    </div>
+  {/key}
+</div>
 
 <style>
   .train-module {

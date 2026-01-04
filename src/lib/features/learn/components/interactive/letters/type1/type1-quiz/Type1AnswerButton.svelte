@@ -2,7 +2,10 @@
 Type1AnswerButton - Single answer option for motion pattern
 -->
 <script lang="ts">
-  import type { MotionPattern, PatternInfo } from "../../../../../domain/constants/type1-letter-questions";
+  import type {
+    MotionPattern,
+    PatternInfo,
+  } from "../../../../../domain/constants/type1-letter-questions";
 
   let {
     pattern,
@@ -106,9 +109,15 @@ Type1AnswerButton - Single answer option for motion pattern
   }
 
   @keyframes correctPulse {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.02); }
-    100% { transform: scale(1); }
+    0% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.02);
+    }
+    100% {
+      transform: scale(1);
+    }
   }
 
   .answer-btn.incorrect {
@@ -118,9 +127,16 @@ Type1AnswerButton - Single answer option for motion pattern
   }
 
   @keyframes shake {
-    0%, 100% { transform: translateX(0); }
-    25% { transform: translateX(-4px); }
-    75% { transform: translateX(4px); }
+    0%,
+    100% {
+      transform: translateX(0);
+    }
+    25% {
+      transform: translateX(-4px);
+    }
+    75% {
+      transform: translateX(4px);
+    }
   }
 
   .result-icon {

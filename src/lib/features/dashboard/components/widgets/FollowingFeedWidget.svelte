@@ -24,7 +24,9 @@
   let error = $state<string | null>(null);
 
   // Reactive: reload feed when effective user changes (preview mode toggle)
-  const effectiveUserId = $derived(getEffectiveUserId(authState.user?.uid || null));
+  const effectiveUserId = $derived(
+    getEffectiveUserId(authState.user?.uid || null)
+  );
 
   async function loadFeed() {
     isLoading = true;
@@ -105,13 +107,17 @@
       <div class="empty-state">
         <i class="fas fa-user-plus" aria-hidden="true"></i>
         <p>Not following anyone yet</p>
-        <span class="empty-hint">Follow creators to see their activity here</span>
+        <span class="empty-hint"
+          >Follow creators to see their activity here</span
+        >
       </div>
     {:else if feedItems.length === 0}
       <div class="empty-state">
         <i class="fas fa-stream" aria-hidden="true"></i>
         <p>No recent activity</p>
-        <span class="empty-hint">Your followed creators haven't posted lately</span>
+        <span class="empty-hint"
+          >Your followed creators haven't posted lately</span
+        >
       </div>
     {:else}
       <div class="feed-list">
@@ -211,9 +217,24 @@
     border-radius: 50%;
     background: linear-gradient(
       90deg,
-      color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 8%, transparent) 25%,
-      color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 15%, transparent) 50%,
-      color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 8%, transparent) 75%
+      color-mix(
+          in srgb,
+          var(--theme-accent, var(--theme-accent)) 8%,
+          transparent
+        )
+        25%,
+      color-mix(
+          in srgb,
+          var(--theme-accent, var(--theme-accent)) 15%,
+          transparent
+        )
+        50%,
+      color-mix(
+          in srgb,
+          var(--theme-accent, var(--theme-accent)) 8%,
+          transparent
+        )
+        75%
     );
     background-size: 200% 100%;
     animation: shimmer 2s infinite ease-in-out;
@@ -231,9 +252,24 @@
     border-radius: 5px;
     background: linear-gradient(
       90deg,
-      color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 8%, transparent) 25%,
-      color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 15%, transparent) 50%,
-      color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 8%, transparent) 75%
+      color-mix(
+          in srgb,
+          var(--theme-accent, var(--theme-accent)) 8%,
+          transparent
+        )
+        25%,
+      color-mix(
+          in srgb,
+          var(--theme-accent, var(--theme-accent)) 15%,
+          transparent
+        )
+        50%,
+      color-mix(
+          in srgb,
+          var(--theme-accent, var(--theme-accent)) 8%,
+          transparent
+        )
+        75%
     );
     background-size: 200% 100%;
     animation: shimmer 2s infinite ease-in-out;
@@ -269,7 +305,11 @@
 
   .empty-state i {
     font-size: var(--font-size-3xl);
-    color: color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 40%, transparent);
+    color: color-mix(
+      in srgb,
+      var(--theme-accent, var(--theme-accent)) 40%,
+      transparent
+    );
   }
 
   .empty-state p {
@@ -302,7 +342,8 @@
     background: linear-gradient(
       135deg,
       var(--theme-accent, var(--theme-accent)) 0%,
-      color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 80%, black) 100%
+      color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 80%, black)
+        100%
     );
     border: none;
     border-radius: 14px;

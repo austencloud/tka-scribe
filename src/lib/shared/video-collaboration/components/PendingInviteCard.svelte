@@ -30,9 +30,7 @@
     videoService = container.get<ICollaborativeVideoManager>(
       TYPES.ICollaborativeVideoManager
     );
-    hapticService = container.get<IHapticFeedback>(
-      TYPES.IHapticFeedback
-    );
+    hapticService = container.get<IHapticFeedback>(TYPES.IHapticFeedback);
   });
 
   let isProcessing = $state(false);
@@ -256,7 +254,11 @@
   }
 
   .btn-accept {
-    background: linear-gradient(135deg, var(--semantic-success) 0%, #059669 100%);
+    background: linear-gradient(
+      135deg,
+      var(--semantic-success) 0%,
+      #059669 100%
+    );
     color: white;
   }
 

@@ -17,9 +17,7 @@ Modern, touch-friendly interface for selecting view presets
   let hapticService: IHapticFeedback | undefined;
 
   onMount(() => {
-    hapticService = resolve<IHapticFeedback>(
-      TYPES.IHapticFeedback
-    );
+    hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
   });
 
   function handlePresetChange(preset: FilterPreset) {
@@ -128,16 +126,8 @@ Modern, touch-friendly interface for selecting view presets
   }
 
   .preset-option.active {
-    background: color-mix(
-      in srgb,
-      var(--theme-accent) 15%,
-      transparent
-    );
-    border-color: color-mix(
-      in srgb,
-      var(--theme-accent) 40%,
-      transparent
-    );
+    background: color-mix(in srgb, var(--theme-accent) 15%, transparent);
+    border-color: color-mix(in srgb, var(--theme-accent) 40%, transparent);
   }
 
   .preset-icon {
@@ -154,11 +144,7 @@ Modern, touch-friendly interface for selecting view presets
   }
 
   .preset-option.active .preset-icon {
-    background: color-mix(
-      in srgb,
-      var(--theme-accent) 30%,
-      transparent
-    );
+    background: color-mix(in srgb, var(--theme-accent) 30%, transparent);
     color: var(--theme-accent);
   }
 

@@ -140,7 +140,7 @@
     class="sheet-overlay"
     onclick={() => (isTypeSheetOpen = false)}
     onkeydown={(e) => {
-      if (e.key === 'Escape' || e.key === 'Enter' || e.key === ' ') {
+      if (e.key === "Escape" || e.key === "Enter" || e.key === " ") {
         e.preventDefault();
         isTypeSheetOpen = false;
       }

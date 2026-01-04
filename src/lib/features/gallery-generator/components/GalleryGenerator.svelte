@@ -7,7 +7,10 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
-  import { getContainerInstance, loadFeatureModule } from "$lib/shared/inversify/di";
+  import {
+    getContainerInstance,
+    loadFeatureModule,
+  } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import type { IDiscoverLoader } from "$lib/features/discover/gallery/display/services/contracts/IDiscoverLoader";
   import type { ISequenceRenderer } from "$lib/shared/render/services/contracts/ISequenceRenderer";
@@ -53,7 +56,9 @@
       const persisted = await galleryPersistence.loadAll();
       if (persisted.images.length > 0) {
         state.restoreFromPersistence(persisted.images, persisted.blobs);
-        console.log(`Restored ${persisted.images.length} rendered images from cache`);
+        console.log(
+          `Restored ${persisted.images.length} rendered images from cache`
+        );
       }
 
       await Promise.all([
@@ -62,11 +67,21 @@
       ]);
 
       const container = await getContainerInstance();
-      const loaderService = container.get<IDiscoverLoader>(TYPES.IDiscoverLoader);
-      const renderService = container.get<ISequenceRenderer>(TYPES.ISequenceRenderer);
-      const startPosDeriver = container.get<IStartPositionDeriver>(TYPES.IStartPositionDeriver);
+      const loaderService = container.get<IDiscoverLoader>(
+        TYPES.IDiscoverLoader
+      );
+      const renderService = container.get<ISequenceRenderer>(
+        TYPES.ISequenceRenderer
+      );
+      const startPosDeriver = container.get<IStartPositionDeriver>(
+        TYPES.IStartPositionDeriver
+      );
 
-      galleryRenderer = new GalleryRenderer(renderService, loaderService, startPosDeriver);
+      galleryRenderer = new GalleryRenderer(
+        renderService,
+        loaderService,
+        startPosDeriver
+      );
       galleryWriter = new GalleryWriter();
       cloudUploader = new CloudGalleryUploader();
 
@@ -127,7 +142,7 @@
     const queue = [...state.pendingSequences];
     let activeCount = 0;
     let resolveAll: () => void;
-    const allDone = new Promise<void>(r => resolveAll = r);
+    const allDone = new Promise<void>((r) => (resolveAll = r));
 
     async function processNext() {
       if (state.isCancelled || queue.length === 0) {
@@ -153,7 +168,7 @@
         state.removeRenderingSequence(name);
         state.addFailedSequence({
           name,
-          error: err instanceof Error ? err.message : "Unknown error"
+          error: err instanceof Error ? err.message : "Unknown error",
         });
       }
 
@@ -186,7 +201,7 @@
   async function handleWriteAll() {
     if (!galleryWriter) return;
 
-    const toWrite = state.renderedImages.filter(r => !r.written);
+    const toWrite = state.renderedImages.filter((r) => !r.written);
     if (toWrite.length === 0) return;
 
     state.setRendering(true);
@@ -211,7 +226,7 @@
         console.error(`Failed to write ${img.name}:`, err);
         state.addFailedSequence({
           name: img.name,
-          error: err instanceof Error ? err.message : "Write failed"
+          error: err instanceof Error ? err.message : "Write failed",
         });
       }
     }
@@ -261,13 +276,15 @@
         failCount++;
         state.addFailedSequence({
           name: img.name,
-          error: err instanceof Error ? err.message : "Cloud upload failed"
+          error: err instanceof Error ? err.message : "Cloud upload failed",
         });
       }
     }
 
     state.setRendering(false);
-    console.log(`☁️ Cloud upload complete: ${successCount} success, ${failCount} failed`);
+    console.log(
+      `☁️ Cloud upload complete: ${successCount} success, ${failCount} failed`
+    );
   }
 
   /**
@@ -288,7 +305,9 @@
 <div class="generator-page">
   <header class="page-header">
     <h1>Gallery Generator</h1>
-    <p class="subtitle">Render gallery images to static/gallery/ (dev mode only)</p>
+    <p class="subtitle">
+      Render gallery images to static/gallery/ (dev mode only)
+    </p>
   </header>
 
   <GallerySettings />

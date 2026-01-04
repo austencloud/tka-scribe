@@ -96,9 +96,7 @@ export const createModule = new ContainerModule(
     options
       .bind(TYPES.ICreateModuleLayoutManager)
       .to(CreateModuleLayoutManager);
-    options
-      .bind(TYPES.ICreateModuleInitializer)
-      .to(CreateModuleInitializer);
+    options.bind(TYPES.ICreateModuleInitializer).to(CreateModuleInitializer);
     options
       .bind(TYPES.ICreateModuleEffectCoordinator)
       .to(CreateModuleEffectCoordinator);
@@ -109,18 +107,14 @@ export const createModule = new ContainerModule(
       .inSingletonScope();
     options.bind(TYPES.INavigationSyncer).to(NavigationSyncer);
     options.bind(TYPES.IBeatOperator).to(BeatOperator);
-    options
-      .bind(TYPES.IKeyboardArrowAdjuster)
-      .to(KeyboardArrowAdjuster);
+    options.bind(TYPES.IKeyboardArrowAdjuster).to(KeyboardArrowAdjuster);
     options.bind(TYPES.IUndoManager).to(UndoManager);
     options.bind(TYPES.IBuildConstructTabCoordinator).to(ConstructCoordinator);
     options.bind(TYPES.ITurnController).to(TurnController);
 
     // === OPTION PICKER SERVICES ===
     options.bind(TYPES.IOptionPickerSizingService).to(OptionSizer);
-    options
-      .bind(TYPES.IOptionPickerFilterPersister)
-      .to(FilterPersister);
+    options.bind(TYPES.IOptionPickerFilterPersister).to(FilterPersister);
     options.bind(TYPES.IReversalChecker).to(ReversalChecker);
     options.bind(TYPES.IPositionAnalyzer).to(PositionAnalyzer);
     options.bind(TYPES.IOptionSorter).to(OptionSorter);
@@ -162,11 +156,15 @@ export const createModule = new ContainerModule(
       .bind(TYPES.IRotatedEndPositionSelector)
       .to(RotatedEndPositionSelector);
     options.bind(TYPES.ILOOPEndPositionSelector).to(LOOPEndPositionSelector);
-    options.bind(TYPES.IStrictRotatedLOOPExecutor).to(StrictRotatedLOOPExecutor);
+    options
+      .bind(TYPES.IStrictRotatedLOOPExecutor)
+      .to(StrictRotatedLOOPExecutor);
     options
       .bind(TYPES.IStrictMirroredLOOPExecutor)
       .to(StrictMirroredLOOPExecutor);
-    options.bind(TYPES.IStrictSwappedLOOPExecutor).to(StrictSwappedLOOPExecutor);
+    options
+      .bind(TYPES.IStrictSwappedLOOPExecutor)
+      .to(StrictSwappedLOOPExecutor);
     options
       .bind(TYPES.IStrictInvertedLOOPExecutor)
       .to(StrictInvertedLOOPExecutor);
@@ -201,20 +199,14 @@ export const createModule = new ContainerModule(
     options.bind(TYPES.IRewoundLOOPExecutor).to(RewoundLOOPExecutor);
 
     // Generation UI Services (SRP Refactoring - Dec 2024)
-    options
-      .bind(TYPES.IResponsiveTypographer)
-      .to(TypographyScaler);
+    options.bind(TYPES.IResponsiveTypographer).to(TypographyScaler);
     options.bind(TYPES.ICardConfigurator).to(CardConfigurator);
     options.bind(TYPES.ILOOPTypeResolver).to(LOOPTypeResolver);
     options.bind(TYPES.ILOOPDetector).to(LOOPDetector);
-    options
-      .bind(TYPES.IOrientationCycleDetector)
-      .to(OrientationCycleDetector);
+    options.bind(TYPES.IOrientationCycleDetector).to(OrientationCycleDetector);
 
     // Generation Orchestration Services (SRP Refactoring - Dec 2024)
-    options
-      .bind(TYPES.IGenerationOrchestrator)
-      .to(GenerationOrchestrator);
+    options.bind(TYPES.IGenerationOrchestrator).to(GenerationOrchestrator);
 
     // === BEAT GRID SERVICES ===
     // Note: BeatFallbackRenderer moved to render module
@@ -228,21 +220,13 @@ export const createModule = new ContainerModule(
     options.bind(TYPES.ISequenceAnalyzer).to(SequenceAnalyzer);
 
     // Focused sequence services (refactored from monolithic SequenceStateService)
-    options
-      .bind(TYPES.ISequenceValidator)
-      .to(SequenceValidator);
-    options
-      .bind(TYPES.ISequenceStatsCalculator)
-      .to(SequenceStatsCalculator);
-    options
-      .bind(TYPES.ISequenceTransformer)
-      .to(SequenceTransformer);
+    options.bind(TYPES.ISequenceValidator).to(SequenceValidator);
+    options.bind(TYPES.ISequenceStatsCalculator).to(SequenceStatsCalculator);
+    options.bind(TYPES.ISequenceTransformer).to(SequenceTransformer);
 
     options.bind(TYPES.ISequenceExporter).to(SequenceExporter);
     // NOTE: ISequenceRepository, ISequenceImporter moved to dataModule (Tier 1)
-    options
-      .bind(TYPES.ISequencePersister)
-      .to(SequencePersister);
+    options.bind(TYPES.ISequencePersister).to(SequencePersister);
     options.bind(TYPES.ISequenceIndexer).to(SequenceIndexer);
 
     // === SEQUENCE EXTENSION SERVICES ===

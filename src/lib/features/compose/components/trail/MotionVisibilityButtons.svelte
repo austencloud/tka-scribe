@@ -98,11 +98,7 @@
       color-mix(in srgb, var(--prop-blue) 22%, transparent) 0%,
       color-mix(in srgb, var(--prop-blue) 16%, transparent) 100%
     );
-    border-color: color-mix(
-      in srgb,
-      var(--prop-blue) 55%,
-      transparent
-    );
+    border-color: color-mix(in srgb, var(--prop-blue) 55%, transparent);
     color: color-mix(in srgb, var(--prop-blue) 35%, white);
     box-shadow:
       0 2px 12px color-mix(in srgb, var(--prop-blue) 22%, transparent),
@@ -117,14 +113,9 @@
         color-mix(in srgb, var(--prop-blue) 32%, transparent) 0%,
         color-mix(in srgb, var(--prop-blue) 24%, transparent) 100%
       );
-      border-color: color-mix(
-        in srgb,
-        var(--prop-blue) 70%,
-        transparent
-      );
+      border-color: color-mix(in srgb, var(--prop-blue) 70%, transparent);
       box-shadow:
-        0 4px 16px
-          color-mix(in srgb, var(--prop-blue) 30%, transparent),
+        0 4px 16px color-mix(in srgb, var(--prop-blue) 30%, transparent),
         0 0 20px color-mix(in srgb, var(--prop-blue) 22%, transparent),
         inset 0 1px 0 var(--theme-card-hover-bg);
     }
@@ -152,11 +143,7 @@
         color-mix(in srgb, var(--prop-red) 32%, transparent) 0%,
         color-mix(in srgb, var(--prop-red) 24%, transparent) 100%
       );
-      border-color: color-mix(
-        in srgb,
-        var(--prop-red) 70%,
-        transparent
-      );
+      border-color: color-mix(in srgb, var(--prop-red) 70%, transparent);
       box-shadow:
         0 4px 16px color-mix(in srgb, var(--prop-red) 30%, transparent),
         0 0 20px color-mix(in srgb, var(--prop-red) 22%, transparent),

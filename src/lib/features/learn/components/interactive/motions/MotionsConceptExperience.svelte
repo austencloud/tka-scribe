@@ -6,7 +6,10 @@ Pages 1: Intro, Pages 2-7: Motion types, Page 8: Quiz
   import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
   import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
-  import { TYPE_EXAMPLES, MOTION_INFO } from "../../../domain/constants/motion-experience-data";
+  import {
+    TYPE_EXAMPLES,
+    MOTION_INFO,
+  } from "../../../domain/constants/motion-experience-data";
   import MotionsIntroPage from "./motions-experience/MotionsIntroPage.svelte";
   import MotionTypePage from "./motions-experience/MotionTypePage.svelte";
   import MotionsQuizPage from "./motions-experience/MotionsQuizPage.svelte";
@@ -20,7 +23,12 @@ Pages 1: Intro, Pages 2-7: Motion types, Page 8: Quiz
 
   // Example indices for each type
   let exampleIndices = $state<Record<number, number>>({
-    1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0,
+    1: 0,
+    2: 0,
+    3: 0,
+    4: 0,
+    5: 0,
+    6: 0,
   });
 
   function getCurrentExample(type: number) {

@@ -390,7 +390,11 @@
       transparent
     );
     border: 1px solid
-      color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent-strong)) 25%, transparent);
+      color-mix(
+        in srgb,
+        var(--theme-accent-strong, var(--theme-accent-strong)) 25%,
+        transparent
+      );
     border-radius: 4px;
     color: var(--theme-accent-strong);
     font-family: ui-monospace, "SF Mono", monospace;

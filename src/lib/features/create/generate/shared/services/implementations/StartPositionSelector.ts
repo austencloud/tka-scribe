@@ -38,8 +38,7 @@ export class StartPositionSelector implements IStartPositionSelector {
       await this.letterQueryHandler.getAllPictographVariations(gridMode);
     const startPositions =
       this.PictographFilter.filterStartPositions(allOptions);
-    const startPictograph =
-      this.PictographFilter.selectRandom(startPositions);
+    const startPictograph = this.PictographFilter.selectRandom(startPositions);
 
     // Use the new convertToStartPosition method instead of convertToBeat(pictograph, 0, gridMode)
     let startPosition = this.BeatConverter.convertToStartPosition(

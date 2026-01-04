@@ -69,7 +69,11 @@
         const thumbnail = sequence.thumbnails?.[0];
         if (thumbnail) {
           // Check if thumbnail is already a full URL (starts with http, /, or blob:)
-          if (thumbnail.startsWith("http") || thumbnail.startsWith("/") || thumbnail.startsWith("blob:")) {
+          if (
+            thumbnail.startsWith("http") ||
+            thumbnail.startsWith("/") ||
+            thumbnail.startsWith("blob:")
+          ) {
             // Use the URL directly
             imageUrl = thumbnail;
           } else if (thumbnailService) {

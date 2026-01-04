@@ -206,7 +206,11 @@ Features frame processing loop for pose estimation and overlay support.
   }
 
   .retry-button:hover {
-    background: color-mix(in srgb, var(--semantic-info, var(--semantic-info)) 85%, #000);
+    background: color-mix(
+      in srgb,
+      var(--semantic-info, var(--semantic-info)) 85%,
+      #000
+    );
     transform: translateY(-2px);
   }
 

@@ -24,7 +24,9 @@ export const BODY_TYPE_HEIGHTS = {
 /**
  * Get height in scene units for a body type
  */
-export function getHeightForBodyType(bodyType: keyof typeof BODY_TYPE_HEIGHTS): number {
+export function getHeightForBodyType(
+  bodyType: keyof typeof BODY_TYPE_HEIGHTS
+): number {
   return cmToUnits(BODY_TYPE_HEIGHTS[bodyType]);
 }
 
@@ -190,5 +192,8 @@ export function getStaffDimensions(config: PropConfig = STAFF_34_INCH) {
 /**
  * Pre-calculated proportions for Austen's build
  */
-export const AUSTEN_PROPORTIONS = deriveSceneProportions(AUSTEN_MEASUREMENTS, "masculine");
+export const AUSTEN_PROPORTIONS = deriveSceneProportions(
+  AUSTEN_MEASUREMENTS,
+  "masculine"
+);
 export const AUSTEN_STAFF = getStaffDimensions(STAFF_34_INCH);

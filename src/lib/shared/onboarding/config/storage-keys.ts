@@ -15,8 +15,7 @@ import type { IOnboardingPersister } from "../services/contracts/IOnboardingPers
 // Lazy service resolution to avoid circular dependencies
 let _onboardingService: IOnboardingPersister | null = null;
 let _serviceResolved = false;
-let _servicePromise: Promise<IOnboardingPersister | null> | null =
-  null;
+let _servicePromise: Promise<IOnboardingPersister | null> | null = null;
 
 function getOnboardingService(): IOnboardingPersister | null {
   if (_serviceResolved) return _onboardingService;

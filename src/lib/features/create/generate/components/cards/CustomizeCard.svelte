@@ -66,9 +66,7 @@ Opens sheet with start/end position and letter constraint options
   const panelState = getContext<PanelCoordinationState>("panelState");
 
   onMount(async () => {
-    hapticService = await resolve<IHapticFeedback>(
-      TYPES.IHapticFeedback
-    );
+    hapticService = await resolve<IHapticFeedback>(TYPES.IHapticFeedback);
   });
 
   // Open customize panel via coordinator (renders at CreateModule level)

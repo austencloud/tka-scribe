@@ -60,7 +60,10 @@
       case "motion":
         // Toggle both blur and speed lines together
         const motionEnabled = config.motion.blur || config.motion.speedLines;
-        config.updateMotion({ blur: !motionEnabled, speedLines: !motionEnabled });
+        config.updateMotion({
+          blur: !motionEnabled,
+          speedLines: !motionEnabled,
+        });
         break;
       case "bloom":
         config.toggleBloom();
@@ -215,7 +218,9 @@
         max="1"
         step="0.05"
         value={getIntensity(expandedEffect)}
-        oninput={(e) => expandedEffect && setIntensity(expandedEffect, parseFloat(e.currentTarget.value))}
+        oninput={(e) =>
+          expandedEffect &&
+          setIntensity(expandedEffect, parseFloat(e.currentTarget.value))}
         class="intensity-slider"
       />
     </div>

@@ -22,7 +22,9 @@
   const { initialValue, onNext, onBack, onSkip, onPreview }: Props = $props();
 
   // svelte-ignore state_referenced_locally
-  let selectedTheme = $state<BackgroundType>(initialValue ?? BackgroundType.SNOWFALL);
+  let selectedTheme = $state<BackgroundType>(
+    initialValue ?? BackgroundType.SNOWFALL
+  );
 
   // Animated backgrounds for the main grid
   const animatedBackgrounds = $derived(
@@ -34,7 +36,9 @@
   );
 
   // Minimalist option (pure black)
-  const minimalistOption = $derived(getBackgroundConfig(BackgroundType.SOLID_COLOR));
+  const minimalistOption = $derived(
+    getBackgroundConfig(BackgroundType.SOLID_COLOR)
+  );
 
   function handleSelect(type: BackgroundType) {
     selectedTheme = type;
@@ -106,7 +110,12 @@
   <p class="hint">Tap a theme to preview it live</p>
 
   <div class="button-row">
-    <button type="button" class="back-button" onclick={onBack} aria-label="Go back">
+    <button
+      type="button"
+      class="back-button"
+      onclick={onBack}
+      aria-label="Go back"
+    >
       <i class="fas fa-arrow-left" aria-hidden="true"></i>
     </button>
 

@@ -17,9 +17,7 @@ QuizProgressBar - Progress indicator for grid quiz
   const progressPercent = $derived(() => {
     const totalQuestions = modeQuestionsCount + pointQuestionsCount;
     const answered =
-      phase === "mode"
-        ? currentQuestion
-        : modeQuestionsCount + currentQuestion;
+      phase === "mode" ? currentQuestion : modeQuestionsCount + currentQuestion;
     return (answered / totalQuestions) * 100;
   });
 

@@ -55,7 +55,9 @@
             <span class="beat-num">{i + 1}</span>
             <div class="rotation-pair">
               <span
-                class="rotation-value {getRotationColorClass(blueRotation)} blue"
+                class="rotation-value {getRotationColorClass(
+                  blueRotation
+                )} blue"
               >
                 {blueRotation}
               </span>
@@ -79,11 +81,7 @@
         oninput={(e) => onNameChange(e.currentTarget.value)}
         maxlength={50}
       />
-      <button
-        class="save-btn"
-        onclick={onSave}
-        disabled={saving}
-      >
+      <button class="save-btn" onclick={onSave} disabled={saving}>
         {#if saving}
           <i class="fas fa-spinner fa-spin" aria-hidden="true"></i>
         {:else}
@@ -198,7 +196,11 @@
     justify-content: center;
     gap: 8px;
     padding: 12px;
-    background: linear-gradient(135deg, var(--semantic-warning) 0%, #d97706 100%);
+    background: linear-gradient(
+      135deg,
+      var(--semantic-warning) 0%,
+      #d97706 100%
+    );
     border: none;
     border-radius: 8px;
     color: white;

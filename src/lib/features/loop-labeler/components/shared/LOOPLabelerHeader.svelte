@@ -87,7 +87,6 @@
       onImportFile(file);
     }
   }
-
 </script>
 
 <header class="header">
@@ -118,9 +117,6 @@
 </header>
 
 <div class="controls-bar">
-
-
-
   <!-- Search and Browse -->
   <div class="nav-controls">
     <div class="search-container">
@@ -198,7 +194,8 @@
     justify-content: space-between;
     align-items: center;
     margin-bottom: var(--spacing-lg);
-    padding: var(--spacing-lg) var(--spacing-lg) var(--spacing-lg) var(--spacing-lg);
+    padding: var(--spacing-lg) var(--spacing-lg) var(--spacing-lg)
+      var(--spacing-lg);
     border-bottom: 1px solid var(--theme-stroke, var(--theme-stroke));
   }
 
@@ -257,8 +254,13 @@
   }
 
   @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.6; }
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.6;
+    }
   }
 
   .controls-bar {

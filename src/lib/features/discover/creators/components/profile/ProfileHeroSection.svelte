@@ -86,7 +86,11 @@
     align-items: center;
     gap: 4px;
     padding: 6px 12px;
-    background: linear-gradient(135deg, var(--semantic-warning) 0%, #d97706 100%);
+    background: linear-gradient(
+      135deg,
+      var(--semantic-warning) 0%,
+      #d97706 100%
+    );
     border: 2px solid rgba(0, 0, 0, 0.2);
     border-radius: 20px;
     font-size: var(--font-size-sm);

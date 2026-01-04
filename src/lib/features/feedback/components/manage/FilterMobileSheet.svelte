@@ -28,9 +28,7 @@
   let hapticService: IHapticFeedback | undefined;
 
   onMount(() => {
-    hapticService = resolve<IHapticFeedback>(
-      TYPES.IHapticFeedback
-    );
+    hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
   });
 
   function handleTypeFilter(type: FeedbackType | "all") {
@@ -69,7 +67,12 @@
 
   // Prepare filter options for grid components
   const typeOptions = [
-    { value: "all", label: "All Types", icon: "", color: "var(--semantic-success)" },
+    {
+      value: "all",
+      label: "All Types",
+      icon: "",
+      color: "var(--semantic-success)",
+    },
     ...Object.entries(TYPE_CONFIG).map(([value, config]) => ({
       value,
       label: config.label
@@ -82,7 +85,12 @@
   ];
 
   const statusOptions = [
-    { value: "all", label: "All Status", icon: "", color: "var(--semantic-success)" },
+    {
+      value: "all",
+      label: "All Status",
+      icon: "",
+      color: "var(--semantic-success)",
+    },
     ...Object.entries(STATUS_CONFIG).map(([value, config]) => ({
       value,
       label: config.label,
@@ -92,7 +100,12 @@
   ];
 
   const priorityOptions = [
-    { value: "all", label: "All Priority", icon: "", color: "var(--semantic-success)" },
+    {
+      value: "all",
+      label: "All Priority",
+      icon: "",
+      color: "var(--semantic-success)",
+    },
     ...Object.entries(PRIORITY_CONFIG).map(([value, config]) => ({
       value,
       label: config.label,
@@ -494,17 +507,30 @@
   .sheet-btn.primary {
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--semantic-success, var(--semantic-success)) 80%, white) 0%,
+      color-mix(
+          in srgb,
+          var(--semantic-success, var(--semantic-success)) 80%,
+          white
+        )
+        0%,
       var(--semantic-success, var(--semantic-success)) 100%
     );
     color: white;
     box-shadow: 0 4px 16px
-      color-mix(in srgb, var(--semantic-success, var(--semantic-success)) 25%, transparent);
+      color-mix(
+        in srgb,
+        var(--semantic-success, var(--semantic-success)) 25%,
+        transparent
+      );
   }
 
   .sheet-btn.primary:hover {
     box-shadow: 0 6px 20px
-      color-mix(in srgb, var(--semantic-success, var(--semantic-success)) 35%, transparent);
+      color-mix(
+        in srgb,
+        var(--semantic-success, var(--semantic-success)) 35%,
+        transparent
+      );
     transform: translateY(-1px);
   }
 

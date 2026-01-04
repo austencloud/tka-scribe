@@ -54,9 +54,7 @@ Used by both desktop side panel and mobile slide-up overlay.
     thumbnailService = tryResolve<IDiscoverThumbnailProvider>(
       TYPES.IDiscoverThumbnailProvider
     );
-    hapticService = tryResolve<IHapticFeedback>(
-      TYPES.IHapticFeedback
-    );
+    hapticService = tryResolve<IHapticFeedback>(TYPES.IHapticFeedback);
   });
 
   // Handlers
@@ -161,7 +159,6 @@ Used by both desktop side panel and mobile slide-up overlay.
 
   <!-- Metadata -->
   <div class="metadata">
-
     {#if hasCreatorInfo || sequence.author}
       <div class="metadata-row">
         {#if hasCreatorInfo}
@@ -323,7 +320,11 @@ Used by both desktop side panel and mobile slide-up overlay.
 <!-- Video Player Modal -->
 {#if selectedVideo}
   <div class="video-player-overlay" role="dialog" aria-label="Video player">
-    <button class="video-player-backdrop" onclick={closeVideoPlayer} aria-label="Close video player"></button>
+    <button
+      class="video-player-backdrop"
+      onclick={closeVideoPlayer}
+      aria-label="Close video player"
+    ></button>
     <div class="video-player-container">
       <header class="video-player-header">
         <div class="video-player-title">
@@ -343,7 +344,11 @@ Used by both desktop side panel and mobile slide-up overlay.
               Invite
             </button>
           {/if}
-          <button class="video-player-close" onclick={closeVideoPlayer} aria-label="Close video">
+          <button
+            class="video-player-close"
+            onclick={closeVideoPlayer}
+            aria-label="Close video"
+          >
             <i class="fas fa-times" aria-hidden="true"></i>
           </button>
         </div>
@@ -480,7 +485,6 @@ Used by both desktop side panel and mobile slide-up overlay.
     gap: clamp(6px, 2cqi, 10px);
   }
 
-
   .metadata-row {
     display: flex;
     gap: clamp(10px, 3cqi, 16px);
@@ -578,14 +582,22 @@ Used by both desktop side panel and mobile slide-up overlay.
   }
 
   .action-btn-primary {
-    background: linear-gradient(135deg, var(--semantic-info, var(--semantic-info)) 0%, var(--semantic-info) 100%);
+    background: linear-gradient(
+      135deg,
+      var(--semantic-info, var(--semantic-info)) 0%,
+      var(--semantic-info) 100%
+    );
     border-color: transparent;
     flex: 1;
     min-width: clamp(100px, 30cqi, 140px);
   }
 
   .action-btn-primary:hover {
-    background: linear-gradient(135deg, var(--semantic-info) 0%, color-mix(in srgb, var(--semantic-info) 90%, #000) 100%);
+    background: linear-gradient(
+      135deg,
+      var(--semantic-info) 0%,
+      color-mix(in srgb, var(--semantic-info) 90%, #000) 100%
+    );
   }
 
   .action-btn-maximize {
@@ -600,13 +612,27 @@ Used by both desktop side panel and mobile slide-up overlay.
 
   /* Primary button favorited state - pink/red gradient */
   .action-btn-primary.favorited {
-    background: linear-gradient(135deg, color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 90%, var(--semantic-error)) 0%, var(--semantic-error, var(--semantic-error)) 100%);
+    background: linear-gradient(
+      135deg,
+      color-mix(
+          in srgb,
+          var(--semantic-error, var(--semantic-error)) 90%,
+          var(--semantic-error)
+        )
+        0%,
+      var(--semantic-error, var(--semantic-error)) 100%
+    );
     border-color: transparent;
     color: var(--theme-text, white);
   }
 
   .action-btn-primary.favorited:hover {
-    background: linear-gradient(135deg, var(--semantic-error, var(--semantic-error)) 0%, color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 90%, #000) 100%);
+    background: linear-gradient(
+      135deg,
+      var(--semantic-error, var(--semantic-error)) 0%,
+      color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 90%, #000)
+        100%
+    );
   }
 
   /* Compact layout for smaller containers */
@@ -663,11 +689,14 @@ Used by both desktop side panel and mobile slide-up overlay.
     width: 100%;
     max-width: 800px;
     max-height: 90vh;
-    background: var(--theme-panel-bg, linear-gradient(
-      135deg,
-      rgba(20, 20, 30, 0.98) 0%,
-      rgba(30, 30, 45, 0.98) 100%
-    ));
+    background: var(
+      --theme-panel-bg,
+      linear-gradient(
+        135deg,
+        rgba(20, 20, 30, 0.98) 0%,
+        rgba(30, 30, 45, 0.98) 100%
+      )
+    );
     border: 1px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: 16px;
     overflow: hidden;

@@ -125,9 +125,17 @@ Contains:
       var(--theme-accent-strong, var(--theme-accent-strong)) 100%
     );
     border: 1px solid
-      color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 30%, transparent);
+      color-mix(
+        in srgb,
+        var(--theme-accent, var(--theme-accent)) 30%,
+        transparent
+      );
     box-shadow: 0 4px 12px
-      color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 40%, transparent);
+      color-mix(
+        in srgb,
+        var(--theme-accent, var(--theme-accent)) 40%,
+        transparent
+      );
   }
 
   .adjust-arrows-button:hover {
@@ -137,7 +145,11 @@ Contains:
       var(--theme-accent-strong) 100%
     );
     box-shadow: 0 6px 16px
-      color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 60%, transparent);
+      color-mix(
+        in srgb,
+        var(--theme-accent, var(--theme-accent)) 60%,
+        transparent
+      );
     transform: scale(1.05);
   }
 

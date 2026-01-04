@@ -176,7 +176,11 @@
   }
 
   .confirm-btn.danger:hover:not(:disabled) {
-    background: color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 85%, black);
+    background: color-mix(
+      in srgb,
+      var(--semantic-error, var(--semantic-error)) 85%,
+      black
+    );
   }
 
   .confirm-btn.warning {
@@ -184,7 +188,11 @@
   }
 
   .confirm-btn.warning:hover:not(:disabled) {
-    background: color-mix(in srgb, var(--semantic-warning, var(--semantic-warning)) 80%, black);
+    background: color-mix(
+      in srgb,
+      var(--semantic-warning, var(--semantic-warning)) 80%,
+      black
+    );
   }
 
   .cancel-btn:disabled,

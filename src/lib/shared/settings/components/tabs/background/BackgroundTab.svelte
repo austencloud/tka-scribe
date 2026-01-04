@@ -48,7 +48,11 @@
       backgroundType: settings?.backgroundType || BackgroundType.NIGHT_SKY,
       backgroundQuality: settings?.backgroundQuality || "medium",
       backgroundColor: settings?.backgroundColor || "#000000",
-      gradientColors: settings?.gradientColors || ["#0d1117", "#161b22", "#21262d"],
+      gradientColors: settings?.gradientColors || [
+        "#0d1117",
+        "#161b22",
+        "#21262d",
+      ],
       gradientDirection: settings?.gradientDirection || 135,
     };
   });
@@ -140,7 +144,9 @@
     <!-- Main Glass Panel -->
     <section class="settings-panel">
       <header class="panel-header">
-        <span class="panel-icon"><i class="fas fa-palette" aria-hidden="true"></i></span>
+        <span class="panel-icon"
+          ><i class="fas fa-palette" aria-hidden="true"></i></span
+        >
         <div class="panel-header-text">
           <h3 class="panel-title">Background Theme</h3>
           <p class="panel-subtitle">Choose your visual environment</p>
@@ -170,7 +176,9 @@
       <!-- Simple Backgrounds Section -->
       <div class="category-section">
         <div class="category-header">
-          <span class="category-icon"><i class="fas fa-circle" aria-hidden="true"></i></span>
+          <span class="category-icon"
+            ><i class="fas fa-circle" aria-hidden="true"></i></span
+          >
           <span class="category-label">Simple</span>
         </div>
         <div class="card-grid simple-grid">
@@ -262,13 +270,8 @@
     border-radius: 10px;
     font-size: clamp(14px, 3cqi, 18px);
     flex-shrink: 0;
-    background: color-mix(
-      in srgb,
-      var(--theme-accent) 20%,
-      transparent
-    );
-    border: 1px solid
-      color-mix(in srgb, var(--theme-accent) 35%, transparent);
+    background: color-mix(in srgb, var(--theme-accent) 20%, transparent);
+    border: 1px solid color-mix(in srgb, var(--theme-accent) 35%, transparent);
     color: var(--theme-accent);
     box-shadow: 0 0 12px
       color-mix(in srgb, var(--theme-accent) 20%, transparent);
@@ -387,20 +390,12 @@
   }
 
   .background-tab::-webkit-scrollbar-thumb {
-    background: color-mix(
-      in srgb,
-      var(--theme-accent) 20%,
-      transparent
-    );
+    background: color-mix(in srgb, var(--theme-accent) 20%, transparent);
     border-radius: 3px;
   }
 
   .background-tab::-webkit-scrollbar-thumb:hover {
-    background: color-mix(
-      in srgb,
-      var(--theme-accent) 35%,
-      transparent
-    );
+    background: color-mix(in srgb, var(--theme-accent) 35%, transparent);
   }
 
   /* ========================================

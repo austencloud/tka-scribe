@@ -198,7 +198,12 @@
     <!-- Main content -->
     <div class="tab-content">
       {#if state.isLoading && state.items.length === 0}
-        <div class="loading-state" role="status" aria-live="polite" aria-busy="true">
+        <div
+          class="loading-state"
+          role="status"
+          aria-live="polite"
+          aria-busy="true"
+        >
           <i class="fas fa-spinner fa-spin" aria-hidden="true"></i>
           <span>Loading your feedback...</span>
         </div>

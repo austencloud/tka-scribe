@@ -135,9 +135,7 @@
 
   async function initDetection() {
     try {
-      detectionService = resolve<IPositionDetector>(
-        TYPES.IPositionDetector
-      );
+      detectionService = resolve<IPositionDetector>(TYPES.IPositionDetector);
       await detectionService.initialize();
       isDetectionReady = true;
     } catch (error) {
@@ -529,9 +527,7 @@
   }
 
   onMount(() => {
-    hapticService = resolve<IHapticFeedback>(
-      TYPES.IHapticFeedback
-    );
+    hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
     initDetection();
   });
 
@@ -703,11 +699,25 @@
     right: 12px;
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 98%, transparent) 0%,
-      color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 98%, transparent) 100%
+      color-mix(
+          in srgb,
+          var(--semantic-error, var(--semantic-error)) 98%,
+          transparent
+        )
+        0%,
+      color-mix(
+          in srgb,
+          var(--semantic-error, var(--semantic-error)) 98%,
+          transparent
+        )
+        100%
     );
     border: 1px solid
-      color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 30%, transparent);
+      color-mix(
+        in srgb,
+        var(--semantic-error, var(--semantic-error)) 30%,
+        transparent
+      );
     border-radius: 12px;
     padding: 0.75rem 1rem;
     display: flex;
@@ -717,7 +727,11 @@
     z-index: 150;
     animation: slideUp 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     box-shadow: 0 4px 20px
-      color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 30%, transparent);
+      color-mix(
+        in srgb,
+        var(--semantic-error, var(--semantic-error)) 30%,
+        transparent
+      );
   }
 
   @keyframes slideUp {

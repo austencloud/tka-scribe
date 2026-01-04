@@ -32,9 +32,7 @@
 
   onMount(() => {
     // Load haptic service synchronously
-    hapticService = resolve<IHapticFeedback>(
-      TYPES.IHapticFeedback
-    );
+    hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
 
     // Initialize notifications when user is authenticated
     if (authState.isAuthenticated) {
@@ -147,8 +145,7 @@
   }
 
   .dashboard-button:focus-visible {
-    outline: 2px solid
-      color-mix(in srgb, var(--theme-accent) 70%, transparent);
+    outline: 2px solid color-mix(in srgb, var(--theme-accent) 70%, transparent);
     outline-offset: 2px;
   }
 
@@ -207,7 +204,11 @@
     font-size: var(--font-size-lg);
     font-weight: 600;
     color: var(--theme-text);
-    background: linear-gradient(135deg, var(--semantic-success) 0%, #059669 100%);
+    background: linear-gradient(
+      135deg,
+      var(--semantic-success) 0%,
+      #059669 100%
+    );
   }
 
   /* ============================================================================

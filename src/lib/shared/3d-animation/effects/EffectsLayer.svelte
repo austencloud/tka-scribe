@@ -58,9 +58,10 @@
    * Calculate the two end positions of a staff given its state
    * Must match the exact rotation logic used in Staff3D.svelte
    */
-  function calculatePropEnds(
-    propState: PropState3D
-  ): { positive: Vector3; negative: Vector3 } {
+  function calculatePropEnds(propState: PropState3D): {
+    positive: Vector3;
+    negative: Vector3;
+  } {
     const center = propState.worldPosition.clone();
 
     // Staff3D applies: finalQuat = worldRotation.clone().multiply(horizontalQuat)
@@ -76,8 +77,12 @@
     const worldAxis = localAxis.applyQuaternion(finalQuat);
 
     // Calculate end positions
-    const positive = center.clone().add(worldAxis.clone().multiplyScalar(halfLength));
-    const negative = center.clone().add(worldAxis.clone().multiplyScalar(-halfLength));
+    const positive = center
+      .clone()
+      .add(worldAxis.clone().multiplyScalar(halfLength));
+    const negative = center
+      .clone()
+      .add(worldAxis.clone().multiplyScalar(-halfLength));
 
     return { positive, negative };
   }
@@ -124,7 +129,10 @@
 
   // Check if we have enough history for trail effects
   const hasBlueTrailHistory = $derived(
-    effectState.hasEnoughHistory("blue", configState.trails.length > 10 ? 10 : 2)
+    effectState.hasEnoughHistory(
+      "blue",
+      configState.trails.length > 10 ? 10 : 2
+    )
   );
   const hasRedTrailHistory = $derived(
     effectState.hasEnoughHistory("red", configState.trails.length > 10 ? 10 : 2)
@@ -166,8 +174,11 @@
 {#if configState.trails.enabled && isPlaying}
   {@const trackMode = configState.trails.trackingMode}
   {@const isRainbow = configState.trails.color === "rainbow"}
-  {@const showLeftEnd = trackMode === TrackingMode.LEFT_END || trackMode === TrackingMode.BOTH_ENDS}
-  {@const showRightEnd = trackMode === TrackingMode.RIGHT_END || trackMode === TrackingMode.BOTH_ENDS}
+  {@const showLeftEnd =
+    trackMode === TrackingMode.LEFT_END || trackMode === TrackingMode.BOTH_ENDS}
+  {@const showRightEnd =
+    trackMode === TrackingMode.RIGHT_END ||
+    trackMode === TrackingMode.BOTH_ENDS}
 
   <!-- Blue prop ribbons -->
   {#if blueEnds}

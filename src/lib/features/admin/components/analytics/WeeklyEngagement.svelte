@@ -96,7 +96,9 @@
     {:else}
       <div class="metrics-grid" role="list" aria-label="User statistics">
         <div class="metric-card" role="listitem">
-          <div class="metric-value" aria-hidden="true">{metrics().totalUsers}</div>
+          <div class="metric-value" aria-hidden="true">
+            {metrics().totalUsers}
+          </div>
           <div class="metric-label">Total Users</div>
           <span class="sr-only">
             {metrics().totalUsers} total registered users
@@ -104,7 +106,9 @@
         </div>
 
         <div class="metric-card" role="listitem">
-          <div class="metric-value" aria-hidden="true">{metrics().activeThisWeek}</div>
+          <div class="metric-value" aria-hidden="true">
+            {metrics().activeThisWeek}
+          </div>
           <div class="metric-label">Active This Week</div>
           <span class="sr-only">
             {metrics().activeThisWeek} users active this week
@@ -112,7 +116,9 @@
         </div>
 
         <div class="metric-card" role="listitem">
-          <div class="metric-value" aria-hidden="true">{metrics().newThisWeek}</div>
+          <div class="metric-value" aria-hidden="true">
+            {metrics().newThisWeek}
+          </div>
           <div class="metric-label">New This Week</div>
           <span class="sr-only">
             {metrics().newThisWeek} new users this week

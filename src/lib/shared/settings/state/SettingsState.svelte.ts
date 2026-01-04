@@ -180,7 +180,8 @@ class SettingsState implements ISettingsState {
             // Apply Firebase background preference on initial login
             settingsState.backgroundType = firebaseSettings.backgroundType;
             if (firebaseSettings.backgroundCategory) {
-              settingsState.backgroundCategory = firebaseSettings.backgroundCategory;
+              settingsState.backgroundCategory =
+                firebaseSettings.backgroundCategory;
             }
             if (firebaseSettings.backgroundColor) {
               settingsState.backgroundColor = firebaseSettings.backgroundColor;
@@ -189,7 +190,8 @@ class SettingsState implements ISettingsState {
               settingsState.gradientColors = firebaseSettings.gradientColors;
             }
             if (firebaseSettings.gradientDirection !== undefined) {
-              settingsState.gradientDirection = firebaseSettings.gradientDirection;
+              settingsState.gradientDirection =
+                firebaseSettings.gradientDirection;
             }
 
             updateBodyBackground(

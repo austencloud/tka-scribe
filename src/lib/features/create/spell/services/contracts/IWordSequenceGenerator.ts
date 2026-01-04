@@ -5,7 +5,10 @@
  * Handles parsing, bridge letter insertion, and beat generation.
  */
 
-import type { SpellGenerationOptions, SpellResult } from "../../domain/models/spell-models";
+import type {
+  SpellGenerationOptions,
+  SpellResult,
+} from "../../domain/models/spell-models";
 
 export interface IWordSequenceGenerator {
   /**
@@ -21,7 +24,12 @@ export interface IWordSequenceGenerator {
    * @param word The input word string
    * @returns Array of parsed letters, or null if parsing fails
    */
-  parseWord(word: string): { letters: import("$lib/shared/foundation/domain/models/Letter").Letter[]; error?: string } | null;
+  parseWord(
+    word: string
+  ): {
+    letters: import("$lib/shared/foundation/domain/models/Letter").Letter[];
+    error?: string;
+  } | null;
 
   /**
    * Validate that a word can be converted to a sequence

@@ -24,10 +24,7 @@
 
 <div class="mode-switcher">
   <div class="switcher-track">
-    <div
-      class="switcher-pill"
-      class:visual={activeMode === "visual"}
-    ></div>
+    <div class="switcher-pill" class:visual={activeMode === "visual"}></div>
     <button
       class="switcher-btn"
       class:active={activeMode === "playback"}

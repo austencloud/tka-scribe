@@ -71,11 +71,7 @@
     "noUnusedParameters": false, // Disabled: Svelte event handlers often have unused params
     "noPropertyAccessFromIndexSignature": false // Disabled: too noisy for existing Record-based access patterns
   },
-  "include": [
-    "src/**/*.ts",
-    "src/**/*.d.ts",
-    "src/**/*.svelte"
-  ],
+  "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.svelte"],
   "exclude": [
     "node_modules",
     "dist",

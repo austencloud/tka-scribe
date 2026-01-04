@@ -16,10 +16,16 @@
   import { getTimelineState } from "../state/timeline-state.svelte";
   import { getTimelinePlayer } from "../services/implementations/TimelinePlaybackService";
   import { getTimelineSnapper } from "../services/implementations/TimelineSnapService";
-  import { loadFromStorage, saveToStorage, TIMELINE_STORAGE_KEYS } from "../state/timeline-storage";
+  import {
+    loadFromStorage,
+    saveToStorage,
+    TIMELINE_STORAGE_KEYS,
+  } from "../state/timeline-storage";
   import TimelineControls from "./TimelineControls.svelte";
   import ClipInspector from "./ClipInspector.svelte";
-  import MediaBrowserPanel, { type MediaImportType } from "./media-browser/MediaBrowserPanel.svelte";
+  import MediaBrowserPanel, {
+    type MediaImportType,
+  } from "./media-browser/MediaBrowserPanel.svelte";
   import TimelinePreview from "./TimelinePreview.svelte";
   import SourcePreview from "./SourcePreview.svelte";
   import PanelGroup from "$lib/shared/panels/PanelGroup.svelte";
@@ -144,7 +150,10 @@
   }
 
   // Handle media import from browser
-  function handleMediaImport(sequence: SequenceData, mediaType: MediaImportType) {
+  function handleMediaImport(
+    sequence: SequenceData,
+    mediaType: MediaImportType
+  ) {
     const state = getState();
     const trackId = state.project.tracks[0]?.id;
     if (!trackId) return;
@@ -223,7 +232,8 @@
 
       const state = getState();
       const currentZoom = state.viewport.pixelsPerSecond;
-      const newZoom = delta > 0 ? currentZoom * zoomFactor : currentZoom / zoomFactor;
+      const newZoom =
+        delta > 0 ? currentZoom * zoomFactor : currentZoom / zoomFactor;
 
       const scrollInfo = timelineBodyRef?.getScrollInfo();
       if (scrollInfo && scrollInfo.width > 0) {
@@ -250,7 +260,10 @@
 
   // Keyboard shortcuts
   function handleKeyDown(e: KeyboardEvent) {
-    if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
+    if (
+      e.target instanceof HTMLInputElement ||
+      e.target instanceof HTMLTextAreaElement
+    ) {
       return;
     }
 
@@ -348,7 +361,12 @@
       { id: "left", content: leftSideContent, defaultSize: 3, minSize: 400 },
     ];
     if (showMediaBrowser) {
-      panels.push({ id: "media", content: mediaBrowserContent, defaultSize: 1, minSize: 250 });
+      panels.push({
+        id: "media",
+        content: mediaBrowserContent,
+        defaultSize: 1,
+        minSize: 250,
+      });
     }
     return panels;
   });
@@ -360,8 +378,18 @@
     <PanelGroup
       direction="horizontal"
       panels={[
-        { id: "program", content: programMonitorContent, defaultSize: 1, minSize: 200 },
-        { id: "source", content: sourceMonitorContent, defaultSize: 1, minSize: 200 },
+        {
+          id: "program",
+          content: programMonitorContent,
+          defaultSize: 1,
+          minSize: 200,
+        },
+        {
+          id: "source",
+          content: sourceMonitorContent,
+          defaultSize: 1,
+          minSize: 200,
+        },
       ]}
       bind:sizes={monitorSizes}
     />
@@ -398,8 +426,18 @@
       <PanelGroup
         direction="vertical"
         panels={[
-          { id: "monitors", content: monitorsContent, defaultSize: 1, minSize: 180 },
-          { id: "timeline", content: timelineContent, defaultSize: 2, minSize: 100 }
+          {
+            id: "monitors",
+            content: monitorsContent,
+            defaultSize: 1,
+            minSize: 180,
+          },
+          {
+            id: "timeline",
+            content: timelineContent,
+            defaultSize: 2,
+            minSize: 100,
+          },
         ]}
         bind:sizes={verticalSizes}
       />

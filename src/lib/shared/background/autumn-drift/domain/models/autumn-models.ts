@@ -1,7 +1,13 @@
 // Autumn Drift Background Models
 // Type definitions for the autumn leaf particle system
 
-export type LeafType = "maple" | "curved" | "oak" | "rounded" | "double" | "nature";
+export type LeafType =
+  | "maple"
+  | "curved"
+  | "oak"
+  | "rounded"
+  | "double"
+  | "nature";
 
 export interface Leaf {
   // Position

@@ -21,7 +21,8 @@
   aria-label={`Edit ${capability.name} settings`}
   title={capability.description}
 >
-  <i class="fas {style.icon}" aria-hidden="true" style="color: {style.color}"></i>
+  <i class="fas {style.icon}" aria-hidden="true" style="color: {style.color}"
+  ></i>
   <span class="capability-name">{capability.name}</span>
   <span
     class="role-badge"

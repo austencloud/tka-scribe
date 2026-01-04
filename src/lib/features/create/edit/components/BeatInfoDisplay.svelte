@@ -65,7 +65,11 @@ Primarily for desktop where we have extra space to show this information.
     <!-- Blue/Left Motion Info -->
     <div class="motion-section blue-section">
       <div class="section-header">
-        <i class="fas fa-circle" style="color: var(--semantic-info);" aria-hidden="true"></i>
+        <i
+          class="fas fa-circle"
+          style="color: var(--semantic-info);"
+          aria-hidden="true"
+        ></i>
         <span>Left Hand</span>
       </div>
 
@@ -106,7 +110,11 @@ Primarily for desktop where we have extra space to show this information.
     <!-- Red/Right Motion Info -->
     <div class="motion-section red-section">
       <div class="section-header">
-        <i class="fas fa-circle" style="color: var(--semantic-error);" aria-hidden="true"></i>
+        <i
+          class="fas fa-circle"
+          style="color: var(--semantic-error);"
+          aria-hidden="true"
+        ></i>
         <span>Right Hand</span>
       </div>
 

@@ -29,12 +29,8 @@ Shows different states: no link, has link, opening link.
   let hapticService: IHapticFeedback;
 
   onMount(async () => {
-    instagramService = await resolve<IInstagramLinker>(
-      TYPES.IInstagramLinker
-    );
-    hapticService = await resolve<IHapticFeedback>(
-      TYPES.IHapticFeedback
-    );
+    instagramService = await resolve<IInstagramLinker>(TYPES.IInstagramLinker);
+    hapticService = await resolve<IHapticFeedback>(TYPES.IHapticFeedback);
   });
 
   // Handle button click

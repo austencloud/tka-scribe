@@ -285,7 +285,10 @@ export function createCreateModuleState(
     },
     undo: () => {
       // Check assembly handpath builder undo first (when in assembler mode building positions)
-      if (navigationState.activeTab === "assembler" && _assemblyUndoRef?.canUndo) {
+      if (
+        navigationState.activeTab === "assembler" &&
+        _assemblyUndoRef?.canUndo
+      ) {
         _assemblyUndoRef.undo();
         return true;
       }
@@ -315,7 +318,10 @@ export function createCreateModuleState(
     },
     get canUndo() {
       // Check assembly handpath builder undo first (when in assembler mode building positions)
-      if (navigationState.activeTab === "assembler" && _assemblyUndoRef?.canUndo) {
+      if (
+        navigationState.activeTab === "assembler" &&
+        _assemblyUndoRef?.canUndo
+      ) {
         return true;
       }
       // Fall back to sequence-level undo controller

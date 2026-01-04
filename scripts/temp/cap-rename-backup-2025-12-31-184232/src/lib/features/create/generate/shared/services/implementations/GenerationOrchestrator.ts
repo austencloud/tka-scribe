@@ -29,9 +29,7 @@ import type { IReversalDetector } from "../../../../shared/services/contracts/IR
  * build complete sequences for both freeform and circular modes.
  */
 @injectable()
-export class GenerationOrchestrator
-  implements IGenerationOrchestrator
-{
+export class GenerationOrchestrator implements IGenerationOrchestrator {
   constructor(
     @inject(TYPES.IStartPositionSelector)
     private readonly startPositionSelector: IStartPositionSelector,
@@ -180,9 +178,8 @@ export class GenerationOrchestrator
     });
 
     // Import shared utilities dynamically to avoid circular dependencies
-    const { createSequenceData } = await import(
-      "$lib/shared/foundation/domain/models/SequenceData"
-    );
+    const { createSequenceData } =
+      await import("$lib/shared/foundation/domain/models/SequenceData");
 
     const sequenceData = createSequenceData({
       name: word || `Sequence ${Date.now()}`,
@@ -200,8 +197,7 @@ export class GenerationOrchestrator
     });
 
     // Step 6: Apply reversal detection
-    const finalSequence =
-      this.ReversalDetector.processReversals(sequenceData);
+    const finalSequence = this.ReversalDetector.processReversals(sequenceData);
 
     return finalSequence;
   }
@@ -214,9 +210,8 @@ export class GenerationOrchestrator
     options: GenerationOptions
   ): Promise<SequenceData> {
     // Import circular-specific models
-    const { LOOPType, SliceSize } = await import(
-      "../../../circular/domain/models/circular-models"
-    );
+    const { LOOPType, SliceSize } =
+      await import("../../../circular/domain/models/circular-models");
 
     // Use constructor-injected services to avoid HMR issues
     // Determine which LOOP executor to use based on loopType option
@@ -227,9 +222,8 @@ export class GenerationOrchestrator
     const sliceSize = options.sliceSize || SliceSize.HALVED;
 
     // Determine start position - use customized if provided, otherwise random
-    const { GridPosition } = await import(
-      "$lib/shared/pictograph/grid/domain/enums/grid-enums"
-    );
+    const { GridPosition } =
+      await import("$lib/shared/pictograph/grid/domain/enums/grid-enums");
     type GridPositionType = (typeof GridPosition)[keyof typeof GridPosition];
 
     let startPos: GridPositionType | undefined;
@@ -285,9 +279,8 @@ export class GenerationOrchestrator
       level: this.metadataService.mapDifficultyToLevel(options.difficulty),
     });
 
-    const { createSequenceData } = await import(
-      "$lib/shared/foundation/domain/models/SequenceData"
-    );
+    const { createSequenceData } =
+      await import("$lib/shared/foundation/domain/models/SequenceData");
     const sequence = createSequenceData({
       name: `Circular ${word}`,
       word,

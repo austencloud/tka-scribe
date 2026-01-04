@@ -63,7 +63,9 @@ export class SpellServiceLoader implements ISpellServiceLoader {
   async getSequenceExtender(): Promise<ISequenceExtender> {
     await this.ensureModulesLoaded();
     if (!this.sequenceExtender) {
-      this.sequenceExtender = resolve<ISequenceExtender>(TYPES.ISequenceExtender);
+      this.sequenceExtender = resolve<ISequenceExtender>(
+        TYPES.ISequenceExtender
+      );
     }
     return this.sequenceExtender;
   }

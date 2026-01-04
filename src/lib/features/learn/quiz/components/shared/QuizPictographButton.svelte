@@ -102,9 +102,18 @@ QuizPictographButton - Answer button containing a pictograph
   }
 
   @keyframes incorrectShake {
-    0%, 100% { transform: translateX(0); }
-    20%, 60% { transform: translateX(-5px); }
-    40%, 80% { transform: translateX(5px); }
+    0%,
+    100% {
+      transform: translateX(0);
+    }
+    20%,
+    60% {
+      transform: translateX(-5px);
+    }
+    40%,
+    80% {
+      transform: translateX(5px);
+    }
   }
 
   .answer-btn.dimmed {

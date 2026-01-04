@@ -10,14 +10,14 @@
   - Primary export button at bottom (hidden for animation - it has its own)
 -->
 <script lang="ts">
-  import type { MediaFormat } from '../../domain/models/MediaFormat';
-  import { getShareHubState } from '../../state/share-hub-state.svelte';
-  import { getAnimationExportContext } from '../../context/animation-export-context.svelte';
-  import FormatSelector from '../shared/FormatSelector.svelte';
-  import ExportButton from '../shared/ExportButton.svelte';
-  import AnimationExportView from './AnimationExportView.svelte';
-  import StaticPreview from './StaticPreview.svelte';
-  import PerformancePreview from './PerformancePreview.svelte';
+  import type { MediaFormat } from "../../domain/models/MediaFormat";
+  import { getShareHubState } from "../../state/share-hub-state.svelte";
+  import { getAnimationExportContext } from "../../context/animation-export-context.svelte";
+  import FormatSelector from "../shared/FormatSelector.svelte";
+  import ExportButton from "../shared/ExportButton.svelte";
+  import AnimationExportView from "./AnimationExportView.svelte";
+  import StaticPreview from "./StaticPreview.svelte";
+  import PerformancePreview from "./PerformancePreview.svelte";
 
   let {
     isSequenceSaved = true,
@@ -35,12 +35,17 @@
 
   // Dynamic button label based on save state, format, and platform
   const formatLabel = $derived(
-    hubState.selectedFormat === 'animation' ? 'Animation' :
-    hubState.selectedFormat === 'static' ? 'Image' : 'Video'
+    hubState.selectedFormat === "animation"
+      ? "Animation"
+      : hubState.selectedFormat === "static"
+        ? "Image"
+        : "Video"
   );
-  const actionVerb = $derived(isMobile ? 'Share' : 'Save');
+  const actionVerb = $derived(isMobile ? "Share" : "Save");
   const buttonLabel = $derived(
-    isSequenceSaved ? `${actionVerb} ${formatLabel}` : `Save & ${actionVerb} ${formatLabel}`
+    isSequenceSaved
+      ? `${actionVerb} ${formatLabel}`
+      : `Save & ${actionVerb} ${formatLabel}`
   );
 
   function handleFormatSelect(format: MediaFormat) {
@@ -71,17 +76,17 @@
 
   <!-- Preview Area (conditional based on selected format) -->
   <div class="preview-area">
-    {#if hubState.selectedFormat === 'animation'}
+    {#if hubState.selectedFormat === "animation"}
       <AnimationExportView />
-    {:else if hubState.selectedFormat === 'static'}
+    {:else if hubState.selectedFormat === "static"}
       <StaticPreview />
-    {:else if hubState.selectedFormat === 'performance'}
+    {:else if hubState.selectedFormat === "performance"}
       <PerformancePreview />
     {/if}
   </div>
 
   <!-- Export Button (hidden for Animation - AnimationControlsPanel has its own) -->
-  {#if hubState.selectedFormat !== 'animation'}
+  {#if hubState.selectedFormat !== "animation"}
     <div class="export-container">
       <ExportButton
         label={buttonLabel}

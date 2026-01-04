@@ -13,9 +13,9 @@
   - Export progress overlay on canvas during export
 -->
 <script lang="ts">
-  import AnimatorCanvas from '$lib/shared/animation-engine/components/AnimatorCanvas.svelte';
-  import AnimationControlsPanel from '$lib/features/compose/components/canvas/AnimationControlsPanel.svelte';
-  import { getAnimationExportContext } from '../../context/animation-export-context.svelte';
+  import AnimatorCanvas from "$lib/shared/animation-engine/components/AnimatorCanvas.svelte";
+  import AnimationControlsPanel from "$lib/features/compose/components/canvas/AnimationControlsPanel.svelte";
+  import { getAnimationExportContext } from "../../context/animation-export-context.svelte";
 
   // Get context object (don't destructure to maintain reactivity)
   const context = getAnimationExportContext();
@@ -44,13 +44,20 @@
 
   // Export progress helpers
   const progressPercent = $derived(
-    context.state.exportProgress ? Math.round(context.state.exportProgress.progress * 100) : 0
+    context.state.exportProgress
+      ? Math.round(context.state.exportProgress.progress * 100)
+      : 0
   );
   const progressStage = $derived(
-    context.state.exportProgress?.stage === 'capturing' ? 'Capturing frames...' :
-    context.state.exportProgress?.stage === 'encoding' ? 'Encoding video...' :
-    context.state.exportProgress?.stage === 'complete' ? 'Complete!' :
-    context.state.exportProgress?.stage === 'error' ? 'Error' : ''
+    context.state.exportProgress?.stage === "capturing"
+      ? "Capturing frames..."
+      : context.state.exportProgress?.stage === "encoding"
+        ? "Encoding video..."
+        : context.state.exportProgress?.stage === "complete"
+          ? "Complete!"
+          : context.state.exportProgress?.stage === "error"
+            ? "Error"
+            : ""
   );
 
   // Handle canvas ready from AnimatorCanvas
@@ -98,7 +105,7 @@
         <div class="export-progress-card">
           <div class="progress-header">
             <span class="progress-stage">{progressStage}</span>
-            {#if context.state.exportProgress.stage !== 'complete' && context.state.exportProgress.stage !== 'error'}
+            {#if context.state.exportProgress.stage !== "complete" && context.state.exportProgress.stage !== "error"}
               <button
                 class="cancel-button"
                 onclick={() => context.actions.onCancelExport()}
@@ -114,7 +121,8 @@
           <span class="progress-percent">{progressPercent}%</span>
           {#if context.state.exportProgress.currentFrame && context.state.exportProgress.totalFrames}
             <span class="frame-count">
-              Frame {context.state.exportProgress.currentFrame} / {context.state.exportProgress.totalFrames}
+              Frame {context.state.exportProgress.currentFrame} / {context.state
+                .exportProgress.totalFrames}
             </span>
           {/if}
         </div>
@@ -134,7 +142,12 @@
     isSideBySideLayout={true}
     isExpanded={true}
     isExporting={context.state.isExporting}
-    exportProgress={context.state.exportProgress ? { progress: context.state.exportProgress.progress, stage: context.state.exportProgress.stage } : null}
+    exportProgress={context.state.exportProgress
+      ? {
+          progress: context.state.exportProgress.progress,
+          stage: context.state.exportProgress.stage,
+        }
+      : null}
     sequenceData={context.state.sequenceData}
     currentBeat={context.state.currentBeat}
     isCircular={context.state.isCircular}
@@ -142,8 +155,10 @@
     onSpeedChange={(s) => context.actions.onSpeedChange(s)}
     onPlaybackToggle={() => context.actions.onPlaybackToggle()}
     onPlaybackModeChange={(m) => context.actions.onPlaybackModeChange(m)}
-    onStepPlaybackPauseMsChange={(p) => context.actions.onStepPlaybackPauseMsChange(p)}
-    onStepPlaybackStepSizeChange={(s) => context.actions.onStepPlaybackStepSizeChange(s)}
+    onStepPlaybackPauseMsChange={(p) =>
+      context.actions.onStepPlaybackPauseMsChange(p)}
+    onStepPlaybackStepSizeChange={(s) =>
+      context.actions.onStepPlaybackStepSizeChange(s)}
     onStepHalfBeatBackward={() => context.actions.onStepHalfBeatBackward()}
     onStepHalfBeatForward={() => context.actions.onStepHalfBeatForward()}
     onStepFullBeatBackward={() => context.actions.onStepFullBeatBackward()}
@@ -210,7 +225,9 @@
   }
 
   @keyframes spin {
-    to { transform: rotate(360deg); }
+    to {
+      transform: rotate(360deg);
+    }
   }
 
   /* Export Progress Overlay */

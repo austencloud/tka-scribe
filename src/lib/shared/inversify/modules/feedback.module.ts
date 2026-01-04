@@ -18,10 +18,7 @@ import { TYPES } from "../types";
 export const feedbackModule = new ContainerModule(
   (options: ContainerModuleLoadOptions) => {
     // === FEEDBACK SERVICES ===
-    options
-      .bind(TYPES.IFeedbackSorter)
-      .to(FeedbackSorter)
-      .inSingletonScope();
+    options.bind(TYPES.IFeedbackSorter).to(FeedbackSorter).inSingletonScope();
 
     // Feedback Editor (snapshot-based change tracking)
     options

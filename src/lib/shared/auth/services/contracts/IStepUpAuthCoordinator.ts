@@ -18,7 +18,7 @@ export interface IStepUpAuthCoordinator {
     action: () => Promise<void>,
     options?: {
       allowPasswordReauth?: boolean;
-      password?: string
+      password?: string;
     }
   ): Promise<void>;
 

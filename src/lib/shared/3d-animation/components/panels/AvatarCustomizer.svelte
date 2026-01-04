@@ -16,7 +16,8 @@
     onSkinToneChange: (color: string) => void;
   }
 
-  let { bodyType, skinTone, onBodyTypeChange, onSkinToneChange }: Props = $props();
+  let { bodyType, skinTone, onBodyTypeChange, onSkinToneChange }: Props =
+    $props();
 
   // Skin tone presets - diverse range
   const SKIN_TONES = [

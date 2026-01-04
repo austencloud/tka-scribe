@@ -89,12 +89,14 @@ export const GET: RequestHandler = async (event) => {
       },
       multiFactor: userRecord.multiFactor
         ? {
-            enrolledFactors: userRecord.multiFactor.enrolledFactors.map((f) => ({
-              uid: f.uid,
-              displayName: f.displayName ?? null,
-              factorId: f.factorId,
-              enrollmentTime: f.enrollmentTime,
-            })),
+            enrolledFactors: userRecord.multiFactor.enrolledFactors.map(
+              (f) => ({
+                uid: f.uid,
+                displayName: f.displayName ?? null,
+                factorId: f.factorId,
+                enrollmentTime: f.enrollmentTime,
+              })
+            ),
           }
         : null,
     };

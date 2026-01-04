@@ -13,7 +13,7 @@
   Domain: Share Hub - Settings - Performance Video Format
 -->
 <script lang="ts">
-  import { getShareHubState } from '../../state/share-hub-state.svelte';
+  import { getShareHubState } from "../../state/share-hub-state.svelte";
 
   // FIX: Use 'hubState' instead of 'state' to avoid collision with $state rune
   const hubState = getShareHubState();
@@ -28,34 +28,49 @@
   async function initializeCameras() {
     try {
       const devices = await navigator.mediaDevices.enumerateDevices();
-      availableCameras = devices.filter((device) => device.kind === 'videoinput');
+      availableCameras = devices.filter(
+        (device) => device.kind === "videoinput"
+      );
       cameraPermissionGranted = true;
 
       // Auto-select first camera if none selected
       const firstCamera = availableCameras[0];
       if (firstCamera && !hubState.performanceSettings.cameraId) {
-        hubState.performanceSettings = { ...hubState.performanceSettings, cameraId: firstCamera.deviceId };
+        hubState.performanceSettings = {
+          ...hubState.performanceSettings,
+          cameraId: firstCamera.deviceId,
+        };
       }
     } catch (error) {
-      console.error('Failed to enumerate cameras:', error);
+      console.error("Failed to enumerate cameras:", error);
       cameraPermissionGranted = false;
     }
   }
 
   function handleModeToggle() {
-    const newMode = hubState.performanceSettings.mode === 'record' ? 'upload' : 'record';
-    hubState.performanceSettings = { ...hubState.performanceSettings, mode: newMode };
+    const newMode =
+      hubState.performanceSettings.mode === "record" ? "upload" : "record";
+    hubState.performanceSettings = {
+      ...hubState.performanceSettings,
+      mode: newMode,
+    };
   }
 
   function handleCameraSelect(event: Event) {
     const cameraId = (event.target as HTMLSelectElement).value;
-    hubState.performanceSettings = { ...hubState.performanceSettings, cameraId };
+    hubState.performanceSettings = {
+      ...hubState.performanceSettings,
+      cameraId,
+    };
   }
 
   function handleFileUpload(event: Event) {
     const file = (event.target as HTMLInputElement).files?.[0];
-    if (file && file.type.startsWith('video/')) {
-      hubState.performanceSettings = { ...hubState.performanceSettings, uploadedFile: file };
+    if (file && file.type.startsWith("video/")) {
+      hubState.performanceSettings = {
+        ...hubState.performanceSettings,
+        uploadedFile: file,
+      };
     }
   }
 
@@ -76,18 +91,20 @@
     <div class="mode-toggle-card">
       <button
         class="mode-option"
-        class:active={hubState.performanceSettings.mode === 'record'}
+        class:active={hubState.performanceSettings.mode === "record"}
         onclick={handleModeToggle}
       >
         <i class="fas fa-video" aria-hidden="true"></i>
         <div>
           <span class="mode-title">Record Live</span>
-          <span class="mode-description">Capture performance with your camera</span>
+          <span class="mode-description"
+            >Capture performance with your camera</span
+          >
         </div>
       </button>
       <button
         class="mode-option"
-        class:active={hubState.performanceSettings.mode === 'upload'}
+        class:active={hubState.performanceSettings.mode === "upload"}
         onclick={handleModeToggle}
       >
         <i class="fas fa-cloud-upload-alt" aria-hidden="true"></i>
@@ -100,7 +117,7 @@
   </div>
 
   <!-- Record Mode Settings -->
-  {#if hubState.performanceSettings.mode === 'record'}
+  {#if hubState.performanceSettings.mode === "record"}
     <div class="setting-group">
       <div class="setting-header">
         <label for="camera-select">
@@ -127,7 +144,7 @@
         <select
           id="camera-select"
           class="camera-select"
-          value={hubState.performanceSettings.cameraId || ''}
+          value={hubState.performanceSettings.cameraId || ""}
           onchange={handleCameraSelect}
         >
           {#each availableCameras as camera}
@@ -141,7 +158,7 @@
   {/if}
 
   <!-- Upload Mode Settings -->
-  {#if hubState.performanceSettings.mode === 'upload'}
+  {#if hubState.performanceSettings.mode === "upload"}
     <div class="setting-group">
       <div class="setting-header">
         <label for="file-upload">
@@ -162,9 +179,15 @@
           <div class="uploaded-file-info">
             <i class="fas fa-check-circle" aria-hidden="true"></i>
             <div>
-              <p class="file-name">{hubState.performanceSettings.uploadedFile.name}</p>
+              <p class="file-name">
+                {hubState.performanceSettings.uploadedFile.name}
+              </p>
               <p class="file-size">
-                {(hubState.performanceSettings.uploadedFile.size / 1024 / 1024).toFixed(2)} MB
+                {(
+                  hubState.performanceSettings.uploadedFile.size /
+                  1024 /
+                  1024
+                ).toFixed(2)} MB
               </p>
             </div>
           </div>

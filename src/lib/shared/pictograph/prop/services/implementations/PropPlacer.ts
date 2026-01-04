@@ -102,8 +102,7 @@ export class PropPlacer implements IPropPlacer {
     gridMode: GridMode
   ): Promise<{ x: number; y: number }> {
     // Check if this pictograph ends with beta position - now synchronous!
-    const needsBetaOffset =
-      this.BetaDetector.endsWithBeta(pictographData);
+    const needsBetaOffset = this.BetaDetector.endsWithBeta(pictographData);
 
     if (!needsBetaOffset) {
       return { x: 0, y: 0 };

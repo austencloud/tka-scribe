@@ -23,9 +23,7 @@
   let hapticService: IHapticFeedback | undefined;
 
   onMount(() => {
-    hapticService = resolve<IHapticFeedback>(
-      TYPES.IHapticFeedback
-    );
+    hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
   });
 
   // Count unread messages
@@ -158,7 +156,11 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(135deg, var(--semantic-error) 0%, var(--semantic-error) 100%);
+    background: linear-gradient(
+      135deg,
+      var(--semantic-error) 0%,
+      var(--semantic-error) 100%
+    );
     border: 2px solid rgba(0, 0, 0, 0.8);
     border-radius: 9px;
     color: #ffffff;

@@ -33,28 +33,28 @@
   // ═══════════════════════════════════════════════════════════════════════════
 
   // Arm segments (real human: upper arm ~30cm, forearm ~25cm)
-  const UPPER_ARM_LENGTH = 75;  // 30cm = 75 units
-  const FOREARM_LENGTH = 62;    // 25cm = 62 units
+  const UPPER_ARM_LENGTH = 75; // 30cm = 75 units
+  const FOREARM_LENGTH = 62; // 25cm = 62 units
   const TOTAL_ARM_LENGTH = UPPER_ARM_LENGTH + FOREARM_LENGTH; // 137 units = 55cm
 
   // Body dimensions
-  const HEAD_RADIUS = 25;       // 10cm radius = 20cm diameter head
-  const JOINT_RADIUS = 8;       // Smaller, more realistic joints
-  const LIMB_THICKNESS = 8;     // Thinner limbs
+  const HEAD_RADIUS = 25; // 10cm radius = 20cm diameter head
+  const JOINT_RADIUS = 8; // Smaller, more realistic joints
+  const LIMB_THICKNESS = 8; // Thinner limbs
 
   // Vertical positions (Y)
   // Figure positioned so shoulders are at a height where arms can work the grid
   // Real human: shoulder height ~145cm from ground = 362 units
   // We offset so the figure's "center" is roughly at grid center
-  const SHOULDER_Y = 0;         // Shoulders at grid center height for best reach
+  const SHOULDER_Y = 0; // Shoulders at grid center height for best reach
   const HEAD_Y = SHOULDER_Y + 65; // Head above shoulders
   const HIP_Y = SHOULDER_Y - 100; // Hips below shoulders
-  const KNEE_Y = HIP_Y - 112;   // Thigh length ~45cm = 112 units
-  const FOOT_Y = KNEE_Y - 105;  // Shin length ~42cm = 105 units
+  const KNEE_Y = HIP_Y - 112; // Thigh length ~45cm = 112 units
+  const FOOT_Y = KNEE_Y - 105; // Shin length ~42cm = 105 units
 
   // Horizontal positions (width)
-  const SHOULDER_SPREAD = 55;   // 22cm each side = 55 units (44cm total width)
-  const HIP_SPREAD = 37;        // 15cm each side = 37 units
+  const SHOULDER_SPREAD = 55; // 22cm each side = 55 units (44cm total width)
+  const HIP_SPREAD = 37; // 15cm each side = 37 units
 
   // Figure stands BEHIND the grid (negative Z), facing the audience
   // Arms reach FORWARD to the wall plane (Z = 0)
@@ -63,8 +63,16 @@
 
   // Body joint positions (figure stands at Z = FIGURE_Z)
   const headPos: [number, number, number] = [0, HEAD_Y, FIGURE_Z];
-  const leftShoulderPos: [number, number, number] = [-SHOULDER_SPREAD, SHOULDER_Y, FIGURE_Z];
-  const rightShoulderPos: [number, number, number] = [SHOULDER_SPREAD, SHOULDER_Y, FIGURE_Z];
+  const leftShoulderPos: [number, number, number] = [
+    -SHOULDER_SPREAD,
+    SHOULDER_Y,
+    FIGURE_Z,
+  ];
+  const rightShoulderPos: [number, number, number] = [
+    SHOULDER_SPREAD,
+    SHOULDER_Y,
+    FIGURE_Z,
+  ];
   const leftHipPos: [number, number, number] = [-HIP_SPREAD, HIP_Y, FIGURE_Z];
   const rightHipPos: [number, number, number] = [HIP_SPREAD, HIP_Y, FIGURE_Z];
   const leftKneePos: [number, number, number] = [-HIP_SPREAD, KNEE_Y, FIGURE_Z];
@@ -196,9 +204,9 @@
     const forwardFactor = Math.max(0, Math.min(1, (handForward + 50) / 150));
 
     const hint = new Vector3(
-      outward * (0.3 + heightFactor * 0.5),  // Outward component
-      -0.2 - heightFactor * 0.2,              // Slightly down when raised
-      -0.6 - forwardFactor * 0.4              // Backward (-Z, toward figure's back)
+      outward * (0.3 + heightFactor * 0.5), // Outward component
+      -0.2 - heightFactor * 0.2, // Slightly down when raised
+      -0.6 - forwardFactor * 0.4 // Backward (-Z, toward figure's back)
     ).normalize();
 
     // Get perpendicular axis for rotation
@@ -214,7 +222,8 @@
     perp.normalize();
 
     // Rotate the direction vector by the angle around the perpendicular
-    const elbowDir = dir.clone()
+    const elbowDir = dir
+      .clone()
       .applyAxisAngle(perp, angle)
       .multiplyScalar(upperArmLen);
 
@@ -225,10 +234,22 @@
 
   // Calculate elbow positions
   const leftElbowPos = $derived(
-    calculateElbowPosition(leftShoulderPos, leftHandPos, UPPER_ARM_LENGTH, FOREARM_LENGTH, true)
+    calculateElbowPosition(
+      leftShoulderPos,
+      leftHandPos,
+      UPPER_ARM_LENGTH,
+      FOREARM_LENGTH,
+      true
+    )
   );
   const rightElbowPos = $derived(
-    calculateElbowPosition(rightShoulderPos, rightHandPos, UPPER_ARM_LENGTH, FOREARM_LENGTH, false)
+    calculateElbowPosition(
+      rightShoulderPos,
+      rightHandPos,
+      UPPER_ARM_LENGTH,
+      FOREARM_LENGTH,
+      false
+    )
   );
 
   // Limb geometries (derived from positions)
@@ -240,7 +261,9 @@
   // Arms now have two segments each
   const leftUpperArm = $derived(getLimbGeometry(leftShoulderPos, leftElbowPos));
   const leftForearm = $derived(getLimbGeometry(leftElbowPos, leftHandPos));
-  const rightUpperArm = $derived(getLimbGeometry(rightShoulderPos, rightElbowPos));
+  const rightUpperArm = $derived(
+    getLimbGeometry(rightShoulderPos, rightElbowPos)
+  );
   const rightForearm = $derived(getLimbGeometry(rightElbowPos, rightHandPos));
 
   const leftThigh = $derived(getLimbGeometry(leftHipPos, leftKneePos));

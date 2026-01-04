@@ -12,8 +12,7 @@ MotionsIntroPage - Introduction to hand motions
 
   <div class="intro-section">
     <p class="intro-text">
-      In TKA, hands move between grid points using three fundamental
-      motions:
+      In TKA, hands move between grid points using three fundamental motions:
     </p>
 
     <div class="fundamental-motions">
@@ -38,8 +37,8 @@ MotionsIntroPage - Introduction to hand motions
     </div>
 
     <p class="intro-text">
-      These combine into <strong>6 Motion Types</strong> that describe what both
-      hands do together.
+      These combine into <strong>6 Motion Types</strong> that describe what both hands
+      do together.
     </p>
   </div>
 

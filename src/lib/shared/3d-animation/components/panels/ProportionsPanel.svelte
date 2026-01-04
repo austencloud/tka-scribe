@@ -7,7 +7,10 @@
    */
 
   import { userProportionsState } from "../../state/user-proportions-state.svelte";
-  import { COMMON_HEIGHTS, COMMON_STAFF_LENGTHS } from "../../config/user-proportions";
+  import {
+    COMMON_HEIGHTS,
+    COMMON_STAFF_LENGTHS,
+  } from "../../config/user-proportions";
 
   interface Props {
     compact?: boolean;
@@ -36,7 +39,10 @@
 
   // Apply custom height
   function applyCustomHeight() {
-    userProportionsState.setHeightFeetInches(customHeightFeet, customHeightInches);
+    userProportionsState.setHeightFeetInches(
+      customHeightFeet,
+      customHeightInches
+    );
   }
 
   // Apply custom staff length
@@ -63,7 +69,10 @@
             {label}
           </button>
         {/each}
-        <button class="preset-btn custom-btn" onclick={() => (useCustomHeight = true)}>
+        <button
+          class="preset-btn custom-btn"
+          onclick={() => (useCustomHeight = true)}
+        >
           Custom
         </button>
       </div>
@@ -89,7 +98,9 @@
         </div>
         <div class="btn-row">
           <button class="apply-btn" onclick={applyCustomHeight}>Apply</button>
-          <button class="cancel-btn" onclick={() => (useCustomHeight = false)}>Cancel</button>
+          <button class="cancel-btn" onclick={() => (useCustomHeight = false)}
+            >Cancel</button
+          >
         </div>
       </div>
     {/if}
@@ -110,7 +121,10 @@
             {label}
           </button>
         {/each}
-        <button class="preset-btn custom-btn" onclick={() => (useCustomStaff = true)}>
+        <button
+          class="preset-btn custom-btn"
+          onclick={() => (useCustomStaff = true)}
+        >
           Custom
         </button>
       </div>
@@ -128,7 +142,9 @@
         </div>
         <div class="btn-row">
           <button class="apply-btn" onclick={applyCustomStaff}>Apply</button>
-          <button class="cancel-btn" onclick={() => (useCustomStaff = false)}>Cancel</button>
+          <button class="cancel-btn" onclick={() => (useCustomStaff = false)}
+            >Cancel</button
+          >
         </div>
       </div>
     {/if}
@@ -138,11 +154,15 @@
     <section class="info-section">
       <div class="info-row">
         <span class="info-label">Arm reach:</span>
-        <span class="info-value">{Math.round(userProportionsState.dimensions.armReachCm)} cm</span>
+        <span class="info-value"
+          >{Math.round(userProportionsState.dimensions.armReachCm)} cm</span
+        >
       </div>
       <div class="info-row">
         <span class="info-label">Grid radius:</span>
-        <span class="info-value">{Math.round(userProportionsState.outerPointRadius / 2)} cm</span>
+        <span class="info-value"
+          >{Math.round(userProportionsState.outerPointRadius / 2)} cm</span
+        >
       </div>
     </section>
   {/if}

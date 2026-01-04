@@ -78,7 +78,10 @@
       tabindex="0"
     >
       <div class="toast-icon">
-        <i class="fas {activeNotification.icon || 'fa-party-horn'}" aria-hidden="true"></i>
+        <i
+          class="fas {activeNotification.icon || 'fa-party-horn'}"
+          aria-hidden="true"
+        ></i>
       </div>
       <div class="toast-content">
         <div class="toast-title">{activeNotification.title}</div>
@@ -128,22 +131,26 @@
       box-shadow:
         0 8px 32px var(--theme-shadow),
         0 0 20px
-          color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 30%, transparent);
+          color-mix(
+            in srgb,
+            var(--theme-accent, var(--theme-accent)) 30%,
+            transparent
+          );
     }
     to {
       box-shadow:
         0 8px 32px var(--theme-shadow),
         0 0 40px
-          color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 50%, transparent);
+          color-mix(
+            in srgb,
+            var(--theme-accent, var(--theme-accent)) 50%,
+            transparent
+          );
     }
   }
 
   .toast.achievement {
-    border-color: color-mix(
-      in srgb,
-      var(--semantic-warning) 50%,
-      transparent
-    );
+    border-color: color-mix(in srgb, var(--semantic-warning) 50%, transparent);
   }
 
   .toast.level_up {
@@ -155,19 +162,11 @@
   }
 
   .toast.challenge_complete {
-    border-color: color-mix(
-      in srgb,
-      var(--semantic-success) 50%,
-      transparent
-    );
+    border-color: color-mix(in srgb, var(--semantic-success) 50%, transparent);
   }
 
   .toast.streak_milestone {
-    border-color: color-mix(
-      in srgb,
-      var(--semantic-error) 50%,
-      transparent
-    );
+    border-color: color-mix(in srgb, var(--semantic-error) 50%, transparent);
   }
 
   .toast-icon {

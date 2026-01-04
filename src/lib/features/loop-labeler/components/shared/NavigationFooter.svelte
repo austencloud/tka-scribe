@@ -17,12 +17,8 @@
 </script>
 
 <div class="navigation">
-  <button onclick={onPrevious} disabled={!canGoPrevious}>
-    Previous
-  </button>
-  <button onclick={onSkip}>
-    Skip
-  </button>
+  <button onclick={onPrevious} disabled={!canGoPrevious}> Previous </button>
+  <button onclick={onSkip}> Skip </button>
   <span class="position">
     {currentIndex + 1} / {totalCount}
   </span>

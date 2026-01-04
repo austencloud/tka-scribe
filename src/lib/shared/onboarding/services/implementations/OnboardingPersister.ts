@@ -39,9 +39,7 @@ const MODULES_WITH_ONBOARDING = [
 ];
 
 @injectable()
-export class OnboardingPersister
-  implements IOnboardingPersister
-{
+export class OnboardingPersister implements IOnboardingPersister {
   private cachedStatus: OnboardingStatus | null = null;
   private unsubscribe: Unsubscribe | null = null;
 
@@ -354,10 +352,7 @@ export class OnboardingPersister
         }
       },
       (error) => {
-        console.error(
-          "❌ [OnboardingPersister] Subscription error:",
-          error
-        );
+        console.error("❌ [OnboardingPersister] Subscription error:", error);
       }
     );
 

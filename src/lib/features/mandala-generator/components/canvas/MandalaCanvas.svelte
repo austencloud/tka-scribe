@@ -1,257 +1,415 @@
 <script lang="ts">
-	import { getContext, onMount } from 'svelte';
-	import type { MandalaElement, TransformedElement, Point } from '../../domain/models/mandala-element';
-	import type { MandalaConfig } from '../../domain/models/mandala-config';
-	import type { IMandalaTransformer } from '../../services/contracts/IMandalaTransformer';
-	import { CANVAS_SIZE, CANVAS_CENTER } from '../../domain/constants/symmetry-constants';
-	import { mandalaState } from '../../state/mandala-state.svelte';
-	import GridDotOverlay from './GridDotOverlay.svelte';
-	import MandalaElementView from './MandalaElementView.svelte';
+  import { getContext, onMount } from "svelte";
+  import type {
+    MandalaElement,
+    TransformedElement,
+    Point,
+  } from "../../domain/models/mandala-element";
+  import type { MandalaConfig } from "../../domain/models/mandala-config";
+  import type { IMandalaTransformer } from "../../services/contracts/IMandalaTransformer";
+  import {
+    CANVAS_SIZE,
+    CANVAS_CENTER,
+  } from "../../domain/constants/symmetry-constants";
+  import { mandalaState } from "../../state/mandala-state.svelte";
+  import GridDotOverlay from "./GridDotOverlay.svelte";
+  import MandalaElementView from "./MandalaElementView.svelte";
 
-	interface Props {
-		transformer?: IMandalaTransformer;
-		onElementSelect?: (id: string | null) => void;
-		onElementMove?: (id: string, position: Point) => void;
-		onCanvasClick?: (position: Point) => void;
-	}
+  interface Props {
+    transformer?: IMandalaTransformer;
+    onElementSelect?: (id: string | null) => void;
+    onElementMove?: (id: string, position: Point) => void;
+    onCanvasClick?: (position: Point) => void;
+  }
 
-	let {
-		transformer,
-		onElementSelect,
-		onElementMove,
-		onCanvasClick
-	}: Props = $props();
+  let { transformer, onElementSelect, onElementMove, onCanvasClick }: Props =
+    $props();
 
-	let canvasContainer: HTMLDivElement;
-	let isDragging = false;
-	let dragElementId: string | null = null;
-	let dragOffset: Point = { x: 0, y: 0 };
+  let canvasContainer: HTMLDivElement;
+  let isDragging = false;
+  let dragElementId: string | null = null;
+  let dragOffset: Point = { x: 0, y: 0 };
 
-	// State bindings
-	const elements = $derived(mandalaState.elements);
-	const config = $derived(mandalaState.config);
-	const selectedElementId = $derived(mandalaState.selectedElementId);
-	const hoveredElementId = $derived(mandalaState.hoveredElementId);
+  // External drop preview state
+  let isExternalDragOver = $state(false);
+  let externalDragPosition = $state<Point | null>(null);
+  let externalDragData = $state<{
+    type: string;
+    motionType: string;
+    turns: number | null;
+    color: string;
+    path: string;
+  } | null>(null);
 
-	// Compute transformed elements (symmetry copies)
-	const transformedElements = $derived.by(() => {
-		if (!transformer || elements.length === 0) return [];
+  // State bindings
+  const elements = $derived(mandalaState.elements);
+  const config = $derived(mandalaState.config);
+  const selectedElementId = $derived(mandalaState.selectedElementId);
+  const hoveredElementId = $derived(mandalaState.hoveredElementId);
 
-		const allTransformed: TransformedElement[] = [];
-		for (const element of elements) {
-			const transformed = transformer.generateKaleidoscopePattern(element, config);
-			// Skip the original (foldIndex 0, not mirrored) - we render source elements separately
-			const copies = transformed.filter(t => t.foldIndex > 0 || t.isMirrored);
-			allTransformed.push(...copies);
-		}
-		return allTransformed;
-	});
+  // Compute transformed elements (symmetry copies)
+  const transformedElements = $derived.by(() => {
+    if (!transformer || elements.length === 0) return [];
 
-	// Convert screen coordinates to SVG coordinates
-	function screenToSvg(clientX: number, clientY: number): Point {
-		if (!canvasContainer) return { x: 0, y: 0 };
+    const allTransformed: TransformedElement[] = [];
+    for (const element of elements) {
+      const transformed = transformer.generateKaleidoscopePattern(
+        element,
+        config
+      );
+      // Skip the original (foldIndex 0, not mirrored) - we render source elements separately
+      const copies = transformed.filter((t) => t.foldIndex > 0 || t.isMirrored);
+      allTransformed.push(...copies);
+    }
+    return allTransformed;
+  });
 
-		const rect = canvasContainer.getBoundingClientRect();
-		const scaleX = CANVAS_SIZE / rect.width;
-		const scaleY = CANVAS_SIZE / rect.height;
+  // Convert screen coordinates to SVG coordinates
+  function screenToSvg(clientX: number, clientY: number): Point {
+    if (!canvasContainer) return { x: 0, y: 0 };
 
-		return {
-			x: (clientX - rect.left) * scaleX,
-			y: (clientY - rect.top) * scaleY
-		};
-	}
+    const rect = canvasContainer.getBoundingClientRect();
+    const scaleX = CANVAS_SIZE / rect.width;
+    const scaleY = CANVAS_SIZE / rect.height;
 
-	function handleCanvasClick(event: MouseEvent) {
-		if (isDragging) return;
+    return {
+      x: (clientX - rect.left) * scaleX,
+      y: (clientY - rect.top) * scaleY,
+    };
+  }
 
-		// Check if we clicked on empty space
-		const target = event.target as Element;
-		if (target.closest('.mandala-element')) return;
+  function handleCanvasClick(event: MouseEvent) {
+    if (isDragging) return;
 
-		const position = screenToSvg(event.clientX, event.clientY);
-		onCanvasClick?.(position);
+    // Check if we clicked on empty space
+    const target = event.target as Element;
+    if (target.closest(".mandala-element")) return;
 
-		// Deselect if clicking empty space
-		onElementSelect?.(null);
-		mandalaState.setSelectedElementId(null);
-	}
+    const position = screenToSvg(event.clientX, event.clientY);
+    onCanvasClick?.(position);
 
-	function handleElementSelect(id: string) {
-		onElementSelect?.(id);
-		mandalaState.setSelectedElementId(id);
-	}
+    // Deselect if clicking empty space
+    onElementSelect?.(null);
+    mandalaState.setSelectedElementId(null);
+  }
 
-	function handleElementHover(id: string | null) {
-		mandalaState.setHoveredElementId(id);
-	}
+  function handleElementSelect(id: string) {
+    onElementSelect?.(id);
+    mandalaState.setSelectedElementId(id);
+  }
 
-	function handleDragStart(id: string, event: PointerEvent) {
-		const element = elements.find(e => e.id === id);
-		if (!element) return;
+  function handleElementHover(id: string | null) {
+    mandalaState.setHoveredElementId(id);
+  }
 
-		isDragging = true;
-		dragElementId = id;
-		mandalaState.setDragMode('move');
+  function handleDragStart(id: string, event: PointerEvent) {
+    const element = elements.find((e) => e.id === id);
+    if (!element) return;
 
-		const svgPos = screenToSvg(event.clientX, event.clientY);
-		dragOffset = {
-			x: svgPos.x - element.position.x,
-			y: svgPos.y - element.position.y
-		};
+    isDragging = true;
+    dragElementId = id;
+    mandalaState.setDragMode("move");
 
-		// Capture pointer for smooth dragging
-		(event.target as Element).setPointerCapture(event.pointerId);
-	}
+    const svgPos = screenToSvg(event.clientX, event.clientY);
+    dragOffset = {
+      x: svgPos.x - element.position.x,
+      y: svgPos.y - element.position.y,
+    };
 
-	function handlePointerMove(event: PointerEvent) {
-		if (!isDragging || !dragElementId) return;
+    // Capture pointer for smooth dragging
+    (event.target as Element).setPointerCapture(event.pointerId);
+  }
 
-		const position = screenToSvg(event.clientX, event.clientY);
-		const newPosition = {
-			x: position.x - dragOffset.x,
-			y: position.y - dragOffset.y
-		};
+  function handlePointerMove(event: PointerEvent) {
+    if (!isDragging || !dragElementId) return;
 
-		onElementMove?.(dragElementId, newPosition);
-		mandalaState.updateElement(dragElementId, { position: newPosition });
-	}
+    const position = screenToSvg(event.clientX, event.clientY);
+    const newPosition = {
+      x: position.x - dragOffset.x,
+      y: position.y - dragOffset.y,
+    };
 
-	function handlePointerUp(event: PointerEvent) {
-		if (isDragging) {
-			// Commit to history when drag ends
-			mandalaState.pushHistory();
-		}
+    onElementMove?.(dragElementId, newPosition);
+    mandalaState.updateElement(dragElementId, { position: newPosition });
+  }
 
-		isDragging = false;
-		dragElementId = null;
-		mandalaState.setDragMode('none');
+  function handlePointerUp(event: PointerEvent) {
+    if (isDragging) {
+      // Commit to history when drag ends
+      mandalaState.pushHistory();
+    }
 
-		(event.target as Element).releasePointerCapture?.(event.pointerId);
-	}
+    isDragging = false;
+    dragElementId = null;
+    mandalaState.setDragMode("none");
+
+    (event.target as Element).releasePointerCapture?.(event.pointerId);
+  }
+
+  // External drag and drop handlers (from asset library)
+  function handleDragOver(event: DragEvent) {
+    event.preventDefault();
+    event.dataTransfer!.dropEffect = "copy";
+
+    isExternalDragOver = true;
+    externalDragPosition = screenToSvg(event.clientX, event.clientY);
+
+    // Try to parse the drag data for preview
+    if (!externalDragData) {
+      try {
+        const jsonData = event.dataTransfer?.types.includes("application/json");
+        if (jsonData) {
+          // We can't read the data during dragover, just show generic preview
+        }
+      } catch (e) {
+        // Ignore
+      }
+    }
+  }
+
+  function handleDragLeave(event: DragEvent) {
+    // Only clear if we're actually leaving the container
+    const relatedTarget = event.relatedTarget as Element | null;
+    if (!canvasContainer?.contains(relatedTarget)) {
+      isExternalDragOver = false;
+      externalDragPosition = null;
+      externalDragData = null;
+    }
+  }
+
+  function handleDrop(event: DragEvent) {
+    event.preventDefault();
+    isExternalDragOver = false;
+
+    const dropPosition = screenToSvg(event.clientX, event.clientY);
+
+    try {
+      const jsonStr = event.dataTransfer?.getData("application/json");
+      if (jsonStr) {
+        const data = JSON.parse(jsonStr);
+        if (data.type === "arrow") {
+          // Add the arrow element at the exact drop position
+          mandalaState.addElement({
+            type: "arrow",
+            motionType: data.motionType,
+            turns: data.turns,
+            position: dropPosition,
+            rotation: 0,
+            scale: 1,
+            color: data.color,
+            svgPath: data.path,
+            zIndex: mandalaState.elements.length,
+          });
+        } else if (data.type === "staff") {
+          mandalaState.addElement({
+            type: "staff",
+            staffType: data.staffType,
+            position: dropPosition,
+            rotation: 0,
+            scale: 1,
+            color: data.color,
+            svgPath: data.path,
+            zIndex: mandalaState.elements.length,
+          });
+        }
+      }
+    } catch (e) {
+      console.error("Failed to parse drop data:", e);
+    }
+
+    externalDragPosition = null;
+    externalDragData = null;
+  }
 </script>
 
 <div
-	class="mandala-canvas-container"
-	bind:this={canvasContainer}
-	onpointermove={handlePointerMove}
-	onpointerup={handlePointerUp}
-	onpointercancel={handlePointerUp}
-	role="application"
-	aria-label="Mandala canvas"
+  class="mandala-canvas-container"
+  class:drag-over={isExternalDragOver}
+  bind:this={canvasContainer}
+  onpointermove={handlePointerMove}
+  onpointerup={handlePointerUp}
+  onpointercancel={handlePointerUp}
+  ondragover={handleDragOver}
+  ondragleave={handleDragLeave}
+  ondrop={handleDrop}
+  role="application"
+  aria-label="Mandala canvas"
 >
-	<svg
-		class="mandala-canvas"
-		viewBox="0 0 {CANVAS_SIZE} {CANVAS_SIZE}"
-		onclick={handleCanvasClick}
-	>
-		<!-- Background -->
-		<rect
-			x="0"
-			y="0"
-			width={CANVAS_SIZE}
-			height={CANVAS_SIZE}
-			fill="var(--theme-panel-bg, #0a0a14)"
-		/>
+  <svg
+    class="mandala-canvas"
+    viewBox="0 0 {CANVAS_SIZE} {CANVAS_SIZE}"
+    onclick={handleCanvasClick}
+  >
+    <!-- Background -->
+    <rect
+      x="0"
+      y="0"
+      width={CANVAS_SIZE}
+      height={CANVAS_SIZE}
+      fill="var(--theme-panel-bg, #0a0a14)"
+    />
 
-		<!-- Symmetry guide lines (subtle) -->
-		<g class="symmetry-guides" opacity="0.1">
-			{#each Array(config.foldCount) as _, i}
-				{@const angle = (360 / config.foldCount) * i}
-				<line
-					x1={CANVAS_CENTER.x}
-					y1={CANVAS_CENTER.y}
-					x2={CANVAS_CENTER.x + Math.cos((angle - 90) * Math.PI / 180) * (CANVAS_SIZE / 2)}
-					y2={CANVAS_CENTER.y + Math.sin((angle - 90) * Math.PI / 180) * (CANVAS_SIZE / 2)}
-					stroke="var(--theme-text, white)"
-					stroke-width="1"
-				/>
-			{/each}
-		</g>
+    <!-- Symmetry guide lines (subtle) -->
+    <g class="symmetry-guides" opacity="0.1">
+      {#each Array(config.foldCount) as _, i}
+        {@const angle = (360 / config.foldCount) * i}
+        <line
+          x1={CANVAS_CENTER.x}
+          y1={CANVAS_CENTER.y}
+          x2={CANVAS_CENTER.x +
+            Math.cos(((angle - 90) * Math.PI) / 180) * (CANVAS_SIZE / 2)}
+          y2={CANVAS_CENTER.y +
+            Math.sin(((angle - 90) * Math.PI) / 180) * (CANVAS_SIZE / 2)}
+          stroke="var(--theme-text, white)"
+          stroke-width="1"
+        />
+      {/each}
+    </g>
 
-		<!-- Grid dots overlay -->
-		{#if config.showGridDots}
-			<GridDotOverlay
-				showIntercardinal={true}
-				dotColor="var(--theme-text, white)"
-				dotOpacity={0.2}
-			/>
-		{/if}
+    <!-- Grid dots overlay -->
+    {#if config.showGridDots}
+      <GridDotOverlay
+        showIntercardinal={true}
+        dotColor="var(--theme-text, white)"
+        dotOpacity={0.2}
+      />
+    {/if}
 
-		<!-- Transformed elements (symmetry copies - rendered as ghosts) -->
-		{#each transformedElements as transformed (transformed.sourceId + '-' + transformed.foldIndex + '-' + transformed.isMirrored)}
-			<MandalaElementView
-				element={{
-					id: `${transformed.sourceId}-copy-${transformed.foldIndex}-${transformed.isMirrored}`,
-					type: 'arrow',
-					position: transformed.position,
-					rotation: transformed.rotation,
-					scale: transformed.scale,
-					color: elements.find(e => e.id === transformed.sourceId)?.color ?? '#ffffff',
-					svgContent: transformed.svgContent,
-					zIndex: 0
-				}}
-				isGhost={true}
-			/>
-		{/each}
+    <!-- Transformed elements (symmetry copies - rendered as ghosts) -->
+    {#each transformedElements as transformed (transformed.sourceId + "-" + transformed.foldIndex + "-" + transformed.isMirrored)}
+      <MandalaElementView
+        element={{
+          id: `${transformed.sourceId}-copy-${transformed.foldIndex}-${transformed.isMirrored}`,
+          type: "arrow",
+          position: transformed.position,
+          rotation: transformed.rotation,
+          scale: transformed.scale,
+          color:
+            elements.find((e) => e.id === transformed.sourceId)?.color ??
+            "#ffffff",
+          svgContent: transformed.svgContent,
+          zIndex: 0,
+        }}
+        isGhost={true}
+      />
+    {/each}
 
-		<!-- Source elements (user-placed, interactive) -->
-		{#each elements as element (element.id)}
-			<MandalaElementView
-				{element}
-				isSelected={selectedElementId === element.id}
-				isHovered={hoveredElementId === element.id}
-				onSelect={handleElementSelect}
-				onHover={handleElementHover}
-				onDragStart={handleDragStart}
-			/>
-		{/each}
-	</svg>
+    <!-- Source elements (user-placed, interactive) -->
+    {#each elements as element (element.id)}
+      <MandalaElementView
+        {element}
+        isSelected={selectedElementId === element.id}
+        isHovered={hoveredElementId === element.id}
+        onSelect={handleElementSelect}
+        onHover={handleElementHover}
+        onDragStart={handleDragStart}
+      />
+    {/each}
 
-	<!-- Canvas info overlay -->
-	<div class="canvas-info">
-		<span class="info-label">{config.foldCount}-fold</span>
-		{#if config.enableMirror}
-			<span class="info-label">Mirror: {config.mirrorAxis}</span>
-		{/if}
-		<span class="info-label">{elements.length} element{elements.length !== 1 ? 's' : ''}</span>
-	</div>
+    <!-- Drop preview indicator -->
+    {#if isExternalDragOver && externalDragPosition}
+      <g class="drop-preview" pointer-events="none">
+        <!-- Crosshair indicator showing exact drop position -->
+        <circle
+          cx={externalDragPosition.x}
+          cy={externalDragPosition.y}
+          r="30"
+          fill="var(--theme-accent, #4a9eff)"
+          fill-opacity="0.2"
+          stroke="var(--theme-accent, #4a9eff)"
+          stroke-width="2"
+          stroke-dasharray="5,5"
+        />
+        <line
+          x1={externalDragPosition.x - 20}
+          y1={externalDragPosition.y}
+          x2={externalDragPosition.x + 20}
+          y2={externalDragPosition.y}
+          stroke="var(--theme-accent, #4a9eff)"
+          stroke-width="1.5"
+        />
+        <line
+          x1={externalDragPosition.x}
+          y1={externalDragPosition.y - 20}
+          x2={externalDragPosition.x}
+          y2={externalDragPosition.y + 20}
+          stroke="var(--theme-accent, #4a9eff)"
+          stroke-width="1.5"
+        />
+      </g>
+    {/if}
+  </svg>
+
+  <!-- Canvas info overlay -->
+  <div class="canvas-info">
+    <span class="info-label">{config.foldCount}-fold</span>
+    {#if config.enableMirror}
+      <span class="info-label">Mirror: {config.mirrorAxis}</span>
+    {/if}
+    <span class="info-label"
+      >{elements.length} element{elements.length !== 1 ? "s" : ""}</span
+    >
+  </div>
 </div>
 
 <style>
-	.mandala-canvas-container {
-		position: relative;
-		width: 100%;
-		aspect-ratio: 1;
-		background: var(--theme-panel-bg, #0a0a14);
-		border-radius: var(--settings-radius-md, 8px);
-		overflow: hidden;
-		touch-action: none;
-	}
+  .mandala-canvas-container {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1;
+    background: var(--theme-panel-bg, #0a0a14);
+    border-radius: var(--settings-radius-md, 8px);
+    overflow: hidden;
+    touch-action: none;
+    border: 2px solid transparent;
+    transition: border-color 0.15s ease;
+  }
 
-	.mandala-canvas {
-		display: block;
-		width: 100%;
-		height: 100%;
-	}
+  .mandala-canvas-container.drag-over {
+    border-color: var(--theme-accent, #4a9eff);
+  }
 
-	.symmetry-guides {
-		pointer-events: none;
-	}
+  .mandala-canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
 
-	.canvas-info {
-		position: absolute;
-		bottom: 8px;
-		left: 8px;
-		display: flex;
-		gap: 8px;
-		pointer-events: none;
-	}
+  .symmetry-guides {
+    pointer-events: none;
+  }
 
-	.info-label {
-		font-size: var(--font-size-compact, 12px);
-		color: var(--theme-text-muted, rgba(255, 255, 255, 0.5));
-		background: rgba(0, 0, 0, 0.4);
-		padding: 2px 6px;
-		border-radius: 4px;
-	}
+  .canvas-info {
+    position: absolute;
+    bottom: 8px;
+    left: 8px;
+    display: flex;
+    gap: 8px;
+    pointer-events: none;
+  }
+
+  .info-label {
+    font-size: var(--font-size-compact, 12px);
+    color: var(--theme-text-muted, rgba(255, 255, 255, 0.5));
+    background: rgba(0, 0, 0, 0.4);
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+
+  /* Drop preview animation */
+  .drop-preview circle {
+    animation: pulse-ring 1s ease-in-out infinite;
+  }
+
+  @keyframes pulse-ring {
+    0%,
+    100% {
+      r: 30;
+      fill-opacity: 0.2;
+    }
+    50% {
+      r: 35;
+      fill-opacity: 0.3;
+    }
+  }
 </style>

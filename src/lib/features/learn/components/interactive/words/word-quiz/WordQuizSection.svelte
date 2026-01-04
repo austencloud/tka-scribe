@@ -67,10 +67,7 @@ WordQuizSection - Main quiz UI with visualizer and answers
   </div>
 
   {#if answerState !== "idle"}
-    <WordQuizFeedback
-      {answerState}
-      explanation={question.explanation}
-    />
+    <WordQuizFeedback {answerState} explanation={question.explanation} />
   {/if}
 </div>
 

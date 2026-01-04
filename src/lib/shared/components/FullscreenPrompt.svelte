@@ -119,7 +119,8 @@ the actual fullscreen state rather than inferring from viewport size.
   <div
     class="fullscreen-prompt-overlay"
     onclick={requestFullscreen}
-    onkeydown={(e) => (e.key === "Enter" || e.key === " ") && requestFullscreen()}
+    onkeydown={(e) =>
+      (e.key === "Enter" || e.key === " ") && requestFullscreen()}
     role="button"
     tabindex="0"
     aria-label="Enter fullscreen to start building"

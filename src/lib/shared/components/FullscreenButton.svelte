@@ -17,9 +17,7 @@
 
   // Check if fullscreen is supported and if running as PWA
   onMount(() => {
-    hapticService = resolve<IHapticFeedback>(
-      TYPES.IHapticFeedback
-    );
+    hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
     fullscreenService = resolve<IMobileFullscreenManager>(
       TYPES.IMobileFullscreenManager
     );

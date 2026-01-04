@@ -85,9 +85,7 @@
   });
 
   onMount(() => {
-    sessionService = tryResolve<ISessionTracker>(
-      TYPES.ISessionTracker
-    );
+    sessionService = tryResolve<ISessionTracker>(TYPES.ISessionTracker);
 
     // Ensure library sequences are loaded
     if (
@@ -279,7 +277,11 @@
       transparent
     );
     border: 1px solid
-      color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 22%, transparent);
+      color-mix(
+        in srgb,
+        var(--theme-accent, var(--theme-accent)) 22%,
+        transparent
+      );
     border-radius: 24px;
   }
 
@@ -330,9 +332,24 @@
     height: 80px;
     background: linear-gradient(
       90deg,
-      color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 8%, transparent) 25%,
-      color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 15%, transparent) 50%,
-      color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 8%, transparent) 75%
+      color-mix(
+          in srgb,
+          var(--theme-accent, var(--theme-accent)) 8%,
+          transparent
+        )
+        25%,
+      color-mix(
+          in srgb,
+          var(--theme-accent, var(--theme-accent)) 15%,
+          transparent
+        )
+        50%,
+      color-mix(
+          in srgb,
+          var(--theme-accent, var(--theme-accent)) 8%,
+          transparent
+        )
+        75%
     );
     background-size: 200% 100%;
     animation: shimmer 2s infinite ease-in-out;
@@ -360,7 +377,11 @@
 
   .empty-state i {
     font-size: var(--font-size-3xl);
-    color: color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 40%, transparent);
+    color: color-mix(
+      in srgb,
+      var(--theme-accent, var(--theme-accent)) 40%,
+      transparent
+    );
   }
 
   .empty-state p {
@@ -443,7 +464,11 @@
       transparent
     );
     border: 1px solid
-      color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 15%, transparent);
+      color-mix(
+        in srgb,
+        var(--theme-accent, var(--theme-accent)) 15%,
+        transparent
+      );
     border-radius: 16px;
     cursor: pointer;
     transition: all 150ms ease;
@@ -453,11 +478,7 @@
   }
 
   .sequence-card:hover {
-    background: color-mix(
-      in srgb,
-      var(--theme-accent) 14%,
-      transparent
-    );
+    background: color-mix(in srgb, var(--theme-accent) 14%, transparent);
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   }
@@ -582,7 +603,8 @@
     background: linear-gradient(
       135deg,
       var(--theme-accent, var(--theme-accent)) 0%,
-      color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 80%, black) 100%
+      color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 80%, black)
+        100%
     );
     border: none;
     border-radius: 14px;
@@ -598,7 +620,12 @@
     background: linear-gradient(
       135deg,
       var(--semantic-success, var(--semantic-success)) 0%,
-      color-mix(in srgb, var(--semantic-success, var(--semantic-success)) 80%, black) 100%
+      color-mix(
+          in srgb,
+          var(--semantic-success, var(--semantic-success)) 80%,
+          black
+        )
+        100%
     );
   }
 

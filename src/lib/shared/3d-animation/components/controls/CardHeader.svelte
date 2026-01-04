@@ -18,7 +18,11 @@
   let { title, color = "blue", action }: Props = $props();
 </script>
 
-<header class="card-header" class:blue={color === "blue"} class:red={color === "red"}>
+<header
+  class="card-header"
+  class:blue={color === "blue"}
+  class:red={color === "red"}
+>
   <span class="color-dot"></span>
   <span class="title">{title}</span>
   {#if action}

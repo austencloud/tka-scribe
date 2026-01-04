@@ -66,7 +66,9 @@ export async function getSettingsService(): Promise<ISettingsState> {
 export async function getPersistenceService(): Promise<IPersistenceService> {
   if (!persistenceService) {
     await waitForContainer();
-    persistenceService = resolve<IPersistenceService>(TYPES.IPersistenceService);
+    persistenceService = resolve<IPersistenceService>(
+      TYPES.IPersistenceService
+    );
   }
   if (!persistenceService) {
     throw new Error("Persistence service is null after resolution");

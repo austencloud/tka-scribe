@@ -308,8 +308,7 @@
   }
 
   .variation-toggle:focus-visible {
-    outline: 2px solid
-      color-mix(in srgb, var(--theme-accent) 50%, transparent);
+    outline: 2px solid color-mix(in srgb, var(--theme-accent) 50%, transparent);
     outline-offset: 2px;
   }
 
@@ -330,7 +329,11 @@
   .variation-dot.active {
     background: var(--theme-accent);
     box-shadow: 0 0 6px
-      color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 50%, transparent);
+      color-mix(
+        in srgb,
+        var(--theme-accent, var(--theme-accent)) 50%,
+        transparent
+      );
   }
 
   .variation-text {

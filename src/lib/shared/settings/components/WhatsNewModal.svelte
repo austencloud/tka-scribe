@@ -141,7 +141,11 @@
                   <i class="fas fa-star" aria-hidden="true"></i>
                 </div>
                 <div class="hero-content">
-                  <span class="hero-label">{highlights.length > 1 ? `Highlight ${i + 1}` : "Highlight"}</span>
+                  <span class="hero-label"
+                    >{highlights.length > 1
+                      ? `Highlight ${i + 1}`
+                      : "Highlight"}</span
+                  >
                   <p class="hero-text">{highlight}</p>
                 </div>
               </div>
@@ -294,7 +298,8 @@
     font-size: var(--font-size-sm);
     font-weight: 700;
     letter-spacing: 0.5px;
-    box-shadow: 0 4px 16px color-mix(in srgb, var(--theme-accent) 30%, transparent);
+    box-shadow: 0 4px 16px
+      color-mix(in srgb, var(--theme-accent) 30%, transparent);
   }
 
   .version-badge i {
@@ -547,12 +552,14 @@
     );
     border: none;
     color: white;
-    box-shadow: 0 4px 12px color-mix(in srgb, var(--theme-accent) 30%, transparent);
+    box-shadow: 0 4px 12px
+      color-mix(in srgb, var(--theme-accent) 30%, transparent);
   }
 
   .footer-btn.primary:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px color-mix(in srgb, var(--theme-accent) 40%, transparent);
+    box-shadow: 0 6px 20px
+      color-mix(in srgb, var(--theme-accent) 40%, transparent);
   }
 
   .footer-btn.primary:active {

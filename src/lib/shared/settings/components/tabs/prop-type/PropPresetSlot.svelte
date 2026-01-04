@@ -108,11 +108,7 @@
   }
 
   .preset-slot.empty:hover {
-    background: color-mix(
-      in srgb,
-      var(--theme-accent) 8%,
-      transparent
-    );
+    background: color-mix(in srgb, var(--theme-accent) 8%, transparent);
     border-color: var(--theme-accent);
   }
 
@@ -128,11 +124,7 @@
 
   /* Selected state */
   .preset-slot.selected {
-    background: color-mix(
-      in srgb,
-      var(--theme-accent) 15%,
-      transparent
-    );
+    background: color-mix(in srgb, var(--theme-accent) 15%, transparent);
     border-color: var(--theme-accent);
     border-style: solid;
   }

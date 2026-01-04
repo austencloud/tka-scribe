@@ -35,10 +35,16 @@ function requiresNonRadialPoints(sequence: SequenceData): boolean {
   // Check start position for clock/counter orientations
   if (sequence.startPosition?.motions) {
     const { blue, red } = sequence.startPosition.motions;
-    if (blue?.startOrientation === Orientation.CLOCK || blue?.startOrientation === Orientation.COUNTER ||
-        blue?.endOrientation === Orientation.CLOCK || blue?.endOrientation === Orientation.COUNTER ||
-        red?.startOrientation === Orientation.CLOCK || red?.startOrientation === Orientation.COUNTER ||
-        red?.endOrientation === Orientation.CLOCK || red?.endOrientation === Orientation.COUNTER) {
+    if (
+      blue?.startOrientation === Orientation.CLOCK ||
+      blue?.startOrientation === Orientation.COUNTER ||
+      blue?.endOrientation === Orientation.CLOCK ||
+      blue?.endOrientation === Orientation.COUNTER ||
+      red?.startOrientation === Orientation.CLOCK ||
+      red?.startOrientation === Orientation.COUNTER ||
+      red?.endOrientation === Orientation.CLOCK ||
+      red?.endOrientation === Orientation.COUNTER
+    ) {
       return true;
     }
   }
@@ -46,10 +52,16 @@ function requiresNonRadialPoints(sequence: SequenceData): boolean {
   // Check all beats for clock/counter orientations
   for (const beat of sequence.beats || []) {
     const { blue, red } = beat.motions;
-    if (blue?.startOrientation === Orientation.CLOCK || blue?.startOrientation === Orientation.COUNTER ||
-        blue?.endOrientation === Orientation.CLOCK || blue?.endOrientation === Orientation.COUNTER ||
-        red?.startOrientation === Orientation.CLOCK || red?.startOrientation === Orientation.COUNTER ||
-        red?.endOrientation === Orientation.CLOCK || red?.endOrientation === Orientation.COUNTER) {
+    if (
+      blue?.startOrientation === Orientation.CLOCK ||
+      blue?.startOrientation === Orientation.COUNTER ||
+      blue?.endOrientation === Orientation.CLOCK ||
+      blue?.endOrientation === Orientation.COUNTER ||
+      red?.startOrientation === Orientation.CLOCK ||
+      red?.startOrientation === Orientation.COUNTER ||
+      red?.endOrientation === Orientation.CLOCK ||
+      red?.endOrientation === Orientation.COUNTER
+    ) {
       return true;
     }
   }
@@ -61,7 +73,8 @@ export const GET: RequestHandler = async () => {
   return json({
     endpoint: "/api/batch-render",
     method: "POST",
-    description: "Renders sequence images for word cards with standardized visibility",
+    description:
+      "Renders sequence images for word cards with standardized visibility",
     settings: {
       export: {
         includeStartPosition: true,
@@ -77,14 +90,16 @@ export const GET: RequestHandler = async () => {
         showElemental: "hidden",
         showPositions: "hidden",
         showReversals: "always",
-        showNonRadialPoints: "conditional (level 3+ or clock/counter orientations)",
+        showNonRadialPoints:
+          "conditional (level 3+ or clock/counter orientations)",
         showTurnNumbers: "always",
       },
     },
     usage: {
       body: {
         sequence: "SequenceData object (required)",
-        propType: "PropType enum value (optional) - e.g., 'staff', 'fan', 'hoop'",
+        propType:
+          "PropType enum value (optional) - e.g., 'staff', 'fan', 'hoop'",
         beatSize: "number (optional, default: 120)",
         format: "PNG | JPEG | WebP (optional, default: WebP)",
         quality: "number 0-1 (optional, default: 0.9)",
@@ -109,7 +124,10 @@ export const GET: RequestHandler = async () => {
 export const POST: RequestHandler = async ({ request, getClientAddress }) => {
   // Rate limit to prevent resource exhaustion (rendering is CPU-intensive)
   const clientIp = getClientAddress();
-  const rateCheck = checkRateLimit(`batch-render:${clientIp}`, RATE_LIMITS.GENERAL);
+  const rateCheck = checkRateLimit(
+    `batch-render:${clientIp}`,
+    RATE_LIMITS.GENERAL
+  );
   if (!rateCheck.allowed) {
     return rateLimitResponse(rateCheck.resetAt);
   }
@@ -136,9 +154,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
     }
 
     // Resolve rendering service
-    const renderService = resolve<ISequenceRenderer>(
-      TYPES.ISequenceRenderer
-    );
+    const renderService = resolve<ISequenceRenderer>(TYPES.ISequenceRenderer);
 
     // Determine if this sequence needs non-radial points shown
     const showNonRadial = requiresNonRadialPoints(sequence);
@@ -149,11 +165,11 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
       format,
       quality,
       includeStartPosition: true,
-      addBeatNumbers: true,           // Show beat numbers
-      addWord: true,                  // Show word header
-      addDifficultyLevel: true,       // Show difficulty badge
-      addUserInfo: false,             // No footer
-      addReversalSymbols: true,       // Show reversal symbols
+      addBeatNumbers: true, // Show beat numbers
+      addWord: true, // Show word header
+      addDifficultyLevel: true, // Show difficulty badge
+      addUserInfo: false, // No footer
+      addReversalSymbols: true, // Show reversal symbols
       combinedGrids: false,
       beatScale: 1.0,
       margin: 0,
@@ -163,17 +179,17 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
       exportDate: "",
       notes: "",
       scale: 1.0,
-      propTypeOverride: propType,     // Apply prop type override if provided
+      propTypeOverride: propType, // Apply prop type override if provided
 
       // Word card visibility overrides
       visibilityOverrides: {
-        showTKA: true,                // Always show TKA glyph
-        showVTG: false,               // Hide VTG glyph
-        showElemental: false,         // Hide elemental glyph
-        showPositions: false,         // Hide positions
-        showReversals: true,          // Show reversal indicators
-        showNonRadialPoints: showNonRadial,  // Conditional: level 3+ or clock/counter
-        showTurnNumbers: true,        // Always show turn numbers
+        showTKA: true, // Always show TKA glyph
+        showVTG: false, // Hide VTG glyph
+        showElemental: false, // Hide elemental glyph
+        showPositions: false, // Hide positions
+        showReversals: true, // Show reversal indicators
+        showNonRadialPoints: showNonRadial, // Conditional: level 3+ or clock/counter
+        showTurnNumbers: true, // Always show turn numbers
       },
     };
 

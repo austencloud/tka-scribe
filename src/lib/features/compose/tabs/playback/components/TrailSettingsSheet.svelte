@@ -162,7 +162,10 @@
           {/if}
           <i class="fas fa-sliders" aria-hidden="true"></i>
           <span>Advanced Settings</span>
-          <i class="fas fa-chevron-{showAdvanced ? 'up' : 'down'}" aria-hidden="true"></i>
+          <i
+            class="fas fa-chevron-{showAdvanced ? 'up' : 'down'}"
+            aria-hidden="true"
+          ></i>
         </button>
       </div>
 

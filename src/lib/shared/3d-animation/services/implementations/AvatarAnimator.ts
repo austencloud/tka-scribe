@@ -165,7 +165,11 @@ export class AvatarAnimator implements IAvatarAnimator {
   }
 
   private updateTransition(deltaTime: number): void {
-    if (!this.transitionConfig || !this.transitionStart || !this.transitionEnd) {
+    if (
+      !this.transitionConfig ||
+      !this.transitionStart ||
+      !this.transitionEnd
+    ) {
       return;
     }
 

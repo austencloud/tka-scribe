@@ -15,7 +15,9 @@ const db = admin.firestore();
 const stripeKey = process.env.STRIPE_SECRET_KEY;
 if (!stripeKey) {
   console.error("Error: STRIPE_SECRET_KEY environment variable is required");
-  console.error("Usage: STRIPE_SECRET_KEY=sk_test_xxx node scripts/sync-stripe-customer.cjs");
+  console.error(
+    "Usage: STRIPE_SECRET_KEY=sk_test_xxx node scripts/sync-stripe-customer.cjs"
+  );
   process.exit(1);
 }
 const stripe = new Stripe(stripeKey);

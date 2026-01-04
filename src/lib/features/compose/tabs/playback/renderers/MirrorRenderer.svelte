@@ -54,9 +54,11 @@
     <div class="split-divider">
       <div class="divider-line"></div>
       <div class="divider-icon">
-        <i class="fas fa-{axis === 'vertical'
+        <i
+          class="fas fa-{axis === 'vertical'
             ? 'arrows-left-right'
-            : 'arrows-up-down'}" aria-hidden="true"
+            : 'arrows-up-down'}"
+          aria-hidden="true"
         ></i>
       </div>
       <div class="divider-line"></div>

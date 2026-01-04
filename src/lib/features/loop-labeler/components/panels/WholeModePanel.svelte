@@ -90,7 +90,9 @@
           />
           <span class="component-name">{component.label}</span>
           {#if isSelected && hasInterval(component.id)}
-            <span class="interval-badge">{getIntervalDisplay(component.id)}</span>
+            <span class="interval-badge"
+              >{getIntervalDisplay(component.id)}</span
+            >
           {/if}
         </button>
 
@@ -98,16 +100,20 @@
           <div class="interval-row">
             <button
               class="interval-chip"
-              class:active={transformationIntervals[intervalConfig.key] === "halved"}
+              class:active={transformationIntervals[intervalConfig.key] ===
+                "halved"}
               style="--chip-color: {intervalConfig.color}"
               onclick={() => onSetInterval(intervalConfig.key, "halved")}
-            >½</button>
+              >½</button
+            >
             <button
               class="interval-chip"
-              class:active={transformationIntervals[intervalConfig.key] === "quartered"}
+              class:active={transformationIntervals[intervalConfig.key] ===
+                "quartered"}
               style="--chip-color: {intervalConfig.color}"
               onclick={() => onSetInterval(intervalConfig.key, "quartered")}
-            >¼</button>
+              >¼</button
+            >
           </div>
         {/if}
       </div>

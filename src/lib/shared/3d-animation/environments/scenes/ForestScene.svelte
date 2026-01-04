@@ -71,10 +71,34 @@
   // Ring 4: Distant backdrop (very dense, smallest)
 
   const treeRings = [
-    { radius: 2000, count: 16, scaleBase: 280, scaleVariation: 80, radiusJitter: 200 },
-    { radius: 2600, count: 24, scaleBase: 250, scaleVariation: 70, radiusJitter: 300 },
-    { radius: 3300, count: 32, scaleBase: 220, scaleVariation: 60, radiusJitter: 350 },
-    { radius: 4100, count: 40, scaleBase: 180, scaleVariation: 50, radiusJitter: 400 },
+    {
+      radius: 2000,
+      count: 16,
+      scaleBase: 280,
+      scaleVariation: 80,
+      radiusJitter: 200,
+    },
+    {
+      radius: 2600,
+      count: 24,
+      scaleBase: 250,
+      scaleVariation: 70,
+      radiusJitter: 300,
+    },
+    {
+      radius: 3300,
+      count: 32,
+      scaleBase: 220,
+      scaleVariation: 60,
+      radiusJitter: 350,
+    },
+    {
+      radius: 4100,
+      count: 40,
+      scaleBase: 180,
+      scaleVariation: 50,
+      radiusJitter: 400,
+    },
   ];
 
   // Generate all tree placements across all rings
@@ -88,12 +112,14 @@
 
         // Add randomness to radius for natural clustering
         const seed = ringIndex * 100 + i;
-        const radiusVariation = ring.radius + Math.sin(seed * 3.7) * ring.radiusJitter;
+        const radiusVariation =
+          ring.radius + Math.sin(seed * 3.7) * ring.radiusJitter;
         const x = Math.cos(angle) * radiusVariation;
         const z = Math.sin(angle) * radiusVariation;
 
         // Scale varies by position for natural look
-        const scale = ring.scaleBase + Math.abs(Math.sin(seed * 2.3) * ring.scaleVariation);
+        const scale =
+          ring.scaleBase + Math.abs(Math.sin(seed * 2.3) * ring.scaleVariation);
 
         // Trees face roughly toward center with variation
         const rotation = angle + Math.PI + Math.sin(seed * 1.7) * 0.3;
@@ -107,7 +133,7 @@
     { length: 10 },
     (_, i) => {
       const angle = (i / 10) * Math.PI * 2 + 0.2; // Offset from trees
-      const radius = clearingRadius - 400 + (Math.sin(i * 4.1) * 200);
+      const radius = clearingRadius - 400 + Math.sin(i * 4.1) * 200;
       const x = Math.cos(angle) * radius;
       const z = Math.sin(angle) * radius;
       const scale = 60 + Math.abs(Math.sin(i * 3.2) * 50);
@@ -121,7 +147,7 @@
     { length: 16 },
     (_, i) => {
       const angle = (i / 16) * Math.PI * 2 + 0.15;
-      const radius = clearingRadius - 300 + (Math.sin(i * 5.3) * 350);
+      const radius = clearingRadius - 300 + Math.sin(i * 5.3) * 350;
       const x = Math.cos(angle) * radius;
       const z = Math.sin(angle) * radius;
       const scale = 80 + Math.abs(Math.sin(i * 2.1) * 50);
@@ -152,7 +178,11 @@
 
   // Fire emitter position (reactive to groundY)
   const firePosition = $derived(
-    new Vector3(campfirePosition.x, groundY + fireEmitterHeight, campfirePosition.z)
+    new Vector3(
+      campfirePosition.x,
+      groundY + fireEmitterHeight,
+      campfirePosition.z
+    )
   );
 
   // Forest floor texture paths
@@ -263,7 +293,7 @@
       position.x={x}
       position.y={groundY}
       position.z={z}
-      scale={scale}
+      {scale}
       rotation.y={rotY}
     />
   {/each}
@@ -278,7 +308,7 @@
       position.x={x}
       position.y={groundY}
       position.z={z}
-      scale={scale}
+      {scale}
       rotation.y={rotY}
     />
   {/each}
@@ -293,7 +323,7 @@
       position.x={x}
       position.y={groundY}
       position.z={z}
-      scale={scale}
+      {scale}
       rotation.y={rotY}
     />
   {/each}
@@ -308,7 +338,7 @@
       position.x={x}
       position.y={groundY}
       position.z={z}
-      scale={scale}
+      {scale}
       rotation.y={rotY}
     />
   {/each}

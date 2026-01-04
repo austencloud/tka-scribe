@@ -1,5 +1,9 @@
 import type { SequenceEntry } from "../../domain/models/sequence-models";
-import type { CandidateDesignation, BeatPairGroups, TransformationIntervals } from "../../domain/models/label-models";
+import type {
+  CandidateDesignation,
+  BeatPairGroups,
+  TransformationIntervals,
+} from "../../domain/models/label-models";
 import type { BeatPairRelationship } from "./IBeatPairAnalyzer";
 import type { ComponentId } from "../../domain/constants/loop-components";
 import type { PolyrhythmicLOOPResult } from "./IPolyrhythmicDetector";
@@ -41,7 +45,15 @@ export interface AxisAlternatingPattern {
  * Swap rhythm pattern within each cycle.
  * Examples: "1-2-2-1" = NO_SWAP, SWAP, SWAP, NO_SWAP (outer pure, inner swapped)
  */
-export type SwapRhythm = '1-2-2-1' | '1-2-1-2' | '1-1-2-2' | '2-1-1-2' | '2-1-2-1' | '2-2-1-1' | 'uniform' | 'unknown';
+export type SwapRhythm =
+  | "1-2-2-1"
+  | "1-2-1-2"
+  | "1-1-2-2"
+  | "2-1-1-2"
+  | "2-1-2-1"
+  | "2-2-1-1"
+  | "uniform"
+  | "unknown";
 
 /**
  * Describes a modular LOOP pattern where different columns (positions within cycle)

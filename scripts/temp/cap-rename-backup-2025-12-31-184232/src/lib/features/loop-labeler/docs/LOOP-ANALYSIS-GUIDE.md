@@ -22,18 +22,18 @@ The same letter combination (e.g., "AB" vs "BA") can have completely different L
 
 ### Positional Transformations
 
-| Transform    | Description                                     | Position Changes |
-| ------------ | ----------------------------------------------- | ---------------- |
-| **ROTATED**  | 180° rotation around center                     | n↔s AND e↔w    |
-| **FLIPPED**  | Reflection across horizontal axis (top↔bottom) | n↔s only        |
-| **MIRRORED** | Reflection across vertical axis (left↔right)   | e↔w only        |
+| Transform    | Description                                    | Position Changes |
+| ------------ | ---------------------------------------------- | ---------------- |
+| **ROTATED**  | 180° rotation around center                    | n↔s AND e↔w      |
+| **FLIPPED**  | Reflection across horizontal axis (top↔bottom) | n↔s only         |
+| **MIRRORED** | Reflection across vertical axis (left↔right)   | e↔w only         |
 
 ### Other Transformations
 
 | Transform    | Description                                                                          |
 | ------------ | ------------------------------------------------------------------------------------ |
 | **SWAPPED**  | Blue and red props exchange roles (positions AND motion types must match after swap) |
-| **INVERTED** | Motion types swap: pro↔anti                                                         |
+| **INVERTED** | Motion types swap: pro↔anti                                                          |
 | **SAME**     | Beats are identical (no transformation)                                              |
 
 ---

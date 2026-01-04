@@ -33,9 +33,7 @@
 
   // Initialize services
   onMount(() => {
-    hapticService = resolve<IHapticFeedback>(
-      TYPES.IHapticFeedback
-    );
+    hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
     analyzer = resolve<IQuizResultsAnalyzer>(TYPES.IQuizResultsAnalyzer);
   });
 

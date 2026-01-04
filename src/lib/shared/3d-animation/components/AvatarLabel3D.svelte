@@ -20,12 +20,7 @@
     isActive?: boolean;
   }
 
-  let {
-    label,
-    x,
-    z,
-    isActive = false,
-  }: Props = $props();
+  let { label, x, z, isActive = false }: Props = $props();
 
   // Position label above the avatar's head
   const labelY = 280;
@@ -44,6 +39,6 @@
     anchorX="center"
     anchorY="middle"
     outlineWidth={2}
-    outlineColor={outlineColor}
+    {outlineColor}
   />
 </T.Group>

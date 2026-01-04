@@ -14,7 +14,10 @@
     LOOPType,
     CircularizationOption,
   } from "../../services/contracts/ISequenceExtender";
-  import type { ISubDrawerStatePersister, SubDrawerType } from "../../services/contracts/ISubDrawerStatePersister";
+  import type {
+    ISubDrawerStatePersister,
+    SubDrawerType,
+  } from "../../services/contracts/ISubDrawerStatePersister";
   import type { ISequenceTransferHandler } from "../../services/contracts/ISequenceTransferHandler";
   import type { IFirstBeatAnalyzer } from "../../services/contracts/IFirstBeatAnalyzer";
   import type { ISequenceJsonExporter } from "../../services/contracts/ISequenceJsonExporter";
@@ -59,14 +62,18 @@
   const isSideBySideLayout = $derived(layout.shouldUseSideBySideLayout);
 
   // Track viewport width reactively for compact mode detection
-  let viewportWidth = $state(typeof window !== 'undefined' ? window.innerWidth : 1000);
+  let viewportWidth = $state(
+    typeof window !== "undefined" ? window.innerWidth : 1000
+  );
 
   $effect(() => {
-    if (typeof window === 'undefined') return;
+    if (typeof window === "undefined") return;
     viewportWidth = window.innerWidth; // Update on mount
-    const handleResize = () => { viewportWidth = window.innerWidth; };
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    const handleResize = () => {
+      viewportWidth = window.innerWidth;
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   });
 
   // Compact mode for mobile portrait - horizontal icon+text layout
@@ -167,12 +174,16 @@
       /* Optional service */
     }
     try {
-      subDrawerPersister = resolve<ISubDrawerStatePersister>(TYPES.ISubDrawerStatePersister);
+      subDrawerPersister = resolve<ISubDrawerStatePersister>(
+        TYPES.ISubDrawerStatePersister
+      );
     } catch {
       /* Optional service */
     }
     try {
-      transferHandler = resolve<ISequenceTransferHandler>(TYPES.ISequenceTransferHandler);
+      transferHandler = resolve<ISequenceTransferHandler>(
+        TYPES.ISequenceTransferHandler
+      );
     } catch {
       /* Optional service */
     }
@@ -182,7 +193,9 @@
       /* Optional service */
     }
     try {
-      jsonExporter = resolve<ISequenceJsonExporter>(TYPES.ISequenceJsonExporter);
+      jsonExporter = resolve<ISequenceJsonExporter>(
+        TYPES.ISequenceJsonExporter
+      );
     } catch {
       /* Optional service */
     }
@@ -198,8 +211,10 @@
       // Wait for parent drawer to fully register, then open sub-drawer
       setTimeout(() => {
         if (restoredSubDrawer === "help") showHelpSheet = true;
-        else if (restoredSubDrawer === "turnPattern") showTurnPatternDrawer = true;
-        else if (restoredSubDrawer === "rotationDirection") showRotationDirectionDrawer = true;
+        else if (restoredSubDrawer === "turnPattern")
+          showTurnPatternDrawer = true;
+        else if (restoredSubDrawer === "rotationDirection")
+          showRotationDirectionDrawer = true;
         else if (restoredSubDrawer === "extend") showExtendDrawer = true;
         // Mark restoration complete so auto-save can clear when user closes sub-drawers
         restorationComplete = true;
@@ -230,38 +245,40 @@
   }
 
   // Transform handlers - clean one-liners using the helper
-  const handleMirror = () => withTransform(
-    UndoOperationType.MIRROR_SEQUENCE,
-    () => activeSequenceState.mirrorSequence()
-  );
-  const handleSwap = () => withTransform(
-    UndoOperationType.SWAP_COLORS,
-    () => activeSequenceState.swapColors()
-  );
-  const handleRewind = () => withTransform(
-    UndoOperationType.REWIND_SEQUENCE,
-    () => activeSequenceState.rewindSequence()
-  );
-  const handleFlip = () => withTransform(
-    UndoOperationType.FLIP_SEQUENCE,
-    () => activeSequenceState.flipSequence()
-  );
-  const handleInvert = () => withTransform(
-    UndoOperationType.INVERT_SEQUENCE,
-    () => activeSequenceState.invertSequence()
-  );
+  const handleMirror = () =>
+    withTransform(UndoOperationType.MIRROR_SEQUENCE, () =>
+      activeSequenceState.mirrorSequence()
+    );
+  const handleSwap = () =>
+    withTransform(UndoOperationType.SWAP_COLORS, () =>
+      activeSequenceState.swapColors()
+    );
+  const handleRewind = () =>
+    withTransform(UndoOperationType.REWIND_SEQUENCE, () =>
+      activeSequenceState.rewindSequence()
+    );
+  const handleFlip = () =>
+    withTransform(UndoOperationType.FLIP_SEQUENCE, () =>
+      activeSequenceState.flipSequence()
+    );
+  const handleInvert = () =>
+    withTransform(UndoOperationType.INVERT_SEQUENCE, () =>
+      activeSequenceState.invertSequence()
+    );
 
   // Rotation handlers set grid animation direction before transform
-  const handleRotateCW = () => withTransform(
-    UndoOperationType.ROTATE_SEQUENCE,
-    () => activeSequenceState.rotateSequence("clockwise"),
-    () => setGridRotationDirection(1)
-  );
-  const handleRotateCCW = () => withTransform(
-    UndoOperationType.ROTATE_SEQUENCE,
-    () => activeSequenceState.rotateSequence("counterclockwise"),
-    () => setGridRotationDirection(-1)
-  );
+  const handleRotateCW = () =>
+    withTransform(
+      UndoOperationType.ROTATE_SEQUENCE,
+      () => activeSequenceState.rotateSequence("clockwise"),
+      () => setGridRotationDirection(1)
+    );
+  const handleRotateCCW = () =>
+    withTransform(
+      UndoOperationType.ROTATE_SEQUENCE,
+      () => activeSequenceState.rotateSequence("counterclockwise"),
+      () => setGridRotationDirection(-1)
+    );
 
   function handlePreview() {
     if (!sequence) return;
@@ -298,7 +315,9 @@
     warnings?: readonly string[];
   }) {
     // Push undo snapshot BEFORE applying pattern
-    CreateModuleState.pushUndoSnapshot(UndoOperationType.APPLY_ROTATION_PATTERN);
+    CreateModuleState.pushUndoSnapshot(
+      UndoOperationType.APPLY_ROTATION_PATTERN
+    );
 
     // Update the active sequence with the pattern-applied sequence
     activeSequenceState.setCurrentSequence(result.sequence);
@@ -318,12 +337,14 @@
     // Fetch circularization options (bridge letters) if direct LOOPs aren't available
     if (!analysis.canExtend || analysis.availableLOOPOptions.length === 0) {
       try {
-        circularizationOptions = await sequenceExtender.getCircularizationOptions(sequence);
+        circularizationOptions =
+          await sequenceExtender.getCircularizationOptions(sequence);
         if (circularizationOptions.length === 0) {
           toast.warning("Cannot extend this sequence");
           return;
         }
-        directUnavailableReason = "Position groups don't match for direct extension";
+        directUnavailableReason =
+          "Position groups don't match for direct extension";
       } catch (error) {
         console.error("[Extend] Failed to get circularization options:", error);
         toast.warning("Cannot extend this sequence");
@@ -344,7 +365,14 @@
   async function handleBridgeAppend(bridgeLetter: Letter) {
     console.log("[Extend] handleBridgeAppend called with:", bridgeLetter);
     if (!sequence || !sequenceExtender || isExtending) {
-      console.log("[Extend] Early return - sequence:", !!sequence, "extender:", !!sequenceExtender, "isExtending:", isExtending);
+      console.log(
+        "[Extend] Early return - sequence:",
+        !!sequence,
+        "extender:",
+        !!sequenceExtender,
+        "isExtending:",
+        isExtending
+      );
       return;
     }
     isExtending = true;
@@ -360,7 +388,11 @@
         sequence,
         bridgeLetter
       );
-      console.log("[Extend] Got extended sequence with", sequenceWithBridge.beats?.length, "beats");
+      console.log(
+        "[Extend] Got extended sequence with",
+        sequenceWithBridge.beats?.length,
+        "beats"
+      );
 
       // Update the sequence - this will show the new beat immediately
       activeSequenceState.setCurrentSequence(sequenceWithBridge);
@@ -368,7 +400,12 @@
 
       // Re-analyze the sequence (should now be directly loopable)
       const analysis = sequenceExtender.analyzeSequence(sequenceWithBridge);
-      console.log("[Extend] Re-analyzed - canExtend:", analysis.canExtend, "LOOPs:", analysis.availableLOOPOptions.length);
+      console.log(
+        "[Extend] Re-analyzed - canExtend:",
+        analysis.canExtend,
+        "LOOPs:",
+        analysis.availableLOOPOptions.length
+      );
       extensionAnalysis = analysis;
       circularizationOptions = []; // Clear bridge options since we now have LOOPs
       directUnavailableReason = null;
@@ -394,10 +431,9 @@
 
     try {
       // Direct extension (bridge already appended if needed)
-      const extendedSequence = await sequenceExtender.extendSequence(
-        sequence,
-        { loopType }
-      );
+      const extendedSequence = await sequenceExtender.extendSequence(sequence, {
+        loopType,
+      });
 
       if (extendedSequence.beats?.length === sequence.beats?.length) {
         console.warn("[Extend] No new beats were added!");
@@ -411,7 +447,8 @@
       activeSequenceState.setCurrentSequence(extendedSequence);
       hapticService?.trigger("success");
 
-      const beatsAdded = (extendedSequence.beats?.length || 0) - (sequence.beats?.length || 0);
+      const beatsAdded =
+        (extendedSequence.beats?.length || 0) - (sequence.beats?.length || 0);
       const loopName = loopType.replace(/_/g, " ");
       toast.success(`Extended with ${loopName}! Added ${beatsAdded} beats`);
 
@@ -436,10 +473,15 @@
     const constructTabState = ctx.constructTabState;
     if (!constructTabState?.sequenceState) return;
 
-    const currentConstructorSequence = constructTabState.sequenceState.currentSequence;
+    const currentConstructorSequence =
+      constructTabState.sequenceState.currentSequence;
     const hasSequence = constructTabState.sequenceState.hasSequence();
 
-    const result = transferHandler.checkTransfer(sequence, currentConstructorSequence, hasSequence);
+    const result = transferHandler.checkTransfer(
+      sequence,
+      currentConstructorSequence,
+      hasSequence
+    );
 
     switch (result.action) {
       case "already-loaded":
@@ -468,7 +510,8 @@
       syncGridModeFromSequence: constructTabState.syncGridModeFromSequence,
       setSelectedStartPosition: constructTabState.setSelectedStartPosition,
       setShowStartPositionPicker: constructTabState.setShowStartPositionPicker,
-      syncPickerStateWithSequence: constructTabState.syncPickerStateWithSequence,
+      syncPickerStateWithSequence:
+        constructTabState.syncPickerStateWithSequence,
     };
 
     await transferHandler.executeTransfer(sequenceToTransfer, transferTarget);

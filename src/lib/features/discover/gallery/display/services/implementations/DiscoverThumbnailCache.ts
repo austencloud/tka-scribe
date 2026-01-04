@@ -101,9 +101,7 @@ export class DiscoverThumbnailCache implements IDiscoverThumbnailCache {
       const store = tx.objectStore(STORE_NAME);
 
       return new Promise((resolve, reject) => {
-        const request = store.count(
-          IDBKeyRange.only(this.buildKey(key))
-        );
+        const request = store.count(IDBKeyRange.only(this.buildKey(key)));
         request.onerror = () => reject(request.error);
         request.onsuccess = () => resolve(request.result > 0);
       });
@@ -142,7 +140,8 @@ export class DiscoverThumbnailCache implements IDiscoverThumbnailCache {
 
         request.onerror = () => reject(request.error);
         request.onsuccess = (event) => {
-          const cursor = (event.target as IDBRequest<IDBCursorWithValue>).result;
+          const cursor = (event.target as IDBRequest<IDBCursorWithValue>)
+            .result;
           if (cursor) {
             count++;
             const entry = cursor.value as CachedThumbnail;
@@ -176,7 +175,8 @@ export class DiscoverThumbnailCache implements IDiscoverThumbnailCache {
         const request = index.openCursor();
         request.onerror = () => reject(request.error);
         request.onsuccess = (event) => {
-          const cursor = (event.target as IDBRequest<IDBCursorWithValue>).result;
+          const cursor = (event.target as IDBRequest<IDBCursorWithValue>)
+            .result;
           if (cursor) {
             const entry = cursor.value as CachedThumbnail & { key: string };
             entries.push({ key: entry.key, size: entry.blob.size });

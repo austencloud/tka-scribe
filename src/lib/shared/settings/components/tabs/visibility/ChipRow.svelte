@@ -97,7 +97,11 @@
     box-shadow:
       inset 0 1px 0 var(--theme-stroke),
       0 0 0 1px
-        color-mix(in srgb, var(--theme-accent, var(--semantic-info)) 20%, transparent);
+        color-mix(
+          in srgb,
+          var(--theme-accent, var(--semantic-info)) 20%,
+          transparent
+        );
   }
 
   .chip.active:hover:not(:disabled) {
@@ -115,9 +119,17 @@
     box-shadow:
       inset 0 1px 0 rgba(255, 255, 255, 0.12),
       0 0 0 1px
-        color-mix(in srgb, var(--theme-accent, var(--semantic-info)) 30%, transparent),
+        color-mix(
+          in srgb,
+          var(--theme-accent, var(--semantic-info)) 30%,
+          transparent
+        ),
       0 4px 12px
-        color-mix(in srgb, var(--theme-accent, var(--semantic-info)) 20%, transparent);
+        color-mix(
+          in srgb,
+          var(--theme-accent, var(--semantic-info)) 20%,
+          transparent
+        );
   }
 
   /* Disabled State */
@@ -144,7 +156,11 @@
   /* Focus State */
   .chip:focus-visible {
     outline: 2px solid
-      color-mix(in srgb, var(--theme-accent, var(--semantic-info)) 50%, transparent);
+      color-mix(
+        in srgb,
+        var(--theme-accent, var(--semantic-info)) 50%,
+        transparent
+      );
     outline-offset: 2px;
   }
 

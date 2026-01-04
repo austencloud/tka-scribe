@@ -27,7 +27,10 @@ const THRESHOLDS = {
 
 type MetricName = keyof typeof THRESHOLDS;
 
-function getRating(name: string, value: number): "good" | "needs-improvement" | "poor" {
+function getRating(
+  name: string,
+  value: number
+): "good" | "needs-improvement" | "poor" {
   const threshold = THRESHOLDS[name as MetricName];
   if (!threshold) return "good";
 
@@ -110,22 +113,32 @@ export function getPerformanceSummary(): Record<string, unknown> {
 
   return {
     // Navigation timing
-    dnsLookup: Math.round(navigation.domainLookupEnd - navigation.domainLookupStart),
+    dnsLookup: Math.round(
+      navigation.domainLookupEnd - navigation.domainLookupStart
+    ),
     tcpConnect: Math.round(navigation.connectEnd - navigation.connectStart),
     ttfb: Math.round(navigation.responseStart - navigation.requestStart),
-    contentDownload: Math.round(navigation.responseEnd - navigation.responseStart),
+    contentDownload: Math.round(
+      navigation.responseEnd - navigation.responseStart
+    ),
     domParsing: Math.round(navigation.domInteractive - navigation.responseEnd),
-    domContentLoaded: Math.round(navigation.domContentLoadedEventEnd - navigation.startTime),
+    domContentLoaded: Math.round(
+      navigation.domContentLoadedEventEnd - navigation.startTime
+    ),
     fullLoad: Math.round(navigation.loadEventEnd - navigation.startTime),
 
     // Resource counts
     resourceCount: performance.getEntriesByType("resource").length,
 
     // Memory (if available)
-    ...(("memory" in performance) && {
-      usedJSHeapSize: Math.round(
-        (performance as Performance & { memory: { usedJSHeapSize: number } }).memory.usedJSHeapSize / 1024 / 1024
-      ) + "MB",
+    ...("memory" in performance && {
+      usedJSHeapSize:
+        Math.round(
+          (performance as Performance & { memory: { usedJSHeapSize: number } })
+            .memory.usedJSHeapSize /
+            1024 /
+            1024
+        ) + "MB",
     }),
   };
 }

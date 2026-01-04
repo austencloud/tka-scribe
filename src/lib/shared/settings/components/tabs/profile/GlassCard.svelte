@@ -14,7 +14,14 @@
     children?: any;
   }
 
-  let { icon, title, subtitle, class: className, iconClass, children }: Props = $props();
+  let {
+    icon,
+    title,
+    subtitle,
+    class: className,
+    iconClass,
+    children,
+  }: Props = $props();
 </script>
 
 <section class="glass-card {className || ''}">
@@ -99,11 +106,7 @@
     margin: 0;
     color: var(--theme-text);
     font-family:
-      -apple-system,
-      BlinkMacSystemFont,
-      "SF Pro Text",
-      system-ui,
-      sans-serif;
+      -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
   }
 
   .card-subtitle {

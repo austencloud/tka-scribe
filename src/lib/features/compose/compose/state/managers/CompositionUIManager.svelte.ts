@@ -5,7 +5,9 @@
  * Extracted from composition-state.svelte.ts for single responsibility.
  */
 
-export type CompositionUIManager = ReturnType<typeof createCompositionUIManager>;
+export type CompositionUIManager = ReturnType<
+  typeof createCompositionUIManager
+>;
 
 export function createCompositionUIManager() {
   // =========================================================================

@@ -79,7 +79,8 @@ export class SequenceExtender implements ISequenceExtender {
     }
 
     // Get current end position from the last beat
-    const currentEndPosition = this.sequenceAnalyzer.getCurrentEndPosition(sequence);
+    const currentEndPosition =
+      this.sequenceAnalyzer.getCurrentEndPosition(sequence);
     if (!currentEndPosition) {
       return {
         canExtend: false,
@@ -112,11 +113,12 @@ export class SequenceExtender implements ISequenceExtender {
     }
 
     // Get LOOP options filtered by validity for this position pair
-    const { available, unavailable } = this.loopValidator.getLOOPOptionsForPositionPair(
-      startPosition,
-      currentEndPosition,
-      sliceSize
-    );
+    const { available, unavailable } =
+      this.loopValidator.getLOOPOptionsForPositionPair(
+        startPosition,
+        currentEndPosition,
+        sliceSize
+      );
 
     // Can extend if any LOOP options are available
     const canExtend = available.length > 0;
@@ -176,7 +178,8 @@ export class SequenceExtender implements ISequenceExtender {
     const executor = this.loopExecutorSelector.getExecutor(loopType);
 
     // Convert sequence to BeatData array for the executor
-    const sequenceBeats = this.sequenceAnalyzer.convertSequenceToBeats(sequence);
+    const sequenceBeats =
+      this.sequenceAnalyzer.convertSequenceToBeats(sequence);
 
     if (sequenceBeats.length === 0) {
       throw new Error("No beats in sequence to extend");
@@ -272,8 +275,7 @@ export class SequenceExtender implements ISequenceExtender {
       await this.letterQueryHandler.getAllPictographVariations(gridMode);
 
     const bridgeVariations = allPictographs.filter(
-      (p) =>
-        p.letter === bridgeLetter && p.startPosition === endPosition
+      (p) => p.letter === bridgeLetter && p.startPosition === endPosition
     );
 
     if (bridgeVariations.length === 0) {
@@ -320,7 +322,10 @@ export class SequenceExtender implements ISequenceExtender {
     loopType: LOOPType
   ): Promise<SequenceData> {
     // Use appendBridgeBeat to add the bridge, then apply LOOP
-    const sequenceWithBridge = await this.appendBridgeBeat(sequence, bridgeLetter);
+    const sequenceWithBridge = await this.appendBridgeBeat(
+      sequence,
+      bridgeLetter
+    );
     return this.extendSequence(sequenceWithBridge, { loopType });
   }
 }

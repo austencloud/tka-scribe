@@ -44,9 +44,7 @@ Follows modern 2026 Material Design patterns with 48px touch targets
   });
 
   onMount(async () => {
-    hapticService = await resolve<IHapticFeedback>(
-      TYPES.IHapticFeedback
-    );
+    hapticService = await resolve<IHapticFeedback>(TYPES.IHapticFeedback);
   });
 
   // Sync options when panel opens

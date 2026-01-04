@@ -106,15 +106,13 @@
   .collapsed-module-button:hover:not(.disabled) {
     background: var(--theme-card-hover-bg);
     color: var(--theme-text, var(--theme-text));
-    box-shadow: inset 0 0 0 1px
-      var(--theme-stroke-strong);
+    box-shadow: inset 0 0 0 1px var(--theme-stroke-strong);
   }
 
   .collapsed-module-button.active {
     color: var(--theme-text);
     background: var(--theme-card-hover-bg, var(--theme-card-hover-bg));
-    box-shadow: inset 0 0 0 1px
-      var(--theme-stroke-strong);
+    box-shadow: inset 0 0 0 1px var(--theme-stroke-strong);
   }
 
   /* Ghost the button when tabs are showing - tabs become the focus */

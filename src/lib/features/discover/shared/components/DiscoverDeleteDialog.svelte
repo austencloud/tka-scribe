@@ -28,9 +28,7 @@ about the sequence being deleted and potential consequences.
   let hapticService: IHapticFeedback | null = $state(null);
 
   onMount(() => {
-    hapticService = resolve<IHapticFeedback>(
-      TYPES.IHapticFeedback
-    );
+    hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
   });
 
   // Handle keyboard events
@@ -336,8 +334,16 @@ about the sequence being deleted and potential consequences.
   }
 
   .delete-button:hover {
-    background: color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 85%, #000);
-    border-color: color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 85%, #000);
+    background: color-mix(
+      in srgb,
+      var(--semantic-error, var(--semantic-error)) 85%,
+      #000
+    );
+    border-color: color-mix(
+      in srgb,
+      var(--semantic-error, var(--semantic-error)) 85%,
+      #000
+    );
   }
 
   .delete-button:focus,

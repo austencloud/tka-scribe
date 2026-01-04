@@ -54,7 +54,8 @@ export const inversifyContainer = container;
 
 // Track loaded modules to prevent duplicate loading
 // Use HMR data to persist across module reloads
-const loadedModules: Set<string> = import.meta.hot?.data?.loadedModules ?? new Set<string>();
+const loadedModules: Set<string> =
+  import.meta.hot?.data?.loadedModules ?? new Set<string>();
 const pendingModules = new Map<string, Promise<void>>();
 let tier1Loaded = import.meta.hot?.data?.tier1Loaded ?? false;
 let tier2Loaded = import.meta.hot?.data?.tier2Loaded ?? false;
@@ -276,7 +277,6 @@ export async function loadCriticalModules(): Promise<void> {
     loadedModules.add("analytics");
     loadedModules.add("presence");
     tier1Loaded = true;
-
   } catch (error) {
     console.error("❌ Failed to load Tier 1 modules:", error);
     throw error;
@@ -343,7 +343,6 @@ export async function loadSharedModules(): Promise<void> {
       loadedModules.add("share");
       loadedModules.add("community");
       tier2Loaded = true;
-
     } catch (error) {
       console.error("❌ Failed to load Tier 2 modules:", error);
       tier2Promise = null;
@@ -409,13 +408,19 @@ export async function loadFeatureModule(feature: string): Promise<void> {
         await Promise.all([
           loadIfNeeded("create", () => import("./modules/build.module")),
           loadIfNeeded("animator", () => import("./modules/animator.module")),
-          loadIfNeeded("gamification", () => import("./modules/gamification.module")),
+          loadIfNeeded(
+            "gamification",
+            () => import("./modules/gamification.module")
+          ),
         ]);
         break;
 
       case "discover":
         if (tier2Promise) await tier2Promise;
-        await loadIfNeeded("discover", () => import("./modules/discover.module"));
+        await loadIfNeeded(
+          "discover",
+          () => import("./modules/discover.module")
+        );
         break;
 
       case "community":
@@ -450,7 +455,10 @@ export async function loadFeatureModule(feature: string): Promise<void> {
         break;
 
       case "edit":
-        await loadIfNeeded("discover", () => import("./modules/discover.module"));
+        await loadIfNeeded(
+          "discover",
+          () => import("./modules/discover.module")
+        );
         break;
 
       case "collect":
@@ -500,11 +508,17 @@ export async function loadFeatureModule(feature: string): Promise<void> {
         break;
 
       case "gamification":
-        await loadIfNeeded("gamification", () => import("./modules/gamification.module"));
+        await loadIfNeeded(
+          "gamification",
+          () => import("./modules/gamification.module")
+        );
         break;
 
       case "messaging":
-        await loadIfNeeded("messaging", () => import("./modules/messaging.module"));
+        await loadIfNeeded(
+          "messaging",
+          () => import("./modules/messaging.module")
+        );
         break;
 
       case "inbox":
@@ -513,14 +527,19 @@ export async function loadFeatureModule(feature: string): Promise<void> {
 
       case "loop-labeler":
         await loadIfNeeded("create", () => import("./modules/build.module"));
-        await loadIfNeeded("loop-labeler", () => import("./modules/loop-labeler.module"));
+        await loadIfNeeded(
+          "loop-labeler",
+          () => import("./modules/loop-labeler.module")
+        );
         break;
 
       case "3d-viewer":
         await Promise.all([
           loadIfNeeded("discover", () => import("./modules/discover.module")),
-          loadIfNeeded("animation-3d", () =>
-            import("../../shared/3d-animation/inversify/animation-3d.module")
+          loadIfNeeded(
+            "animation-3d",
+            () =>
+              import("../../shared/3d-animation/inversify/animation-3d.module")
           ),
         ]);
         break;
@@ -580,7 +599,6 @@ function initializeContainer(): Promise<void> {
 
       isInitialized = true;
       syncContainerToGlobal();
-
     } catch (error) {
       console.error("❌ Container initialization failed:", error);
       isInitialized = false;

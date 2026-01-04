@@ -26,9 +26,7 @@
       Theme: () => import("./tabs/background/BackgroundTab.svelte"),
       Visibility: () => import("./tabs/VisibilityTab.svelte"),
       Keyboard: () =>
-        import(
-          "$lib/shared/keyboard/components/settings/KeyboardShortcutsTab.svelte"
-        ),
+        import("$lib/shared/keyboard/components/settings/KeyboardShortcutsTab.svelte"),
     };
 
   // Cache for loaded tab components

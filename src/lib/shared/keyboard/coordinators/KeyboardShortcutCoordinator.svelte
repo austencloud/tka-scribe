@@ -32,9 +32,7 @@
         shortcutManager = resolve<IKeyboardShortcutManager>(
           TYPES.IKeyboardShortcutManager
         );
-        commandPalette = resolve<ICommandPalette>(
-          TYPES.ICommandPalette
-        );
+        commandPalette = resolve<ICommandPalette>(TYPES.ICommandPalette);
 
         // Initialize the shortcut manager
         shortcutManager.initialize();
@@ -43,10 +41,7 @@
         registerGlobalShortcuts(shortcutManager, keyboardShortcutState);
 
         // Register command palette commands
-        registerCommandPaletteCommands(
-          commandPalette,
-          keyboardShortcutState
-        );
+        registerCommandPaletteCommands(commandPalette, keyboardShortcutState);
 
         // Register CREATE module shortcuts
         registerCreateShortcuts(shortcutManager, keyboardShortcutState);

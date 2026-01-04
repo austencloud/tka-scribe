@@ -4,7 +4,10 @@
   Dark/light mode toggle and prop type selector for pictograph rendering.
 -->
 <script lang="ts">
-  import { galleryGeneratorState, CORE_PROP_TYPES } from "../state/gallery-generator-state.svelte";
+  import {
+    galleryGeneratorState,
+    CORE_PROP_TYPES,
+  } from "../state/gallery-generator-state.svelte";
   import { PropType } from "$lib/shared/pictograph/prop/domain/enums/PropType";
 
   const state = galleryGeneratorState;

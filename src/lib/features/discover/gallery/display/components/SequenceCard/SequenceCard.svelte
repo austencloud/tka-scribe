@@ -98,11 +98,7 @@ Uses PropAwareThumbnail for cloud-cached rendering:
   }
 
   .sequence-card.selected {
-    border-color: color-mix(
-      in srgb,
-      var(--semantic-info) 80%,
-      transparent
-    );
+    border-color: color-mix(in srgb, var(--semantic-info) 80%, transparent);
     box-shadow: 0 0 0 2px
       color-mix(in srgb, var(--semantic-info) 40%, transparent);
   }

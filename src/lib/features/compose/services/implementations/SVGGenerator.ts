@@ -1,7 +1,11 @@
 import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 import { injectable } from "inversify";
 import type { ISVGGenerator, PropSvgData } from "../contracts/ISVGGenerator";
-import { applyColorToSvg, getMotionColor, type ThemeMode } from "$lib/shared/utils/svg-color-utils";
+import {
+  applyColorToSvg,
+  getMotionColor,
+  type ThemeMode,
+} from "$lib/shared/utils/svg-color-utils";
 import { MotionColor } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
 import { getAnimationVisibilityManager } from "$lib/shared/animation-engine/state/animation-visibility-state.svelte";
 
@@ -17,7 +21,7 @@ export class SVGGenerator implements ISVGGenerator {
 
   /**
    * Get the current theme mode based on animation visibility settings
-   * Lights Off (dark mode) = "dark" theme colors (brighter props for contrast)
+   * Dark Mode (dark mode) = "dark" theme colors (brighter props for contrast)
    * Lights On (light mode) = "light" theme colors (darker props for contrast)
    */
   private getCurrentThemeMode(): ThemeMode {
@@ -160,7 +164,10 @@ export class SVGGenerator implements ISVGGenerator {
    */
   async generateBluePropSvg(propType: string = "staff"): Promise<PropSvgData> {
     const themeMode = this.getCurrentThemeMode();
-    return this.generatePropSvg(propType, getMotionColor(MotionColor.BLUE, themeMode));
+    return this.generatePropSvg(
+      propType,
+      getMotionColor(MotionColor.BLUE, themeMode)
+    );
   }
 
   /**
@@ -169,7 +176,10 @@ export class SVGGenerator implements ISVGGenerator {
    */
   async generateRedPropSvg(propType: string = "staff"): Promise<PropSvgData> {
     const themeMode = this.getCurrentThemeMode();
-    return this.generatePropSvg(propType, getMotionColor(MotionColor.RED, themeMode));
+    return this.generatePropSvg(
+      propType,
+      getMotionColor(MotionColor.RED, themeMode)
+    );
   }
 
   /**

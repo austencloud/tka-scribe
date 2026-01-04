@@ -79,9 +79,9 @@ export interface ExtensionOptions {
  * This affects which LOOPs are available and final sequence length.
  */
 export type RotationRelation =
-  | "exact"    // End position equals start position (0°)
-  | "quarter"  // End position is 90° rotation of start (4x sequence length with rotated LOOPs)
-  | "half";    // End position is 180° rotation of start (2x sequence length with mirrored LOOPs)
+  | "exact" // End position equals start position (0°)
+  | "quarter" // End position is 90° rotation of start (4x sequence length with rotated LOOPs)
+  | "half"; // End position is 180° rotation of start (2x sequence length with mirrored LOOPs)
 
 /**
  * Describes orientation alignment status for exact position matches.
@@ -171,7 +171,9 @@ export interface ISequenceExtender {
    * @param sequence The sequence to analyze
    * @returns Array of circularization options, or empty if already loopable or no options exist
    */
-  getCircularizationOptions(sequence: SequenceData): Promise<CircularizationOption[]>;
+  getCircularizationOptions(
+    sequence: SequenceData
+  ): Promise<CircularizationOption[]>;
 
   /**
    * Get extension options that would bring the sequence to a loopable position.
@@ -181,7 +183,9 @@ export interface ISequenceExtender {
    * @param sequence The sequence to analyze
    * @returns Array of extension options with pictograph data and available LOOPs
    */
-  getAllExtensionOptions(sequence: SequenceData): Promise<CircularizationOption[]>;
+  getAllExtensionOptions(
+    sequence: SequenceData
+  ): Promise<CircularizationOption[]>;
 
   /**
    * Extend a sequence by first appending a bridge letter, then applying a LOOP.

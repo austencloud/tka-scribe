@@ -151,7 +151,12 @@
           {#if selectedSession?.sessionId === session.sessionId}
             <div class="session-events">
               {#if isLoadingEvents}
-                <div class="loading-inline" role="status" aria-live="polite" aria-busy="true">
+                <div
+                  class="loading-inline"
+                  role="status"
+                  aria-live="polite"
+                  aria-busy="true"
+                >
                   <div class="spinner-small" aria-hidden="true"></div>
                 </div>
               {:else if sessionEvents.length === 0}
@@ -160,7 +165,10 @@
                 <div class="events-timeline">
                   {#each sessionEvents as event}
                     <div class="event-item">
-                      <i class="fas {getEventIcon(event.category)}" aria-hidden="true"></i>
+                      <i
+                        class="fas {getEventIcon(event.category)}"
+                        aria-hidden="true"
+                      ></i>
                       <div class="event-info">
                         <span class="event-type">{event.eventType}</span>
                         <span class="event-time"

@@ -28,9 +28,7 @@
 
   onMount(() => {
     try {
-      hapticService = resolve<IHapticFeedback>(
-        TYPES.IHapticFeedback
-      );
+      hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
     } catch (error) {
       console.error("Failed to resolve haptic service", error);
       hapticService = null;

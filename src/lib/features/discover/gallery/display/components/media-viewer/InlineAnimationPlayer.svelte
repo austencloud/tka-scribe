@@ -42,7 +42,11 @@
 
     // 2. Check if startPosition.letter is already a valid Greek letter
     const spLetter = seq.startPosition?.letter;
-    if (spLetter === Letter.ALPHA || spLetter === Letter.BETA || spLetter === Letter.GAMMA) {
+    if (
+      spLetter === Letter.ALPHA ||
+      spLetter === Letter.BETA ||
+      spLetter === Letter.GAMMA
+    ) {
       return spLetter;
     }
 
@@ -129,10 +133,7 @@
     if (!animationState.sequenceData) return null;
     const currentBeat = animationState.currentBeat;
 
-    if (
-      currentBeat < 1 &&
-      animationState.sequenceData.startPosition
-    ) {
+    if (currentBeat < 1 && animationState.sequenceData.startPosition) {
       return animationState.sequenceData.startPosition;
     }
 

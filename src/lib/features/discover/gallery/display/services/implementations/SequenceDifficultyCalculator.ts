@@ -17,9 +17,7 @@ import {
 import type { ISequenceDifficultyCalculator } from "../contracts/ISequenceDifficultyCalculator";
 
 @injectable()
-export class SequenceDifficultyCalculator
-  implements ISequenceDifficultyCalculator
-{
+export class SequenceDifficultyCalculator implements ISequenceDifficultyCalculator {
   /**
    * Calculate difficulty level by analyzing all beats in the sequence
    */

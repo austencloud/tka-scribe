@@ -1,7 +1,11 @@
 <!-- ProfileTab.svelte - User Profile & Account Settings (Refactored) -->
 <script lang="ts">
   import { authState } from "../../../auth/state/authState.svelte";
-  import { userPreviewState, loadPreviewSection, isSectionLoaded } from "../../../debug/state/user-preview-state.svelte";
+  import {
+    userPreviewState,
+    loadPreviewSection,
+    isSectionLoaded,
+  } from "../../../debug/state/user-preview-state.svelte";
   import { resolve, TYPES } from "../../../inversify/di";
   import type { IAuthenticator } from "../../../auth/services/contracts/IAuthenticator";
   import type { IAccountManager } from "../../../auth/services/contracts/IAccountManager";
@@ -31,7 +35,9 @@
   import type { User } from "firebase/auth";
 
   // Check if we're in preview mode
-  const isPreviewMode = $derived(userPreviewState.isActive && userPreviewState.data.profile !== null);
+  const isPreviewMode = $derived(
+    userPreviewState.isActive && userPreviewState.data.profile !== null
+  );
 
   // Create a User-like object from preview profile for ProfileHeroSection
   function createPreviewUser(profile: PreviewUserProfile): User {
@@ -51,7 +57,7 @@
       providerId: "firebase",
       delete: async () => {},
       getIdToken: async () => "",
-      getIdTokenResult: async () => ({} as any),
+      getIdTokenResult: async () => ({}) as any,
       reload: async () => {},
       toJSON: () => ({}),
     } as User;
@@ -81,7 +87,9 @@
 
   // Preview mode: auth data state
   const previewAuthData = $derived(userPreviewState.data.authData);
-  const isLoadingAuthData = $derived(userPreviewState.loadingSection === "authData");
+  const isLoadingAuthData = $derived(
+    userPreviewState.loadingSection === "authData"
+  );
   const authDataLoaded = $derived(isSectionLoaded("authData"));
 
   // Load auth data when entering preview mode and viewing profile tab
@@ -175,7 +183,6 @@
       clearingCache = false;
     }
   }
-
 </script>
 
 <div class="profile-tab" class:visible={isVisible}>
@@ -185,7 +192,13 @@
       <!-- Preview banner -->
       <div class="preview-banner">
         <i class="fas fa-eye"></i>
-        <span>Viewing as <strong>{userPreviewState.data.profile.displayName || userPreviewState.data.profile.email || 'User'}</strong></span>
+        <span
+          >Viewing as <strong
+            >{userPreviewState.data.profile.displayName ||
+              userPreviewState.data.profile.email ||
+              "User"}</strong
+          ></span
+        >
       </div>
 
       <!-- Profile Hero - same layout, preview user data, no sign out -->
@@ -241,7 +254,7 @@
         </GlassCard>
 
         <!-- Password - show if user has password provider -->
-        {#if previewAuthData?.providers.some(p => p.providerId === "password")}
+        {#if previewAuthData?.providers.some((p) => p.providerId === "password")}
           <GlassCard
             icon="fas fa-key"
             title="Password"

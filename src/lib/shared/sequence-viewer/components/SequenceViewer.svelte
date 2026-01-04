@@ -325,12 +325,8 @@
 
   // Lifecycle
   onMount(() => {
-    viewerService = tryResolve<ISequenceViewer>(
-      TYPES.ISequenceViewer
-    );
-    hapticService = tryResolve<IHapticFeedback>(
-      TYPES.IHapticFeedback
-    );
+    viewerService = tryResolve<ISequenceViewer>(TYPES.ISequenceViewer);
+    hapticService = tryResolve<IHapticFeedback>(TYPES.IHapticFeedback);
     libraryService = tryResolve<ILibraryRepository>(TYPES.ILibraryRepository);
 
     updateWidth();
@@ -357,7 +353,12 @@
   <!-- Main Content -->
   <main class="viewer-content">
     {#if viewerState.isLoading}
-      <div class="loading-state" role="status" aria-live="polite" aria-busy="true">
+      <div
+        class="loading-state"
+        role="status"
+        aria-live="polite"
+        aria-busy="true"
+      >
         <div class="spinner" aria-hidden="true"></div>
         <p>Loading sequence...</p>
       </div>

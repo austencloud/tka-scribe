@@ -13,10 +13,10 @@
   Domain: Share Hub - Mode Selection Control
 -->
 <script lang="ts">
-  import type { ShareMode } from '../../domain/models/ShareMode';
+  import type { ShareMode } from "../../domain/models/ShareMode";
 
   let {
-    mode = 'single',
+    mode = "single",
     onModeChange,
   }: {
     mode?: ShareMode;
@@ -28,7 +28,7 @@
   }
 
   function handleKeydown(event: KeyboardEvent, targetMode: ShareMode) {
-    if (event.key === 'Enter' || event.key === ' ') {
+    if (event.key === "Enter" || event.key === " ") {
       event.preventDefault();
       handleModeChange(targetMode);
     }
@@ -39,13 +39,13 @@
   <button
     id="tab-single-media"
     class="mode-option"
-    class:active={mode === 'single'}
+    class:active={mode === "single"}
     role="tab"
-    aria-selected={mode === 'single'}
+    aria-selected={mode === "single"}
     aria-controls="single-media-panel"
-    tabindex={mode === 'single' ? 0 : -1}
-    onclick={() => handleModeChange('single')}
-    onkeydown={(e) => handleKeydown(e, 'single')}
+    tabindex={mode === "single" ? 0 : -1}
+    onclick={() => handleModeChange("single")}
+    onkeydown={(e) => handleKeydown(e, "single")}
   >
     <i class="fas fa-image" aria-hidden="true"></i>
     <span>Single Media</span>
@@ -54,13 +54,13 @@
   <button
     id="tab-composite"
     class="mode-option"
-    class:active={mode === 'composite'}
+    class:active={mode === "composite"}
     role="tab"
-    aria-selected={mode === 'composite'}
+    aria-selected={mode === "composite"}
     aria-controls="composite-panel"
-    tabindex={mode === 'composite' ? 0 : -1}
-    onclick={() => handleModeChange('composite')}
-    onkeydown={(e) => handleKeydown(e, 'composite')}
+    tabindex={mode === "composite" ? 0 : -1}
+    onclick={() => handleModeChange("composite")}
+    onkeydown={(e) => handleKeydown(e, "composite")}
   >
     <i class="fas fa-th" aria-hidden="true"></i>
     <span>Composite</span>
@@ -69,7 +69,7 @@
   <!-- Sliding indicator -->
   <div
     class="indicator"
-    style:transform={mode === 'single' ? 'translateX(0%)' : 'translateX(100%)'}
+    style:transform={mode === "single" ? "translateX(0%)" : "translateX(100%)"}
   ></div>
 </div>
 

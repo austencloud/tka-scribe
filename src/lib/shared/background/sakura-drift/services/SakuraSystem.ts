@@ -69,8 +69,10 @@ export function createSakuraSystem() {
       (1 / (size / 4));
 
     // Initial horizontal drift with bias
-    const driftBias = (Math.random() - 0.5) * 2 * SAKURA_PHYSICS.DRIFT_BIAS_RANGE;
-    const vx = (Math.random() - 0.5) * SAKURA_PHYSICS.DRIFT_AMPLITUDE + driftBias;
+    const driftBias =
+      (Math.random() - 0.5) * 2 * SAKURA_PHYSICS.DRIFT_BIAS_RANGE;
+    const vx =
+      (Math.random() - 0.5) * SAKURA_PHYSICS.DRIFT_AMPLITUDE + driftBias;
 
     // Rotation properties - flowers rotate slower
     const rotationSpeed = isFlower
@@ -112,13 +114,15 @@ export function createSakuraSystem() {
           SAKURA_COLORS.FLOWER_MAGENTA.gMin +
           Math.floor(
             Math.random() *
-              (SAKURA_COLORS.FLOWER_MAGENTA.gMax - SAKURA_COLORS.FLOWER_MAGENTA.gMin)
+              (SAKURA_COLORS.FLOWER_MAGENTA.gMax -
+                SAKURA_COLORS.FLOWER_MAGENTA.gMin)
           );
         b =
           SAKURA_COLORS.FLOWER_MAGENTA.bMin +
           Math.floor(
             Math.random() *
-              (SAKURA_COLORS.FLOWER_MAGENTA.bMax - SAKURA_COLORS.FLOWER_MAGENTA.bMin)
+              (SAKURA_COLORS.FLOWER_MAGENTA.bMax -
+                SAKURA_COLORS.FLOWER_MAGENTA.bMin)
           );
       } else if (colorVariant < SAKURA_COLORS.FLOWER_PINK.probability) {
         // Bright cherry pink
@@ -142,13 +146,15 @@ export function createSakuraSystem() {
           SAKURA_COLORS.FLOWER_BLUSH.gMin +
           Math.floor(
             Math.random() *
-              (SAKURA_COLORS.FLOWER_BLUSH.gMax - SAKURA_COLORS.FLOWER_BLUSH.gMin)
+              (SAKURA_COLORS.FLOWER_BLUSH.gMax -
+                SAKURA_COLORS.FLOWER_BLUSH.gMin)
           );
         b =
           SAKURA_COLORS.FLOWER_BLUSH.bMin +
           Math.floor(
             Math.random() *
-              (SAKURA_COLORS.FLOWER_BLUSH.bMax - SAKURA_COLORS.FLOWER_BLUSH.bMin)
+              (SAKURA_COLORS.FLOWER_BLUSH.bMax -
+                SAKURA_COLORS.FLOWER_BLUSH.bMin)
           );
       }
     } else {
@@ -282,8 +288,10 @@ export function createSakuraSystem() {
       (1 / (size / 4));
 
     // Initial horizontal drift with bias
-    const driftBias = (Math.random() - 0.5) * 2 * SAKURA_PHYSICS.DRIFT_BIAS_RANGE;
-    const vx = (Math.random() - 0.5) * SAKURA_PHYSICS.DRIFT_AMPLITUDE + driftBias;
+    const driftBias =
+      (Math.random() - 0.5) * 2 * SAKURA_PHYSICS.DRIFT_BIAS_RANGE;
+    const vx =
+      (Math.random() - 0.5) * SAKURA_PHYSICS.DRIFT_AMPLITUDE + driftBias;
 
     // Rotation properties - flowers rotate slower
     const rotationSpeed = isFlower
@@ -324,13 +332,15 @@ export function createSakuraSystem() {
           SAKURA_COLORS.FLOWER_MAGENTA.gMin +
           Math.floor(
             Math.random() *
-              (SAKURA_COLORS.FLOWER_MAGENTA.gMax - SAKURA_COLORS.FLOWER_MAGENTA.gMin)
+              (SAKURA_COLORS.FLOWER_MAGENTA.gMax -
+                SAKURA_COLORS.FLOWER_MAGENTA.gMin)
           );
         b =
           SAKURA_COLORS.FLOWER_MAGENTA.bMin +
           Math.floor(
             Math.random() *
-              (SAKURA_COLORS.FLOWER_MAGENTA.bMax - SAKURA_COLORS.FLOWER_MAGENTA.bMin)
+              (SAKURA_COLORS.FLOWER_MAGENTA.bMax -
+                SAKURA_COLORS.FLOWER_MAGENTA.bMin)
           );
       } else if (colorVariant < SAKURA_COLORS.FLOWER_PINK.probability) {
         r = SAKURA_COLORS.FLOWER_PINK.r;
@@ -352,13 +362,15 @@ export function createSakuraSystem() {
           SAKURA_COLORS.FLOWER_BLUSH.gMin +
           Math.floor(
             Math.random() *
-              (SAKURA_COLORS.FLOWER_BLUSH.gMax - SAKURA_COLORS.FLOWER_BLUSH.gMin)
+              (SAKURA_COLORS.FLOWER_BLUSH.gMax -
+                SAKURA_COLORS.FLOWER_BLUSH.gMin)
           );
         b =
           SAKURA_COLORS.FLOWER_BLUSH.bMin +
           Math.floor(
             Math.random() *
-              (SAKURA_COLORS.FLOWER_BLUSH.bMax - SAKURA_COLORS.FLOWER_BLUSH.bMin)
+              (SAKURA_COLORS.FLOWER_BLUSH.bMax -
+                SAKURA_COLORS.FLOWER_BLUSH.bMin)
           );
       }
     } else {
@@ -471,13 +483,11 @@ export function createSakuraSystem() {
 
       // Calculate current fall speed based on tumble (tumble-drag coupling)
       // Flat petals (high tumbleFactor) fall slower, edge-on petals fall faster
-      const dragModifier =
-        1 - tumbleFactor * SAKURA_PHYSICS.TUMBLE_DRAG_FACTOR;
+      const dragModifier = 1 - tumbleFactor * SAKURA_PHYSICS.TUMBLE_DRAG_FACTOR;
       const currentVy = petal.baseVy * dragModifier;
 
       // Primary sway - slow, wide oscillation
-      const primarySway =
-        Math.sin(newSwayOffset) * petal.swayAmplitude * 0.015;
+      const primarySway = Math.sin(newSwayOffset) * petal.swayAmplitude * 0.015;
 
       // Secondary sway - faster, smaller, adds complexity
       const secondarySway =
@@ -487,7 +497,9 @@ export function createSakuraSystem() {
         0.015;
 
       // Flutter effect - rapid micro-movements, more intense for petals
-      const flutterPhase = newSwayOffset * (SAKURA_PHYSICS.FLUTTER_SPEED / SAKURA_PHYSICS.SWAY_SPEED);
+      const flutterPhase =
+        newSwayOffset *
+        (SAKURA_PHYSICS.FLUTTER_SPEED / SAKURA_PHYSICS.SWAY_SPEED);
       const flutter =
         Math.sin(flutterPhase) *
         SAKURA_PHYSICS.FLUTTER_AMPLITUDE *
@@ -496,14 +508,16 @@ export function createSakuraSystem() {
 
       // Combine all horizontal movement
       const totalSwayX = primarySway + secondarySway + flutter;
-      let newX = petal.x + (petal.vx + petal.driftBias + totalSwayX) * frameMultiplier;
+      let newX =
+        petal.x + (petal.vx + petal.driftBias + totalSwayX) * frameMultiplier;
       const newY = petal.y + currentVy * frameMultiplier;
 
       // Rotation varies with tumble - faster rotation when tumbling more
       const rotationModifier =
         1 + tumbleFactor * SAKURA_PHYSICS.ROTATION_TUMBLE_FACTOR;
       const newRotation =
-        petal.rotation + petal.rotationSpeed * rotationModifier * frameMultiplier;
+        petal.rotation +
+        petal.rotationSpeed * rotationModifier * frameMultiplier;
 
       // Respawn if petal has fallen below the viewport
       if (newY > dimensions.height + SAKURA_BOUNDS.RESPAWN_BUFFER) {
@@ -548,7 +562,14 @@ export function createSakuraSystem() {
       if (isFlower) {
         // Draw glow effect behind flower
         const glowRadius = size * SAKURA_FLOWER.GLOW.RADIUS;
-        const glowGradient = ctx.createRadialGradient(0, 0, 0, 0, 0, glowRadius);
+        const glowGradient = ctx.createRadialGradient(
+          0,
+          0,
+          0,
+          0,
+          0,
+          glowRadius
+        );
         glowGradient.addColorStop(
           0,
           `rgba(${color.r}, ${color.g}, ${color.b}, ${opacity * SAKURA_FLOWER.GLOW.INNER_OPACITY})`
@@ -557,7 +578,10 @@ export function createSakuraSystem() {
           0.4,
           `rgba(${color.r}, ${color.g}, ${color.b}, ${opacity * SAKURA_FLOWER.GLOW.OPACITY})`
         );
-        glowGradient.addColorStop(1, `rgba(${color.r}, ${color.g}, ${color.b}, 0)`);
+        glowGradient.addColorStop(
+          1,
+          `rgba(${color.r}, ${color.g}, ${color.b}, 0)`
+        );
         ctx.fillStyle = glowGradient;
         ctx.fillRect(-glowRadius, -glowRadius, glowRadius * 2, glowRadius * 2);
 

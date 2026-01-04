@@ -85,7 +85,9 @@
       disabled={!canShare}
       onclick={handleShare}
     >
-      <span class="btn-icon"><i class="fas fa-share-nodes" aria-hidden="true"></i></span>
+      <span class="btn-icon"
+        ><i class="fas fa-share-nodes" aria-hidden="true"></i></span
+      >
       <span class="btn-label">Share</span>
       <span class="btn-shine"></span>
     </button>
@@ -114,7 +116,9 @@
       disabled={!canShare}
       onclick={handleInstagram}
     >
-      <span class="btn-icon"><i class="fab fa-instagram" aria-hidden="true"></i></span>
+      <span class="btn-icon"
+        ><i class="fab fa-instagram" aria-hidden="true"></i></span
+      >
       <span class="btn-label">Instagram</span>
       <span class="btn-shine"></span>
     </button>
@@ -240,7 +244,11 @@
 
   /* Secondary - Purple */
   .action-btn.secondary {
-    background: linear-gradient(135deg, var(--theme-accent-strong) 0%, #6d28d9 100%);
+    background: linear-gradient(
+      135deg,
+      var(--theme-accent-strong) 0%,
+      #6d28d9 100%
+    );
     color: white;
     box-shadow:
       0 4px 16px rgba(139, 92, 246, 0.35),
@@ -260,7 +268,11 @@
 
   /* Tertiary - Green */
   .action-btn.tertiary {
-    background: linear-gradient(135deg, var(--semantic-success) 0%, #047857 100%);
+    background: linear-gradient(
+      135deg,
+      var(--semantic-success) 0%,
+      #047857 100%
+    );
     color: white;
     box-shadow:
       0 4px 16px rgba(16, 185, 129, 0.35),

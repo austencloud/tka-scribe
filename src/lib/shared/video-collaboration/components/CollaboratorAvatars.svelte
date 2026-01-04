@@ -101,7 +101,11 @@
     align-items: center;
     justify-content: center;
     border-radius: 50%;
-    background: linear-gradient(135deg, var(--semantic-info) 0%, var(--theme-accent-strong) 100%);
+    background: linear-gradient(
+      135deg,
+      var(--semantic-info) 0%,
+      var(--theme-accent-strong) 100%
+    );
     border: 2px solid rgba(20, 20, 30, 1);
     overflow: hidden;
     transition: transform 0.2s ease;

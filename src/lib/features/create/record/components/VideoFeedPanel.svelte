@@ -303,7 +303,10 @@ Features square aspect ratio for consistent layout and settings dialog for camer
 
   .settings-button:hover {
     background: var(--surface-glass-hover, rgba(0, 0, 0, 0.8));
-    border-color: var(--theme-accent, var(--primary-color, var(--semantic-info)));
+    border-color: var(
+      --theme-accent,
+      var(--primary-color, var(--semantic-info))
+    );
     transform: translateY(-2px);
   }
 
@@ -354,7 +357,10 @@ Features square aspect ratio for consistent layout and settings dialog for camer
     width: var(--min-touch-target);
     height: var(--min-touch-target);
     border: 4px solid var(--theme-stroke);
-    border-top-color: var(--theme-accent, var(--primary-color, var(--semantic-info)));
+    border-top-color: var(
+      --theme-accent,
+      var(--primary-color, var(--semantic-info))
+    );
     border-radius: 50%;
     animation: spin 1s linear infinite;
   }

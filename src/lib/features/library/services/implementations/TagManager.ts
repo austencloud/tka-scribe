@@ -333,7 +333,10 @@ export class TagManager implements ITagManager {
         );
       })
       .catch((error) => {
-        console.error("[TagManager] Failed to initialize tag subscription:", error);
+        console.error(
+          "[TagManager] Failed to initialize tag subscription:",
+          error
+        );
         toast.error("Failed to connect to tags.");
       });
 

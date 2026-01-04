@@ -112,36 +112,15 @@
     <T.Group>
       <!-- X axis (red) - performer's right -->
       <T.ArrowHelper
-        args={[
-          [1, 0, 0],
-          [0, 0, 0],
-          effectiveSize * 1.2,
-          0xff4444,
-          15,
-          8
-        ]}
+        args={[[1, 0, 0], [0, 0, 0], effectiveSize * 1.2, 0xff4444, 15, 8]}
       />
       <!-- Y axis (green) - up/sky -->
       <T.ArrowHelper
-        args={[
-          [0, 1, 0],
-          [0, 0, 0],
-          effectiveSize * 1.2,
-          0x44ff44,
-          15,
-          8
-        ]}
+        args={[[0, 1, 0], [0, 0, 0], effectiveSize * 1.2, 0x44ff44, 15, 8]}
       />
       <!-- Z axis (blue) - toward audience -->
       <T.ArrowHelper
-        args={[
-          [0, 0, 1],
-          [0, 0, 0],
-          effectiveSize * 1.2,
-          0x4444ff,
-          15,
-          8
-        ]}
+        args={[[0, 0, 1], [0, 0, 0], effectiveSize * 1.2, 0x4444ff, 15, 8]}
       />
     </T.Group>
   </T.Group>

@@ -55,7 +55,8 @@
       title: "Grid",
       description: "Multiple in grid layout",
       slotCount: 4,
-      gradient: "linear-gradient(135deg, var(--semantic-warning) 0%, #d97706 100%)", // Orange
+      gradient:
+        "linear-gradient(135deg, var(--semantic-warning) 0%, #d97706 100%)", // Orange
     },
   ];
 

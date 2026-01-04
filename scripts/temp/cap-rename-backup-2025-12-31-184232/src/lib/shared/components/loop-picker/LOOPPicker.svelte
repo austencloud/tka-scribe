@@ -69,7 +69,9 @@
       console.warn("[LOOPPicker] Click ignored: already applying");
       return;
     }
-    console.log(`[LOOPPicker] Bridge LOOP clicked: ${bridgeLetter} + ${loopType}`);
+    console.log(
+      `[LOOPPicker] Bridge LOOP clicked: ${bridgeLetter} + ${loopType}`
+    );
     onSelect(bridgeLetter, loopType);
   }
 </script>
@@ -115,7 +117,8 @@
         {#each circularizationOptions as option}
           <div class="bridge-group">
             <div class="bridge-header">
-              <span class="bridge-letter">+{option.bridgeLetters.join("")}</span>
+              <span class="bridge-letter">+{option.bridgeLetters.join("")}</span
+              >
               <span class="bridge-arrow">→</span>
               <span class="bridge-end">{option.endPosition}</span>
             </div>
@@ -123,7 +126,8 @@
               {#each option.availableLOOPs as loop}
                 <button
                   class="loop-button bridge"
-                  onclick={() => handleBridgeClick(option.bridgeLetters[0], loop.loopType)}
+                  onclick={() =>
+                    handleBridgeClick(option.bridgeLetters[0], loop.loopType)}
                   disabled={isApplying}
                   title={loop.description || formatLOOPType(loop.loopType)}
                 >
@@ -255,8 +259,13 @@
     align-items: center;
     gap: var(--settings-spacing-sm, 8px);
     padding: var(--settings-spacing-sm, 8px) var(--settings-spacing-md, 16px);
-    background: color-mix(in srgb, var(--semantic-warning, #f59e0b) 10%, transparent);
-    border: 1px solid color-mix(in srgb, var(--semantic-warning, #f59e0b) 30%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--semantic-warning, #f59e0b) 10%,
+      transparent
+    );
+    border: 1px solid
+      color-mix(in srgb, var(--semantic-warning, #f59e0b) 30%, transparent);
     border-radius: var(--settings-radius-sm, 8px);
     font-size: var(--font-size-min, 14px);
     color: var(--semantic-warning, #f59e0b);

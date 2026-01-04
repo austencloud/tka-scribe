@@ -168,7 +168,9 @@ export class WeeklyChallengeManager implements IWeeklyChallengeManager {
       }
 
       const data = progressDoc.data() as Record<string, unknown>;
-      const startedAt = data["startedAt"] as { toDate?: () => Date } | undefined;
+      const startedAt = data["startedAt"] as
+        | { toDate?: () => Date }
+        | undefined;
       const completedAt = data["completedAt"] as
         | { toDate?: () => Date }
         | undefined;
@@ -178,7 +180,10 @@ export class WeeklyChallengeManager implements IWeeklyChallengeManager {
         completedAt: completedAt?.toDate?.(),
       } as UserWeeklyChallengeProgress;
     } catch (error) {
-      console.error("[WeeklyChallengeManager] Failed to get weekly progress:", error);
+      console.error(
+        "[WeeklyChallengeManager] Failed to get weekly progress:",
+        error
+      );
       toast.error("Failed to load weekly challenge progress.");
       return null;
     }
@@ -261,11 +266,14 @@ export class WeeklyChallengeManager implements IWeeklyChallengeManager {
 
           // Award bonus XP if earned
           if (bonusEarned) {
-            await this._achievementService.trackAction("weekly_challenge_bonus", {
-              challengeId: challenge.id,
-              weekNumber: challenge.weekNumber,
-              year: challenge.year,
-            });
+            await this._achievementService.trackAction(
+              "weekly_challenge_bonus",
+              {
+                challengeId: challenge.id,
+                weekNumber: challenge.weekNumber,
+                year: challenge.year,
+              }
+            );
           }
         }
 
@@ -295,7 +303,10 @@ export class WeeklyChallengeManager implements IWeeklyChallengeManager {
         };
       }
     } catch (error) {
-      console.error("[WeeklyChallengeManager] Failed to update weekly progress:", error);
+      console.error(
+        "[WeeklyChallengeManager] Failed to update weekly progress:",
+        error
+      );
       toast.error("Failed to update weekly challenge progress.");
       throw error;
     }
@@ -479,7 +490,10 @@ export class WeeklyChallengeManager implements IWeeklyChallengeManager {
         totalBonusesEarned,
       };
     } catch (error) {
-      console.error("[WeeklyChallengeManager] Failed to get weekly stats:", error);
+      console.error(
+        "[WeeklyChallengeManager] Failed to get weekly stats:",
+        error
+      );
       toast.error("Failed to load weekly challenge statistics.");
       return {
         totalWeeklyChallengesCompleted: 0,

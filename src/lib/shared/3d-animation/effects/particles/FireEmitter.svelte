@@ -160,7 +160,8 @@
     }
 
     // Set velocity with speed variation (scale affects velocity for larger fires)
-    const speed = INITIAL_VELOCITY * scale * (0.8 + Math.random() * 0.4) * intensity;
+    const speed =
+      INITIAL_VELOCITY * scale * (0.8 + Math.random() * 0.4) * intensity;
     p.velocity.copy(dir).multiplyScalar(speed);
 
     // Add some of the prop velocity directly for motion-reactive flames
@@ -174,7 +175,9 @@
 
     // Lifetime and size (scale directly affects particle size)
     p.life = 0;
-    p.maxLife = MIN_LIFETIME + Math.random() * (MAX_LIFETIME - MIN_LIFETIME) * (1 + scale * 0.2);
+    p.maxLife =
+      MIN_LIFETIME +
+      Math.random() * (MAX_LIFETIME - MIN_LIFETIME) * (1 + scale * 0.2);
     p.size =
       (BASE_SIZE + (Math.random() - 0.5) * SIZE_VARIATION * 2) *
       scale *
@@ -332,7 +335,12 @@
 
   // Update loop
   useTask((delta) => {
-    if (!instancedMesh || !colorAttribute || !opacityAttribute || !sizeAttribute)
+    if (
+      !instancedMesh ||
+      !colorAttribute ||
+      !opacityAttribute ||
+      !sizeAttribute
+    )
       return;
 
     elapsedTime += delta;

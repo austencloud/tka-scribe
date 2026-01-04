@@ -67,9 +67,9 @@ export const AUTUMN_LEAF_SIZES = {
 export const AUTUMN_LEAF_DISTRIBUTION = {
   maple: 0.25, // 25% - iconic autumn leaf
   curved: 0.18, // 18%
-  oak: 0.20, // 20% - classic lobed shape
+  oak: 0.2, // 20% - classic lobed shape
   rounded: 0.15, // 15%
-  double: 0.10, // 10% - less common, adds variety
+  double: 0.1, // 10% - less common, adds variety
   nature: 0.12, // 12%
 } as const;
 

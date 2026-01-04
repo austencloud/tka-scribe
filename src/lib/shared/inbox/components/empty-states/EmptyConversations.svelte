@@ -73,8 +73,16 @@
   }
 
   .bubble-accent {
-    fill: color-mix(in srgb, var(--theme-accent, var(--semantic-info)) 20%, transparent);
-    stroke: color-mix(in srgb, var(--theme-accent, var(--semantic-info)) 40%, transparent);
+    fill: color-mix(
+      in srgb,
+      var(--theme-accent, var(--semantic-info)) 20%,
+      transparent
+    );
+    stroke: color-mix(
+      in srgb,
+      var(--theme-accent, var(--semantic-info)) 40%,
+      transparent
+    );
     stroke-width: 1;
   }
 

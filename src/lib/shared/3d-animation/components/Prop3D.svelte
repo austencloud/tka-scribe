@@ -28,7 +28,7 @@
     propState,
     color,
     visible = true,
-    length = 150,  // Matches GRID_RADIUS_3D so opposite props touch at center
+    length = 150, // Matches GRID_RADIUS_3D so opposite props touch at center
     width = 25,
   }: Props = $props();
 
@@ -81,17 +81,17 @@
 
       <!-- Center grip indicator -->
       <T.Mesh position={[0, 0, 2.5]}>
-        <T.CylinderGeometry args={[3, 3, width + 2, 16]} rotation={[Math.PI / 2, 0, 0]} />
-        <T.MeshStandardMaterial
-          color="white"
-          roughness={0.5}
+        <T.CylinderGeometry
+          args={[3, 3, width + 2, 16]}
+          rotation={[Math.PI / 2, 0, 0]}
         />
+        <T.MeshStandardMaterial color="white" roughness={0.5} />
       </T.Mesh>
     </T.Group>
   </Billboard>
 
   <!-- Trail indicator (small sphere at prop position for path visualization) -->
-  <T.Mesh position={position}>
+  <T.Mesh {position}>
     <T.SphereGeometry args={[3, 8, 8]} />
     <T.MeshBasicMaterial color={colorHex} opacity={0.5} transparent />
   </T.Mesh>

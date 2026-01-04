@@ -348,7 +348,8 @@
           title={isPlaying ? "Pause (Space)" : "Play (Space)"}
           aria-label={isPlaying ? "Pause" : "Play"}
         >
-          <i class="fas {isPlaying ? 'fa-pause' : 'fa-play'}" aria-hidden="true"></i>
+          <i class="fas {isPlaying ? 'fa-pause' : 'fa-play'}" aria-hidden="true"
+          ></i>
         </button>
         <button
           class="control-btn"

@@ -27,7 +27,8 @@
     {#each sections as section, i}
       <div
         class="saved-section-tag"
-        style="--section-color: {SECTION_COLORS[i % SECTION_COLORS.length]?.border}"
+        style="--section-color: {SECTION_COLORS[i % SECTION_COLORS.length]
+          ?.border}"
       >
         <div class="section-info">
           <span class="section-beats">{formatSectionBeats(section.beats)}</span>

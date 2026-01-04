@@ -87,7 +87,9 @@ const MotionDataSchema = z.object({
   propType: z.nativeEnum(PropType).default(PropType.STAFF),
   arrowLocation: z.nativeEnum(GridLocation).default(GridLocation.NORTH),
   color: z.nativeEnum(MotionColor).default(MotionColor.BLUE),
-  arrowPlacementData: ArrowPlacementDataSchema.default(defaultArrowPlacementData),
+  arrowPlacementData: ArrowPlacementDataSchema.default(
+    defaultArrowPlacementData
+  ),
   propPlacementData: PropPlacementDataSchema.default(defaultPropPlacementData),
   prefloatMotionType: z.nativeEnum(MotionType).nullable().default(null),
   prefloatRotationDirection: z

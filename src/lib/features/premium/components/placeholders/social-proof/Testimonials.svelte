@@ -98,7 +98,14 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: var(--gradient-primary, linear-gradient(135deg, var(--theme-accent) 0%, var(--theme-accent-strong) 100%));
+    background: var(
+      --gradient-primary,
+      linear-gradient(
+        135deg,
+        var(--theme-accent) 0%,
+        var(--theme-accent-strong) 100%
+      )
+    );
     color: white;
   }
 

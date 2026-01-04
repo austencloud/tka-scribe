@@ -14,10 +14,7 @@ import { injectable, inject } from "inversify";
 import { browser } from "$app/environment";
 import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 import { TYPES } from "$lib/shared/inversify/types";
-import type {
-  IURLSyncer,
-  URLSyncOptions,
-} from "../contracts/IURLSyncer";
+import type { IURLSyncer, URLSyncOptions } from "../contracts/IURLSyncer";
 import type { ISequenceEncoder } from "../contracts/ISequenceEncoder";
 
 @injectable()

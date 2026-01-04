@@ -129,11 +129,16 @@ export class DiscoverLoader implements IDiscoverLoader {
       if (cachedSequence?.fullMetadata) {
         console.log(`⚡ Using bundled metadata for ${sequenceName}`);
         const result = this.createSequenceFromBundledMetadata(cachedSequence);
-        console.log(`[DiscoverLoader] createSequenceFromBundledMetadata result:`, {
-          success: !!result,
-          beatsLength: result?.beats?.length,
-          firstBeatMotionsBlue: result?.beats?.[0]?.motions?.blue ? 'exists' : 'MISSING',
-        });
+        console.log(
+          `[DiscoverLoader] createSequenceFromBundledMetadata result:`,
+          {
+            success: !!result,
+            beatsLength: result?.beats?.length,
+            firstBeatMotionsBlue: result?.beats?.[0]?.motions?.blue
+              ? "exists"
+              : "MISSING",
+          }
+        );
         return result;
       }
 
@@ -580,7 +585,9 @@ export class DiscoverLoader implements IDiscoverLoader {
       this.sequenceCache.set(word, rawSeq);
       if (this.sequenceCache.size === 1) {
         // Log first cache entry as sanity check
-        console.log(`[DiscoverLoader] First cache entry: "${word}", hasFullMetadata=${!!rawSeq.fullMetadata}`);
+        console.log(
+          `[DiscoverLoader] First cache entry: "${word}", hasFullMetadata=${!!rawSeq.fullMetadata}`
+        );
       }
 
       try {

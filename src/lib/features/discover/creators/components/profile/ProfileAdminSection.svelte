@@ -6,7 +6,14 @@
    * Only visible to admins viewing another user's profile.
    */
 
-  import { doc, updateDoc, writeBatch, collection, getDocs, deleteDoc } from "firebase/firestore";
+  import {
+    doc,
+    updateDoc,
+    writeBatch,
+    collection,
+    getDocs,
+    deleteDoc,
+  } from "firebase/firestore";
   import { ref, remove } from "firebase/database";
   import { getFirestoreInstance, database } from "$lib/shared/auth/firebase";
   import type { UserRole } from "$lib/shared/auth/domain/models/UserRole";
@@ -141,8 +148,8 @@
         "xp",
         "streak",
         "achievements",
-        "sequences",        // User's library sequences
-        "activityLog",      // Activity logging
+        "sequences", // User's library sequences
+        "activityLog", // Activity logging
         "notifications",
         "settings",
         "tags",
@@ -192,9 +199,14 @@
       try {
         const presenceRef = ref(database, `presence/${userId}`);
         await remove(presenceRef);
-        console.log(`[ProfileAdminSection] Removed presence from RTDB for: ${userId}`);
+        console.log(
+          `[ProfileAdminSection] Removed presence from RTDB for: ${userId}`
+        );
       } catch (err) {
-        console.warn(`[ProfileAdminSection] Could not remove RTDB presence:`, err);
+        console.warn(
+          `[ProfileAdminSection] Could not remove RTDB presence:`,
+          err
+        );
       }
 
       console.log(`[ProfileAdminSection] Deleted user: ${userId}`);
@@ -278,7 +290,9 @@
           };
         }}
       >
-        <i class="fas {userProfile.isDisabled ? 'fa-check-circle' : 'fa-ban'}" aria-hidden="true"
+        <i
+          class="fas {userProfile.isDisabled ? 'fa-check-circle' : 'fa-ban'}"
+          aria-hidden="true"
         ></i>
         {userProfile.isDisabled ? "Enable Account" : "Disable Account"}
       </button>

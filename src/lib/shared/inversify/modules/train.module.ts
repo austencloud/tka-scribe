@@ -24,10 +24,7 @@ export const trainModule = new ContainerModule(
   (options: ContainerModuleLoadOptions) => {
     // === HAND DETECTION SERVICES ===
     // Core MediaPipe wrapper
-    options
-      .bind(TYPES.IHandLandmarker)
-      .to(HandLandmarker)
-      .inSingletonScope();
+    options.bind(TYPES.IHandLandmarker).to(HandLandmarker).inSingletonScope();
 
     // Analysis services
     options
@@ -44,10 +41,7 @@ export const trainModule = new ContainerModule(
       .bind(TYPES.IHandTrackingStabilizer)
       .to(HandTrackingStabilizer)
       .inSingletonScope();
-    options
-      .bind(TYPES.IHandAssigner)
-      .to(HandAssigner)
-      .inSingletonScope();
+    options.bind(TYPES.IHandAssigner).to(HandAssigner).inSingletonScope();
 
     // Position detection orchestrator
     options

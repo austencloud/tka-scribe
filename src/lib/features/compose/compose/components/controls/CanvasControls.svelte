@@ -89,7 +89,8 @@
         title={isPlaying ? "Pause" : "Play"}
         aria-label={isPlaying ? "Pause playback" : "Start playback"}
       >
-        <i class="fas {isPlaying ? 'fa-pause' : 'fa-play'}" aria-hidden="true"></i>
+        <i class="fas {isPlaying ? 'fa-pause' : 'fa-play'}" aria-hidden="true"
+        ></i>
       </button>
 
       <button
@@ -113,7 +114,10 @@
         aria-label="Toggle preview mode"
         aria-pressed={isPreviewing}
       >
-        <i class="fas {isPreviewing ? 'fa-eye' : 'fa-eye-slash'}" aria-hidden="true"></i>
+        <i
+          class="fas {isPreviewing ? 'fa-eye' : 'fa-eye-slash'}"
+          aria-hidden="true"
+        ></i>
         <span class="preview-label">{isPreviewing ? "Live" : "Static"}</span>
       </button>
     </div>

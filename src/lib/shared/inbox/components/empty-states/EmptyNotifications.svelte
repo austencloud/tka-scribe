@@ -118,7 +118,11 @@
   }
 
   .check-bg {
-    fill: color-mix(in srgb, var(--semantic-success, var(--semantic-success)) 20%, transparent);
+    fill: color-mix(
+      in srgb,
+      var(--semantic-success, var(--semantic-success)) 20%,
+      transparent
+    );
   }
 
   .check-mark {

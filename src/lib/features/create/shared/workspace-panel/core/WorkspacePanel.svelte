@@ -172,38 +172,36 @@
 
   // Initialize services on mount
   onMount(() => {
-    BeatOperator = resolve<IBeatOperator>(
-      TYPES.IBeatOperator
-    );
+    BeatOperator = resolve<IBeatOperator>(TYPES.IBeatOperator);
   });
 </script>
 
 {#if sequenceState}
   <div class="workspace-panel" data-testid="workspace-panel">
-      <!-- Sequence Display -->
-      <div class="sequence-display-container">
-        <SequenceDisplay
-          {sequenceState}
-          onBeatSelected={handleBeatSelected}
-          onStartPositionSelected={handleStartPositionSelected}
-          onBeatDelete={handleBeatDelete}
-          onBeatLongPress={handleBeatLongPress}
-          selectedBeatNumber={localSelectedBeatNumber}
-          practiceBeatNumber={practiceBeatIndex}
-          {isSideBySideLayout}
-          {shouldOrbitAroundCenter}
-          activeMode={createModuleState?.activeSection ?? null}
-          {currentDisplayWord}
-          {letterSources}
-        />
-      </div>
-
-      <!-- Toast for validation errors -->
-      <Toast
-        message={toastMessage ?? ""}
-        onDismiss={() => (toastMessage = null)}
+    <!-- Sequence Display -->
+    <div class="sequence-display-container">
+      <SequenceDisplay
+        {sequenceState}
+        onBeatSelected={handleBeatSelected}
+        onStartPositionSelected={handleStartPositionSelected}
+        onBeatDelete={handleBeatDelete}
+        onBeatLongPress={handleBeatLongPress}
+        selectedBeatNumber={localSelectedBeatNumber}
+        practiceBeatNumber={practiceBeatIndex}
+        {isSideBySideLayout}
+        {shouldOrbitAroundCenter}
+        activeMode={createModuleState?.activeSection ?? null}
+        {currentDisplayWord}
+        {letterSources}
       />
     </div>
+
+    <!-- Toast for validation errors -->
+    <Toast
+      message={toastMessage ?? ""}
+      onDismiss={() => (toastMessage = null)}
+    />
+  </div>
 {:else}
   <div class="workspace-panel loading" data-testid="workspace-panel">
     <div class="loading-message">Initializing workspace...</div>

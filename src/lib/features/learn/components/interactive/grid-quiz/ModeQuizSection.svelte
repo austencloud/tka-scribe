@@ -33,8 +33,10 @@ ModeQuizSection - Identify diamond vs box grid
       class="answer-btn"
       class:selected={selectedAnswer === "diamond"}
       class:correct={answerState === "correct" && selectedAnswer === "diamond"}
-      class:incorrect={answerState === "incorrect" && selectedAnswer === "diamond"}
-      class:reveal-correct={answerState === "incorrect" && question.correctAnswer === "diamond"}
+      class:incorrect={answerState === "incorrect" &&
+        selectedAnswer === "diamond"}
+      class:reveal-correct={answerState === "incorrect" &&
+        question.correctAnswer === "diamond"}
       onclick={() => onAnswer("diamond")}
       disabled={answerState !== "idle"}
     >
@@ -50,7 +52,8 @@ ModeQuizSection - Identify diamond vs box grid
       class:selected={selectedAnswer === "box"}
       class:correct={answerState === "correct" && selectedAnswer === "box"}
       class:incorrect={answerState === "incorrect" && selectedAnswer === "box"}
-      class:reveal-correct={answerState === "incorrect" && question.correctAnswer === "box"}
+      class:reveal-correct={answerState === "incorrect" &&
+        question.correctAnswer === "box"}
       onclick={() => onAnswer("box")}
       disabled={answerState !== "idle"}
     >
@@ -71,7 +74,9 @@ ModeQuizSection - Identify diamond vs box grid
       {#if answerState === "correct"}
         <span>Correct! That's the {question.correctAnswer} grid.</span>
       {:else}
-        <span>Not quite! That was the <strong>{question.correctAnswer}</strong> grid.</span>
+        <span
+          >Not quite! That was the <strong>{question.correctAnswer}</strong> grid.</span
+        >
       {/if}
     </div>
   {/if}
@@ -170,9 +175,15 @@ ModeQuizSection - Identify diamond vs box grid
   }
 
   @keyframes correctPulse {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.03); }
-    100% { transform: scale(1); }
+    0% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.03);
+    }
+    100% {
+      transform: scale(1);
+    }
   }
 
   .answer-btn.incorrect {
@@ -182,9 +193,16 @@ ModeQuizSection - Identify diamond vs box grid
   }
 
   @keyframes shake {
-    0%, 100% { transform: translateX(0); }
-    25% { transform: translateX(-3px); }
-    75% { transform: translateX(3px); }
+    0%,
+    100% {
+      transform: translateX(0);
+    }
+    25% {
+      transform: translateX(-3px);
+    }
+    75% {
+      transform: translateX(3px);
+    }
   }
 
   .answer-btn.reveal-correct {

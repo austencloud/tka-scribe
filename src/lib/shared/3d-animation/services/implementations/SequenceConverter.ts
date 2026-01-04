@@ -50,7 +50,10 @@ export class SequenceConverter implements ISequenceConverter {
   /**
    * Extract motion configs from a BeatData object
    */
-  beatDataToConfigs(beat: BeatData, plane: Plane = Plane.WALL): BeatMotionConfigs {
+  beatDataToConfigs(
+    beat: BeatData,
+    plane: Plane = Plane.WALL
+  ): BeatMotionConfigs {
     const blueMotion = beat.motions?.[MotionColor.BLUE];
     const redMotion = beat.motions?.[MotionColor.RED];
 

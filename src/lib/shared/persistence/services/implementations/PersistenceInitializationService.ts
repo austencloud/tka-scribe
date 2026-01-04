@@ -11,9 +11,7 @@ import type { IPersistenceService } from "../contracts/IPersistenceService";
 import type { IPersistenceInitializationService } from "../contracts/IPersistenceInitializationService";
 
 @injectable()
-export class PersistenceInitializationService
-  implements IPersistenceInitializationService
-{
+export class PersistenceInitializationService implements IPersistenceInitializationService {
   private isInitialized = false;
   private initializationError?: string;
 

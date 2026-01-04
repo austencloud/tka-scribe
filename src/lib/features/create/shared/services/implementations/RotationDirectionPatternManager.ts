@@ -61,9 +61,7 @@ import { createComponentLogger } from "$lib/shared/utils/debug-logger";
 const logger = createComponentLogger("RotationDirectionPatternManager");
 
 @injectable()
-export class RotationDirectionPatternManager
-  implements IRotationDirectionPatternManager
-{
+export class RotationDirectionPatternManager implements IRotationDirectionPatternManager {
   /**
    * Extract a rotation direction pattern from a sequence
    *

@@ -19,25 +19,13 @@ export const renderModule = new ContainerModule(
 
     // === PURE RENDERING SERVICES ===
     options.bind(TYPES.ICanvasManager).to(CanvasManager);
-    options
-      .bind(TYPES.IImageComposer)
-      .to(ImageComposer)
-      .inSingletonScope(); // PERF: Cache persists across all renders
+    options.bind(TYPES.IImageComposer).to(ImageComposer).inSingletonScope(); // PERF: Cache persists across all renders
     options.bind(TYPES.ILayoutCalculator).to(LayoutCalculator);
-    options
-      .bind(TYPES.IDimensionCalculator)
-      .to(DimensionCalculator);
-    options
-      .bind(TYPES.IImageFormatConverter)
-      .to(ImageFormatConverter);
-    options
-      .bind(TYPES.ISVGToCanvasConverter)
-      .to(SVGToCanvasConverter);
+    options.bind(TYPES.IDimensionCalculator).to(DimensionCalculator);
+    options.bind(TYPES.IImageFormatConverter).to(ImageFormatConverter);
+    options.bind(TYPES.ISVGToCanvasConverter).to(SVGToCanvasConverter);
     options.bind(TYPES.ITextRenderer).to(TextRenderer);
-    options
-      .bind(TYPES.IGlyphCache)
-      .to(GlyphCache)
-      .inSingletonScope();
+    options.bind(TYPES.IGlyphCache).to(GlyphCache).inSingletonScope();
 
     // === UTILITY SERVICES ===
     options.bind(TYPES.IFilenameGenerator).to(FilenameGenerator);

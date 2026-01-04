@@ -18,7 +18,10 @@
   import { resolve, TYPES } from "$lib/shared/inversify/di";
   import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
   import { desktopSidebarState } from "$lib/shared/layout/desktop-sidebar-state.svelte";
-  import { getTabIntroContent, type TabIntroPage } from "../config/tab-intro-content";
+  import {
+    getTabIntroContent,
+    type TabIntroPage,
+  } from "../config/tab-intro-content";
 
   interface Props {
     moduleId: string;
@@ -28,12 +31,7 @@
     onDismiss?: () => void;
   }
 
-  const {
-    moduleId,
-    tabId,
-    forceShow = false,
-    onDismiss,
-  }: Props = $props();
+  const { moduleId, tabId, forceShow = false, onDismiss }: Props = $props();
 
   // Get content from config
   // svelte-ignore state_referenced_locally
@@ -162,7 +160,10 @@
     ></button>
 
     <!-- Content container -->
-    <div class="intro-content" transition:fly={{ y: 30, duration: 350, delay: 50 }}>
+    <div
+      class="intro-content"
+      transition:fly={{ y: 30, duration: 350, delay: 50 }}
+    >
       <!-- Icon - large and prominent -->
       <div class="intro-icon">
         <i class="fas {icon}" aria-hidden="true"></i>

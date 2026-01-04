@@ -15,9 +15,7 @@
   }>();
 
   // Resolve haptic feedback service
-  const hapticService = resolve<IHapticFeedback>(
-    TYPES.IHapticFeedback
-  );
+  const hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
 
   function handleClick() {
     hapticService?.trigger("selection");
@@ -48,12 +46,14 @@
       var(--semantic-success) 0%,
       color-mix(in srgb, var(--semantic-success) 85%, #059669) 100%
     ); /* Green gradient (matches composite format) */
-    border: 1px solid color-mix(in srgb, var(--semantic-success) 30%, transparent);
+    border: 1px solid
+      color-mix(in srgb, var(--semantic-success) 30%, transparent);
     border-radius: 50%;
     color: var(--theme-text);
     cursor: pointer;
     transition: all var(--transition-normal, 0.3s cubic-bezier(0.4, 0, 0.2, 1));
-    box-shadow: 0 4px 12px color-mix(in srgb, var(--semantic-success) 40%, transparent);
+    box-shadow: 0 4px 12px
+      color-mix(in srgb, var(--semantic-success) 40%, transparent);
   }
 
   .share-hub-button:hover {
@@ -63,7 +63,8 @@
       color-mix(in srgb, var(--semantic-success) 70%, #059669) 100%
     );
     transform: scale(1.05);
-    box-shadow: 0 6px 16px color-mix(in srgb, var(--semantic-success) 60%, transparent);
+    box-shadow: 0 6px 16px
+      color-mix(in srgb, var(--semantic-success) 60%, transparent);
   }
 
   .share-hub-button:active {
@@ -78,7 +79,8 @@
 
   .share-hub-button.active {
     background: linear-gradient(135deg, var(--semantic-success), #059669);
-    box-shadow: 0 6px 20px color-mix(in srgb, var(--semantic-success) 70%, transparent);
+    box-shadow: 0 6px 20px
+      color-mix(in srgb, var(--semantic-success) 70%, transparent);
   }
 
   .share-hub-button i {
@@ -134,7 +136,8 @@
   @media (prefers-contrast: high) {
     .share-hub-button {
       background: color-mix(in srgb, var(--semantic-success) 30%, transparent);
-      border: 2px solid color-mix(in srgb, var(--semantic-success) 70%, transparent);
+      border: 2px solid
+        color-mix(in srgb, var(--semantic-success) 70%, transparent);
     }
   }
 

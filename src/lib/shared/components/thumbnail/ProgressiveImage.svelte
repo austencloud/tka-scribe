@@ -57,11 +57,7 @@
 >
   {#if src && !hasError}
     <!-- Placeholder layer - blurred version or color -->
-    <div
-      class="placeholder"
-      class:hidden={isLoaded}
-      aria-hidden="true"
-    >
+    <div class="placeholder" class:hidden={isLoaded} aria-hidden="true">
       <!-- Use smallest variant as blur source if available -->
       <img
         src={src.replace(/(\.[^.]+)$/, "_small$1")}

@@ -25,32 +25,142 @@ export interface PatternInfo {
  */
 export const TYPE1_LETTERS: Type1LetterQuestion[] = [
   // Pro-Pro (7 letters)
-  { letter: Letter.A, pattern: "pro-pro", blueMotion: MotionType.PRO, redMotion: MotionType.PRO },
-  { letter: Letter.D, pattern: "pro-pro", blueMotion: MotionType.PRO, redMotion: MotionType.PRO },
-  { letter: Letter.G, pattern: "pro-pro", blueMotion: MotionType.PRO, redMotion: MotionType.PRO },
-  { letter: Letter.J, pattern: "pro-pro", blueMotion: MotionType.PRO, redMotion: MotionType.PRO },
-  { letter: Letter.M, pattern: "pro-pro", blueMotion: MotionType.PRO, redMotion: MotionType.PRO },
-  { letter: Letter.P, pattern: "pro-pro", blueMotion: MotionType.PRO, redMotion: MotionType.PRO },
-  { letter: Letter.S, pattern: "pro-pro", blueMotion: MotionType.PRO, redMotion: MotionType.PRO },
+  {
+    letter: Letter.A,
+    pattern: "pro-pro",
+    blueMotion: MotionType.PRO,
+    redMotion: MotionType.PRO,
+  },
+  {
+    letter: Letter.D,
+    pattern: "pro-pro",
+    blueMotion: MotionType.PRO,
+    redMotion: MotionType.PRO,
+  },
+  {
+    letter: Letter.G,
+    pattern: "pro-pro",
+    blueMotion: MotionType.PRO,
+    redMotion: MotionType.PRO,
+  },
+  {
+    letter: Letter.J,
+    pattern: "pro-pro",
+    blueMotion: MotionType.PRO,
+    redMotion: MotionType.PRO,
+  },
+  {
+    letter: Letter.M,
+    pattern: "pro-pro",
+    blueMotion: MotionType.PRO,
+    redMotion: MotionType.PRO,
+  },
+  {
+    letter: Letter.P,
+    pattern: "pro-pro",
+    blueMotion: MotionType.PRO,
+    redMotion: MotionType.PRO,
+  },
+  {
+    letter: Letter.S,
+    pattern: "pro-pro",
+    blueMotion: MotionType.PRO,
+    redMotion: MotionType.PRO,
+  },
 
   // Anti-Anti (7 letters)
-  { letter: Letter.B, pattern: "anti-anti", blueMotion: MotionType.ANTI, redMotion: MotionType.ANTI },
-  { letter: Letter.E, pattern: "anti-anti", blueMotion: MotionType.ANTI, redMotion: MotionType.ANTI },
-  { letter: Letter.H, pattern: "anti-anti", blueMotion: MotionType.ANTI, redMotion: MotionType.ANTI },
-  { letter: Letter.K, pattern: "anti-anti", blueMotion: MotionType.ANTI, redMotion: MotionType.ANTI },
-  { letter: Letter.N, pattern: "anti-anti", blueMotion: MotionType.ANTI, redMotion: MotionType.ANTI },
-  { letter: Letter.Q, pattern: "anti-anti", blueMotion: MotionType.ANTI, redMotion: MotionType.ANTI },
-  { letter: Letter.T, pattern: "anti-anti", blueMotion: MotionType.ANTI, redMotion: MotionType.ANTI },
+  {
+    letter: Letter.B,
+    pattern: "anti-anti",
+    blueMotion: MotionType.ANTI,
+    redMotion: MotionType.ANTI,
+  },
+  {
+    letter: Letter.E,
+    pattern: "anti-anti",
+    blueMotion: MotionType.ANTI,
+    redMotion: MotionType.ANTI,
+  },
+  {
+    letter: Letter.H,
+    pattern: "anti-anti",
+    blueMotion: MotionType.ANTI,
+    redMotion: MotionType.ANTI,
+  },
+  {
+    letter: Letter.K,
+    pattern: "anti-anti",
+    blueMotion: MotionType.ANTI,
+    redMotion: MotionType.ANTI,
+  },
+  {
+    letter: Letter.N,
+    pattern: "anti-anti",
+    blueMotion: MotionType.ANTI,
+    redMotion: MotionType.ANTI,
+  },
+  {
+    letter: Letter.Q,
+    pattern: "anti-anti",
+    blueMotion: MotionType.ANTI,
+    redMotion: MotionType.ANTI,
+  },
+  {
+    letter: Letter.T,
+    pattern: "anti-anti",
+    blueMotion: MotionType.ANTI,
+    redMotion: MotionType.ANTI,
+  },
 
   // Hybrid (8 letters)
-  { letter: Letter.C, pattern: "hybrid", blueMotion: MotionType.ANTI, redMotion: MotionType.PRO },
-  { letter: Letter.F, pattern: "hybrid", blueMotion: MotionType.ANTI, redMotion: MotionType.PRO },
-  { letter: Letter.I, pattern: "hybrid", blueMotion: MotionType.ANTI, redMotion: MotionType.PRO },
-  { letter: Letter.L, pattern: "hybrid", blueMotion: MotionType.ANTI, redMotion: MotionType.PRO },
-  { letter: Letter.O, pattern: "hybrid", blueMotion: MotionType.ANTI, redMotion: MotionType.PRO },
-  { letter: Letter.R, pattern: "hybrid", blueMotion: MotionType.ANTI, redMotion: MotionType.PRO },
-  { letter: Letter.U, pattern: "hybrid", blueMotion: MotionType.ANTI, redMotion: MotionType.PRO },
-  { letter: Letter.V, pattern: "hybrid", blueMotion: MotionType.PRO, redMotion: MotionType.ANTI },
+  {
+    letter: Letter.C,
+    pattern: "hybrid",
+    blueMotion: MotionType.ANTI,
+    redMotion: MotionType.PRO,
+  },
+  {
+    letter: Letter.F,
+    pattern: "hybrid",
+    blueMotion: MotionType.ANTI,
+    redMotion: MotionType.PRO,
+  },
+  {
+    letter: Letter.I,
+    pattern: "hybrid",
+    blueMotion: MotionType.ANTI,
+    redMotion: MotionType.PRO,
+  },
+  {
+    letter: Letter.L,
+    pattern: "hybrid",
+    blueMotion: MotionType.ANTI,
+    redMotion: MotionType.PRO,
+  },
+  {
+    letter: Letter.O,
+    pattern: "hybrid",
+    blueMotion: MotionType.ANTI,
+    redMotion: MotionType.PRO,
+  },
+  {
+    letter: Letter.R,
+    pattern: "hybrid",
+    blueMotion: MotionType.ANTI,
+    redMotion: MotionType.PRO,
+  },
+  {
+    letter: Letter.U,
+    pattern: "hybrid",
+    blueMotion: MotionType.ANTI,
+    redMotion: MotionType.PRO,
+  },
+  {
+    letter: Letter.V,
+    pattern: "hybrid",
+    blueMotion: MotionType.PRO,
+    redMotion: MotionType.ANTI,
+  },
 ] as const;
 
 /**
@@ -82,7 +192,9 @@ export const PATTERN_INFO: Record<MotionPattern, PatternInfo> = {
  */
 export function generateType1Questions(): Type1LetterQuestion[] {
   const proProLetters = TYPE1_LETTERS.filter((q) => q.pattern === "pro-pro");
-  const antiAntiLetters = TYPE1_LETTERS.filter((q) => q.pattern === "anti-anti");
+  const antiAntiLetters = TYPE1_LETTERS.filter(
+    (q) => q.pattern === "anti-anti"
+  );
   const hybridLetters = TYPE1_LETTERS.filter((q) => q.pattern === "hybrid");
 
   const shuffledProPro = [...proProLetters].sort(() => Math.random() - 0.5);

@@ -66,7 +66,10 @@ export class SubscriptionManager implements ISubscriptionManager {
         await new Promise((resolve) => setTimeout(resolve, 2000));
       }
     } catch (error) {
-      console.error("[SubscriptionManager] Failed to ensure customer exists:", error);
+      console.error(
+        "[SubscriptionManager] Failed to ensure customer exists:",
+        error
+      );
       // Don't throw - let the checkout attempt proceed anyway
     }
   }
@@ -106,7 +109,9 @@ export class SubscriptionManager implements ISubscriptionManager {
 
             if (data?.error) {
               unsubscribe();
-              reject(new Error(data.error.message || "Checkout session failed"));
+              reject(
+                new Error(data.error.message || "Checkout session failed")
+              );
             }
 
             if (data?.url) {
@@ -115,7 +120,10 @@ export class SubscriptionManager implements ISubscriptionManager {
             }
           },
           (error) => {
-            console.error("[SubscriptionManager] Checkout session subscription error:", error);
+            console.error(
+              "[SubscriptionManager] Checkout session subscription error:",
+              error
+            );
             unsubscribe();
             reject(new Error("Failed to monitor checkout session"));
           }
@@ -128,7 +136,10 @@ export class SubscriptionManager implements ISubscriptionManager {
         }, 30000);
       });
     } catch (error) {
-      console.error("[SubscriptionManager] Failed to create checkout session:", error);
+      console.error(
+        "[SubscriptionManager] Failed to create checkout session:",
+        error
+      );
       toast.error("Failed to start checkout. Please try again.");
       throw error;
     }
@@ -165,7 +176,10 @@ export class SubscriptionManager implements ISubscriptionManager {
       const { url } = await response.json();
       return url;
     } catch (error) {
-      console.error("[SubscriptionManager] Failed to create portal session:", error);
+      console.error(
+        "[SubscriptionManager] Failed to create portal session:",
+        error
+      );
       toast.error("Failed to open subscription management. Please try again.");
       throw error;
     }
@@ -235,13 +249,21 @@ export class SubscriptionManager implements ISubscriptionManager {
             callback(info);
           },
           (error) => {
-            console.error("[SubscriptionManager] Subscription change listener error:", error);
-            toast.error("Lost connection to subscription status. Please refresh.");
+            console.error(
+              "[SubscriptionManager] Subscription change listener error:",
+              error
+            );
+            toast.error(
+              "Lost connection to subscription status. Please refresh."
+            );
           }
         );
       })
       .catch((error) => {
-        console.error("[SubscriptionManager] Failed to initialize subscription listener:", error);
+        console.error(
+          "[SubscriptionManager] Failed to initialize subscription listener:",
+          error
+        );
         toast.error("Failed to connect to subscription status.");
       });
 

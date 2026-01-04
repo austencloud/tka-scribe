@@ -24,7 +24,11 @@
 export { initWebVitals } from "./web-vitals";
 export { memoryProfiler } from "./memory-profiler";
 export { runtimeMonitor } from "./runtime-monitor";
-export { budgetChecker, DEFAULT_BUDGET, type PerformanceBudget } from "./performance-budget";
+export {
+  budgetChecker,
+  DEFAULT_BUDGET,
+  type PerformanceBudget,
+} from "./performance-budget";
 
 /**
  * Initialize all performance monitoring in development
@@ -34,7 +38,8 @@ export async function initPerformanceMonitoring(): Promise<void> {
 
   // Only in development
   const isDev =
-    window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
+    window.location.hostname === "localhost" ||
+    window.location.hostname === "127.0.0.1";
 
   if (!isDev) return;
 

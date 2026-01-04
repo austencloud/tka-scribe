@@ -78,9 +78,7 @@ Delegates ALL logic to services (SRP compliant)
     typographyService = resolve<IResponsiveTypographer>(
       TYPES.IResponsiveTypographer
     );
-    cardConfigService = resolve<ICardConfigurator>(
-      TYPES.ICardConfigurator
-    );
+    cardConfigService = resolve<ICardConfigurator>(TYPES.ICardConfigurator);
     loopParamProvider = resolve<ILOOPParameterProvider>(
       TYPES.ILOOPParameterProvider
     );
@@ -246,8 +244,7 @@ Delegates ALL logic to services (SRP compliant)
     --card-text-weight: 700;
     --card-text-spacing: 0.3px;
     --card-text-shadow:
-      0 2px 6px var(--theme-shadow),
-      0 0 20px var(--theme-stroke-strong);
+      0 2px 6px var(--theme-shadow), 0 0 20px var(--theme-stroke-strong);
 
     min-height: 0; /* Allow flex to shrink */
     overflow: visible; /* Allow cards to pop over neighbors and modals to escape */

@@ -409,7 +409,10 @@ export class UndoManager implements IUndoManager {
       this._redoHistory.push(...entriesToMove.reverse());
 
       this.saveHistory().catch((error) => {
-        console.error("❌ UndoManager: Failed to save history after jump:", error);
+        console.error(
+          "❌ UndoManager: Failed to save history after jump:",
+          error
+        );
       });
       this.notifyChange();
 
@@ -426,7 +429,10 @@ export class UndoManager implements IUndoManager {
       this._undoHistory.push(...entriesToMove.reverse());
 
       this.saveHistory().catch((error) => {
-        console.error("❌ UndoManager: Failed to save history after jump:", error);
+        console.error(
+          "❌ UndoManager: Failed to save history after jump:",
+          error
+        );
       });
       this.notifyChange();
 

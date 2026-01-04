@@ -20,7 +20,7 @@ Navigation via bottom tabs (mobile-first UX pattern)
   import CodexTab from "./codex/components/CodexTab.svelte";
   import QuizTab from "./quiz/components/QuizTab.svelte";
   import type { LearnConcept } from "./domain/types";
-  
+
   type LearnMode = "concepts" | "play" | "codex";
 
   // Tab order for determining slide direction
@@ -33,9 +33,7 @@ Navigation via bottom tabs (mobile-first UX pattern)
     onHeaderChange?: (header: string) => void;
   } = $props();
 
-  const hapticService = resolve<IHapticFeedback>(
-    TYPES.IHapticFeedback
-  );
+  const hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
 
   // Active mode synced with navigation state
   let activeMode = $state<LearnMode>("concepts");
@@ -141,35 +139,43 @@ Navigation via bottom tabs (mobile-first UX pattern)
 </script>
 
 <div class="learn-tab">
-    <!-- Content area - tab switching with slide transitions -->
-    <div class="content-container">
-      {#key activeMode}
-        <div
-          class="mode-panel"
-          in:fly={{ x: slideDirection * SLIDE_DISTANCE, duration: SLIDE_DURATION, easing: cubicOut }}
-          out:fly={{ x: -slideDirection * SLIDE_DISTANCE, duration: SLIDE_DURATION, easing: cubicOut }}
-        >
-          {#if isModeActive("concepts")}
-            {#if selectedConcept}
-              <!-- Key by openCount to force remount on each open -->
-              {#key conceptOpenCount}
-                <ConceptDetailView
-                  concept={selectedConcept}
-                  onClose={handleBackToPath}
-                />
-              {/key}
-            {:else}
-              <ConceptPathView onConceptClick={handleConceptClick} />
-            {/if}
-          {:else if isModeActive("play")}
-            <QuizTab />
-          {:else if isModeActive("codex")}
-            <CodexTab />
+  <!-- Content area - tab switching with slide transitions -->
+  <div class="content-container">
+    {#key activeMode}
+      <div
+        class="mode-panel"
+        in:fly={{
+          x: slideDirection * SLIDE_DISTANCE,
+          duration: SLIDE_DURATION,
+          easing: cubicOut,
+        }}
+        out:fly={{
+          x: -slideDirection * SLIDE_DISTANCE,
+          duration: SLIDE_DURATION,
+          easing: cubicOut,
+        }}
+      >
+        {#if isModeActive("concepts")}
+          {#if selectedConcept}
+            <!-- Key by openCount to force remount on each open -->
+            {#key conceptOpenCount}
+              <ConceptDetailView
+                concept={selectedConcept}
+                onClose={handleBackToPath}
+              />
+            {/key}
+          {:else}
+            <ConceptPathView onConceptClick={handleConceptClick} />
           {/if}
-        </div>
-      {/key}
-    </div>
+        {:else if isModeActive("play")}
+          <QuizTab />
+        {:else if isModeActive("codex")}
+          <CodexTab />
+        {/if}
+      </div>
+    {/key}
   </div>
+</div>
 
 <style>
   .learn-tab {

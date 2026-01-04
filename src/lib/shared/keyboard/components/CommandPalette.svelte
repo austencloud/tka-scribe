@@ -23,9 +23,7 @@
 
   onMount(async () => {
     try {
-      paletteService = await resolve<ICommandPalette>(
-        TYPES.ICommandPalette
-      );
+      paletteService = await resolve<ICommandPalette>(TYPES.ICommandPalette);
     } catch (error) {
       console.error("Failed to resolve command palette:", error);
     }
@@ -139,11 +137,7 @@
 
 {#if commandPaletteState.isOpen}
   <!-- svelte-ignore a11y_no_static_element_interactions -->
-  <div
-    class="command-palette-overlay"
-    onclick={close}
-    aria-hidden="true"
-  >
+  <div class="command-palette-overlay" onclick={close} aria-hidden="true">
     <div
       class="command-palette"
       onclick={(e) => e.stopPropagation()}
@@ -154,7 +148,8 @@
     >
       <!-- Search Input -->
       <div class="command-palette__search">
-        <i class="fa fa-search command-palette__search-icon" aria-hidden="true"></i>
+        <i class="fa fa-search command-palette__search-icon" aria-hidden="true"
+        ></i>
         <input
           bind:this={inputElement}
           type="text"
@@ -195,7 +190,10 @@
                   type="button"
                 >
                   {#if item.icon}
-                    <i class="fa {item.icon} command-palette__item-icon" aria-hidden="true"></i>
+                    <i
+                      class="fa {item.icon} command-palette__item-icon"
+                      aria-hidden="true"
+                    ></i>
                   {/if}
                   <div class="command-palette__item-content">
                     <div class="command-palette__item-label">{item.label}</div>

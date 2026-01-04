@@ -26,9 +26,7 @@
     onAnimationEnd: (id: string) => void;
   } = $props();
 
-  const hapticService = resolve<IHapticFeedback>(
-    TYPES.IHapticFeedback
-  );
+  const hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
 
   function handleSelect(pictograph: PictographData) {
     hapticService?.trigger("selection");

@@ -162,12 +162,24 @@
       <div class="mode-toggle">
         {#if authMode === "signin"}
           <span class="mode-text">New here?</span>
-          <button class="mode-link" onclick={() => { authMode = "signup"; showEmailAuth = false; }}>
+          <button
+            class="mode-link"
+            onclick={() => {
+              authMode = "signup";
+              showEmailAuth = false;
+            }}
+          >
             Create an account
           </button>
         {:else}
           <span class="mode-text">Already have an account?</span>
-          <button class="mode-link" onclick={() => { authMode = "signin"; showEmailAuth = false; }}>
+          <button
+            class="mode-link"
+            onclick={() => {
+              authMode = "signin";
+              showEmailAuth = false;
+            }}
+          >
             Sign in
           </button>
         {/if}
@@ -270,7 +282,11 @@
     );
     border-radius: clamp(12px, 2vh, 20px);
     border: 1px solid
-      color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent-strong)) 25%, transparent);
+      color-mix(
+        in srgb,
+        var(--theme-accent-strong, var(--theme-accent-strong)) 25%,
+        transparent
+      );
     transition:
       background var(--theme-transition),
       border-color var(--theme-transition);
@@ -312,7 +328,11 @@
       rgba(255, 255, 255, 0.03)
     );
     border: 1px solid
-      color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent-strong)) 25%, transparent);
+      color-mix(
+        in srgb,
+        var(--theme-accent-strong, var(--theme-accent-strong)) 25%,
+        transparent
+      );
     border-radius: clamp(12px, 1.5vh, 18px);
     transition:
       background var(--theme-transition),
@@ -352,7 +372,11 @@
       rgba(255, 255, 255, 0.02)
     );
     border: 1px solid
-      color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent-strong)) 20%, transparent);
+      color-mix(
+        in srgb,
+        var(--theme-accent-strong, var(--theme-accent-strong)) 20%,
+        transparent
+      );
     border-radius: clamp(10px, 1.5vh, 12px);
     color: var(--theme-text, var(--theme-text));
     font-size: clamp(0.8125rem, 1.8vh, 0.9375rem);
@@ -463,7 +487,11 @@
       transparent
     );
     border: 1px solid
-      color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent-strong)) 18%, transparent);
+      color-mix(
+        in srgb,
+        var(--theme-accent-strong, var(--theme-accent-strong)) 18%,
+        transparent
+      );
     border-radius: clamp(8px, 1.5vh, 12px);
     color: var(--theme-accent-strong, var(--theme-accent-strong));
     font-size: clamp(0.875rem, 2vh, var(--font-size-lg));
@@ -477,11 +505,7 @@
   }
 
   .bg-toggle:hover {
-    background: color-mix(
-      in srgb,
-      var(--theme-accent-strong) 20%,
-      transparent
-    );
+    background: color-mix(in srgb, var(--theme-accent-strong) 20%, transparent);
     border-color: color-mix(
       in srgb,
       var(--theme-accent-strong, var(--theme-accent-strong)) 30%,

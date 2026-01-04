@@ -43,7 +43,9 @@
 </script>
 
 <div class="field">
-  <label for="fb-description" class="sr-only">Feedback description (minimum 10 characters)</label>
+  <label for="fb-description" class="sr-only"
+    >Feedback description (minimum 10 characters)</label
+  >
   <div class="textarea-wrapper">
     <textarea
       id="fb-description"
@@ -61,8 +63,8 @@
     <div class="voice-input-wrapper">
       <VoiceInputButton
         onTranscript={onVoiceTranscript}
-        onInterimTranscript={onInterimTranscript}
-        onRecordingEnd={onRecordingEnd}
+        {onInterimTranscript}
+        {onRecordingEnd}
         onTimeout={onVoiceTimeout}
         {disabled}
       />
@@ -70,7 +72,12 @@
   </div>
   <div class="field-footer">
     <div class="field-hint">
-      <span class="char-count" class:met={charsMet} aria-live="polite" aria-atomic="true">
+      <span
+        class="char-count"
+        class:met={charsMet}
+        aria-live="polite"
+        aria-atomic="true"
+      >
         {#if !charsMet}
           {charsNeeded} more needed
         {:else}
@@ -84,7 +91,9 @@
         </span>
       {/if}
       {#if error}
-        <span class="field-error" id="fb-description-error" role="alert">{error}</span>
+        <span class="field-error" id="fb-description-error" role="alert"
+          >{error}</span
+        >
       {/if}
     </div>
     <div class="field-actions">
@@ -128,11 +137,7 @@
 
   .textarea-wrapper {
     position: relative;
-    background: color-mix(
-      in srgb,
-      var(--theme-panel-bg) 80%,
-      transparent
-    );
+    background: color-mix(in srgb, var(--theme-panel-bg) 80%, transparent);
     border: 1.5px solid
       color-mix(
         in srgb,
@@ -154,7 +159,10 @@
   }
 
   .textarea-wrapper:focus-within {
-    border-color: var(--active-type-color, var(--theme-accent, var(--semantic-info)));
+    border-color: var(
+      --active-type-color,
+      var(--theme-accent, var(--semantic-info))
+    );
     background: color-mix(
       in srgb,
       var(--active-type-color) 5%,
@@ -174,7 +182,11 @@
       rgba(0, 0, 0, 0.25)
     );
     box-shadow: 0 0 0 2px
-      color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent-strong)) 15%, transparent);
+      color-mix(
+        in srgb,
+        var(--theme-accent-strong, var(--theme-accent-strong)) 15%,
+        transparent
+      );
   }
 
   .field-textarea {
@@ -196,11 +208,7 @@
   }
 
   .field-textarea::placeholder {
-    color: color-mix(
-      in srgb,
-      var(--theme-text-dim) 80%,
-      transparent
-    );
+    color: color-mix(in srgb, var(--theme-text-dim) 80%, transparent);
   }
 
   .clear-text-btn {
@@ -233,11 +241,7 @@
   }
 
   .clear-text-btn:hover {
-    background: color-mix(
-      in srgb,
-      var(--semantic-error) 15%,
-      transparent
-    );
+    background: color-mix(in srgb, var(--semantic-error) 15%, transparent);
     border-color: var(--semantic-error);
     color: var(--semantic-error);
   }

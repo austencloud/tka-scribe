@@ -109,19 +109,31 @@ Provides consistent, beautiful button layouts for modal actions
       color-mix(in srgb, var(--theme-accent, var(--semantic-info)) 85%, #1e40af)
     );
     box-shadow: 0 2px 8px
-      color-mix(in srgb, var(--theme-accent, var(--semantic-info)) 30%, transparent);
+      color-mix(
+        in srgb,
+        var(--theme-accent, var(--semantic-info)) 30%,
+        transparent
+      );
   }
 
   .confirm-button.primary:hover:not(:disabled) {
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--theme-accent, var(--semantic-info)) 85%, #1e40af),
+      color-mix(
+        in srgb,
+        var(--theme-accent, var(--semantic-info)) 85%,
+        #1e40af
+      ),
       color-mix(in srgb, var(--theme-accent, var(--semantic-info)) 70%, #1e3a8a)
     );
     transform: translateY(-2px);
     box-shadow:
       0 6px 20px
-        color-mix(in srgb, var(--theme-accent, var(--semantic-info)) 40%, transparent),
+        color-mix(
+          in srgb,
+          var(--theme-accent, var(--semantic-info)) 40%,
+          transparent
+        ),
       0 0 0 1px var(--theme-stroke) inset;
   }
 
@@ -129,22 +141,42 @@ Provides consistent, beautiful button layouts for modal actions
     background: linear-gradient(
       135deg,
       var(--semantic-success, var(--semantic-success)),
-      color-mix(in srgb, var(--semantic-success, var(--semantic-success)) 85%, #065f46)
+      color-mix(
+        in srgb,
+        var(--semantic-success, var(--semantic-success)) 85%,
+        #065f46
+      )
     );
     box-shadow: 0 2px 8px
-      color-mix(in srgb, var(--semantic-success, var(--semantic-success)) 30%, transparent);
+      color-mix(
+        in srgb,
+        var(--semantic-success, var(--semantic-success)) 30%,
+        transparent
+      );
   }
 
   .confirm-button.success:hover:not(:disabled) {
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--semantic-success, var(--semantic-success)) 85%, #065f46),
-      color-mix(in srgb, var(--semantic-success, var(--semantic-success)) 70%, #064e3b)
+      color-mix(
+        in srgb,
+        var(--semantic-success, var(--semantic-success)) 85%,
+        #065f46
+      ),
+      color-mix(
+        in srgb,
+        var(--semantic-success, var(--semantic-success)) 70%,
+        #064e3b
+      )
     );
     transform: translateY(-2px);
     box-shadow:
       0 6px 20px
-        color-mix(in srgb, var(--semantic-success, var(--semantic-success)) 40%, transparent),
+        color-mix(
+          in srgb,
+          var(--semantic-success, var(--semantic-success)) 40%,
+          transparent
+        ),
       0 0 0 1px var(--theme-stroke) inset;
   }
 
@@ -152,22 +184,42 @@ Provides consistent, beautiful button layouts for modal actions
     background: linear-gradient(
       135deg,
       var(--semantic-error, var(--semantic-error)),
-      color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 85%, #7f1d1d)
+      color-mix(
+        in srgb,
+        var(--semantic-error, var(--semantic-error)) 85%,
+        #7f1d1d
+      )
     );
     box-shadow: 0 2px 8px
-      color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 30%, transparent);
+      color-mix(
+        in srgb,
+        var(--semantic-error, var(--semantic-error)) 30%,
+        transparent
+      );
   }
 
   .confirm-button.danger:hover:not(:disabled) {
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 85%, #7f1d1d),
-      color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 70%, #7f1d1d)
+      color-mix(
+        in srgb,
+        var(--semantic-error, var(--semantic-error)) 85%,
+        #7f1d1d
+      ),
+      color-mix(
+        in srgb,
+        var(--semantic-error, var(--semantic-error)) 70%,
+        #7f1d1d
+      )
     );
     transform: translateY(-2px);
     box-shadow:
       0 6px 20px
-        color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 40%, transparent),
+        color-mix(
+          in srgb,
+          var(--semantic-error, var(--semantic-error)) 40%,
+          transparent
+        ),
       0 0 0 1px var(--theme-stroke) inset;
   }
 

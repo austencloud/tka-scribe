@@ -13,31 +13,27 @@ import type { OrientationAlignment } from "../contracts/ISequenceExtender";
 import type { IOrientationAlignmentCalculator } from "../contracts/IOrientationAlignmentCalculator";
 
 @injectable()
-export class OrientationAlignmentCalculator
-  implements IOrientationAlignmentCalculator
-{
+export class OrientationAlignmentCalculator implements IOrientationAlignmentCalculator {
   /**
    * Get the starting orientations from a sequence's start position.
    */
   getStartOrientations(
     sequence: SequenceData
   ): { blueOri: string; redOri: string } | null {
-    const startPosData = sequence.startPosition || sequence.startingPositionBeat;
+    const startPosData =
+      sequence.startPosition || sequence.startingPositionBeat;
     if (!startPosData) return null;
 
     // Extract orientations from motion data
-    const motions = (startPosData as unknown as Record<string, unknown>).motions as
-      | Record<string, unknown>
-      | undefined;
+    const motions = (startPosData as unknown as Record<string, unknown>)
+      .motions as Record<string, unknown> | undefined;
 
     if (!motions) {
       // Try legacy format with direct blue/red properties
-      const blueData = (startPosData as unknown as Record<string, unknown>).blue as
-        | Record<string, unknown>
-        | undefined;
-      const redData = (startPosData as unknown as Record<string, unknown>).red as
-        | Record<string, unknown>
-        | undefined;
+      const blueData = (startPosData as unknown as Record<string, unknown>)
+        .blue as Record<string, unknown> | undefined;
+      const redData = (startPosData as unknown as Record<string, unknown>)
+        .red as Record<string, unknown> | undefined;
 
       if (blueData?.endOri && redData?.endOri) {
         return {

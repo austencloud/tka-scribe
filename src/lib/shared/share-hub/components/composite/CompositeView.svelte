@@ -13,10 +13,10 @@
   Domain: Share Hub - Composite Mode Container
 -->
 <script lang="ts">
-  import { getShareHubState } from '../../state/share-hub-state.svelte';
-  import ExportButton from '../shared/ExportButton.svelte';
-  import DualPreview from './DualPreview.svelte';
-  import CompositeControls from './CompositeControls.svelte';
+  import { getShareHubState } from "../../state/share-hub-state.svelte";
+  import ExportButton from "../shared/ExportButton.svelte";
+  import DualPreview from "./DualPreview.svelte";
+  import CompositeControls from "./CompositeControls.svelte";
 
   let {
     isSequenceSaved = true,
@@ -35,9 +35,11 @@
   let exporting = $state(false);
 
   // Dynamic button label based on save state and platform
-  const actionVerb = $derived(isMobile ? 'Share' : 'Save');
+  const actionVerb = $derived(isMobile ? "Share" : "Save");
   const buttonLabel = $derived(
-    isSequenceSaved ? `${actionVerb} Composite` : `Save & ${actionVerb} Composite`
+    isSequenceSaved
+      ? `${actionVerb} Composite`
+      : `Save & ${actionVerb} Composite`
   );
 
   async function handleExport() {

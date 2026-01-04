@@ -20,8 +20,8 @@
       <h4>No Long-Term Commitment</h4>
     </div>
     <p>
-      Cancel your subscription anytime from your account settings. You'll keep access until the
-      end of your billing period.
+      Cancel your subscription anytime from your account settings. You'll keep
+      access until the end of your billing period.
     </p>
     {#if showSteps}
       <div class="cancel-steps">

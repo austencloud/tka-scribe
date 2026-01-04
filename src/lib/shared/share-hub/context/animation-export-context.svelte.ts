@@ -9,145 +9,147 @@
  * - Consumer: Call getAnimationExportContext() in leaf components
  */
 
-import { getContext, setContext } from 'svelte';
-import type { SequenceData } from '$lib/shared/foundation/domain/models/SequenceData';
-import type { VideoExportProgress } from '$lib/features/compose/services/contracts/IVideoExportOrchestrator';
+import { getContext, setContext } from "svelte";
+import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
+import type { VideoExportProgress } from "$lib/features/compose/services/contracts/IVideoExportOrchestrator";
 import type {
-	PlaybackMode,
-	StepPlaybackStepSize
-} from '$lib/features/compose/state/animation-panel-state.svelte';
+  PlaybackMode,
+  StepPlaybackStepSize,
+} from "$lib/features/compose/state/animation-panel-state.svelte";
 
-const CONTEXT_KEY = Symbol('animation-export-context');
+const CONTEXT_KEY = Symbol("animation-export-context");
 
 /**
  * Animation export state - all readonly from consumer perspective
  */
 export interface AnimationExportState {
-	// Sequence
-	sequenceData: SequenceData | null;
-	isCircular: boolean;
+  // Sequence
+  sequenceData: SequenceData | null;
+  isCircular: boolean;
 
-	// Playback
-	isPlaying: boolean;
-	currentBeat: number;
-	speed: number;
-	playbackMode: PlaybackMode;
-	stepPlaybackPauseMs: number;
-	stepPlaybackStepSize: StepPlaybackStepSize;
+  // Playback
+  isPlaying: boolean;
+  currentBeat: number;
+  speed: number;
+  playbackMode: PlaybackMode;
+  stepPlaybackPauseMs: number;
+  stepPlaybackStepSize: StepPlaybackStepSize;
 
-	// Visibility
-	blueMotionVisible: boolean;
-	redMotionVisible: boolean;
-	bluePropState: any;
-	redPropState: any;
+  // Visibility
+  blueMotionVisible: boolean;
+  redMotionVisible: boolean;
+  bluePropState: any;
+  redPropState: any;
 
-	// Export
-	exportLoopCount: number;
-	isExporting: boolean;
-	exportProgress: VideoExportProgress | null;
+  // Export
+  exportLoopCount: number;
+  isExporting: boolean;
+  exportProgress: VideoExportProgress | null;
 
-	// Services
-	servicesReady: boolean;
-	loading: boolean;
+  // Services
+  servicesReady: boolean;
+  loading: boolean;
 
-	// Layout
-	isSideBySideLayout: boolean;
+  // Layout
+  isSideBySideLayout: boolean;
 
-	// Format
-	selectedFormat: 'animation' | 'static' | 'performance';
+  // Format
+  selectedFormat: "animation" | "static" | "performance";
 }
 
 /**
  * Animation export actions - callbacks for state mutations
  */
 export interface AnimationExportActions {
-	// Playback
-	onPlaybackToggle: () => void;
-	onSpeedChange: (speed: number) => void;
-	onPlaybackModeChange: (mode: PlaybackMode) => void;
-	onStepPlaybackPauseMsChange: (pauseMs: number) => void;
-	onStepPlaybackStepSizeChange: (stepSize: StepPlaybackStepSize) => void;
+  // Playback
+  onPlaybackToggle: () => void;
+  onSpeedChange: (speed: number) => void;
+  onPlaybackModeChange: (mode: PlaybackMode) => void;
+  onStepPlaybackPauseMsChange: (pauseMs: number) => void;
+  onStepPlaybackStepSizeChange: (stepSize: StepPlaybackStepSize) => void;
 
-	// Stepping
-	onStepHalfBeatForward: () => void;
-	onStepHalfBeatBackward: () => void;
-	onStepFullBeatForward: () => void;
-	onStepFullBeatBackward: () => void;
+  // Stepping
+  onStepHalfBeatForward: () => void;
+  onStepHalfBeatBackward: () => void;
+  onStepFullBeatForward: () => void;
+  onStepFullBeatBackward: () => void;
 
-	// Visibility
-	onToggleBlue: () => void;
-	onToggleRed: () => void;
+  // Visibility
+  onToggleBlue: () => void;
+  onToggleRed: () => void;
 
-	// Export
-	onLoopCountChange: (count: number) => void;
-	onExportVideo: () => void;
-	onCancelExport: () => void;
-	onCanvasReady: (canvas: HTMLCanvasElement | null) => void;
+  // Export
+  onLoopCountChange: (count: number) => void;
+  onExportVideo: () => void;
+  onCancelExport: () => void;
+  onCanvasReady: (canvas: HTMLCanvasElement | null) => void;
 
-	// Format
-	onFormatChange: (format: 'animation' | 'static' | 'performance') => void;
+  // Format
+  onFormatChange: (format: "animation" | "static" | "performance") => void;
 }
 
 /**
  * Combined context interface
  */
 export interface AnimationExportContext {
-	state: AnimationExportState;
-	actions: AnimationExportActions;
+  state: AnimationExportState;
+  actions: AnimationExportActions;
 }
 
 /**
  * Default no-op actions for when context is not provided
  */
 const defaultActions: AnimationExportActions = {
-	onPlaybackToggle: () => {},
-	onSpeedChange: () => {},
-	onPlaybackModeChange: () => {},
-	onStepPlaybackPauseMsChange: () => {},
-	onStepPlaybackStepSizeChange: () => {},
-	onStepHalfBeatForward: () => {},
-	onStepHalfBeatBackward: () => {},
-	onStepFullBeatForward: () => {},
-	onStepFullBeatBackward: () => {},
-	onToggleBlue: () => {},
-	onToggleRed: () => {},
-	onLoopCountChange: () => {},
-	onExportVideo: () => {},
-	onCancelExport: () => {},
-	onCanvasReady: () => {},
-	onFormatChange: () => {}
+  onPlaybackToggle: () => {},
+  onSpeedChange: () => {},
+  onPlaybackModeChange: () => {},
+  onStepPlaybackPauseMsChange: () => {},
+  onStepPlaybackStepSizeChange: () => {},
+  onStepHalfBeatForward: () => {},
+  onStepHalfBeatBackward: () => {},
+  onStepFullBeatForward: () => {},
+  onStepFullBeatBackward: () => {},
+  onToggleBlue: () => {},
+  onToggleRed: () => {},
+  onLoopCountChange: () => {},
+  onExportVideo: () => {},
+  onCancelExport: () => {},
+  onCanvasReady: () => {},
+  onFormatChange: () => {},
 };
 
 /**
  * Default state for when context is not provided
  */
 const defaultState: AnimationExportState = {
-	sequenceData: null,
-	isCircular: false,
-	isPlaying: false,
-	currentBeat: 0,
-	speed: 1,
-	playbackMode: 'continuous',
-	stepPlaybackPauseMs: 300,
-	stepPlaybackStepSize: 1,
-	blueMotionVisible: true,
-	redMotionVisible: true,
-	bluePropState: null,
-	redPropState: null,
-	exportLoopCount: 1,
-	isExporting: false,
-	exportProgress: null,
-	servicesReady: false,
-	loading: false,
-	isSideBySideLayout: false,
-	selectedFormat: 'animation'
+  sequenceData: null,
+  isCircular: false,
+  isPlaying: false,
+  currentBeat: 0,
+  speed: 1,
+  playbackMode: "continuous",
+  stepPlaybackPauseMs: 300,
+  stepPlaybackStepSize: 1,
+  blueMotionVisible: true,
+  redMotionVisible: true,
+  bluePropState: null,
+  redPropState: null,
+  exportLoopCount: 1,
+  isExporting: false,
+  exportProgress: null,
+  servicesReady: false,
+  loading: false,
+  isSideBySideLayout: false,
+  selectedFormat: "animation",
 };
 
 /**
  * Set the animation export context (call in provider component)
  */
-export function setAnimationExportContext(context: AnimationExportContext): void {
-	setContext(CONTEXT_KEY, context);
+export function setAnimationExportContext(
+  context: AnimationExportContext
+): void {
+  setContext(CONTEXT_KEY, context);
 }
 
 /**
@@ -155,11 +157,11 @@ export function setAnimationExportContext(context: AnimationExportContext): void
  * Returns default values if context not provided (graceful degradation)
  */
 export function getAnimationExportContext(): AnimationExportContext {
-	const context = getContext<AnimationExportContext | undefined>(CONTEXT_KEY);
-	if (!context) {
-		return { state: defaultState, actions: defaultActions };
-	}
-	return context;
+  const context = getContext<AnimationExportContext | undefined>(CONTEXT_KEY);
+  if (!context) {
+    return { state: defaultState, actions: defaultActions };
+  }
+  return context;
 }
 
 /**
@@ -167,7 +169,7 @@ export function getAnimationExportContext(): AnimationExportContext {
  * Use when you need to check if context exists
  */
 export function tryGetAnimationExportContext(): AnimationExportContext | null {
-	return getContext<AnimationExportContext | undefined>(CONTEXT_KEY) ?? null;
+  return getContext<AnimationExportContext | undefined>(CONTEXT_KEY) ?? null;
 }
 
 /**
@@ -175,83 +177,85 @@ export function tryGetAnimationExportContext(): AnimationExportContext | null {
  * Use this in ShareHubDrawer to convert props to context
  */
 export function createAnimationExportContext(props: {
-	// State props
-	animationSequenceData?: SequenceData | null;
-	isCircular?: boolean;
-	isAnimationPlaying?: boolean;
-	animationCurrentBeat?: number;
-	animationSpeed?: number;
-	playbackMode?: PlaybackMode;
-	stepPlaybackPauseMs?: number;
-	stepPlaybackStepSize?: StepPlaybackStepSize;
-	blueMotionVisible?: boolean;
-	redMotionVisible?: boolean;
-	animationBluePropState?: any;
-	animationRedPropState?: any;
-	exportLoopCount?: number;
-	isAnimationExporting?: boolean;
-	animationExportProgress?: VideoExportProgress | null;
-	animationServicesReady?: boolean;
-	animationLoading?: boolean;
-	isSideBySideLayout?: boolean;
-	selectedFormat?: 'animation' | 'static' | 'performance';
-	// Action props
-	onPlaybackToggle?: () => void;
-	onSpeedChange?: (speed: number) => void;
-	onPlaybackModeChange?: (mode: PlaybackMode) => void;
-	onStepPlaybackPauseMsChange?: (pauseMs: number) => void;
-	onStepPlaybackStepSizeChange?: (stepSize: StepPlaybackStepSize) => void;
-	onStepHalfBeatForward?: () => void;
-	onStepHalfBeatBackward?: () => void;
-	onStepFullBeatForward?: () => void;
-	onStepFullBeatBackward?: () => void;
-	onToggleBlue?: () => void;
-	onToggleRed?: () => void;
-	onLoopCountChange?: (count: number) => void;
-	onExportVideo?: () => void;
-	onCancelExport?: () => void;
-	onCanvasReady?: (canvas: HTMLCanvasElement | null) => void;
-	onFormatChange?: (format: 'animation' | 'static' | 'performance') => void;
+  // State props
+  animationSequenceData?: SequenceData | null;
+  isCircular?: boolean;
+  isAnimationPlaying?: boolean;
+  animationCurrentBeat?: number;
+  animationSpeed?: number;
+  playbackMode?: PlaybackMode;
+  stepPlaybackPauseMs?: number;
+  stepPlaybackStepSize?: StepPlaybackStepSize;
+  blueMotionVisible?: boolean;
+  redMotionVisible?: boolean;
+  animationBluePropState?: any;
+  animationRedPropState?: any;
+  exportLoopCount?: number;
+  isAnimationExporting?: boolean;
+  animationExportProgress?: VideoExportProgress | null;
+  animationServicesReady?: boolean;
+  animationLoading?: boolean;
+  isSideBySideLayout?: boolean;
+  selectedFormat?: "animation" | "static" | "performance";
+  // Action props
+  onPlaybackToggle?: () => void;
+  onSpeedChange?: (speed: number) => void;
+  onPlaybackModeChange?: (mode: PlaybackMode) => void;
+  onStepPlaybackPauseMsChange?: (pauseMs: number) => void;
+  onStepPlaybackStepSizeChange?: (stepSize: StepPlaybackStepSize) => void;
+  onStepHalfBeatForward?: () => void;
+  onStepHalfBeatBackward?: () => void;
+  onStepFullBeatForward?: () => void;
+  onStepFullBeatBackward?: () => void;
+  onToggleBlue?: () => void;
+  onToggleRed?: () => void;
+  onLoopCountChange?: (count: number) => void;
+  onExportVideo?: () => void;
+  onCancelExport?: () => void;
+  onCanvasReady?: (canvas: HTMLCanvasElement | null) => void;
+  onFormatChange?: (format: "animation" | "static" | "performance") => void;
 }): AnimationExportContext {
-	return {
-		state: {
-			sequenceData: props.animationSequenceData ?? null,
-			isCircular: props.isCircular ?? false,
-			isPlaying: props.isAnimationPlaying ?? false,
-			currentBeat: props.animationCurrentBeat ?? 0,
-			speed: props.animationSpeed ?? 1,
-			playbackMode: props.playbackMode ?? 'continuous',
-			stepPlaybackPauseMs: props.stepPlaybackPauseMs ?? 300,
-			stepPlaybackStepSize: props.stepPlaybackStepSize ?? 1,
-			blueMotionVisible: props.blueMotionVisible ?? true,
-			redMotionVisible: props.redMotionVisible ?? true,
-			bluePropState: props.animationBluePropState ?? null,
-			redPropState: props.animationRedPropState ?? null,
-			exportLoopCount: props.exportLoopCount ?? 1,
-			isExporting: props.isAnimationExporting ?? false,
-			exportProgress: props.animationExportProgress ?? null,
-			servicesReady: props.animationServicesReady ?? false,
-			loading: props.animationLoading ?? false,
-			isSideBySideLayout: props.isSideBySideLayout ?? false,
-			selectedFormat: props.selectedFormat ?? 'animation'
-		},
-		actions: {
-			onPlaybackToggle: props.onPlaybackToggle ?? (() => {}),
-			onSpeedChange: props.onSpeedChange ?? (() => {}),
-			onPlaybackModeChange: props.onPlaybackModeChange ?? (() => {}),
-			onStepPlaybackPauseMsChange: props.onStepPlaybackPauseMsChange ?? (() => {}),
-			onStepPlaybackStepSizeChange: props.onStepPlaybackStepSizeChange ?? (() => {}),
-			onStepHalfBeatForward: props.onStepHalfBeatForward ?? (() => {}),
-			onStepHalfBeatBackward: props.onStepHalfBeatBackward ?? (() => {}),
-			onStepFullBeatForward: props.onStepFullBeatForward ?? (() => {}),
-			onStepFullBeatBackward: props.onStepFullBeatBackward ?? (() => {}),
-			onToggleBlue: props.onToggleBlue ?? (() => {}),
-			onToggleRed: props.onToggleRed ?? (() => {}),
-			onLoopCountChange: props.onLoopCountChange ?? (() => {}),
-			onExportVideo: props.onExportVideo ?? (() => {}),
-			onCancelExport: props.onCancelExport ?? (() => {}),
-			onCanvasReady: props.onCanvasReady ?? (() => {}),
-			onFormatChange: props.onFormatChange ?? (() => {})
-		}
-	};
+  return {
+    state: {
+      sequenceData: props.animationSequenceData ?? null,
+      isCircular: props.isCircular ?? false,
+      isPlaying: props.isAnimationPlaying ?? false,
+      currentBeat: props.animationCurrentBeat ?? 0,
+      speed: props.animationSpeed ?? 1,
+      playbackMode: props.playbackMode ?? "continuous",
+      stepPlaybackPauseMs: props.stepPlaybackPauseMs ?? 300,
+      stepPlaybackStepSize: props.stepPlaybackStepSize ?? 1,
+      blueMotionVisible: props.blueMotionVisible ?? true,
+      redMotionVisible: props.redMotionVisible ?? true,
+      bluePropState: props.animationBluePropState ?? null,
+      redPropState: props.animationRedPropState ?? null,
+      exportLoopCount: props.exportLoopCount ?? 1,
+      isExporting: props.isAnimationExporting ?? false,
+      exportProgress: props.animationExportProgress ?? null,
+      servicesReady: props.animationServicesReady ?? false,
+      loading: props.animationLoading ?? false,
+      isSideBySideLayout: props.isSideBySideLayout ?? false,
+      selectedFormat: props.selectedFormat ?? "animation",
+    },
+    actions: {
+      onPlaybackToggle: props.onPlaybackToggle ?? (() => {}),
+      onSpeedChange: props.onSpeedChange ?? (() => {}),
+      onPlaybackModeChange: props.onPlaybackModeChange ?? (() => {}),
+      onStepPlaybackPauseMsChange:
+        props.onStepPlaybackPauseMsChange ?? (() => {}),
+      onStepPlaybackStepSizeChange:
+        props.onStepPlaybackStepSizeChange ?? (() => {}),
+      onStepHalfBeatForward: props.onStepHalfBeatForward ?? (() => {}),
+      onStepHalfBeatBackward: props.onStepHalfBeatBackward ?? (() => {}),
+      onStepFullBeatForward: props.onStepFullBeatForward ?? (() => {}),
+      onStepFullBeatBackward: props.onStepFullBeatBackward ?? (() => {}),
+      onToggleBlue: props.onToggleBlue ?? (() => {}),
+      onToggleRed: props.onToggleRed ?? (() => {}),
+      onLoopCountChange: props.onLoopCountChange ?? (() => {}),
+      onExportVideo: props.onExportVideo ?? (() => {}),
+      onCancelExport: props.onCancelExport ?? (() => {}),
+      onCanvasReady: props.onCanvasReady ?? (() => {}),
+      onFormatChange: props.onFormatChange ?? (() => {}),
+    },
+  };
 }

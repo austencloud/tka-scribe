@@ -366,7 +366,11 @@
     padding: 10px;
     background: var(--theme-card-bg, var(--theme-card-bg));
     border: 1px solid
-      color-mix(in srgb, var(--theme-accent, var(--theme-accent-strong)) 30%, transparent);
+      color-mix(
+        in srgb,
+        var(--theme-accent, var(--theme-accent-strong)) 30%,
+        transparent
+      );
     border-radius: 8px;
   }
 
@@ -470,11 +474,7 @@
   }
 
   .glass-btn.primary:hover:not(:disabled) {
-    background: color-mix(
-      in srgb,
-      var(--theme-accent) 25%,
-      transparent
-    );
+    background: color-mix(in srgb, var(--theme-accent) 25%, transparent);
     border-color: color-mix(
       in srgb,
       var(--theme-accent, var(--theme-accent-strong)) 45%,
@@ -521,7 +521,11 @@
       transparent
     );
     border: 1px solid
-      color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 20%, transparent);
+      color-mix(
+        in srgb,
+        var(--semantic-error, var(--semantic-error)) 20%,
+        transparent
+      );
     border-radius: 8px;
   }
 

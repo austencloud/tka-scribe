@@ -256,7 +256,9 @@
                 title="{rotation}°"
                 aria-label="Rotate {rotation} degrees"
               >
-                <i class="fas fa-arrow-up" aria-hidden="true"
+                <i
+                  class="fas fa-arrow-up"
+                  aria-hidden="true"
                   style:transform="rotate({rotation}deg)"
                 ></i>
                 <span>{rotation}°</span>

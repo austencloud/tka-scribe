@@ -26,7 +26,11 @@ export const MOTION_TYPE_OPTIONS = [
 
 export const DIRECTION_OPTIONS = [
   { value: RotationDirection.CLOCKWISE, label: "CW", icon: "fas fa-redo" },
-  { value: RotationDirection.COUNTER_CLOCKWISE, label: "CCW", icon: "fas fa-undo" },
+  {
+    value: RotationDirection.COUNTER_CLOCKWISE,
+    label: "CCW",
+    icon: "fas fa-undo",
+  },
   { value: RotationDirection.NO_ROTATION, label: "—" },
 ];
 

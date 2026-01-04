@@ -5,9 +5,15 @@
  * Operates on LOOPLabelerState, uses services via LOOPLabelerServiceLocator.
  */
 
-import type { LOOPLabelerState, LabelingMode } from "./loop-labeler-state.svelte";
+import type {
+  LOOPLabelerState,
+  LabelingMode,
+} from "./loop-labeler-state.svelte";
 import type { LOOPLabelerServiceLocator } from "./LOOPLabelerServiceLocator";
-import type { LabeledSequence, FilterMode } from "../domain/models/label-models";
+import type {
+  LabeledSequence,
+  FilterMode,
+} from "../domain/models/label-models";
 
 const STORAGE_KEY = "tka-loop-labeler-state";
 
@@ -21,7 +27,13 @@ export class LOOPLabelerController {
   // PERSISTENCE
   // ============================================================
 
-  loadPersistedState(): { filterMode?: FilterMode; showStartPosition?: boolean; manualColumnCount?: number | null; labelingMode?: LabelingMode; lastSequenceId?: string | null } | null {
+  loadPersistedState(): {
+    filterMode?: FilterMode;
+    showStartPosition?: boolean;
+    manualColumnCount?: number | null;
+    labelingMode?: LabelingMode;
+    lastSequenceId?: string | null;
+  } | null {
     try {
       const stored = localStorage.getItem(STORAGE_KEY);
       if (!stored) return null;
@@ -57,9 +69,15 @@ export class LOOPLabelerController {
   persistFilterMode(): void {
     try {
       const existing = this.loadPersistedState();
-      localStorage.setItem(STORAGE_KEY, JSON.stringify({ ...existing, filterMode: this.state.filterMode }));
+      localStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify({ ...existing, filterMode: this.state.filterMode })
+      );
     } catch (error) {
-      console.warn("[LOOPLabelerController] Failed to persist filterMode:", error);
+      console.warn(
+        "[LOOPLabelerController] Failed to persist filterMode:",
+        error
+      );
     }
   }
 
@@ -92,7 +110,10 @@ export class LOOPLabelerController {
       // Check URL filter if localStorage didn't have one
       if (!persisted?.filterMode) {
         const urlFilter = nav?.getFilterFromUrl();
-        if (urlFilter && ["all", "needsVerification", "verified"].includes(urlFilter)) {
+        if (
+          urlFilter &&
+          ["all", "needsVerification", "verified"].includes(urlFilter)
+        ) {
           this.state.setFilterModeInternal(urlFilter as FilterMode);
         }
       }
@@ -117,13 +138,23 @@ export class LOOPLabelerController {
     }
   }
 
-  private restoreSequencePosition(sequenceId: string | null, isFromUrl: boolean): void {
+  private restoreSequencePosition(
+    sequenceId: string | null,
+    isFromUrl: boolean
+  ): void {
     if (sequenceId && this.state.sequences.length > 0) {
-      this.navigateToSequenceInternal(sequenceId, { adjustFilter: isFromUrl, logPrefix: "Restore" });
+      this.navigateToSequenceInternal(sequenceId, {
+        adjustFilter: isFromUrl,
+        logPrefix: "Restore",
+      });
     }
 
     const nav = this.services.navigator;
-    nav?.updateUrlWithSequence(this.state.currentSequence?.id ?? null, this.state.filterMode, false);
+    nav?.updateUrlWithSequence(
+      this.state.currentSequence?.id ?? null,
+      this.state.filterMode,
+      false
+    );
     this.state.setLoading(false);
   }
 
@@ -137,7 +168,9 @@ export class LOOPLabelerController {
 
     const handler = (event: PopStateEvent) => {
       const historyState = event.state as { sequenceId?: string } | null;
-      const seqId = historyState?.sequenceId ?? this.services.navigator?.getSequenceFromUrl();
+      const seqId =
+        historyState?.sequenceId ??
+        this.services.navigator?.getSequenceFromUrl();
       if (seqId) {
         this.navigateToSequenceInternal(seqId, { logPrefix: "Popstate" });
       }
@@ -167,11 +200,25 @@ export class LOOPLabelerController {
 
   private navigateToSequenceInternal(
     sequenceId: string,
-    options: { adjustFilter?: boolean; updateUrl?: boolean; addToHistory?: boolean; persist?: boolean; logPrefix?: string } = {}
+    options: {
+      adjustFilter?: boolean;
+      updateUrl?: boolean;
+      addToHistory?: boolean;
+      persist?: boolean;
+      logPrefix?: string;
+    } = {}
   ): boolean {
-    const { adjustFilter = true, updateUrl = false, addToHistory = true, persist = false, logPrefix = "Navigate" } = options;
+    const {
+      adjustFilter = true,
+      updateUrl = false,
+      addToHistory = true,
+      persist = false,
+      logPrefix = "Navigate",
+    } = options;
 
-    const targetSeq = this.state.circularSequences.find((s) => s.id === sequenceId);
+    const targetSeq = this.state.circularSequences.find(
+      (s) => s.id === sequenceId
+    );
     if (!targetSeq) {
       console.warn(`[${logPrefix}] Sequence "${sequenceId}" not found`);
       return false;
@@ -189,7 +236,9 @@ export class LOOPLabelerController {
       }
     }
 
-    const targetIndex = this.state.filteredSequences.findIndex((s) => s.id === sequenceId);
+    const targetIndex = this.state.filteredSequences.findIndex(
+      (s) => s.id === sequenceId
+    );
     if (targetIndex < 0) {
       return false;
     }
@@ -197,7 +246,11 @@ export class LOOPLabelerController {
     this.state.setCurrentIndex(targetIndex);
 
     if (updateUrl) {
-      this.services.navigator?.updateUrlWithSequence(sequenceId, this.state.filterMode, addToHistory);
+      this.services.navigator?.updateUrlWithSequence(
+        sequenceId,
+        this.state.filterMode,
+        addToHistory
+      );
     }
     if (persist) {
       this.persistState();
@@ -210,11 +263,17 @@ export class LOOPLabelerController {
     const nav = this.services.navigator;
     if (!nav) return;
 
-    const newIndex = nav.getNextIndex(this.state.currentIndex, this.state.filteredSequences.length);
+    const newIndex = nav.getNextIndex(
+      this.state.currentIndex,
+      this.state.filteredSequences.length
+    );
     this.state.setCurrentIndex(newIndex);
 
     if (this.state.currentSequence) {
-      nav.updateUrlWithSequence(this.state.currentSequence.id, this.state.filterMode);
+      nav.updateUrlWithSequence(
+        this.state.currentSequence.id,
+        this.state.filterMode
+      );
       this.persistState();
     }
   }
@@ -227,7 +286,10 @@ export class LOOPLabelerController {
     this.state.setCurrentIndex(newIndex);
 
     if (this.state.currentSequence) {
-      nav.updateUrlWithSequence(this.state.currentSequence.id, this.state.filterMode);
+      nav.updateUrlWithSequence(
+        this.state.currentSequence.id,
+        this.state.filterMode
+      );
       this.persistState();
     }
   }
@@ -237,7 +299,12 @@ export class LOOPLabelerController {
   }
 
   jumpToSequence(sequenceId: string): void {
-    this.navigateToSequenceInternal(sequenceId, { updateUrl: true, addToHistory: true, persist: true, logPrefix: "Jump" });
+    this.navigateToSequenceInternal(sequenceId, {
+      updateUrl: true,
+      addToHistory: true,
+      persist: true,
+      logPrefix: "Jump",
+    });
   }
 
   // ============================================================
@@ -315,9 +382,13 @@ export class LOOPLabelerController {
     }
   }
 
-  async deleteSequenceFromDatabase(sequenceId: string, word: string): Promise<{ success: boolean; error?: string }> {
+  async deleteSequenceFromDatabase(
+    sequenceId: string,
+    word: string
+  ): Promise<{ success: boolean; error?: string }> {
     const repo = this.services.labelsRepository;
-    if (!repo) return { success: false, error: "Labels repository not available" };
+    if (!repo)
+      return { success: false, error: "Labels repository not available" };
 
     try {
       this.state.setSyncStatus("syncing");
@@ -329,7 +400,9 @@ export class LOOPLabelerController {
         this.state.clearDetectionCache(sequenceId);
 
         if (this.state.currentIndex >= this.state.filteredSequences.length) {
-          this.state.setCurrentIndex(Math.max(0, this.state.filteredSequences.length - 1));
+          this.state.setCurrentIndex(
+            Math.max(0, this.state.filteredSequences.length - 1)
+          );
         }
 
         repo.saveToLocalStorage(this.state.labels);
@@ -341,7 +414,10 @@ export class LOOPLabelerController {
       return result;
     } catch (error) {
       this.state.setSyncStatus("error");
-      return { success: false, error: error instanceof Error ? error.message : "Unknown error" };
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : "Unknown error",
+      };
     }
   }
 

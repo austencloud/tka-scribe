@@ -20,36 +20,18 @@ export const navigationModule = new ContainerModule(
   (options: ContainerModuleLoadOptions) => {
     // === NAVIGATION UI SERVICES ===
     // Note: IViewportManager is bound in core.module.ts
-    options
-      .bind(TYPES.IModuleSelector)
-      .to(ModuleSelector)
-      .inSingletonScope();
+    options.bind(TYPES.IModuleSelector).to(ModuleSelector).inSingletonScope();
     options
       .bind(TYPES.IKeyboardNavigator)
       .to(KeyboardNavigator)
       .inSingletonScope();
-    options
-      .bind(TYPES.ISheetRouter)
-      .to(SheetRouter)
-      .inSingletonScope();
-    options
-      .bind(TYPES.ISequenceEncoder)
-      .to(SequenceEncoder)
-      .inSingletonScope();
+    options.bind(TYPES.ISheetRouter).to(SheetRouter).inSingletonScope();
+    options.bind(TYPES.ISequenceEncoder).to(SequenceEncoder).inSingletonScope();
     options.bind(TYPES.IURLSyncer).to(URLSyncer).inSingletonScope();
     options.bind(TYPES.IDeepLinker).to(DeepLinker).inSingletonScope();
-    options
-      .bind(TYPES.ILetterDeriver)
-      .to(LetterDeriver)
-      .inSingletonScope();
-    options
-      .bind(TYPES.IPositionDeriver)
-      .to(PositionDeriver)
-      .inSingletonScope();
-    options
-      .bind(TYPES.ISequenceViewer)
-      .to(SequenceViewer)
-      .inSingletonScope();
+    options.bind(TYPES.ILetterDeriver).to(LetterDeriver).inSingletonScope();
+    options.bind(TYPES.IPositionDeriver).to(PositionDeriver).inSingletonScope();
+    options.bind(TYPES.ISequenceViewer).to(SequenceViewer).inSingletonScope();
     options
       .bind(TYPES.INavigationPersister)
       .to(NavigationPersister)

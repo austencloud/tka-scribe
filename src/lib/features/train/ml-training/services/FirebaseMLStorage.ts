@@ -111,9 +111,8 @@ export function createFirebaseMLStorageManager(): FirebaseMLStorageManager {
       getImageBlob: (imageKey: string) => Promise<Blob | null>,
       onProgress?: (progress: SyncProgress) => void
     ): Promise<string> {
-      const { ref, uploadBytes, getDownloadURL } = await import(
-        "firebase/storage"
-      );
+      const { ref, uploadBytes, getDownloadURL } =
+        await import("firebase/storage");
       const firebaseStorage = await getStorage();
       const basePath = getSessionPath(session.id);
 

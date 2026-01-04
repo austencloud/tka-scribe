@@ -29,7 +29,10 @@
   }: Props = $props();
 </script>
 
-<section class="settings-panel image-panel" class:mobile-hidden={isMobileHidden}>
+<section
+  class="settings-panel image-panel"
+  class:mobile-hidden={isMobileHidden}
+>
   <header class="panel-header">
     <span class="panel-icon image-icon">
       <i class="fas fa-download" aria-hidden="true"></i>
@@ -143,8 +146,8 @@
     color: var(--theme-text);
     margin: 0;
     white-space: nowrap;
-    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui,
-      sans-serif;
+    font-family:
+      -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
     flex: 1;
   }
 
@@ -185,8 +188,8 @@
     letter-spacing: 0.5px;
     color: var(--theme-text-dim, var(--theme-text-dim));
     padding-left: 2px;
-    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui,
-      sans-serif;
+    font-family:
+      -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
     line-height: 1.2;
   }
 
@@ -208,8 +211,8 @@
     color: var(--theme-text-dim);
     font-size: var(--font-size-compact);
     font-weight: 600;
-    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui,
-      sans-serif;
+    font-family:
+      -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
     cursor: pointer;
     transition: all 150ms ease;
     -webkit-tap-highlight-color: transparent;
@@ -241,17 +244,21 @@
     color: white;
     box-shadow:
       0 0 0 1px
-        color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 15%, transparent),
+        color-mix(
+          in srgb,
+          var(--theme-accent, var(--theme-accent)) 15%,
+          transparent
+        ),
       0 4px 12px
-        color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 25%, transparent);
+        color-mix(
+          in srgb,
+          var(--theme-accent, var(--theme-accent)) 25%,
+          transparent
+        );
   }
 
   .toggle-btn.active:hover {
-    background: color-mix(
-      in srgb,
-      var(--theme-accent) 35%,
-      transparent
-    );
+    background: color-mix(in srgb, var(--theme-accent) 35%, transparent);
     border-color: color-mix(
       in srgb,
       var(--theme-accent, var(--theme-accent)) 55%,
@@ -259,14 +266,21 @@
     );
     box-shadow:
       0 0 0 1px
-        color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 20%, transparent),
+        color-mix(
+          in srgb,
+          var(--theme-accent, var(--theme-accent)) 20%,
+          transparent
+        ),
       0 4px 16px
-        color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 35%, transparent);
+        color-mix(
+          in srgb,
+          var(--theme-accent, var(--theme-accent)) 35%,
+          transparent
+        );
   }
 
   .toggle-btn:focus-visible {
-    outline: 2px solid
-      color-mix(in srgb, var(--theme-accent) 50%, transparent);
+    outline: 2px solid color-mix(in srgb, var(--theme-accent) 50%, transparent);
     outline-offset: 2px;
   }
 

@@ -23,9 +23,11 @@
   async function handleMarkAllAsRead() {
     try {
       // Mark each conversation with unread messages as read
-      const unreadConversations = inboxState.conversations.filter(c => c.unreadCount > 0);
+      const unreadConversations = inboxState.conversations.filter(
+        (c) => c.unreadCount > 0
+      );
       await Promise.all(
-        unreadConversations.map(c => messagingService.markAsRead(c.id))
+        unreadConversations.map((c) => messagingService.markAsRead(c.id))
       );
     } catch (error) {
       console.error("[MessagesWidget] Failed to mark messages as read:", error);
@@ -75,7 +77,11 @@
       <h3>Messages</h3>
     </div>
     {#if unreadCount > 0}
-      <button class="mark-read-btn" onclick={handleMarkAllAsRead} aria-label="Mark all messages as read">
+      <button
+        class="mark-read-btn"
+        onclick={handleMarkAllAsRead}
+        aria-label="Mark all messages as read"
+      >
         Mark All Read
       </button>
     {/if}
@@ -109,8 +115,12 @@
             />
             <div class="conversation-content">
               <div class="conversation-header">
-                <span class="conversation-name">{conversation.otherParticipant.displayName}</span>
-                <span class="conversation-time">{formatTimeAgo(conversation.updatedAt)}</span>
+                <span class="conversation-name"
+                  >{conversation.otherParticipant.displayName}</span
+                >
+                <span class="conversation-time"
+                  >{formatTimeAgo(conversation.updatedAt)}</span
+                >
               </div>
               <span class="conversation-preview">
                 {conversation.lastMessage?.content || "No messages yet"}
@@ -169,7 +179,11 @@
     justify-content: center;
     width: 36px;
     height: 36px;
-    background: color-mix(in srgb, var(--semantic-info, var(--theme-accent-strong)) 25%, var(--theme-card-bg, var(--theme-shadow)));
+    background: color-mix(
+      in srgb,
+      var(--semantic-info, var(--theme-accent-strong)) 25%,
+      var(--theme-card-bg, var(--theme-shadow))
+    );
     border-radius: 10px;
     color: var(--semantic-info, var(--theme-accent-strong));
     font-size: var(--font-size-sm);
@@ -267,8 +281,16 @@
   }
 
   .conversation-item.unread {
-    background: color-mix(in srgb, var(--semantic-info, var(--theme-accent-strong)) 12%, var(--theme-card-bg, var(--theme-shadow)));
-    border-color: color-mix(in srgb, var(--semantic-info, var(--theme-accent-strong)) 25%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--semantic-info, var(--theme-accent-strong)) 12%,
+      var(--theme-card-bg, var(--theme-shadow))
+    );
+    border-color: color-mix(
+      in srgb,
+      var(--semantic-info, var(--theme-accent-strong)) 25%,
+      transparent
+    );
   }
 
   .conversation-content {

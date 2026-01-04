@@ -13,7 +13,10 @@
   import { getTimelinePlayer } from "../services/implementations/TimelinePlaybackService";
   import SnapControls from "./SnapControls.svelte";
   import { getAnimationVisibilityManager } from "$lib/shared/animation-engine/state/animation-visibility-state.svelte";
-  import { animationSettings, TrailEffect } from "$lib/shared/animation-engine/state/animation-settings-state.svelte";
+  import {
+    animationSettings,
+    TrailEffect,
+  } from "$lib/shared/animation-engine/state/animation-settings-state.svelte";
 
   interface Props {
     onOpenMediaBrowser?: () => void;
@@ -41,7 +44,7 @@
   let playheadDirection = $state<1 | -1>(1);
   let shuttleSpeed = $state(1);
 
-  // Lights Off mode state
+  // Dark Mode state
   let lightsOffEnabled = $state(false);
   const visibilityManager = getAnimationVisibilityManager();
 
@@ -83,7 +86,7 @@
     zoomPercent = Math.round((state.viewport.pixelsPerSecond / 50) * 100);
   });
 
-  // Sync Lights Off mode from visibility manager
+  // Sync Dark Mode from visibility manager
   $effect(() => {
     lightsOffEnabled = visibilityManager.isLightsOff();
     // Re-check on changes
@@ -95,7 +98,7 @@
   });
 
   /**
-   * Toggle Lights Off mode
+   * Toggle Dark Mode
    * When enabled: dark background, glowing props, neon trails
    */
   function toggleLightsOff() {
@@ -105,7 +108,7 @@
     // Prop glow is automatically handled by lightsOff setting
     lightsOffEnabled = newState;
 
-    // When enabling Lights Off mode, also enable neon trail effect
+    // When enabling Dark Mode, also enable neon trail effect
     if (newState) {
       animationSettings.setTrailEffect(TrailEffect.NEON);
     } else {
@@ -179,13 +182,13 @@
     </button>
   </div>
 
-  <!-- Lights Off Toggle -->
+  <!-- Dark Mode Toggle -->
   <button
     class="control-btn lights-off-btn"
     class:active={lightsOffEnabled}
     onclick={toggleLightsOff}
-    title={lightsOffEnabled ? "Disable Lights Off" : "Enable Lights Off"}
-    aria-label={lightsOffEnabled ? "Disable Lights Off" : "Enable Lights Off"}
+    title={lightsOffEnabled ? "Disable Dark Mode" : "Enable Dark Mode"}
+    aria-label={lightsOffEnabled ? "Disable Dark Mode" : "Enable Dark Mode"}
     aria-pressed={lightsOffEnabled}
   >
     <i class="fa-solid fa-lightbulb" aria-hidden="true"></i>
@@ -323,11 +326,7 @@
     padding: 6px 14px;
     border-radius: 8px;
     border: 1px solid var(--theme-accent);
-    background: color-mix(
-      in srgb,
-      var(--theme-accent) 12%,
-      transparent
-    );
+    background: color-mix(in srgb, var(--theme-accent) 12%, transparent);
     color: var(--theme-accent);
     cursor: pointer;
     font-size: var(--font-size-compact);
@@ -356,7 +355,7 @@
     font-size: var(--font-size-compact);
   }
 
-  /* Lights Off button - electric cyan glow when active */
+  /* Dark Mode button - electric cyan glow when active */
   .lights-off-btn.active {
     background: rgba(0, 255, 255, 0.15);
     border-color: #00ffff;

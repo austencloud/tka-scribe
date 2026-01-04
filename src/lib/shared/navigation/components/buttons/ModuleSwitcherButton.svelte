@@ -21,9 +21,7 @@
   let suppressClick = $state(false);
 
   onMount(() => {
-    hapticService = resolve<IHapticFeedback>(
-      TYPES.IHapticFeedback
-    );
+    hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
   });
 
   function startLongPress(event: PointerEvent) {
@@ -65,7 +63,9 @@
 
   // Inbox badge count - shows notification count (only when NOT on Dashboard)
   // Once on Dashboard, the user sees the badge on the notification bell - no need for redundancy
-  const badgeCount = $derived(isOnDashboard ? 0 : inboxState.unreadNotificationCount);
+  const badgeCount = $derived(
+    isOnDashboard ? 0 : inboxState.unreadNotificationCount
+  );
 
   function formatBadgeCount(count: number): string {
     if (count > 99) return "99+";

@@ -777,7 +777,11 @@
   }
 
   .btn.danger {
-    background: linear-gradient(135deg, var(--semantic-error), var(--semantic-error));
+    background: linear-gradient(
+      135deg,
+      var(--semantic-error),
+      var(--semantic-error)
+    );
     color: white;
   }
 

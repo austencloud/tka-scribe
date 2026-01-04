@@ -167,9 +167,7 @@ HMR Test: Nested component change test
 
   onMount(() => {
     // Resolve services
-    hapticService = resolve<IHapticFeedback>(
-      TYPES.IHapticFeedback
-    );
+    hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
     deviceDetector = resolve<IDeviceDetector>(TYPES.IDeviceDetector);
 
     // Add keyboard listener

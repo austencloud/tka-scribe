@@ -20,7 +20,10 @@ import { dev } from "$app/environment";
 export const POST: RequestHandler = async ({ request }) => {
   // Only allow in development mode for safety
   if (!dev) {
-    return json({ error: "This endpoint is only available in development mode" }, { status: 403 });
+    return json(
+      { error: "This endpoint is only available in development mode" },
+      { status: 403 }
+    );
   }
 
   try {
@@ -31,7 +34,10 @@ export const POST: RequestHandler = async ({ request }) => {
     const lightMode = formData.get("lightMode") as string | null;
 
     if (!file || !word) {
-      return json({ error: "Missing image or word parameter" }, { status: 400 });
+      return json(
+        { error: "Missing image or word parameter" },
+        { status: 400 }
+      );
     }
 
     // Sanitize inputs for filesystem
@@ -45,7 +51,8 @@ export const POST: RequestHandler = async ({ request }) => {
     if (safePropType) {
       // New structure: /gallery/{propType}/{word}.webp or {word}_light.webp / {word}_dark.webp
       galleryDir = join(process.cwd(), "static", "gallery", safePropType);
-      const modeSuffix = lightMode !== null ? (lightMode === "true" ? "_light" : "_dark") : "";
+      const modeSuffix =
+        lightMode !== null ? (lightMode === "true" ? "_light" : "_dark") : "";
       filename = `${safeWord}${modeSuffix}.webp`;
       relativePath = `gallery/${safePropType}/${filename}`;
     } else {

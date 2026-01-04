@@ -164,7 +164,10 @@
             onclick={() => onPropsVisibilityChange?.(!propsVisible)}
             aria-labelledby="prop-display-label"
           >
-            <i class="fas {propsVisible ? 'fa-eye' : 'fa-eye-slash'}" aria-hidden="true"></i>
+            <i
+              class="fas {propsVisible ? 'fa-eye' : 'fa-eye-slash'}"
+              aria-hidden="true"
+            ></i>
             <span>{propsVisible ? "Props Visible" : "Props Hidden"}</span>
           </button>
         </div>
@@ -248,7 +251,11 @@
       transparent
     );
     border: 1px solid
-      color-mix(in srgb, var(--semantic-info, var(--semantic-info)) 30%, transparent);
+      color-mix(
+        in srgb,
+        var(--semantic-info, var(--semantic-info)) 30%,
+        transparent
+      );
     border-radius: 10px;
     flex-shrink: 0;
   }
@@ -388,7 +395,12 @@
   .mode-btn.active {
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--semantic-info, var(--semantic-info)) 20%, transparent) 0%,
+      color-mix(
+          in srgb,
+          var(--semantic-info, var(--semantic-info)) 20%,
+          transparent
+        )
+        0%,
       color-mix(in srgb, var(--semantic-info) 20%, transparent) 100%
     );
     border-color: var(--semantic-info, var(--semantic-info));
@@ -398,11 +410,7 @@
   .mode-hint {
     margin: 0;
     font-size: 0.7rem;
-    color: color-mix(
-      in srgb,
-      var(--theme-text-dim) 80%,
-      transparent
-    );
+    color: color-mix(in srgb, var(--theme-text-dim) 80%, transparent);
     line-height: 1.3;
     text-align: center;
   }
@@ -560,7 +568,12 @@
   .toggle-btn.active {
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--semantic-info, var(--semantic-info)) 20%, transparent) 0%,
+      color-mix(
+          in srgb,
+          var(--semantic-info, var(--semantic-info)) 20%,
+          transparent
+        )
+        0%,
       color-mix(in srgb, var(--semantic-info) 20%, transparent) 100%
     );
     border-color: var(--semantic-info, var(--semantic-info));
@@ -581,7 +594,11 @@
   .reset-btn:focus-visible,
   .scale-btn:focus-visible {
     outline: 2px solid
-      color-mix(in srgb, var(--semantic-info, var(--semantic-info)) 80%, transparent);
+      color-mix(
+        in srgb,
+        var(--semantic-info, var(--semantic-info)) 80%,
+        transparent
+      );
     outline-offset: 2px;
   }
 

@@ -180,8 +180,16 @@
     )
       return;
 
-    const currentPrimaryId = primarySequence.id || primarySequence.word || primarySequence.name || "unknown-primary";
-    const currentSecondaryId = secondarySequence.id || secondarySequence.word || secondarySequence.name || "unknown-secondary";
+    const currentPrimaryId =
+      primarySequence.id ||
+      primarySequence.word ||
+      primarySequence.name ||
+      "unknown-primary";
+    const currentSecondaryId =
+      secondarySequence.id ||
+      secondarySequence.word ||
+      secondarySequence.name ||
+      "unknown-secondary";
     const isSameSequences =
       currentPrimaryId === lastLoadedPrimarySequenceId &&
       currentSecondaryId === lastLoadedSecondarySequenceId;
@@ -189,7 +197,9 @@
     if (isSameSequences) {
       // Same sequences, just prop type or other metadata change
       // Don't trigger loading state - AnimationEngine hot-swap handles prop changes
-      console.log("🔄 TunnelRenderer: Same sequences, skipping reload (prop type change handled by hot-swap)");
+      console.log(
+        "🔄 TunnelRenderer: Same sequences, skipping reload (prop type change handled by hot-swap)"
+      );
       return;
     }
 
@@ -197,7 +207,10 @@
     loadAndStartAnimations(currentPrimaryId, currentSecondaryId);
   });
 
-  async function loadAndStartAnimations(primaryId: string, secondaryId: string) {
+  async function loadAndStartAnimations(
+    primaryId: string,
+    secondaryId: string
+  ) {
     if (
       !primarySequence ||
       !secondarySequence ||

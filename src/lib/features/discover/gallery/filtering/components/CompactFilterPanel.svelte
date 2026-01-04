@@ -53,7 +53,8 @@ Uses chips/tags for quick filtering with less screen real estate.
       type: "difficulty",
       value: 1,
       color: "var(--semantic-success)",
-      gradient: "linear-gradient(135deg, #34d399 0%, var(--semantic-success) 100%)",
+      gradient:
+        "linear-gradient(135deg, #34d399 0%, var(--semantic-success) 100%)",
     },
     {
       id: "difficulty-2",
@@ -62,7 +63,8 @@ Uses chips/tags for quick filtering with less screen real estate.
       type: "difficulty",
       value: 2,
       color: "var(--semantic-warning)",
-      gradient: "linear-gradient(135deg, var(--semantic-warning) 0%, var(--semantic-warning) 100%)",
+      gradient:
+        "linear-gradient(135deg, var(--semantic-warning) 0%, var(--semantic-warning) 100%)",
     },
     {
       id: "difficulty-3",
@@ -71,7 +73,8 @@ Uses chips/tags for quick filtering with less screen real estate.
       type: "difficulty",
       value: 3,
       color: "var(--semantic-error)",
-      gradient: "linear-gradient(135deg, var(--semantic-error) 0%, var(--semantic-error) 100%)",
+      gradient:
+        "linear-gradient(135deg, var(--semantic-error) 0%, var(--semantic-error) 100%)",
     },
   ];
 
@@ -100,9 +103,7 @@ Uses chips/tags for quick filtering with less screen real estate.
   }
 
   onMount(() => {
-    hapticService = resolve<IHapticFeedback>(
-      TYPES.IHapticFeedback
-    );
+    hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
   });
 </script>
 

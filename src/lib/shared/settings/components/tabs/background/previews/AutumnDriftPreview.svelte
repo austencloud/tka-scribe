@@ -46,17 +46,47 @@
     height: 180%;
     background:
       /* Orange maple-ish */
-      radial-gradient(ellipse 14px 8px at 50% 50%, #ff9040 0%, rgba(255, 130, 50, 0.6) 50%, transparent 100%),
+      radial-gradient(
+        ellipse 14px 8px at 50% 50%,
+        #ff9040 0%,
+        rgba(255, 130, 50, 0.6) 50%,
+        transparent 100%
+      ),
       /* Deep red */
-      radial-gradient(ellipse 12px 7px at 50% 50%, #cc4030 0%, rgba(180, 50, 35, 0.6) 50%, transparent 100%),
+      radial-gradient(
+          ellipse 12px 7px at 50% 50%,
+          #cc4030 0%,
+          rgba(180, 50, 35, 0.6) 50%,
+          transparent 100%
+        ),
       /* Golden yellow */
-      radial-gradient(ellipse 16px 9px at 50% 50%, #e8b830 0%, rgba(220, 170, 40, 0.6) 50%, transparent 100%),
+      radial-gradient(
+          ellipse 16px 9px at 50% 50%,
+          #e8b830 0%,
+          rgba(220, 170, 40, 0.6) 50%,
+          transparent 100%
+        ),
       /* Rust brown */
-      radial-gradient(ellipse 11px 6px at 50% 50%, #b86830 0%, rgba(160, 90, 40, 0.6) 50%, transparent 100%),
+      radial-gradient(
+          ellipse 11px 6px at 50% 50%,
+          #b86830 0%,
+          rgba(160, 90, 40, 0.6) 50%,
+          transparent 100%
+        ),
       /* Bright orange */
-      radial-gradient(ellipse 13px 7px at 50% 50%, #f07028 0%, rgba(230, 100, 35, 0.6) 50%, transparent 100%),
+      radial-gradient(
+          ellipse 13px 7px at 50% 50%,
+          #f07028 0%,
+          rgba(230, 100, 35, 0.6) 50%,
+          transparent 100%
+        ),
       /* Crimson */
-      radial-gradient(ellipse 10px 6px at 50% 50%, #a83828 0%, rgba(150, 45, 35, 0.6) 50%, transparent 100%);
+      radial-gradient(
+          ellipse 10px 6px at 50% 50%,
+          #a83828 0%,
+          rgba(150, 45, 35, 0.6) 50%,
+          transparent 100%
+        );
     background-size:
       65px 75px,
       85px 65px,
@@ -84,10 +114,30 @@
     width: 140%;
     height: 180%;
     background:
-      radial-gradient(ellipse 9px 5px at 50% 50%, rgba(255, 160, 70, 0.7) 0%, rgba(230, 130, 55, 0.4) 50%, transparent 100%),
-      radial-gradient(ellipse 8px 5px at 50% 50%, rgba(200, 70, 45, 0.65) 0%, rgba(170, 55, 40, 0.35) 50%, transparent 100%),
-      radial-gradient(ellipse 10px 6px at 50% 50%, rgba(230, 190, 50, 0.7) 0%, rgba(200, 160, 45, 0.4) 50%, transparent 100%),
-      radial-gradient(ellipse 7px 4px at 50% 50%, rgba(180, 100, 50, 0.6) 0%, rgba(150, 80, 45, 0.3) 50%, transparent 100%);
+      radial-gradient(
+        ellipse 9px 5px at 50% 50%,
+        rgba(255, 160, 70, 0.7) 0%,
+        rgba(230, 130, 55, 0.4) 50%,
+        transparent 100%
+      ),
+      radial-gradient(
+        ellipse 8px 5px at 50% 50%,
+        rgba(200, 70, 45, 0.65) 0%,
+        rgba(170, 55, 40, 0.35) 50%,
+        transparent 100%
+      ),
+      radial-gradient(
+        ellipse 10px 6px at 50% 50%,
+        rgba(230, 190, 50, 0.7) 0%,
+        rgba(200, 160, 45, 0.4) 50%,
+        transparent 100%
+      ),
+      radial-gradient(
+        ellipse 7px 4px at 50% 50%,
+        rgba(180, 100, 50, 0.6) 0%,
+        rgba(150, 80, 45, 0.3) 50%,
+        transparent 100%
+      );
     background-size:
       95px 85px,
       75px 95px,

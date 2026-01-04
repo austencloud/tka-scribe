@@ -27,9 +27,7 @@ import { createPropTypeSyncEffect } from "../../state/managers/PropTypeSyncManag
 import { createAutosaveEffect } from "../../state/managers/AutosaveManager.svelte";
 
 @injectable()
-export class CreateModuleEffectCoordinator
-  implements ICreateModuleEffectCoordinator
-{
+export class CreateModuleEffectCoordinator implements ICreateModuleEffectCoordinator {
   setupEffects(config: CreateModuleEffectConfig): () => void {
     const {
       getCreateModuleState,

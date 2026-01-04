@@ -84,7 +84,11 @@
    * ============================================================================ */
 
   /* Primary action buttons */
-  --btn-primary-bg: linear-gradient(135deg, var(--semantic-info) 0%, #2563eb 100%);
+  --btn-primary-bg: linear-gradient(
+    135deg,
+    var(--semantic-info) 0%,
+    #2563eb 100%
+  );
   --btn-primary-bg-hover: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
   --btn-primary-shadow: 0 4px 16px rgba(59, 130, 246, 0.3);
   --btn-primary-shadow-hover: 0 6px 20px rgba(59, 130, 246, 0.4);
@@ -95,8 +99,16 @@
   --btn-secondary-border: 1px solid rgba(255, 255, 255, 0.2);
 
   /* Destructive action buttons */
-  --btn-danger-bg: linear-gradient(135deg, var(--semantic-error) 0%, var(--semantic-error) 100%);
-  --btn-danger-bg-hover: linear-gradient(135deg, var(--semantic-error) 0%, #b91c1c 100%);
+  --btn-danger-bg: linear-gradient(
+    135deg,
+    var(--semantic-error) 0%,
+    var(--semantic-error) 100%
+  );
+  --btn-danger-bg-hover: linear-gradient(
+    135deg,
+    var(--semantic-error) 0%,
+    #b91c1c 100%
+  );
   --btn-danger-shadow: 0 4px 16px rgba(239, 68, 68, 0.3);
 
   /* Header circular buttons (current style) */

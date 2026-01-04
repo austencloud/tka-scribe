@@ -16,9 +16,7 @@ Uses CSS animations with staggered delays for smooth, layout-stable animations.
     onBack?: () => void;
   }>();
 
-  const hapticService = resolve<IHapticFeedback>(
-    TYPES.IHapticFeedback
-  );
+  const hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
 
   // Current step in the experience
   let step = $state(0);
@@ -29,8 +27,14 @@ Uses CSS animations with staggered delays for smooth, layout-stable animations.
   // Point types from PDF page 7
   const pointTypes = [
     { name: "Center Point", description: "The hub of all movement" },
-    { name: "Hand Points", description: "4 points halfway between center and outer" },
-    { name: "Outer Points", description: "4 points at the outer edges of the grid" },
+    {
+      name: "Hand Points",
+      description: "4 points halfway between center and outer",
+    },
+    {
+      name: "Outer Points",
+      description: "4 points at the outer edges of the grid",
+    },
   ];
 
   onMount(() => {
@@ -99,7 +103,8 @@ Uses CSS animations with staggered delays for smooth, layout-stable animations.
       <h1 class="title anim-item" style="--anim-order: 0">Diamond Mode</h1>
 
       <p class="description anim-item" style="--anim-order: 1">
-        In <strong>diamond mode</strong>, the 4 outer points are the cardinal directions.
+        In <strong>diamond mode</strong>, the 4 outer points are the cardinal
+        directions.
       </p>
 
       <div class="grid-container anim-item" style="--anim-order: 2">
@@ -124,7 +129,8 @@ Uses CSS animations with staggered delays for smooth, layout-stable animations.
       <h1 class="title anim-item" style="--anim-order: 0">Box Mode</h1>
 
       <p class="description anim-item" style="--anim-order: 1">
-        In <strong>box mode</strong>, the 4 outer points are the intercardinal directions.
+        In <strong>box mode</strong>, the 4 outer points are the intercardinal
+        directions.
       </p>
 
       <div class="grid-container anim-item" style="--anim-order: 2">
@@ -213,9 +219,11 @@ Uses CSS animations with staggered delays for smooth, layout-stable animations.
   {:else if step === 5}
     <!-- Step 5: Quiz -->
     <div class="step-content step-quiz">
-      <h1 class="title anim-item" style="--anim-order: 0">Test Your Knowledge</h1>
+      <h1 class="title anim-item" style="--anim-order: 0">
+        Test Your Knowledge
+      </h1>
       <div class="quiz-container anim-item" style="--anim-order: 1">
-        <GridIdentificationQuiz onComplete={onComplete} />
+        <GridIdentificationQuiz {onComplete} />
       </div>
     </div>
   {/if}

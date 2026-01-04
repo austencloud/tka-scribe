@@ -46,7 +46,8 @@
       for (let i = 1; i < tapTimes.length; i++) {
         intervals.push((tapTimes[i] ?? 0) - (tapTimes[i - 1] ?? 0));
       }
-      const avgInterval = intervals.reduce((a, b) => a + b, 0) / intervals.length;
+      const avgInterval =
+        intervals.reduce((a, b) => a + b, 0) / intervals.length;
       const calculatedBpm = Math.round(60000 / avgInterval);
       const newBpm = Math.max(BPM_MIN, Math.min(BPM_MAX, calculatedBpm));
       bpm = newBpm;

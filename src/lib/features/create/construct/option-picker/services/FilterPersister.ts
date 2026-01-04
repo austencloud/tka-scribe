@@ -48,10 +48,7 @@ export class FilterPersister implements IFilterPersister {
 
       localStorage.setItem(this.STORAGE_KEY, JSON.stringify(filterData));
     } catch (error) {
-      console.warn(
-        "⚠️ FilterPersister: Failed to save filters:",
-        error
-      );
+      console.warn("⚠️ FilterPersister: Failed to save filters:", error);
     }
   }
 
@@ -99,9 +96,7 @@ export class FilterPersister implements IFilterPersister {
 
       // Type guard to validate the parsed data
       if (!this.isValidFilterData(parsed)) {
-        console.warn(
-          "⚠️ FilterPersister: Invalid filter data structure"
-        );
+        console.warn("⚠️ FilterPersister: Invalid filter data structure");
         return null;
       }
 
@@ -113,10 +108,7 @@ export class FilterPersister implements IFilterPersister {
         isContinuousOnly: parsed.isContinuousOnly ?? this.loadContinuousOnly(),
       };
     } catch (error) {
-      console.warn(
-        "⚠️ FilterPersister: Failed to load filters:",
-        error
-      );
+      console.warn("⚠️ FilterPersister: Failed to load filters:", error);
       return null;
     }
   }
@@ -146,10 +138,7 @@ export class FilterPersister implements IFilterPersister {
       localStorage.removeItem(this.STORAGE_KEY);
       localStorage.removeItem(this.CONTINUOUS_KEY);
     } catch (error) {
-      console.warn(
-        "⚠️ FilterPersister: Failed to clear filters:",
-        error
-      );
+      console.warn("⚠️ FilterPersister: Failed to clear filters:", error);
     }
   }
 }

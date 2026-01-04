@@ -34,11 +34,14 @@ Pictograph to Letter Quiz - Shows a pictograph, asks user to identify the letter
   let error = $state<string | null>(null);
   let questionKey = $state(0);
 
-  let currentPictograph = $derived(questionData?.questionContent as PictographData | null);
+  let currentPictograph = $derived(
+    questionData?.questionContent as PictographData | null
+  );
   let correctAnswer = $derived(questionData?.correctAnswer as string);
   let isCorrectAnswer = $derived(
     selectedAnswerId
-      ? (questionData?.answerOptions.find((o) => o.id === selectedAnswerId)?.isCorrect ?? false)
+      ? (questionData?.answerOptions.find((o) => o.id === selectedAnswerId)
+          ?.isCorrect ?? false)
       : false
   );
 
@@ -51,7 +54,9 @@ Pictograph to Letter Quiz - Shows a pictograph, asks user to identify the letter
     isLoading = true;
     error = null;
     try {
-      questionData = await QuestionGeneratorService.generateQuestion(QuizType.PICTOGRAPH_TO_LETTER);
+      questionData = await QuestionGeneratorService.generateQuestion(
+        QuizType.PICTOGRAPH_TO_LETTER
+      );
       questionKey++;
     } catch (err) {
       console.error("Failed to load question:", err);
@@ -84,7 +89,10 @@ Pictograph to Letter Quiz - Shows a pictograph, asks user to identify the letter
     onNextQuestion?.();
   }
 
-  function getButtonState(optionId: string, isCorrect: boolean): "default" | "correct" | "incorrect" | "dimmed" {
+  function getButtonState(
+    optionId: string,
+    isCorrect: boolean
+  ): "default" | "correct" | "incorrect" | "dimmed" {
     if (!isAnswered) return "default";
     if (isCorrect) return "correct";
     if (selectedAnswerId === optionId) return "incorrect";

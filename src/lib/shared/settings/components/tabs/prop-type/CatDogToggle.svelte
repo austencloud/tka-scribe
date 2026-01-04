@@ -55,16 +55,8 @@
   }
 
   .catdog-chip.active {
-    background: color-mix(
-      in srgb,
-      var(--theme-accent) 20%,
-      transparent
-    );
-    border-color: color-mix(
-      in srgb,
-      var(--theme-accent) 40%,
-      transparent
-    );
+    background: color-mix(in srgb, var(--theme-accent) 20%, transparent);
+    border-color: color-mix(in srgb, var(--theme-accent) 40%, transparent);
     color: var(--theme-text);
     box-shadow:
       0 0 12px color-mix(in srgb, var(--theme-accent) 15%, transparent),

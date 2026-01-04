@@ -134,7 +134,10 @@ Uses pure runes instead of stores for reactivity.
 <script lang="ts">
   import type { PictographData } from "../../shared/domain/models/PictographData";
   import { Letter } from "$lib/shared/foundation/domain/models/Letter";
-  import { getLetterImagePath, isDashLetter } from "../utils/letter-image-getter";
+  import {
+    getLetterImagePath,
+    isDashLetter,
+  } from "../utils/letter-image-getter";
   import { onMount } from "svelte";
   import Dash from "./Dash.svelte";
 
@@ -341,7 +344,7 @@ Uses pure runes instead of stores for reactivity.
       <Dash
         letterWidth={letterDimensions.width}
         letterHeight={letterDimensions.height}
-        visible={visible}
+        {visible}
         {previewMode}
       />
     {/if}

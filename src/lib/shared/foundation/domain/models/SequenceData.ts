@@ -86,7 +86,9 @@ export function createSequenceData(
     isFavorite: data.isFavorite ?? false,
     isCircular: data.isCircular ?? false,
     ...(data.loopType !== undefined && { loopType: data.loopType }),
-    ...(data.orientationCycleCount !== undefined && { orientationCycleCount: data.orientationCycleCount }),
+    ...(data.orientationCycleCount !== undefined && {
+      orientationCycleCount: data.orientationCycleCount,
+    }),
     tags: data.tags ?? [],
     metadata: data.metadata ?? {},
     ...(data.sequenceLength !== undefined && {

@@ -28,9 +28,7 @@
           : ""}.
       </p>
       <div class="dialog-actions">
-        <button class="dialog-btn cancel" onclick={onCancel}>
-          Cancel
-        </button>
+        <button class="dialog-btn cancel" onclick={onCancel}> Cancel </button>
         <button class="dialog-btn confirm" onclick={onConfirm}>
           Set First Beat
         </button>

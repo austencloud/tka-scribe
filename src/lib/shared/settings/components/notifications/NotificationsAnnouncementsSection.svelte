@@ -16,7 +16,7 @@
     isLoading = false,
     dismissedAnnouncements = new Set<string>(),
     severityColor,
-    formatDate
+    formatDate,
   }: Props = $props();
 </script>
 

@@ -33,9 +33,7 @@ Supports enabled/disabled states and highlights current position.
   }>();
 
   // Resolve haptic feedback service
-  const hapticService = resolve<IHapticFeedback>(
-    TYPES.IHapticFeedback
-  );
+  const hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
 
   // Map GridLocation to display label
   const positionLabels: Record<GridLocation, string> = {
@@ -233,7 +231,9 @@ Supports enabled/disabled states and highlights current position.
     align-items: center;
     justify-content: center;
     opacity: 0.5;
-    transition: opacity 0.3s ease, transform 0.3s ease;
+    transition:
+      opacity 0.3s ease,
+      transform 0.3s ease;
     /* Gentle pulse animation to invite interaction */
     animation: ghost-pulse 2.5s ease-in-out infinite;
   }
@@ -246,7 +246,8 @@ Supports enabled/disabled states and highlights current position.
 
   /* Subtle pulse: breathes between 40% and 60% opacity with slight scale */
   @keyframes ghost-pulse {
-    0%, 100% {
+    0%,
+    100% {
       opacity: 0.4;
       transform: scale(1);
     }

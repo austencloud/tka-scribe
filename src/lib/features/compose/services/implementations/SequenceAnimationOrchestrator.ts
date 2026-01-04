@@ -35,9 +35,7 @@ import type { ISequenceAnimationOrchestrator } from "../contracts/ISequenceAnima
  * When currentBeat >= 1: We're at a motion beat (beat N uses this.beats[N-1])
  */
 @injectable()
-export class SequenceAnimationOrchestrator
-  implements ISequenceAnimationOrchestrator
-{
+export class SequenceAnimationOrchestrator implements ISequenceAnimationOrchestrator {
   // Motion beats (beat 1 = beats[0], beat 2 = beats[1], etc.)
   // Start position is derived from beats[0].startLocation/startOrientation
   private beats: readonly BeatData[] = [];

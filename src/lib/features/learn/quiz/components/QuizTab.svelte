@@ -192,9 +192,7 @@ Provides quiz functionality for learning TKA notation:
       quizSessionService = container.get<IQuizSessionManager>(
         TYPES.IQuizSessionManager
       );
-      hapticService = container.get<IHapticFeedback>(
-        TYPES.IHapticFeedback
-      );
+      hapticService = container.get<IHapticFeedback>(TYPES.IHapticFeedback);
 
       // Initialize quiz repository
       await quizRepo.initialize();

@@ -523,16 +523,8 @@
     padding: 4px 10px;
     background: linear-gradient(
       135deg,
-      color-mix(
-        in srgb,
-        var(--badge-color) 40%,
-        var(--theme-card-bg)
-      ),
-      color-mix(
-        in srgb,
-        var(--badge-color) 25%,
-        var(--theme-card-bg)
-      )
+      color-mix(in srgb, var(--badge-color) 40%, var(--theme-card-bg)),
+      color-mix(in srgb, var(--badge-color) 25%, var(--theme-card-bg))
     );
     border: 1px solid color-mix(in srgb, var(--badge-color) 30%, transparent);
     border-radius: 14px;
@@ -666,17 +658,39 @@
     padding: 12px;
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--theme-accent, var(--semantic-info)) 25%, transparent) 0%,
-      color-mix(in srgb, var(--theme-accent, var(--semantic-info)) 15%, transparent) 100%
+      color-mix(
+          in srgb,
+          var(--theme-accent, var(--semantic-info)) 25%,
+          transparent
+        )
+        0%,
+      color-mix(
+          in srgb,
+          var(--theme-accent, var(--semantic-info)) 15%,
+          transparent
+        )
+        100%
     );
     border: 1.5px solid
-      color-mix(in srgb, var(--theme-accent, var(--semantic-info)) 50%, transparent);
+      color-mix(
+        in srgb,
+        var(--theme-accent, var(--semantic-info)) 50%,
+        transparent
+      );
     border-radius: 10px;
     box-shadow:
       0 4px 16px
-        color-mix(in srgb, var(--theme-accent, var(--semantic-info)) 20%, transparent),
+        color-mix(
+          in srgb,
+          var(--theme-accent, var(--semantic-info)) 20%,
+          transparent
+        ),
       0 0 0 1px
-        color-mix(in srgb, var(--theme-accent, var(--semantic-info)) 15%, transparent);
+        color-mix(
+          in srgb,
+          var(--theme-accent, var(--semantic-info)) 15%,
+          transparent
+        );
   }
 
   .response-message {

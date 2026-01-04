@@ -20,7 +20,7 @@
   import type { ComposeTab } from "./shared/state/compose-module-state.svelte.ts";
   import type { IURLSyncer } from "$lib/shared/navigation/services/contracts/IURLSyncer";
   import type { IDeepLinker } from "$lib/shared/navigation/services/contracts/IDeepLinker";
-  
+
   // Import tab components
   // CompositionBuilder replaces old ArrangeTab with unified layout-first composition builder
   import CompositionBuilder from "./compose/CompositionBuilder.svelte";
@@ -111,27 +111,27 @@
 </script>
 
 <div class="compose-module">
-    <div class="content-container">
-      {#key composeState.currentTab}
-        <div class="tab-panel">
-          {#if isTabActive("arrange")}
-            <CompositionBuilder />
-          {:else if isTabActive("browse")}
-            <BrowseTab />
-          {:else if isTabActive("timeline")}
-            <TimelinePanel />
-          {/if}
-        </div>
-      {/key}
-    </div>
-
-    <!-- Playback Overlay - renders fullscreen over tabs when open -->
-    {#if composeState.isPlaybackOpen}
-      <div class="playback-overlay">
-        <PlaybackOverlay />
+  <div class="content-container">
+    {#key composeState.currentTab}
+      <div class="tab-panel">
+        {#if isTabActive("arrange")}
+          <CompositionBuilder />
+        {:else if isTabActive("browse")}
+          <BrowseTab />
+        {:else if isTabActive("timeline")}
+          <TimelinePanel />
+        {/if}
       </div>
-    {/if}
+    {/key}
   </div>
+
+  <!-- Playback Overlay - renders fullscreen over tabs when open -->
+  {#if composeState.isPlaybackOpen}
+    <div class="playback-overlay">
+      <PlaybackOverlay />
+    </div>
+  {/if}
+</div>
 
 <style>
   .compose-module {

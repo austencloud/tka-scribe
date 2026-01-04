@@ -6,7 +6,6 @@
   import { TYPES } from "../../../inversify/types";
   import { releaseNotesDrawerState } from "../../../settings/state/release-notes-drawer-state.svelte";
 
-
   let { isCollapsed, isSettingsActive, onSettingsClick } = $props<{
     isCollapsed: boolean;
     isSettingsActive: boolean;
@@ -16,9 +15,7 @@
   function handleVersionClick() {
     // Haptic feedback
     try {
-      const hapticService = tryResolve<IHapticFeedback>(
-        TYPES.IHapticFeedback
-      );
+      const hapticService = tryResolve<IHapticFeedback>(TYPES.IHapticFeedback);
       hapticService?.trigger("selection");
     } catch {
       // Ignore if not available
@@ -44,7 +41,10 @@
     aria-label={isSettingsActive ? "Exit Settings" : "Settings"}
   >
     <div class="button-icon">
-      <i class="fas {isSettingsActive ? 'fa-arrow-left' : 'fa-cog'}" aria-hidden="true"></i>
+      <i
+        class="fas {isSettingsActive ? 'fa-arrow-left' : 'fa-cog'}"
+        aria-hidden="true"
+      ></i>
     </div>
     {#if !isCollapsed}
       <span class="button-label">{isSettingsActive ? "Back" : "Settings"}</span>

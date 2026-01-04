@@ -27,14 +27,17 @@ export const ACCENT_COLORS_TO_PRESERVE = [
  * Mode-aware color map for motion colors.
  * Each color has variants optimized for dark and light backgrounds.
  */
-export const MOTION_COLOR_MAP: Record<MotionColor, { dark: string; light: string }> = {
+export const MOTION_COLOR_MAP: Record<
+  MotionColor,
+  { dark: string; light: string }
+> = {
   [MotionColor.BLUE]: {
-    dark: "#3575E2",   // Slightly darkened blue - still bright on dark backgrounds
+    dark: "#3575E2", // Slightly darkened blue - still bright on dark backgrounds
     light: "#3D44B8", // Lightened TKA blue - more vibrant on light backgrounds
   },
   [MotionColor.RED]: {
-    dark: "#ED1C24",   // Standard red - works well on dark
-    light: "#DC2626",  // Tailwind Red 600 - slightly darker for light backgrounds
+    dark: "#ED1C24", // Standard red - works well on dark
+    light: "#DC2626", // Tailwind Red 600 - slightly darker for light backgrounds
   },
 };
 
@@ -46,8 +49,13 @@ export const MOTION_COLOR_MAP: Record<MotionColor, { dark: string; light: string
  * @param mode - The current theme mode ("dark" or "light"), defaults to "dark"
  * @returns The hex color string
  */
-export function getMotionColor(color: MotionColor, mode: ThemeMode = "dark"): string {
-  return MOTION_COLOR_MAP[color]?.[mode] ?? MOTION_COLOR_MAP[MotionColor.BLUE][mode];
+export function getMotionColor(
+  color: MotionColor,
+  mode: ThemeMode = "dark"
+): string {
+  return (
+    MOTION_COLOR_MAP[color]?.[mode] ?? MOTION_COLOR_MAP[MotionColor.BLUE][mode]
+  );
 }
 
 /**

@@ -7,10 +7,7 @@
 
 import { injectable } from "inversify";
 import { navigationState } from "$lib/shared/navigation/state/navigation-state.svelte";
-import type {
-  IPanelPersister,
-  PanelId,
-} from "../contracts/IPanelPersister";
+import type { IPanelPersister, PanelId } from "../contracts/IPanelPersister";
 import type { PanelCoordinationState } from "../../state/panel-coordination-state.svelte";
 
 @injectable()

@@ -60,8 +60,5 @@ export interface IPositionAnalyzer {
   /**
    * Check if two positions are in the same group (can potentially form a loop)
    */
-  areInSameGroup(
-    position1: GridPosition,
-    position2: GridPosition
-  ): boolean;
+  areInSameGroup(position1: GridPosition, position2: GridPosition): boolean;
 }

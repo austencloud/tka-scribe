@@ -18,9 +18,7 @@ Implements the proven DirectSetTurnsDialog pattern from the legacy desktop app:
   let hapticService: IHapticFeedback | null = $state(null);
 
   onMount(() => {
-    hapticService = resolve<IHapticFeedback>(
-      TYPES.IHapticFeedback
-    );
+    hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
   });
 
   // Props following desktop app pattern

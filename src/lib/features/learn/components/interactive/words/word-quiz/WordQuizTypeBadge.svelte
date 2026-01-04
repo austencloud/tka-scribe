@@ -2,7 +2,10 @@
 WordQuizTypeBadge - Question type indicator badge
 -->
 <script lang="ts">
-  import { TYPE_ICONS, type QuestionType } from "../../../../domain/constants/word-quiz-questions";
+  import {
+    TYPE_ICONS,
+    type QuestionType,
+  } from "../../../../domain/constants/word-quiz-questions";
 
   let { type }: { type: QuestionType } = $props();
 </script>

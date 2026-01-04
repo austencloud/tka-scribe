@@ -133,11 +133,7 @@
     width: 100%;
     height: 100%;
     border-radius: 50%;
-    background: linear-gradient(
-      135deg,
-      var(--semantic-info) 0%,
-      #764ba2 100%
-    );
+    background: linear-gradient(135deg, var(--semantic-info) 0%, #764ba2 100%);
     display: flex;
     align-items: center;
     justify-content: center;

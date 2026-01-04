@@ -17,9 +17,7 @@ Handles click events and accessibility.
   let hapticService: IHapticFeedback | undefined;
 
   onMount(() => {
-    hapticService = resolve<IHapticFeedback>(
-      TYPES.IHapticFeedback
-    );
+    hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
   });
 
   function handleClick(e: MouseEvent) {
@@ -54,11 +52,7 @@ Handles click events and accessibility.
     min-height: var(--min-touch-target);
     border: none;
     border-radius: 999px;
-    background: color-mix(
-      in srgb,
-      var(--theme-panel-bg) 70%,
-      transparent
-    );
+    background: color-mix(in srgb, var(--theme-panel-bg) 70%, transparent);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     color: var(--theme-text, white);

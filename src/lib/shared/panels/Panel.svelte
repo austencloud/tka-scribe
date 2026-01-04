@@ -73,7 +73,10 @@
           aria-controls="panel-content"
           aria-label={collapsed ? "Expand panel" : "Collapse panel"}
         >
-          <i class="fa-solid fa-chevron-{collapsed ? 'right' : 'down'}" aria-hidden="true"></i>
+          <i
+            class="fa-solid fa-chevron-{collapsed ? 'right' : 'down'}"
+            aria-hidden="true"
+          ></i>
         </button>
       {/if}
 

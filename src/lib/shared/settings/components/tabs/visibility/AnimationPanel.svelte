@@ -6,7 +6,10 @@
 -->
 <script lang="ts">
   import AnimationPreviewController from "./AnimationPreviewController.svelte";
-  import type { TrailStyle, PlaybackMode } from "$lib/shared/animation-engine/state/animation-visibility-state.svelte";
+  import type {
+    TrailStyle,
+    PlaybackMode,
+  } from "$lib/shared/animation-engine/state/animation-visibility-state.svelte";
   import {
     animationSettings,
     TrailMode,
@@ -93,7 +96,10 @@
   }
 </script>
 
-<section class="settings-panel animation-panel" class:mobile-hidden={isMobileHidden}>
+<section
+  class="settings-panel animation-panel"
+  class:mobile-hidden={isMobileHidden}
+>
   <header class="panel-header">
     <span class="panel-icon animation-icon">
       <i class="fas fa-film" aria-hidden="true"></i>
@@ -212,7 +218,12 @@
             type="button"
             title={isBothEnds ? "Trailing both ends" : "Trailing one end"}
           >
-            <i class="fas {isBothEnds ? 'fa-arrows-alt-h' : 'fa-long-arrow-alt-right'}" aria-hidden="true"></i>
+            <i
+              class="fas {isBothEnds
+                ? 'fa-arrows-alt-h'
+                : 'fa-long-arrow-alt-right'}"
+              aria-hidden="true"
+            ></i>
           </button>
         {/if}
       </div>
@@ -318,7 +329,9 @@
               title={isBothEnds ? "Trailing both ends" : "Trailing one end"}
             >
               <i
-                class="fas {isBothEnds ? 'fa-arrows-alt-h' : 'fa-long-arrow-alt-right'}"
+                class="fas {isBothEnds
+                  ? 'fa-arrows-alt-h'
+                  : 'fa-long-arrow-alt-right'}"
                 aria-hidden="true"
               ></i>
               <span class="ends-label">{isBothEnds ? "Both" : "One"}</span>
@@ -409,8 +422,8 @@
     color: var(--theme-text);
     margin: 0;
     white-space: nowrap;
-    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui,
-      sans-serif;
+    font-family:
+      -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
     flex: 1;
   }
 
@@ -492,7 +505,8 @@
     color: var(--theme-text-dim);
     font-size: var(--font-size-compact);
     font-weight: 600;
-    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
+    font-family:
+      -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
     cursor: pointer;
     transition: all 150ms ease;
     -webkit-tap-highlight-color: transparent;
@@ -515,7 +529,8 @@
     background: color-mix(in srgb, var(--theme-accent) 25%, transparent);
     border-color: color-mix(in srgb, var(--theme-accent) 45%, transparent);
     color: white;
-    box-shadow: 0 2px 8px color-mix(in srgb, var(--theme-accent) 20%, transparent);
+    box-shadow: 0 2px 8px
+      color-mix(in srgb, var(--theme-accent) 20%, transparent);
   }
 
   /* BPM buttons - narrower */
@@ -526,7 +541,11 @@
 
   .compact-btn.bpm.active {
     background: color-mix(in srgb, var(--theme-accent-strong) 25%, transparent);
-    border-color: color-mix(in srgb, var(--theme-accent-strong) 45%, transparent);
+    border-color: color-mix(
+      in srgb,
+      var(--theme-accent-strong) 45%,
+      transparent
+    );
   }
 
   /* Trail buttons */
@@ -552,8 +571,8 @@
     letter-spacing: 0.5px;
     color: var(--theme-text-dim, var(--theme-text-dim));
     padding-left: 2px;
-    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui,
-      sans-serif;
+    font-family:
+      -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
     line-height: 1.2;
   }
 
@@ -582,8 +601,8 @@
     color: var(--theme-text-dim);
     font-size: var(--font-size-compact);
     font-weight: 600;
-    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui,
-      sans-serif;
+    font-family:
+      -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
     cursor: pointer;
     transition: all 150ms ease;
     -webkit-tap-highlight-color: transparent;
@@ -643,8 +662,8 @@
     font-size: var(--font-size-compact);
     font-weight: 600;
     font-variant-numeric: tabular-nums;
-    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui,
-      sans-serif;
+    font-family:
+      -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
     cursor: pointer;
     transition: all 150ms ease;
     -webkit-tap-highlight-color: transparent;
@@ -664,7 +683,11 @@
 
   .bpm-btn.active {
     background: color-mix(in srgb, var(--theme-accent-strong) 25%, transparent);
-    border-color: color-mix(in srgb, var(--theme-accent-strong) 45%, transparent);
+    border-color: color-mix(
+      in srgb,
+      var(--theme-accent-strong) 45%,
+      transparent
+    );
     color: white;
     box-shadow:
       0 0 0 1px color-mix(in srgb, var(--theme-accent-strong) 15%, transparent),
@@ -673,7 +696,11 @@
 
   .bpm-btn.active:hover {
     background: color-mix(in srgb, #8b5cf6 35%, transparent);
-    border-color: color-mix(in srgb, var(--theme-accent-strong) 55%, transparent);
+    border-color: color-mix(
+      in srgb,
+      var(--theme-accent-strong) 55%,
+      transparent
+    );
     box-shadow:
       0 0 0 1px color-mix(in srgb, var(--theme-accent-strong) 20%, transparent),
       0 4px 16px color-mix(in srgb, var(--theme-accent-strong) 35%, transparent);
@@ -696,8 +723,8 @@
     color: var(--theme-text-dim);
     font-size: var(--font-size-compact);
     font-weight: 600;
-    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui,
-      sans-serif;
+    font-family:
+      -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
     cursor: pointer;
     transition: all 150ms ease;
     -webkit-tap-highlight-color: transparent;
@@ -729,17 +756,21 @@
     color: white;
     box-shadow:
       0 0 0 1px
-        color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 15%, transparent),
+        color-mix(
+          in srgb,
+          var(--theme-accent, var(--theme-accent)) 15%,
+          transparent
+        ),
       0 4px 12px
-        color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 25%, transparent);
+        color-mix(
+          in srgb,
+          var(--theme-accent, var(--theme-accent)) 25%,
+          transparent
+        );
   }
 
   .toggle-btn.active:hover {
-    background: color-mix(
-      in srgb,
-      var(--theme-accent) 35%,
-      transparent
-    );
+    background: color-mix(in srgb, var(--theme-accent) 35%, transparent);
     border-color: color-mix(
       in srgb,
       var(--theme-accent, var(--theme-accent)) 55%,
@@ -747,14 +778,21 @@
     );
     box-shadow:
       0 0 0 1px
-        color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 20%, transparent),
+        color-mix(
+          in srgb,
+          var(--theme-accent, var(--theme-accent)) 20%,
+          transparent
+        ),
       0 4px 16px
-        color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 35%, transparent);
+        color-mix(
+          in srgb,
+          var(--theme-accent, var(--theme-accent)) 35%,
+          transparent
+        );
   }
 
   .toggle-btn:focus-visible {
-    outline: 2px solid
-      color-mix(in srgb, var(--theme-accent) 50%, transparent);
+    outline: 2px solid color-mix(in srgb, var(--theme-accent) 50%, transparent);
     outline-offset: 2px;
   }
 
@@ -781,8 +819,8 @@
     color: var(--theme-text-dim);
     font-size: var(--font-size-compact);
     font-weight: 600;
-    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui,
-      sans-serif;
+    font-family:
+      -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
     cursor: pointer;
     transition: all 150ms ease;
     -webkit-tap-highlight-color: transparent;
@@ -814,17 +852,21 @@
     color: white;
     box-shadow:
       0 0 0 1px
-        color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 15%, transparent),
+        color-mix(
+          in srgb,
+          var(--theme-accent, var(--theme-accent)) 15%,
+          transparent
+        ),
       0 4px 12px
-        color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 25%, transparent);
+        color-mix(
+          in srgb,
+          var(--theme-accent, var(--theme-accent)) 25%,
+          transparent
+        );
   }
 
   .preset-btn.active:hover {
-    background: color-mix(
-      in srgb,
-      var(--theme-accent) 35%,
-      transparent
-    );
+    background: color-mix(in srgb, var(--theme-accent) 35%, transparent);
     border-color: color-mix(
       in srgb,
       var(--theme-accent, var(--theme-accent)) 55%,
@@ -832,14 +874,21 @@
     );
     box-shadow:
       0 0 0 1px
-        color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 20%, transparent),
+        color-mix(
+          in srgb,
+          var(--theme-accent, var(--theme-accent)) 20%,
+          transparent
+        ),
       0 4px 16px
-        color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 35%, transparent);
+        color-mix(
+          in srgb,
+          var(--theme-accent, var(--theme-accent)) 35%,
+          transparent
+        );
   }
 
   .preset-btn:focus-visible {
-    outline: 2px solid
-      color-mix(in srgb, var(--theme-accent) 50%, transparent);
+    outline: 2px solid color-mix(in srgb, var(--theme-accent) 50%, transparent);
     outline-offset: 2px;
   }
 
@@ -857,8 +906,8 @@
     color: var(--theme-text-dim);
     font-size: var(--font-size-compact);
     font-weight: 600;
-    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui,
-      sans-serif;
+    font-family:
+      -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
     cursor: pointer;
     transition: all 150ms ease;
     -webkit-tap-highlight-color: transparent;
@@ -887,11 +936,7 @@
   }
 
   .ends-toggle.active {
-    background: color-mix(
-      in srgb,
-      var(--theme-accent-strong) 25%,
-      transparent
-    );
+    background: color-mix(in srgb, var(--theme-accent-strong) 25%, transparent);
     border-color: color-mix(
       in srgb,
       var(--theme-accent-strong) 45%,
@@ -899,28 +944,20 @@
     );
     color: white;
     box-shadow:
-      0 0 0 1px
-        color-mix(in srgb, var(--theme-accent-strong) 15%, transparent),
-      0 4px 12px
-        color-mix(in srgb, var(--theme-accent-strong) 25%, transparent);
+      0 0 0 1px color-mix(in srgb, var(--theme-accent-strong) 15%, transparent),
+      0 4px 12px color-mix(in srgb, var(--theme-accent-strong) 25%, transparent);
   }
 
   .ends-toggle.active:hover {
-    background: color-mix(
-      in srgb,
-      var(--theme-accent-strong) 35%,
-      transparent
-    );
+    background: color-mix(in srgb, var(--theme-accent-strong) 35%, transparent);
     border-color: color-mix(
       in srgb,
       var(--theme-accent-strong) 55%,
       transparent
     );
     box-shadow:
-      0 0 0 1px
-        color-mix(in srgb, var(--theme-accent-strong) 20%, transparent),
-      0 4px 16px
-        color-mix(in srgb, var(--theme-accent-strong) 35%, transparent);
+      0 0 0 1px color-mix(in srgb, var(--theme-accent-strong) 20%, transparent),
+      0 4px 16px color-mix(in srgb, var(--theme-accent-strong) 35%, transparent);
   }
 
   .ends-toggle:focus-visible {

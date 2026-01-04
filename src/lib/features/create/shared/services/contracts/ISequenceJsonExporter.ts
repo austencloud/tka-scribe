@@ -5,51 +5,51 @@
  * Strips placement data fluff, keeps only essential motion data.
  */
 
-import type { SequenceData } from '$lib/shared/foundation/domain/models/SequenceData';
+import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 
 export interface MinimalMotion {
-	type: string;
-	dir: string;
-	start: string;
-	end: string;
-	turns: number;
-	startOri: string;
-	endOri: string;
+  type: string;
+  dir: string;
+  start: string;
+  end: string;
+  turns: number;
+  startOri: string;
+  endOri: string;
 }
 
 export interface MinimalBeat {
-	beat: number;
-	letter: string;
-	start: string;
-	end: string;
-	blue: MinimalMotion | null;
-	red: MinimalMotion | null;
+  beat: number;
+  letter: string;
+  start: string;
+  end: string;
+  blue: MinimalMotion | null;
+  red: MinimalMotion | null;
 }
 
 export interface MinimalSequence {
-	name: string;
-	word: string;
-	isCircular: boolean;
-	gridMode: string;
-	propType: string;
-	startPosition: MinimalBeat | null;
-	beats: (MinimalBeat | null)[];
+  name: string;
+  word: string;
+  isCircular: boolean;
+  gridMode: string;
+  propType: string;
+  startPosition: MinimalBeat | null;
+  beats: (MinimalBeat | null)[];
 }
 
 export interface ISequenceJsonExporter {
-	/**
-	 * Convert a sequence to minimal JSON representation.
-	 */
-	toMinimalJson(sequence: SequenceData): MinimalSequence;
+  /**
+   * Convert a sequence to minimal JSON representation.
+   */
+  toMinimalJson(sequence: SequenceData): MinimalSequence;
 
-	/**
-	 * Convert sequence to JSON string with formatting.
-	 */
-	toJsonString(sequence: SequenceData): string;
+  /**
+   * Convert sequence to JSON string with formatting.
+   */
+  toJsonString(sequence: SequenceData): string;
 
-	/**
-	 * Copy sequence JSON to clipboard.
-	 * @returns true if successful, false otherwise
-	 */
-	copyToClipboard(sequence: SequenceData): Promise<boolean>;
+  /**
+   * Copy sequence JSON to clipboard.
+   * @returns true if successful, false otherwise
+   */
+  copyToClipboard(sequence: SequenceData): Promise<boolean>;
 }

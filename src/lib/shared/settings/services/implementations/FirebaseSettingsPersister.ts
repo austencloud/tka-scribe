@@ -23,9 +23,7 @@ import type { AppSettings } from "../../domain/AppSettings";
 import type { ISettingsPersister } from "../contracts/ISettingsPersister";
 
 @injectable()
-export class FirebaseSettingsPersister
-  implements ISettingsPersister
-{
+export class FirebaseSettingsPersister implements ISettingsPersister {
   private unsubscribe: Unsubscribe | null = null;
 
   /**

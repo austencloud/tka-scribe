@@ -17,15 +17,9 @@ export const wordCardModule = new ContainerModule(
     options
       .bind(TYPES.IPrintablePageLayoutService)
       .to(PrintablePageLayoutManager);
-    options
-      .bind(TYPES.IWordCardImageGenerator)
-      .to(WordCardImageGenerator);
-    options
-      .bind(TYPES.IWordCardImageConverter)
-      .to(WordCardImageConverter);
-    options
-      .bind(TYPES.IWordCardBatchProcessor)
-      .to(WordCardBatchProcessor);
+    options.bind(TYPES.IWordCardImageGenerator).to(WordCardImageGenerator);
+    options.bind(TYPES.IWordCardImageConverter).to(WordCardImageConverter);
+    options.bind(TYPES.IWordCardBatchProcessor).to(WordCardBatchProcessor);
     options
       .bind(TYPES.IWordCardExportProgressTracker)
       .to(WordCardExportProgressTracker);
@@ -33,11 +27,7 @@ export const wordCardModule = new ContainerModule(
     options
       .bind(TYPES.IWordCardExportOrchestrator)
       .to(WordCardExportOrchestrator);
-    options
-      .bind(TYPES.IWordCardSVGComposer)
-      .to(WordCardSVGComposer);
-    options
-      .bind(TYPES.IWordCardMetadataOverlay)
-      .to(WordCardMetadataOverlay);
+    options.bind(TYPES.IWordCardSVGComposer).to(WordCardSVGComposer);
+    options.bind(TYPES.IWordCardMetadataOverlay).to(WordCardMetadataOverlay);
   }
 );

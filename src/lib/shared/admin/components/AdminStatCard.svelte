@@ -38,7 +38,8 @@
 
     {#if change !== undefined && changeLabel}
       <span class="stat-change trend-{trend || 'neutral'}">
-        <i class="fas fa-arrow-{change >= 0 ? 'up' : 'down'}" aria-hidden="true"></i>
+        <i class="fas fa-arrow-{change >= 0 ? 'up' : 'down'}" aria-hidden="true"
+        ></i>
         {Math.abs(change)}% {changeLabel}
       </span>
     {/if}

@@ -95,7 +95,8 @@ Allows viewing, continuing, or deleting sessions.
       disabled={isLoading}
       aria-label="Refresh sessions"
     >
-      <i class="fa fa-refresh {isLoading ? 'fa-spin' : ''}" aria-hidden="true"></i>
+      <i class="fa fa-refresh {isLoading ? 'fa-spin' : ''}" aria-hidden="true"
+      ></i>
     </button>
   </div>
 
@@ -402,7 +403,11 @@ Allows viewing, continuing, or deleting sessions.
     background: linear-gradient(
       90deg,
       var(--semantic-success, var(--semantic-success)),
-      color-mix(in srgb, var(--semantic-success, var(--semantic-success)) 80%, white)
+      color-mix(
+        in srgb,
+        var(--semantic-success, var(--semantic-success)) 80%,
+        white
+      )
     );
     border-radius: 3px;
     transition: width 0.3s ease;

@@ -91,9 +91,7 @@
   }
 
   function handlePropSelect(propType: PropType) {
-    hapticService = resolve<IHapticFeedback>(
-      TYPES.IHapticFeedback
-    );
+    hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
     hapticService?.trigger("selection");
     onSelect(propType);
     isOpen = false;
@@ -231,7 +229,11 @@
   .variation-dot.active {
     background: var(--theme-accent);
     box-shadow: 0 0 6px
-      color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 50%, transparent);
+      color-mix(
+        in srgb,
+        var(--theme-accent, var(--theme-accent)) 50%,
+        transparent
+      );
   }
 
   .variation-text {

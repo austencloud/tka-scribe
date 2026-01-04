@@ -229,9 +229,7 @@ export default defineConfig({
       injectRegister: "auto",
       workbox: {
         // Cache strategies for different asset types
-        globPatterns: [
-          "**/*.{js,css,html,ico,png,svg,woff2,woff,webp}",
-        ],
+        globPatterns: ["**/*.{js,css,html,ico,png,svg,woff2,woff,webp}"],
         // Exclude large data files from precaching (they'll use runtime caching)
         globIgnores: [
           "**/data/*.json", // sequence-index.json is 8MB+

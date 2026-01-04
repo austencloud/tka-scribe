@@ -182,7 +182,11 @@ Provides play/pause, speed adjustment (BPM), reset, and metronome toggle.
   }
 
   .play-pause-button.playing:hover {
-    background: color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 85%, black);
+    background: color-mix(
+      in srgb,
+      var(--semantic-error, var(--semantic-error)) 85%,
+      black
+    );
   }
 
   .icon {

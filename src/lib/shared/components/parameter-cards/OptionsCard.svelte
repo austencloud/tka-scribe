@@ -28,12 +28,8 @@ Shows count of active options, click to open configuration sheet
   let cardElement: HTMLDivElement | null = $state(null);
 
   onMount(() => {
-    hapticService = tryResolve<IHapticFeedback>(
-      TYPES.IHapticFeedback
-    );
-    rippleService = tryResolve<IRippleEffect>(
-      TYPES.IRippleEffect
-    );
+    hapticService = tryResolve<IHapticFeedback>(TYPES.IHapticFeedback);
+    rippleService = tryResolve<IRippleEffect>(TYPES.IRippleEffect);
 
     if (cardElement && rippleService) {
       return rippleService.attachRipple(cardElement, {

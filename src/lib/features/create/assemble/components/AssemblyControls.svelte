@@ -39,9 +39,7 @@ Shows contextual action buttons based on current phase:
   );
 
   // Resolve haptic feedback service
-  const hapticService = resolve<IHapticFeedback>(
-    TYPES.IHapticFeedback
-  );
+  const hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
 
   function handleNextHand() {
     hapticService?.trigger("selection");
@@ -62,7 +60,10 @@ Shows contextual action buttons based on current phase:
 <div class="assembly-controls">
   {#if phase === "blue"}
     <!-- Hint text area - always reserves space -->
-    <p class="hint-text" class:visible={bluePathLength > 0 && bluePathLength < 2}>
+    <p
+      class="hint-text"
+      class:visible={bluePathLength > 0 && bluePathLength < 2}
+    >
       Add at least 2 positions to continue
     </p>
 
@@ -88,7 +89,8 @@ Shows contextual action buttons based on current phase:
   {:else if phase === "red"}
     <!-- Hint text area - always reserves space -->
     <p class="hint-text" class:visible={remainingPositions > 0}>
-      {remainingPositions} position{remainingPositions !== 1 ? 's' : ''} remaining to match blue hand
+      {remainingPositions} position{remainingPositions !== 1 ? "s" : ""} remaining
+      to match blue hand
     </p>
 
     <!-- Red hand phase controls -->
@@ -136,11 +138,7 @@ Shows contextual action buttons based on current phase:
     align-items: center;
     gap: 12px;
     padding: 16px;
-    background: linear-gradient(
-      to top,
-      var(--theme-panel-bg),
-      transparent
-    );
+    background: linear-gradient(to top, var(--theme-panel-bg), transparent);
   }
 
   .controls-row {
@@ -200,7 +198,11 @@ Shows contextual action buttons based on current phase:
   }
 
   .control-button.primary.red {
-    background: linear-gradient(135deg, var(--semantic-error), var(--semantic-error));
+    background: linear-gradient(
+      135deg,
+      var(--semantic-error),
+      var(--semantic-error)
+    );
     box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
   }
 

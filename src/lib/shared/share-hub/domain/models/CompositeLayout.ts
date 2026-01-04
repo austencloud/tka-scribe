@@ -15,20 +15,20 @@
 
 export interface CompositeLayout {
   /** Orientation of the two pieces */
-  orientation: 'horizontal' | 'vertical';
+  orientation: "horizontal" | "vertical";
 
   /** First media piece (left or top) */
-  piece1: 'animation' | 'static';
+  piece1: "animation" | "static";
 
   /** Second media piece (right or bottom) */
-  piece2: 'grid' | 'performance';
+  piece2: "grid" | "performance";
 }
 
 /**
  * Default composite layout configuration
  */
 export const DEFAULT_COMPOSITE_LAYOUT: CompositeLayout = {
-  orientation: 'horizontal',
-  piece1: 'animation',
-  piece2: 'grid',
+  orientation: "horizontal",
+  piece1: "animation",
+  piece2: "grid",
 };

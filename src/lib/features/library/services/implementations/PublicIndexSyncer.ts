@@ -62,7 +62,10 @@ export class PublicIndexSyncer implements IPublicIndexSyncer {
         publicData
       );
     } catch (error) {
-      console.error("[PublicIndexSyncer] Failed to sync to public index:", error);
+      console.error(
+        "[PublicIndexSyncer] Failed to sync to public index:",
+        error
+      );
       throw error; // Re-throw so callers know the sync failed
     }
   }
@@ -76,7 +79,10 @@ export class PublicIndexSyncer implements IPublicIndexSyncer {
     try {
       await deleteDoc(doc(firestore, getPublicSequencePath(sequenceId)));
     } catch (error) {
-      console.error("[PublicIndexSyncer] Failed to remove from public index:", error);
+      console.error(
+        "[PublicIndexSyncer] Failed to remove from public index:",
+        error
+      );
       throw error; // Re-throw so callers know the removal failed
     }
   }

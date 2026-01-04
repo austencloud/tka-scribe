@@ -223,9 +223,8 @@
     if (!hasAudio) return;
 
     try {
-      const { analyzeAudioBpm } = await import(
-        "$lib/features/compose/compose/phases/audio/bpm-analyzer"
-      );
+      const { analyzeAudioBpm } =
+        await import("$lib/features/compose/compose/phases/audio/bpm-analyzer");
 
       // Use the audio URL from state (would need to store this)
       // For now, this is a placeholder

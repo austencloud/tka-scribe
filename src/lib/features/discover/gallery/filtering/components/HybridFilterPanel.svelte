@@ -27,9 +27,7 @@
   let hapticService: IHapticFeedback | null = null;
 
   onMount(() => {
-    hapticService = tryResolve<IHapticFeedback>(
-      TYPES.IHapticFeedback
-    );
+    hapticService = tryResolve<IHapticFeedback>(TYPES.IHapticFeedback);
   });
 
   // Filter type state for drill-down
@@ -466,11 +464,7 @@
   }
 
   .card-icon.favorites {
-    background: color-mix(
-      in srgb,
-      var(--semantic-error) 15%,
-      transparent
-    );
+    background: color-mix(in srgb, var(--semantic-error) 15%, transparent);
     color: var(--semantic-error);
   }
 
@@ -495,7 +489,11 @@
     );
     border-radius: clamp(10px, 2.5cqi, 14px);
     border: 1px solid
-      color-mix(in srgb, var(--semantic-info, var(--semantic-info)) 15%, transparent);
+      color-mix(
+        in srgb,
+        var(--semantic-info, var(--semantic-info)) 15%,
+        transparent
+      );
     animation: slideDown 0.2s ease;
   }
 
@@ -539,7 +537,11 @@
   .level-card.selected {
     border-color: var(--semantic-info, var(--semantic-info));
     box-shadow: 0 0 0 2px
-      color-mix(in srgb, var(--semantic-info, var(--semantic-info)) 30%, transparent);
+      color-mix(
+        in srgb,
+        var(--semantic-info, var(--semantic-info)) 30%,
+        transparent
+      );
   }
 
   .level-num {

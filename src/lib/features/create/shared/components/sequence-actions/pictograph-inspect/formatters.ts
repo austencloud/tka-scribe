@@ -12,7 +12,10 @@ import { resolve } from "$lib/shared/inversify/di";
 import { TYPES } from "$lib/shared/inversify/types";
 import type { IPropPlacer } from "$lib/shared/pictograph/prop/services/contracts/IPropPlacer";
 import { getSettings } from "$lib/shared/application/state/app-state.svelte";
-import { MotionColor, Orientation } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
+import {
+  MotionColor,
+  Orientation,
+} from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
 import { isBuugengFamilyProp } from "$lib/shared/pictograph/prop/domain/enums/PropClassification";
 
 export async function formatMotionText(
@@ -27,16 +30,24 @@ export async function formatMotionText(
 
   // Calculate actual prop placement using the PropPlacer service
   // Apply settings override for prop type (same as PictographPreparer does)
-  let calculatedPlacement: { positionX: number; positionY: number; rotationAngle: number } | null = null;
+  let calculatedPlacement: {
+    positionX: number;
+    positionY: number;
+    rotationAngle: number;
+  } | null = null;
   if (pictographData) {
     try {
       const propPlacer = resolve<IPropPlacer>(TYPES.IPropPlacer);
       const settings = getSettings();
-      const propTypeOverride = color === "blue" ? settings.bluePropType : settings.redPropType;
+      const propTypeOverride =
+        color === "blue" ? settings.bluePropType : settings.redPropType;
       const motionWithOverride = propTypeOverride
         ? { ...motion, propType: propTypeOverride }
         : motion;
-      const placement = await propPlacer.calculatePlacement(pictographData, motionWithOverride);
+      const placement = await propPlacer.calculatePlacement(
+        pictographData,
+        motionWithOverride
+      );
       calculatedPlacement = placement;
     } catch (e) {
       console.warn("Failed to calculate prop placement:", e);
@@ -90,18 +101,28 @@ export async function formatMotionText(
     lines.push(
       `    Position: (${calculatedPlacement.positionX.toFixed(2)}, ${calculatedPlacement.positionY.toFixed(2)})`
     );
-    lines.push(`    Rotation: ${calculatedPlacement.rotationAngle.toFixed(1)}°`);
+    lines.push(
+      `    Rotation: ${calculatedPlacement.rotationAngle.toFixed(1)}°`
+    );
 
     // Calculate expected default position and beta offset
     try {
-      const gridMode = motion.gridMode === GridMode.BOX ? GridMode.BOX : GridMode.DIAMOND;
-      const defaultPos = DefaultPropPositioner.calculatePosition(motion.endLocation, gridMode);
-      lines.push(`    Default Position: (${defaultPos.x.toFixed(2)}, ${defaultPos.y.toFixed(2)})`);
+      const gridMode =
+        motion.gridMode === GridMode.BOX ? GridMode.BOX : GridMode.DIAMOND;
+      const defaultPos = DefaultPropPositioner.calculatePosition(
+        motion.endLocation,
+        gridMode
+      );
+      lines.push(
+        `    Default Position: (${defaultPos.x.toFixed(2)}, ${defaultPos.y.toFixed(2)})`
+      );
 
       const offsetX = calculatedPlacement.positionX - defaultPos.x;
       const offsetY = calculatedPlacement.positionY - defaultPos.y;
       const hasOffset = Math.abs(offsetX) > 0.01 || Math.abs(offsetY) > 0.01;
-      lines.push(`    Beta Offset: ${hasOffset ? `(${offsetX.toFixed(2)}, ${offsetY.toFixed(2)})` : "None"}`);
+      lines.push(
+        `    Beta Offset: ${hasOffset ? `(${offsetX.toFixed(2)}, ${offsetY.toFixed(2)})` : "None"}`
+      );
     } catch {
       lines.push(`    Default Position: (calculation error)`);
     }
@@ -182,8 +203,12 @@ function formatBetaAnalysis(
   const actualBlueProp = settings.bluePropType ?? storedBlueProp;
   const actualRedProp = settings.redPropType ?? storedRedProp;
 
-  lines.push(`  Stored Prop Types: blue=${storedBlueProp}, red=${storedRedProp}`);
-  lines.push(`  Actual Prop Types: blue=${actualBlueProp}, red=${actualRedProp}`);
+  lines.push(
+    `  Stored Prop Types: blue=${storedBlueProp}, red=${storedRedProp}`
+  );
+  lines.push(
+    `  Actual Prop Types: blue=${actualBlueProp}, red=${actualRedProp}`
+  );
 
   // Buugeng family check
   const blueIsBuugeng = isBuugengFamilyProp(actualBlueProp);
@@ -205,7 +230,9 @@ function formatBetaAnalysis(
 
   // End locations
   const sameEndLocation = blueMotion.endLocation === redMotion.endLocation;
-  lines.push(`  Same End Location: ${sameEndLocation} (blue=${blueMotion.endLocation}, red=${redMotion.endLocation})`);
+  lines.push(
+    `  Same End Location: ${sameEndLocation} (blue=${blueMotion.endLocation}, red=${redMotion.endLocation})`
+  );
 
   // Orientation analysis
   const blueEndOri = blueMotion.endOrientation;
@@ -220,8 +247,10 @@ function formatBetaAnalysis(
 
   const bothRadial = blueIsRadial && redIsRadial;
   const bothNonRadial = blueIsNonRadial && redIsNonRadial;
-  const hybridOrientation = (blueIsRadial && redIsNonRadial) || (blueIsNonRadial && redIsRadial);
-  const sameTypeButDifferent = (bothRadial || bothNonRadial) && blueEndOri !== redEndOri;
+  const hybridOrientation =
+    (blueIsRadial && redIsNonRadial) || (blueIsNonRadial && redIsRadial);
+  const sameTypeButDifferent =
+    (bothRadial || bothNonRadial) && blueEndOri !== redEndOri;
 
   lines.push(`  Blue End Orientation: ${blueEndOri} (radial=${blueIsRadial})`);
   lines.push(`  Red End Orientation: ${redEndOri} (radial=${redIsRadial})`);
@@ -239,17 +268,23 @@ function formatBetaAnalysis(
   lines.push(`    (Orientation is irrelevant for nesting decision)`);
 
   const shouldSkipBetaOffset = bothBuugeng && oppositeChirality;
-  lines.push(`  → Should Skip Beta Offset: ${shouldSkipBetaOffset ? "YES" : "NO"}`);
+  lines.push(
+    `  → Should Skip Beta Offset: ${shouldSkipBetaOffset ? "YES" : "NO"}`
+  );
 
   if (!shouldSkipBetaOffset && bothBuugeng) {
     if (!oppositeChirality) {
-      lines.push(`  → Reason: Same chirality (both ${blueChirality ? "B" : "A"})`);
+      lines.push(
+        `  → Reason: Same chirality (both ${blueChirality ? "B" : "A"})`
+      );
     }
   }
 
   // Orientation analysis (for reference, not part of nesting decision)
   lines.push(``, `  ORIENTATION ANALYSIS (for reference):`);
-  lines.push(`    Blue End Orientation: ${blueEndOri} (radial=${blueIsRadial})`);
+  lines.push(
+    `    Blue End Orientation: ${blueEndOri} (radial=${blueIsRadial})`
+  );
   lines.push(`    Red End Orientation: ${redEndOri} (radial=${redIsRadial})`);
   lines.push(`    Same Type But Different: ${sameTypeButDifferent}`);
 

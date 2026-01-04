@@ -320,8 +320,7 @@
 
   /* Accessibility - Focus Indicators */
   .photo-wrapper:focus-visible {
-    outline: 3px solid
-      color-mix(in srgb, var(--theme-accent) 90%, transparent);
+    outline: 3px solid color-mix(in srgb, var(--theme-accent) 90%, transparent);
     outline-offset: 2px;
     border-radius: 50%;
   }

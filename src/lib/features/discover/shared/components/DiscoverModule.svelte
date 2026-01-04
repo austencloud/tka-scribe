@@ -7,7 +7,7 @@
   import { onMount, setContext, untrack } from "svelte";
   import { navigationState } from "$lib/shared/navigation/state/navigation-state.svelte";
   import ErrorBanner from "../../../create/shared/components/ErrorBanner.svelte";
-  
+
   import type {
     IDiscoverEventHandler,
     DeleteConfirmationData,
@@ -223,9 +223,7 @@
   // ============================================================================
 
   // Create scroll behavior service instance
-  const scrollBehaviorService = new DiscoverScrollBehavior(
-    discoverScrollState
-  );
+  const scrollBehaviorService = new DiscoverScrollBehavior(discoverScrollState);
 
   // Track last scroll position for the container
   let lastContainerScrollTop = $state(0);
@@ -350,67 +348,66 @@
 </script>
 
 <!-- Error banner -->
-  {#if error}
-    <ErrorBanner
-      message={error}
-      onDismiss={() => eventHandlerService?.handleErrorDismiss()}
-      onRetry={() => eventHandlerService?.handleRetry()}
-    />
-  {/if}
-
-  <!-- Delete confirmation dialog -->
-  {#if deleteConfirmationData}
-    <DiscoverDeleteDialog
-      show={true}
-      confirmationData={deleteConfirmationData}
-      onConfirm={() =>
-        eventHandlerService?.handleDeleteConfirm(deleteConfirmationData)}
-      onCancel={() => eventHandlerService?.handleDeleteCancel()}
-    />
-  {/if}
-
-  <!-- Animation Sheet Coordinator -->
-  <AnimationSheetCoordinator
-    sequence={galleryState.sequenceToAnimate}
-    bind:isOpen={showAnimator}
+{#if error}
+  <ErrorBanner
+    message={error}
+    onDismiss={() => eventHandlerService?.handleErrorDismiss()}
+    onRetry={() => eventHandlerService?.handleRetry()}
   />
+{/if}
 
-  <!-- Main layout - shows immediately with skeletons while data loads -->
-  <div class="explore-content">
-    <!-- Tab Content - Bottom navigation controls the active tab -->
-    <!-- Note: We keep all tabs mounted but hidden to preserve state and avoid refetching -->
-    <div class="explore-tab-content">
-      <div class="tab-panel" class:hidden={activeTab !== "sequences"}>
-        <DiscoverSequencesTab
-          {isMobile}
-          {isUIVisible}
-          {showDesktopSidebar}
-          {drawerWidth}
-          {galleryState}
-          {error}
-          onSequenceAction={(action, sequence) =>
-            eventHandlerService?.handleSequenceAction(action, sequence) ??
-            Promise.resolve()}
-          onDetailPanelAction={(action, sequence) =>
-            eventHandlerService?.handleDetailPanelAction(action, sequence) ??
-            Promise.resolve()}
-          onCloseDetailPanel={() =>
-            eventHandlerService?.handleCloseDetailPanel()}
-          onContainerScroll={handleContainerScroll}
-        />
-      </div>
-      <div class="tab-panel" class:hidden={activeTab !== "collections"}>
-        <CollectionsDiscoverPanel />
-      </div>
-      <div class="tab-panel" class:hidden={activeTab !== "creators"}>
-        {#if creatorsViewState.currentView === "user-profile" && creatorsViewState.viewingUserId}
-          <UserProfilePanel userId={creatorsViewState.viewingUserId} />
-        {:else}
-          <CreatorsPanel />
-        {/if}
-      </div>
+<!-- Delete confirmation dialog -->
+{#if deleteConfirmationData}
+  <DiscoverDeleteDialog
+    show={true}
+    confirmationData={deleteConfirmationData}
+    onConfirm={() =>
+      eventHandlerService?.handleDeleteConfirm(deleteConfirmationData)}
+    onCancel={() => eventHandlerService?.handleDeleteCancel()}
+  />
+{/if}
+
+<!-- Animation Sheet Coordinator -->
+<AnimationSheetCoordinator
+  sequence={galleryState.sequenceToAnimate}
+  bind:isOpen={showAnimator}
+/>
+
+<!-- Main layout - shows immediately with skeletons while data loads -->
+<div class="explore-content">
+  <!-- Tab Content - Bottom navigation controls the active tab -->
+  <!-- Note: We keep all tabs mounted but hidden to preserve state and avoid refetching -->
+  <div class="explore-tab-content">
+    <div class="tab-panel" class:hidden={activeTab !== "sequences"}>
+      <DiscoverSequencesTab
+        {isMobile}
+        {isUIVisible}
+        {showDesktopSidebar}
+        {drawerWidth}
+        {galleryState}
+        {error}
+        onSequenceAction={(action, sequence) =>
+          eventHandlerService?.handleSequenceAction(action, sequence) ??
+          Promise.resolve()}
+        onDetailPanelAction={(action, sequence) =>
+          eventHandlerService?.handleDetailPanelAction(action, sequence) ??
+          Promise.resolve()}
+        onCloseDetailPanel={() => eventHandlerService?.handleCloseDetailPanel()}
+        onContainerScroll={handleContainerScroll}
+      />
+    </div>
+    <div class="tab-panel" class:hidden={activeTab !== "collections"}>
+      <CollectionsDiscoverPanel />
+    </div>
+    <div class="tab-panel" class:hidden={activeTab !== "creators"}>
+      {#if creatorsViewState.currentView === "user-profile" && creatorsViewState.viewingUserId}
+        <UserProfilePanel userId={creatorsViewState.viewingUserId} />
+      {:else}
+        <CreatorsPanel />
+      {/if}
     </div>
   </div>
+</div>
 
 <style>
   .explore-content {

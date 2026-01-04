@@ -41,7 +41,11 @@
     letter-spacing: -0.24px;
     box-shadow:
       0 8px 24px
-        color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 35%, transparent),
+        color-mix(
+          in srgb,
+          var(--theme-accent, var(--theme-accent)) 35%,
+          transparent
+        ),
       0 2px 8px rgba(0, 0, 0, 0.15);
     z-index: 10000;
     animation: toast-enter 0.4s cubic-bezier(0.36, 0.66, 0.04, 1);

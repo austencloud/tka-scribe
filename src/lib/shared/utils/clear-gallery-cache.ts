@@ -15,9 +15,7 @@ import type { IOptimizedDiscoverer } from "../../features/discover/shared/servic
 export async function clearAllGalleryCaches(): Promise<void> {
   try {
     // 1. Clear DiscoverCache
-    const exploreCacheService = resolve<IDiscoverCache>(
-      TYPES.IDiscoverCache
-    );
+    const exploreCacheService = resolve<IDiscoverCache>(TYPES.IDiscoverCache);
     exploreCacheService.clearCache();
 
     // 2. Clear OptimizedDiscoverer

@@ -46,9 +46,7 @@
   let hoverTimers = new Map<ModuleId, number>();
 
   onMount(() => {
-    hapticService = resolve<IHapticFeedback>(
-      TYPES.IHapticFeedback
-    );
+    hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
   });
 
   // Filter to main modules and dev modules

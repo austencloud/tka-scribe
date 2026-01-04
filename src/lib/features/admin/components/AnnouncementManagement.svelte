@@ -159,7 +159,8 @@
     padding: 12px 20px;
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 120%, white) 0%,
+      color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 120%, white)
+        0%,
       var(--theme-accent, var(--theme-accent)) 100%
     );
     border: none;
@@ -174,7 +175,11 @@
   .create-button:hover {
     transform: translateY(-2px);
     box-shadow: 0 6px 16px
-      color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 40%, transparent);
+      color-mix(
+        in srgb,
+        var(--theme-accent, var(--theme-accent)) 40%,
+        transparent
+      );
   }
 
   .create-button:active {

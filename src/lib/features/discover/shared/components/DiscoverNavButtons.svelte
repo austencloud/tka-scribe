@@ -21,9 +21,7 @@ Integrates with discoverNavigationState for proper navigation flow.
   let hapticService: IHapticFeedback | null = null;
 
   onMount(() => {
-    hapticService = tryResolve<IHapticFeedback>(
-      TYPES.IHapticFeedback
-    );
+    hapticService = tryResolve<IHapticFeedback>(TYPES.IHapticFeedback);
   });
 
   const canGoBack = $derived(discoverNavigationState.canGoBack);

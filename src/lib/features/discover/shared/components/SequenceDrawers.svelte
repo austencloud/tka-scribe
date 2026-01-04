@@ -337,7 +337,9 @@
 
 <!-- Invite Collaborators Panel -->
 {#if inviteVideo}
-  <div style:--drawer-width={isMobile ? "min(720px, 95vw)" : "min(520px, 45vw)"}>
+  <div
+    style:--drawer-width={isMobile ? "min(720px, 95vw)" : "min(520px, 45vw)"}
+  >
     <InviteCollaboratorsPanel
       show={isInvitePanelOpen}
       placement={isMobile ? "bottom" : "right"}
@@ -360,7 +362,11 @@
     top: 0 !important;
     height: 100vh !important;
     /* Integrated, native feel - transparent background, no hard edges */
-    background: color-mix(in srgb, var(--theme-panel-bg) 70%, transparent) !important;
+    background: color-mix(
+      in srgb,
+      var(--theme-panel-bg) 70%,
+      transparent
+    ) !important;
     backdrop-filter: blur(20px) !important;
     border: none !important;
     border-radius: 0 !important;
@@ -553,7 +559,8 @@
     width: 36px !important;
     height: 36px !important;
     background: var(--theme-stroke-strong) !important;
-    border: 1px solid color-mix(in srgb, var(--theme-text, white) 25%, transparent) !important;
+    border: 1px solid
+      color-mix(in srgb, var(--theme-text, white) 25%, transparent) !important;
     z-index: 100 !important;
     position: relative;
   }
@@ -570,8 +577,16 @@
   }
 
   :global(.filters-drawer .close-button:hover) {
-    background: color-mix(in srgb, var(--theme-text, white) 25%, transparent) !important;
-    border-color: color-mix(in srgb, var(--theme-text, white) 40%, transparent) !important;
+    background: color-mix(
+      in srgb,
+      var(--theme-text, white) 25%,
+      transparent
+    ) !important;
+    border-color: color-mix(
+      in srgb,
+      var(--theme-text, white) 40%,
+      transparent
+    ) !important;
   }
 
   /* Mobile: Make detail drawer full-height bottom sheet */

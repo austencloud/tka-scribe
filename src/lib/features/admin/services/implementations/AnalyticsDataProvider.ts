@@ -67,7 +67,9 @@ export class AnalyticsDataProvider implements IAnalyticsDataProvider {
     try {
       const firestore = await getFirestoreInstance();
       return (
-        firestore !== null && firestore !== undefined && auth.currentUser !== null
+        firestore !== null &&
+        firestore !== undefined &&
+        auth.currentUser !== null
       );
     } catch {
       // Silent failure - just means Firebase isn't available
@@ -133,7 +135,10 @@ export class AnalyticsDataProvider implements IAnalyticsDataProvider {
         previousChallengesCompleted: totalChallenges,
       };
     } catch (error) {
-      console.error("[AnalyticsDataProvider] Failed to get summary metrics:", error);
+      console.error(
+        "[AnalyticsDataProvider] Failed to get summary metrics:",
+        error
+      );
       return this.getEmptySummaryMetrics();
     }
   }
@@ -313,7 +318,10 @@ export class AnalyticsDataProvider implements IAnalyticsDataProvider {
         totalShares,
       };
     } catch (error) {
-      console.error("[AnalyticsDataProvider] Failed to get content statistics:", error);
+      console.error(
+        "[AnalyticsDataProvider] Failed to get content statistics:",
+        error
+      );
       return emptyStats;
     }
   }
@@ -421,7 +429,10 @@ export class AnalyticsDataProvider implements IAnalyticsDataProvider {
         totalAchievementsPossible,
       };
     } catch (error) {
-      console.error("[AnalyticsDataProvider] Failed to get engagement metrics:", error);
+      console.error(
+        "[AnalyticsDataProvider] Failed to get engagement metrics:",
+        error
+      );
       return emptyMetrics;
     }
   }

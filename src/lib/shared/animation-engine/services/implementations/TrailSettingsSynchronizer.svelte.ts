@@ -63,7 +63,9 @@ export class TrailSettingsSynchronizer implements ITrailSettingsSynchronizer {
   ): void {
     if (externalSettings !== undefined) {
       // Only update if settings actually changed (deep comparison to prevent infinite loops)
-      const settingsChanged = JSON.stringify(this.state.syncedSettings) !== JSON.stringify(externalSettings);
+      const settingsChanged =
+        JSON.stringify(this.state.syncedSettings) !==
+        JSON.stringify(externalSettings);
       if (settingsChanged) {
         // Update reactive state - component will react via $derived
         this.state.syncedSettings = { ...externalSettings };

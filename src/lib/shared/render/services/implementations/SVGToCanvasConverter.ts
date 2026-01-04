@@ -14,9 +14,7 @@ import type {
 import type { ISVGToCanvasConverter } from "../contracts/ISVGToCanvasConverter";
 
 @injectable()
-export class SVGToCanvasConverter
-  implements ISVGToCanvasConverter
-{
+export class SVGToCanvasConverter implements ISVGToCanvasConverter {
   private defaultQuality: RenderQualitySettings = {
     antialiasing: true,
     smoothScaling: true,

@@ -67,7 +67,11 @@
     background: color-mix(in srgb, var(--theme-shadow) 75%, transparent);
     border-radius: 16px;
     border: 1px solid
-      color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 40%, transparent);
+      color-mix(
+        in srgb,
+        var(--theme-accent, var(--theme-accent)) 40%,
+        transparent
+      );
     box-shadow: 0 2px 8px var(--theme-shadow, var(--theme-shadow));
     animation: fadeInUp 0.3s ease-out;
   }
@@ -101,7 +105,11 @@
   .xp-icon {
     font-size: var(--font-size-sm);
     font-weight: 600;
-    color: color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 90%, transparent);
+    color: color-mix(
+      in srgb,
+      var(--theme-accent, var(--theme-accent)) 90%,
+      transparent
+    );
   }
 
   .xp-amount {

@@ -48,7 +48,9 @@
 
   // Use user proportions as defaults if not explicitly provided
   const effectiveLength = $derived(length ?? userProportionsState.staffLength);
-  const effectiveThickness = $derived(thickness ?? userProportionsState.dimensions.staffRadius * 2);
+  const effectiveThickness = $derived(
+    thickness ?? userProportionsState.dimensions.staffRadius * 2
+  );
 
   // T-bar dimensions - proportional to staff
   // T-bar length (perpendicular extent) from SVG ratio: 57.6/252.8 = 22.8%
@@ -107,7 +109,8 @@
     );
 
     // Combine: first make horizontal, then apply world rotation, then apply facing rotation
-    const finalQuat = facingQuat.clone()
+    const finalQuat = facingQuat
+      .clone()
       .multiply(propState.worldRotation)
       .multiply(horizontalQuat);
 
@@ -121,11 +124,13 @@
 </script>
 
 {#if visible}
-  <T.Group {position} rotation={rotation}>
+  <T.Group {position} {rotation}>
     <!-- Staff CENTER (grip) is at the hand/grid point -->
     <!-- Main staff body - cylinder along Y axis -->
     <T.Mesh>
-      <T.CylinderGeometry args={[effectiveThickness, effectiveThickness, effectiveLength, 16, 1]} />
+      <T.CylinderGeometry
+        args={[effectiveThickness, effectiveThickness, effectiveLength, 16, 1]}
+      />
       <T.MeshStandardMaterial
         color={palette.main}
         roughness={0.3}
@@ -137,7 +142,9 @@
     <T.Group position={[0, halfLength, 0]}>
       <!-- Perpendicular crossbar - rotated 90° around Z to cross the shaft -->
       <T.Mesh rotation={[0, 0, Math.PI / 2]}>
-        <T.CylinderGeometry args={[tBarThickness, tBarThickness, tBarLength, 12, 1]} />
+        <T.CylinderGeometry
+          args={[tBarThickness, tBarThickness, tBarLength, 12, 1]}
+        />
         <T.MeshStandardMaterial
           color={palette.main}
           roughness={0.3}
@@ -176,17 +183,15 @@
 
     <!-- Center grip ring (white, at the hand point) -->
     <T.Mesh>
-      <T.TorusGeometry args={[effectiveThickness * 1.15, effectiveThickness * 0.15, 12, 24]} />
-      <T.MeshStandardMaterial
-        color="white"
-        roughness={0.4}
-        metalness={0.1}
+      <T.TorusGeometry
+        args={[effectiveThickness * 1.15, effectiveThickness * 0.15, 12, 24]}
       />
+      <T.MeshStandardMaterial color="white" roughness={0.4} metalness={0.1} />
     </T.Mesh>
   </T.Group>
 
   <!-- Trail indicator (small sphere at prop position for path visualization) -->
-  <T.Mesh position={position}>
+  <T.Mesh {position}>
     <T.SphereGeometry args={[2, 8, 8]} />
     <T.MeshBasicMaterial color={palette.main} opacity={0.3} transparent />
   </T.Mesh>

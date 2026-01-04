@@ -154,11 +154,7 @@
 
   /* Beat marker guides - purple/info color */
   .snap-guide.beat {
-    background: color-mix(
-      in srgb,
-      var(--semantic-info) 15%,
-      transparent
-    );
+    background: color-mix(in srgb, var(--semantic-info) 15%, transparent);
   }
 
   /* Grid guides - subtle theme stroke */
@@ -168,11 +164,7 @@
 
   /* Clip edge guides - accent */
   .snap-guide.clip {
-    background: color-mix(
-      in srgb,
-      var(--theme-accent) 15%,
-      transparent
-    );
+    background: color-mix(in srgb, var(--theme-accent) 15%, transparent);
   }
 
   /* Active snap indicator - bright and prominent */
@@ -184,10 +176,8 @@
   .snap-guide.active.beat {
     background: color-mix(in srgb, var(--semantic-info) 80%, white);
     box-shadow:
-      0 0 10px
-        color-mix(in srgb, var(--semantic-info) 60%, transparent),
-      0 0 20px
-        color-mix(in srgb, var(--semantic-info) 30%, transparent);
+      0 0 10px color-mix(in srgb, var(--semantic-info) 60%, transparent),
+      0 0 20px color-mix(in srgb, var(--semantic-info) 30%, transparent);
   }
 
   .snap-guide.active.clip {

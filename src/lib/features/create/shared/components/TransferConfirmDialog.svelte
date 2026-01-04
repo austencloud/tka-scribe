@@ -119,13 +119,21 @@
   }
 
   .confirm-button {
-    background: linear-gradient(135deg, var(--semantic-warning) 0%, #d97706 100%);
+    background: linear-gradient(
+      135deg,
+      var(--semantic-warning) 0%,
+      #d97706 100%
+    );
     color: white;
     border-color: rgba(255, 255, 255, 0.2);
   }
 
   .confirm-button:hover {
-    background: linear-gradient(135deg, var(--semantic-warning) 0%, var(--semantic-warning) 100%);
+    background: linear-gradient(
+      135deg,
+      var(--semantic-warning) 0%,
+      var(--semantic-warning) 100%
+    );
     border-color: rgba(255, 255, 255, 0.3);
     transform: translateY(-1px);
     box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);

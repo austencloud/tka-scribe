@@ -47,9 +47,7 @@
     thumbnailService = tryResolve<IDiscoverThumbnailProvider>(
       TYPES.IDiscoverThumbnailProvider
     );
-    hapticService = tryResolve<IHapticFeedback>(
-      TYPES.IHapticFeedback
-    );
+    hapticService = tryResolve<IHapticFeedback>(TYPES.IHapticFeedback);
   });
 
   function handleRetry() {
@@ -145,8 +143,7 @@
   /* Firefox scrollbar */
   .display-content {
     scrollbar-width: thin;
-    scrollbar-color: var(--theme-stroke-strong)
-      transparent;
+    scrollbar-color: var(--theme-stroke-strong) transparent;
   }
 
   /* Error state */
@@ -167,11 +164,7 @@
 
   .error-state button {
     padding: var(--spacing-sm) var(--spacing-md);
-    background: color-mix(
-      in srgb,
-      var(--semantic-error) 20%,
-      transparent
-    );
+    background: color-mix(in srgb, var(--semantic-error) 20%, transparent);
     border: 1px solid var(--semantic-error);
     border-radius: 6px;
     color: var(--semantic-error);
@@ -180,11 +173,7 @@
   }
 
   .error-state button:hover {
-    background: color-mix(
-      in srgb,
-      var(--semantic-error) 30%,
-      transparent
-    );
+    background: color-mix(in srgb, var(--semantic-error) 30%, transparent);
   }
 
   /* Empty state */

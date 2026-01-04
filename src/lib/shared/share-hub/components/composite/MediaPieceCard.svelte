@@ -13,9 +13,9 @@
   Domain: Share Hub - Composite Mode - Media Piece
 -->
 <script lang="ts">
-  import { getShareHubState } from '../../state/share-hub-state.svelte';
-  import type { MediaFormat } from '../../domain/models/MediaFormat';
-  import PictographContainer from '$lib/shared/pictograph/shared/components/PictographContainer.svelte';
+  import { getShareHubState } from "../../state/share-hub-state.svelte";
+  import type { MediaFormat } from "../../domain/models/MediaFormat";
+  import PictographContainer from "$lib/shared/pictograph/shared/components/PictographContainer.svelte";
 
   let {
     pieceIndex,
@@ -23,7 +23,7 @@
     label,
   }: {
     pieceIndex: 1 | 2;
-    format: 'animation' | 'static' | 'grid' | 'performance';
+    format: "animation" | "static" | "grid" | "performance";
     label: string;
   } = $props();
 
@@ -32,24 +32,24 @@
 
   // Map format to icon
   const formatIcon = $derived(
-    format === 'animation'
-      ? 'fa-play-circle'
-      : format === 'static'
-        ? 'fa-image'
-        : format === 'grid'
-          ? 'fa-th'
-          : 'fa-video'
+    format === "animation"
+      ? "fa-play-circle"
+      : format === "static"
+        ? "fa-image"
+        : format === "grid"
+          ? "fa-th"
+          : "fa-video"
   );
 
   // Map format to MediaFormat for settings
   const settingsFormat = $derived(
-    format === 'grid' ? ('static' as MediaFormat) : (format as MediaFormat)
+    format === "grid" ? ("static" as MediaFormat) : (format as MediaFormat)
   );
 
   // Get beats for static/grid preview (limit based on format)
   const previewBeats = $derived.by(() => {
     if (!hubState.sequence?.beats) return [];
-    const limit = format === 'grid' ? 4 : 1;
+    const limit = format === "grid" ? 4 : 1;
     return hubState.sequence.beats.slice(0, limit);
   });
 
@@ -73,7 +73,7 @@
         <i class="fas {formatIcon}" aria-hidden="true"></i>
         <p>No sequence</p>
       </div>
-    {:else if format === 'animation'}
+    {:else if format === "animation"}
       <!-- Animation: show single pictograph preview -->
       {#if previewBeats.length > 0}
         <div class="animation-preview-mini">
@@ -91,7 +91,7 @@
           <p>No beats</p>
         </div>
       {/if}
-    {:else if format === 'static'}
+    {:else if format === "static"}
       <!-- Static: show first pictograph -->
       {#if previewBeats.length > 0}
         <div class="static-preview-mini">
@@ -106,7 +106,7 @@
           <p>No beats</p>
         </div>
       {/if}
-    {:else if format === 'grid'}
+    {:else if format === "grid"}
       <!-- Grid: show 2x2 mini grid -->
       {#if previewBeats.length > 0}
         <div class="grid-preview-mini">
@@ -125,7 +125,7 @@
           <p>No beats</p>
         </div>
       {/if}
-    {:else if format === 'performance'}
+    {:else if format === "performance"}
       <!-- Performance: camera/video placeholder -->
       <div class="placeholder-preview">
         <i class="fas fa-video" aria-hidden="true"></i>

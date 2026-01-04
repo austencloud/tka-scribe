@@ -20,9 +20,7 @@ import { galleryPanelManager } from "../../state/gallery-panel-state.svelte";
 import type { ISheetRouter } from "../../../../../shared/navigation/services/contracts/ISheetRouter";
 import { handleModuleChange } from "../../../../../shared/navigation-coordinator/navigation-coordinator.svelte";
 @injectable()
-export class DiscoverEventHandler
-  implements IDiscoverEventHandler
-{
+export class DiscoverEventHandler implements IDiscoverEventHandler {
   private params: ExploreEventHandlerParams | null = null;
 
   constructor(

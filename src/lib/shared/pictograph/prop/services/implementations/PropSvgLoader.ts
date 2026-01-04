@@ -17,7 +17,10 @@ import { injectable } from "inversify";
 import type { PropRenderData } from "../../domain/models/PropRenderData";
 import type { IPropSvgLoader } from "../contracts/IPropSvgLoader";
 import { MotionColor } from "../../../shared/domain/enums/pictograph-enums";
-import { applyMotionColorToSvg, type ThemeMode } from "../../../../utils/svg-color-utils";
+import {
+  applyMotionColorToSvg,
+  type ThemeMode,
+} from "../../../../utils/svg-color-utils";
 import { getAnimationVisibilityManager } from "../../../../animation-engine/state/animation-visibility-state.svelte";
 
 // ============================================================================
@@ -31,8 +34,13 @@ const hmrRawSvgCache: Map<string, string> =
   import.meta.hot?.data?.propRawSvgCache ?? new Map();
 const hmrTransformedSvgCache: Map<string, PropRenderData> =
   import.meta.hot?.data?.propTransformedSvgCache ?? new Map();
-const hmrMetadataCache: Map<string, { viewBox: { width: number; height: number }; center: { x: number; y: number } }> =
-  import.meta.hot?.data?.propMetadataCache ?? new Map();
+const hmrMetadataCache: Map<
+  string,
+  {
+    viewBox: { width: number; height: number };
+    center: { x: number; y: number };
+  }
+> = import.meta.hot?.data?.propMetadataCache ?? new Map();
 
 if (import.meta.hot) {
   import.meta.hot.dispose((data) => {
@@ -55,7 +63,7 @@ export class PropSvgLoader implements IPropSvgLoader {
   private cacheMisses = 0;
   /**
    * Get the current theme mode based on dark mode setting
-   * Dark mode (Lights Off) = "dark" theme, Light mode = "light" theme
+   * Dark mode (Dark Mode) = "dark" theme, Light mode = "light" theme
    */
   private getCurrentThemeMode(): ThemeMode {
     try {
@@ -117,7 +125,11 @@ export class PropSvgLoader implements IPropSvgLoader {
       );
 
       // Apply color transformation with current theme mode
-      const coloredSvgText = this.applyColorToSvg(originalSvgText, color, themeMode);
+      const coloredSvgText = this.applyColorToSvg(
+        originalSvgText,
+        color,
+        themeMode
+      );
 
       // Extract SVG content
       const svgContent = this.extractSvgContent(coloredSvgText);
@@ -253,7 +265,11 @@ export class PropSvgLoader implements IPropSvgLoader {
    * Apply color transformation to SVG
    * Delegates to shared svg-color-utils for consistency across the app
    */
-  private applyColorToSvg(svgText: string, color: MotionColor, themeMode: ThemeMode): string {
+  private applyColorToSvg(
+    svgText: string,
+    color: MotionColor,
+    themeMode: ThemeMode
+  ): string {
     return applyMotionColorToSvg(svgText, color, {
       makeClassNamesUnique: true,
       themeMode,

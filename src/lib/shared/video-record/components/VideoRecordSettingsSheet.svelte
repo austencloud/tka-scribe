@@ -82,11 +82,7 @@
 
 {#if isOpen}
   <!-- svelte-ignore a11y_no_static_element_interactions -->
-  <div
-    class="sheet-backdrop"
-    onclick={handleBackdropClick}
-    aria-hidden="true"
-  >
+  <div class="sheet-backdrop" onclick={handleBackdropClick} aria-hidden="true">
     <div class="sheet-content" role="dialog" aria-modal="true">
       <div class="sheet-header">
         <h2>Recording Settings</h2>
@@ -330,9 +326,13 @@
   .option-btn.active {
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--theme-accent, var(--semantic-info)) 18%, transparent) 0%,
-      color-mix(in srgb, var(--theme-accent-strong) 14%, transparent)
-        100%
+      color-mix(
+          in srgb,
+          var(--theme-accent, var(--semantic-info)) 18%,
+          transparent
+        )
+        0%,
+      color-mix(in srgb, var(--theme-accent-strong) 14%, transparent) 100%
     );
     border-color: color-mix(
       in srgb,
@@ -392,11 +392,7 @@
   .slider-control input[type="range"] {
     flex: 1;
     height: 4px;
-    background: color-mix(
-      in srgb,
-      var(--theme-stroke-strong) 55%,
-      transparent
-    );
+    background: color-mix(in srgb, var(--theme-stroke-strong) 55%, transparent);
     border-radius: 2px;
     appearance: none;
     cursor: pointer;

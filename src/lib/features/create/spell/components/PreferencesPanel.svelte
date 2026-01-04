@@ -63,7 +63,8 @@ Modern chip-based UI for sequence generation preferences:
     <button
       class="toggle-chip"
       class:active={preferences.minimizeReversals}
-      onclick={() => onUpdate("minimizeReversals", !preferences.minimizeReversals)}
+      onclick={() =>
+        onUpdate("minimizeReversals", !preferences.minimizeReversals)}
       title="Prefer sequences without prop reversals"
       aria-pressed={preferences.minimizeReversals}
     >
@@ -73,7 +74,8 @@ Modern chip-based UI for sequence generation preferences:
     <button
       class="toggle-chip"
       class:active={preferences.preferContinuous}
-      onclick={() => onUpdate("preferContinuous", !preferences.preferContinuous)}
+      onclick={() =>
+        onUpdate("preferContinuous", !preferences.preferContinuous)}
       title="Favor smooth, flowing transitions"
       aria-pressed={preferences.preferContinuous}
     >
@@ -84,7 +86,11 @@ Modern chip-based UI for sequence generation preferences:
   <!-- Motion type as chip group -->
   <div class="motion-section">
     <span class="motion-label">Motion Style</span>
-    <div class="motion-chips" role="radiogroup" aria-label="Motion style preference">
+    <div
+      class="motion-chips"
+      role="radiogroup"
+      aria-label="Motion style preference"
+    >
       {#each motionOptions as option}
         <button
           class="motion-chip"

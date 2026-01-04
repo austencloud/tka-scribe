@@ -18,7 +18,8 @@
     onCopy: (text: string, section: string) => void;
   }
 
-  let { color, motion, rotationOverride, copiedSection, onCopy }: Props = $props();
+  let { color, motion, rotationOverride, copiedSection, onCopy }: Props =
+    $props();
 
   const colorClass = $derived(color === "blue" ? "blue-column" : "red-column");
   const dotClass = $derived(color === "blue" ? "blue" : "red");
@@ -30,11 +31,13 @@
     <h3><span class="dot {dotClass}"></span> {label}</h3>
     <button
       class="copy-btn"
-      onclick={async () => onCopy(await formatMotionText(motion, color, rotationOverride), color)}
+      onclick={async () =>
+        onCopy(await formatMotionText(motion, color, rotationOverride), color)}
       title="Copy {label}"
     >
       <i class="fas fa-copy" aria-hidden="true"></i>
-      {#if copiedSection === color}<span class="copied-label">Copied!</span>{/if}
+      {#if copiedSection === color}<span class="copied-label">Copied!</span
+        >{/if}
     </button>
   </div>
 
@@ -46,7 +49,8 @@
       </div>
       <div class="data-row">
         <span class="key">Turns</span>
-        <span class="val">{motion.turns === "fl" ? "float" : motion.turns}</span>
+        <span class="val">{motion.turns === "fl" ? "float" : motion.turns}</span
+        >
       </div>
       <div class="data-row">
         <span class="key">Rotation</span>
@@ -85,24 +89,38 @@
       <div class="data-block compact">
         <div class="data-row">
           <span class="key">Pos X</span>
-          <span class="val mono">{motion.arrowPlacementData?.positionX?.toFixed(2) ?? "N/A"}</span>
+          <span class="val mono"
+            >{motion.arrowPlacementData?.positionX?.toFixed(2) ?? "N/A"}</span
+          >
         </div>
         <div class="data-row">
           <span class="key">Pos Y</span>
-          <span class="val mono">{motion.arrowPlacementData?.positionY?.toFixed(2) ?? "N/A"}</span>
+          <span class="val mono"
+            >{motion.arrowPlacementData?.positionY?.toFixed(2) ?? "N/A"}</span
+          >
         </div>
         <div class="data-row">
           <span class="key">Rotation</span>
-          <span class="val mono">{motion.arrowPlacementData?.rotationAngle?.toFixed(1) ?? "N/A"}°</span>
+          <span class="val mono"
+            >{motion.arrowPlacementData?.rotationAngle?.toFixed(1) ??
+              "N/A"}°</span
+          >
         </div>
         <div class="data-row">
           <span class="key">Mirrored</span>
-          <span class="val">{motion.arrowPlacementData?.svgMirrored ? "Yes" : "No"}</span>
+          <span class="val"
+            >{motion.arrowPlacementData?.svgMirrored ? "Yes" : "No"}</span
+          >
         </div>
         {#if rotationOverride}
-          <div class="data-row" class:override-active={rotationOverride.hasOverride}>
+          <div
+            class="data-row"
+            class:override-active={rotationOverride.hasOverride}
+          >
             <span class="key">Rot Override</span>
-            <span class="val">{rotationOverride.hasOverride ? "YES" : "No"}</span>
+            <span class="val"
+              >{rotationOverride.hasOverride ? "YES" : "No"}</span
+            >
           </div>
         {/if}
         {#if motion.arrowPlacementData?.manualAdjustmentX || motion.arrowPlacementData?.manualAdjustmentY}

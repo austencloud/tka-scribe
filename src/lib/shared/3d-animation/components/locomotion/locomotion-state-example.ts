@@ -23,10 +23,10 @@ const ROTATION_SPEED = 8;
 
 /** Scene bounds to keep avatars within visible area */
 const SCENE_BOUNDS = {
-	minX: -400,
-	maxX: 400,
-	minZ: -400,
-	maxZ: 200
+  minX: -400,
+  maxX: 400,
+  minZ: -400,
+  maxZ: 200,
 };
 
 // ============================================
@@ -69,13 +69,12 @@ const SCENE_BOUNDS = {
  * @param input.z - Forward/back: -1 (S/back) to 1 (W/forward)
  */
 function setMoveInput(input: { x: number; z: number }): void {
-	// moveInput = input;
-	// isMoving = input.x !== 0 || input.z !== 0;
-
-	// Pause sequence playback while moving
-	// if (isMoving && playback.isPlaying) {
-	//   playback.pause();
-	// }
+  // moveInput = input;
+  // isMoving = input.x !== 0 || input.z !== 0;
+  // Pause sequence playback while moving
+  // if (isMoving && playback.isPlaying) {
+  //   playback.pause();
+  // }
 }
 
 /**
@@ -86,52 +85,44 @@ function setMoveInput(input: { x: number; z: number }): void {
  * @param cameraAngle - Camera's Y rotation in radians (for camera-relative movement)
  */
 function updateMovement(delta: number, cameraAngle: number): void {
-	// if (!isMoving) return;
-
-	// Transform input by camera rotation for camera-relative movement
-	// const sin = Math.sin(cameraAngle);
-	// const cos = Math.cos(cameraAngle);
-
-	// World-space direction (rotated by camera angle)
-	// const worldX = moveInput.x * cos - moveInput.z * sin;
-	// const worldZ = moveInput.x * sin + moveInput.z * cos;
-
-	// Normalize for consistent speed when moving diagonally
-	// const length = Math.sqrt(worldX * worldX + worldZ * worldZ);
-	// const nx = length > 0 ? worldX / length : 0;
-	// const nz = length > 0 ? worldZ / length : 0;
-
-	// Update target facing angle (avatar turns to face movement direction)
-	// if (length > 0) {
-	//   targetFacingAngle = Math.atan2(nx, nz);
-	// }
-
-	// Smooth rotation toward target angle
-	// let angleDiff = targetFacingAngle - facingAngle;
-	// Normalize to -PI to PI for shortest rotation
-	// while (angleDiff > Math.PI) angleDiff -= Math.PI * 2;
-	// while (angleDiff < -Math.PI) angleDiff += Math.PI * 2;
-	// facingAngle += angleDiff * Math.min(1, ROTATION_SPEED * delta);
-
-	// Apply movement
-	// const moveAmount = MOVE_SPEED * delta;
-	// let newX = position.x + nx * moveAmount;
-	// let newZ = position.z + nz * moveAmount;
-
-	// Clamp to scene bounds
-	// newX = Math.max(SCENE_BOUNDS.minX, Math.min(SCENE_BOUNDS.maxX, newX));
-	// newZ = Math.max(SCENE_BOUNDS.minZ, Math.min(SCENE_BOUNDS.maxZ, newZ));
-
-	// position.x = newX;
-	// position.z = newZ;
+  // if (!isMoving) return;
+  // Transform input by camera rotation for camera-relative movement
+  // const sin = Math.sin(cameraAngle);
+  // const cos = Math.cos(cameraAngle);
+  // World-space direction (rotated by camera angle)
+  // const worldX = moveInput.x * cos - moveInput.z * sin;
+  // const worldZ = moveInput.x * sin + moveInput.z * cos;
+  // Normalize for consistent speed when moving diagonally
+  // const length = Math.sqrt(worldX * worldX + worldZ * worldZ);
+  // const nx = length > 0 ? worldX / length : 0;
+  // const nz = length > 0 ? worldZ / length : 0;
+  // Update target facing angle (avatar turns to face movement direction)
+  // if (length > 0) {
+  //   targetFacingAngle = Math.atan2(nx, nz);
+  // }
+  // Smooth rotation toward target angle
+  // let angleDiff = targetFacingAngle - facingAngle;
+  // Normalize to -PI to PI for shortest rotation
+  // while (angleDiff > Math.PI) angleDiff -= Math.PI * 2;
+  // while (angleDiff < -Math.PI) angleDiff += Math.PI * 2;
+  // facingAngle += angleDiff * Math.min(1, ROTATION_SPEED * delta);
+  // Apply movement
+  // const moveAmount = MOVE_SPEED * delta;
+  // let newX = position.x + nx * moveAmount;
+  // let newZ = position.z + nz * moveAmount;
+  // Clamp to scene bounds
+  // newX = Math.max(SCENE_BOUNDS.minX, Math.min(SCENE_BOUNDS.maxX, newX));
+  // newZ = Math.max(SCENE_BOUNDS.minZ, Math.min(SCENE_BOUNDS.maxZ, newZ));
+  // position.x = newX;
+  // position.z = newZ;
 }
 
 /**
  * Stop all movement immediately.
  */
 function stopMovement(): void {
-	// moveInput = { x: 0, z: 0 };
-	// isMoving = false;
+  // moveInput = { x: 0, z: 0 };
+  // isMoving = false;
 }
 
 // ============================================

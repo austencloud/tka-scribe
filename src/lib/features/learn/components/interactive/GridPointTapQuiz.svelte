@@ -14,9 +14,7 @@ Provides instant visual feedback (correct = green glow, wrong = red shake).
     onComplete?: () => void;
   }>();
 
-  const hapticService = resolve<IHapticFeedback>(
-    TYPES.IHapticFeedback
-  );
+  const hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
 
   // Quiz questions configuration
   type PointType = "center" | "hand" | "outer";

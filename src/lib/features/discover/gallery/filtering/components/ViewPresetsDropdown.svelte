@@ -128,9 +128,7 @@ Responsive behavior:
   }
 
   onMount(() => {
-    hapticService = resolve<IHapticFeedback>(
-      TYPES.IHapticFeedback
-    );
+    hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
 
     // Initialize DeviceDetector
     let cleanup: (() => void) | undefined;
@@ -169,11 +167,16 @@ Responsive behavior:
     aria-expanded={isOpen}
     aria-controls="view-presets-menu"
   >
-    <i class="fas {currentPreset.icon}" aria-hidden="true"
+    <i
+      class="fas {currentPreset.icon}"
+      aria-hidden="true"
       style={currentPreset.iconColor ? `color: ${currentPreset.iconColor}` : ""}
     ></i>
     <span class="toggle-label">{currentPreset.label}</span>
-    <i class="fas fa-chevron-{isOpen ? 'up' : 'down'} chevron-icon" aria-hidden="true"></i>
+    <i
+      class="fas fa-chevron-{isOpen ? 'up' : 'down'} chevron-icon"
+      aria-hidden="true"
+    ></i>
   </button>
 
   <!-- Desktop: Dropdown Menu -->

@@ -52,18 +52,8 @@ export interface IFontManager {
 export const IBeatRenderingServiceInterface = Symbol.for(
   "IBeatRenderingService"
 );
-export const ITextRendererInterface = Symbol.for(
-  "ITextRenderer"
-);
-export const IImageComposerInterface = Symbol.for(
-  "IImageComposer"
-);
-export const ICanvasManagerInterface = Symbol.for(
-  "ICanvasManager"
-);
-export const IReversalDetectorInterface = Symbol.for(
-  "IReversalDetector"
-);
-export const IFontManagerInterface = Symbol.for(
-  "IFontManager"
-);
+export const ITextRendererInterface = Symbol.for("ITextRenderer");
+export const IImageComposerInterface = Symbol.for("IImageComposer");
+export const ICanvasManagerInterface = Symbol.for("ICanvasManager");
+export const IReversalDetectorInterface = Symbol.for("IReversalDetector");
+export const IFontManagerInterface = Symbol.for("IFontManager");

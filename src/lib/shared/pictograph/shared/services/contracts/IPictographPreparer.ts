@@ -16,7 +16,9 @@ export interface IPictographPreparer {
    * Prepare a batch of pictographs with pre-calculated positions
    * Processes all pictographs in parallel for performance
    */
-  prepareBatch(pictographs: PictographData[]): Promise<PreparedPictographData[]>;
+  prepareBatch(
+    pictographs: PictographData[]
+  ): Promise<PreparedPictographData[]>;
 
   /**
    * Prepare a single pictograph with pre-calculated positions

@@ -13,9 +13,7 @@
 
 <div class="view-only-notice">
   <span class="verified-badge">Verified</span>
-  <button class="edit-button" onclick={onEdit}>
-    Edit Label
-  </button>
+  <button class="edit-button" onclick={onEdit}> Edit Label </button>
 </div>
 
 <style>

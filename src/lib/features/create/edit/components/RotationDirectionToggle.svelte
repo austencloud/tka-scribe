@@ -55,9 +55,7 @@ Only shown when motion has turns > 0 and rotation direction is not NO_ROTATION.
   }
 
   onMount(async () => {
-    hapticService = await resolve<IHapticFeedback>(
-      TYPES.IHapticFeedback
-    );
+    hapticService = await resolve<IHapticFeedback>(TYPES.IHapticFeedback);
   });
 </script>
 

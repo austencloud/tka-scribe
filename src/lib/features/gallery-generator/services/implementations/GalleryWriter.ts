@@ -25,7 +25,8 @@ export class GalleryWriter implements IGalleryWriter {
     const formData = new FormData();
 
     // Build filename with optional mode suffix
-    const modeSuffix = lightMode !== undefined ? (lightMode ? "_light" : "_dark") : "";
+    const modeSuffix =
+      lightMode !== undefined ? (lightMode ? "_light" : "_dark") : "";
     const filename = `${word}${modeSuffix}.webp`;
 
     formData.append("image", blob, filename);

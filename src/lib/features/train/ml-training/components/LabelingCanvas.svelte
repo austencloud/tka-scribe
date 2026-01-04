@@ -141,7 +141,8 @@ Supports:
   function drawAnnotation(ann: PropAnnotation, selected: boolean) {
     if (!ctx) return;
 
-    const color = ann.hand === "left" ? "var(--semantic-info)" : "var(--semantic-error)"; // Blue for left, red for right (hardcoded for canvas)
+    const color =
+      ann.hand === "left" ? "var(--semantic-info)" : "var(--semantic-error)"; // Blue for left, red for right (hardcoded for canvas)
     const box = bboxToCanvas(ann.boundingBox);
 
     // Draw bounding box
@@ -679,11 +680,7 @@ Supports:
   }
 
   .direction-btn:hover {
-    background: color-mix(
-      in srgb,
-      var(--theme-accent) 50%,
-      transparent
-    );
+    background: color-mix(in srgb, var(--theme-accent) 50%, transparent);
     border-color: var(--theme-accent, var(--theme-accent));
     transform: scale(1.05);
   }

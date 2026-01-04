@@ -21,9 +21,7 @@ ConceptDetailView - Direct view of concept content
     onClose?: () => void;
   }>();
 
-  const hapticService = resolve<IHapticFeedback>(
-    TYPES.IHapticFeedback
-  );
+  const hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
   const conceptProgressService = resolve<IConceptProgressTracker>(
     TYPES.IConceptProgressTracker
   );
@@ -38,7 +36,7 @@ ConceptDetailView - Direct view of concept content
     accuracy: 0,
     currentStreak: 0,
     bestStreak: 0,
-    timeSpentSeconds: 0
+    timeSpentSeconds: 0,
   });
 
   // Sync progress when concept changes

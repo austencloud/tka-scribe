@@ -160,7 +160,10 @@ export class FollowingFeedProvider implements IFollowingFeedProvider {
       );
       return followedUsers.length;
     } catch (error) {
-      console.error("[FollowingFeedProvider] Error getting following count:", error);
+      console.error(
+        "[FollowingFeedProvider] Error getting following count:",
+        error
+      );
       return 0;
     }
   }

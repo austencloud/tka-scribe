@@ -94,7 +94,12 @@
   </div>
 
   <div class="button-row">
-    <button type="button" class="back-button" onclick={onBack} aria-label="Go back">
+    <button
+      type="button"
+      class="back-button"
+      onclick={onBack}
+      aria-label="Go back"
+    >
       <i class="fas fa-arrow-left" aria-hidden="true"></i>
     </button>
   </div>
@@ -123,7 +128,11 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 15%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--theme-accent-strong, #8b5cf6) 15%,
+      transparent
+    );
     border-radius: 18px;
     font-size: 1.5rem;
     color: var(--theme-accent-strong, #8b5cf6);
@@ -148,8 +157,13 @@
     gap: 8px;
     width: 100%;
     padding: 16px;
-    background: color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 8%, transparent);
-    border: 1px solid color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 20%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--theme-accent-strong, #8b5cf6) 8%,
+      transparent
+    );
+    border: 1px solid
+      color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 20%, transparent);
     border-radius: 14px;
     margin: 8px 0;
   }
@@ -183,8 +197,13 @@
     gap: 10px;
     width: 100%;
     padding: 12px 20px;
-    background: color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 12%, rgba(255, 255, 255, 0.02));
-    border: 1px solid color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 20%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--theme-accent-strong, #8b5cf6) 12%,
+      rgba(255, 255, 255, 0.02)
+    );
+    border: 1px solid
+      color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 20%, transparent);
     border-radius: 12px;
     color: var(--theme-text, white);
     font-size: 0.9375rem;
@@ -194,8 +213,16 @@
   }
 
   .email-toggle:hover {
-    background: color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 18%, rgba(255, 255, 255, 0.04));
-    border-color: color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 30%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--theme-accent-strong, #8b5cf6) 18%,
+      rgba(255, 255, 255, 0.04)
+    );
+    border-color: color-mix(
+      in srgb,
+      var(--theme-accent-strong, #8b5cf6) 30%,
+      transparent
+    );
   }
 
   .email-toggle i {
@@ -215,7 +242,11 @@
     content: "";
     flex: 1;
     height: 1px;
-    background: color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 20%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--theme-accent-strong, #8b5cf6) 20%,
+      transparent
+    );
   }
 
   .divider span {

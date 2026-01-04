@@ -35,7 +35,6 @@
   // Reactive visibility state
   let gridVisible = $state(visibilityManager.isGridVisible());
 
-
   // Services
   let playbackController: IAnimationPlaybackController | null = null;
   let discoverLoader: IDiscoverLoader | null = null;
@@ -55,7 +54,7 @@
       entries.push({
         beatIndex: i,
         blue: 1, // 1 turn for blue
-        red: 1,  // 1 turn for red
+        red: 1, // 1 turn for red
       });
     }
 
@@ -200,7 +199,9 @@
       await withRetry(() => discoverLoader!.loadSequenceMetadata());
 
       // Load the base "B" sequence - with retry
-      const baseSequence = await withRetry(() => discoverLoader!.loadFullSequenceData("B"));
+      const baseSequence = await withRetry(() =>
+        discoverLoader!.loadFullSequenceData("B")
+      );
 
       if (!baseSequence) {
         throw new Error("Failed to load B sequence from database");
@@ -208,8 +209,11 @@
 
       // Create and apply 1,1 turn pattern to get visible trails
       // Use DI to resolve the service (container should be ready by the time user opens settings)
-      type ITurnPatternManager = import("$lib/features/create/shared/services/contracts/ITurnPatternManager").ITurnPatternManager;
-      const turnPatternManager = resolve<ITurnPatternManager>(TYPES.ITurnPatternManager);
+      type ITurnPatternManager =
+        import("$lib/features/create/shared/services/contracts/ITurnPatternManager").ITurnPatternManager;
+      const turnPatternManager = resolve<ITurnPatternManager>(
+        TYPES.ITurnPatternManager
+      );
       const turnPattern = createOneTurnPattern(baseSequence.beats.length);
       const result = turnPatternManager.applyPattern(turnPattern, baseSequence);
 

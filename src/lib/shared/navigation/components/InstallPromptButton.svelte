@@ -20,9 +20,7 @@
   let fullscreenService: IMobileFullscreenManager;
 
   onMount(() => {
-    hapticService = resolve<IHapticFeedback>(
-      TYPES.IHapticFeedback
-    );
+    hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
     fullscreenService = resolve<IMobileFullscreenManager>(
       TYPES.IMobileFullscreenManager
     );
@@ -110,10 +108,7 @@
   }
 
   .install-icon {
-    color: var(
-      --theme-accent-strong,
-      var(--theme-accent)
-    );
+    color: var(--theme-accent-strong, var(--theme-accent));
   }
 
   .item-info {

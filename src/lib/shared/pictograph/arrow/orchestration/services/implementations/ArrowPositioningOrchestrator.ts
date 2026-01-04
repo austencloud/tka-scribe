@@ -18,9 +18,7 @@ import type { IArrowDataProcessor } from "../contracts/IArrowDataProcessor";
 import type { IArrowGridCoordinator } from "../contracts/IArrowGridCoordinator";
 
 @injectable()
-export class ArrowPositioningOrchestrator
-  implements IArrowPositioningOrchestrator
-{
+export class ArrowPositioningOrchestrator implements IArrowPositioningOrchestrator {
   private locationCalculator: IArrowLocationCalculator;
   private rotationCalculator: IArrowRotationCalculator;
   private adjustmentCalculator: IArrowAdjustmentCalculator;

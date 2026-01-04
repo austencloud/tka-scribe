@@ -85,7 +85,10 @@ export class AdminChallengeManager implements IAdminChallengeManager {
 
       return entries;
     } catch (error) {
-      console.error("[AdminChallengeManager] Failed to fetch scheduled challenges:", error);
+      console.error(
+        "[AdminChallengeManager] Failed to fetch scheduled challenges:",
+        error
+      );
       toast.error("Failed to load scheduled challenges.");
       return [];
     }
@@ -138,7 +141,10 @@ export class AdminChallengeManager implements IAdminChallengeManager {
 
       return challenge;
     } catch (error) {
-      console.error("[AdminChallengeManager] Failed to create challenge:", error);
+      console.error(
+        "[AdminChallengeManager] Failed to create challenge:",
+        error
+      );
       toast.error("Failed to create challenge. Please try again.");
       throw error;
     }
@@ -187,7 +193,10 @@ export class AdminChallengeManager implements IAdminChallengeManager {
       const updatedDoc = await getDoc(challengeDocRef);
       return updatedDoc.data() as DailyChallenge;
     } catch (error) {
-      console.error("[AdminChallengeManager] Failed to update challenge:", error);
+      console.error(
+        "[AdminChallengeManager] Failed to update challenge:",
+        error
+      );
       toast.error("Failed to update challenge. Please try again.");
       throw error;
     }
@@ -204,7 +213,10 @@ export class AdminChallengeManager implements IAdminChallengeManager {
 
       console.log(`✅ [Admin] Deleted daily challenge: ${challengeId}`);
     } catch (error) {
-      console.error("[AdminChallengeManager] Failed to delete challenge:", error);
+      console.error(
+        "[AdminChallengeManager] Failed to delete challenge:",
+        error
+      );
       toast.error("Failed to delete challenge. Please try again.");
       throw error;
     }
@@ -218,7 +230,10 @@ export class AdminChallengeManager implements IAdminChallengeManager {
       const sequences = await db.sequences.toArray();
       return sequences;
     } catch (error) {
-      console.error("[AdminChallengeManager] Failed to fetch user sequences:", error);
+      console.error(
+        "[AdminChallengeManager] Failed to fetch user sequences:",
+        error
+      );
       toast.error("Failed to load sequences.");
       return [];
     }
@@ -241,7 +256,10 @@ export class AdminChallengeManager implements IAdminChallengeManager {
 
       return null;
     } catch (error) {
-      console.error(`[AdminChallengeManager] Failed to fetch challenge for ${date}:`, error);
+      console.error(
+        `[AdminChallengeManager] Failed to fetch challenge for ${date}:`,
+        error
+      );
       toast.error("Failed to load challenge.");
       return null;
     }

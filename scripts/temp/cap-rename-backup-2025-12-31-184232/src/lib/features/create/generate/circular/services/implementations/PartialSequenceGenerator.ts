@@ -65,24 +65,17 @@ export class PartialSequenceGenerator implements IPartialSequenceGenerator {
     // Step 1: Create Type 6 static start position beat (beat 0)
     // Use the same approach as StartPositionManager to create a proper Type 6 motion
     const { MotionType, MotionColor, Orientation, RotationDirection } =
-      await import(
-        "$lib/shared/pictograph/shared/domain/enums/pictograph-enums"
-      );
-    const { PropType } = await import(
-      "$lib/shared/pictograph/prop/domain/enums/PropType"
-    );
-    const { Letter } = await import(
-      "$lib/shared/foundation/domain/models/Letter"
-    );
-    const { GridPosition } = await import(
-      "$lib/shared/pictograph/grid/domain/enums/grid-enums"
-    );
-    const { createMotionData } = await import(
-      "$lib/shared/pictograph/shared/domain/models/MotionData"
-    );
-    const { createPictographData } = await import(
-      "$lib/shared/pictograph/shared/domain/factories/createPictographData"
-    );
+      await import("$lib/shared/pictograph/shared/domain/enums/pictograph-enums");
+    const { PropType } =
+      await import("$lib/shared/pictograph/prop/domain/enums/PropType");
+    const { Letter } =
+      await import("$lib/shared/foundation/domain/models/Letter");
+    const { GridPosition } =
+      await import("$lib/shared/pictograph/grid/domain/enums/grid-enums");
+    const { createMotionData } =
+      await import("$lib/shared/pictograph/shared/domain/models/MotionData");
+    const { createPictographData } =
+      await import("$lib/shared/pictograph/shared/domain/factories/createPictographData");
     const { SliceSize } = await import("../../domain/models/circular-models");
 
     // Get hand locations for this start position
@@ -267,17 +260,11 @@ export class PartialSequenceGenerator implements IPartialSequenceGenerator {
     );
 
     // Apply the same filters as intermediate beats to respect continuity setting
-    finalMoves = this.PictographFilter.filterByContinuity(
-      finalMoves,
-      lastBeat
-    );
+    finalMoves = this.PictographFilter.filterByContinuity(finalMoves, lastBeat);
 
     // Filter out static Type 6 pictographs based on level
     // Level 1: No Type 6 allowed (no turns), Level 2+: Only Type 6 with turns
-    finalMoves = this.PictographFilter.filterStaticType6(
-      finalMoves,
-      level
-    );
+    finalMoves = this.PictographFilter.filterStaticType6(finalMoves, level);
 
     if (options.propContinuity === PropContinuity.CONTINUOUS) {
       finalMoves = this.PictographFilter.filterByRotation(
@@ -295,8 +282,7 @@ export class PartialSequenceGenerator implements IPartialSequenceGenerator {
       );
     }
 
-    const finalPictograph =
-      this.PictographFilter.selectRandom(finalMoves);
+    const finalPictograph = this.PictographFilter.selectRandom(finalMoves);
     let finalBeat = this.BeatConverter.convertToBeat(
       finalPictograph,
       sequence.length,
@@ -331,8 +317,7 @@ export class PartialSequenceGenerator implements IPartialSequenceGenerator {
       blueRotationDirection,
       redRotationDirection
     );
-    finalBeat =
-      this.OrientationCalculator.updateEndOrientations(finalBeat);
+    finalBeat = this.OrientationCalculator.updateEndOrientations(finalBeat);
 
     // 🎯 CRITICAL FIX: Calculate arrow placements for final beat
     const finalPictographData =
@@ -394,10 +379,7 @@ export class PartialSequenceGenerator implements IPartialSequenceGenerator {
       await this.letterQueryHandler.getAllPictographVariations(gridMode);
 
     // Filter by prop type to ensure consistency with selected prop
-    allOptions = this.PictographFilter.filterByPropType(
-      allOptions,
-      propType
-    );
+    allOptions = this.PictographFilter.filterByPropType(allOptions, propType);
 
     // Apply filters - track counts at each step for diagnostics
     let filteredOptions = allOptions;
@@ -480,8 +462,7 @@ export class PartialSequenceGenerator implements IPartialSequenceGenerator {
     }
 
     // Random selection
-    const selectedOption =
-      this.PictographFilter.selectRandom(filteredOptions);
+    const selectedOption = this.PictographFilter.selectRandom(filteredOptions);
 
     // Convert to beat
     let nextBeat = this.BeatConverter.convertToBeat(
@@ -515,8 +496,7 @@ export class PartialSequenceGenerator implements IPartialSequenceGenerator {
       redRotationDirection
     );
 
-    nextBeat =
-      this.OrientationCalculator.updateEndOrientations(nextBeat);
+    nextBeat = this.OrientationCalculator.updateEndOrientations(nextBeat);
 
     // 🎯 CRITICAL FIX: Calculate arrow placements before returning
     const nextPictographData =

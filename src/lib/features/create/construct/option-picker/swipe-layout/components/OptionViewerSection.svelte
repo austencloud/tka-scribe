@@ -257,7 +257,6 @@ Renders a section with:
     const gridGapValue = parseInt(layoutConfig?.gridGap || "8px");
     const targetSize = forcedPictographSize ?? basePictographSize;
 
-
     // When fitToViewport is true (mobile + continuous filter), calculate size
     // to ensure all options fit within the container without scrolling
     // CRITICAL: Compare 4-column vs 8-column layouts and pick whichever
@@ -279,7 +278,8 @@ Renders a section with:
       const filterButtonSpace = 44; // The "Continuous" floating filter button
       const horizontalPadding = 24; // 8px padding on each side + 8px safety margin
       const verticalPadding = 24; // More padding to account for gaps and button
-      const effectiveHeight = containerHeight - headerSpace - filterButtonSpace - verticalPadding;
+      const effectiveHeight =
+        containerHeight - headerSpace - filterButtonSpace - verticalPadding;
       const effectiveWidth = containerWidth - horizontalPadding;
 
       // Calculate optimal size for both 4-column and 8-column layouts
@@ -326,7 +326,8 @@ Renders a section with:
     // This is critical for constraining pictographs to the visible area
     const effectiveWidth = contentAreaBounds?.width || availableWidth;
     // For height, use availableHeight if measured, otherwise fall back to layoutConfig
-    const effectiveHeight = availableHeight || layoutConfig?.containerHeight || 0;
+    const effectiveHeight =
+      availableHeight || layoutConfig?.containerHeight || 0;
 
     // If no available dimensions yet, use conservative fallback
     if (!effectiveWidth || !effectiveHeight) {

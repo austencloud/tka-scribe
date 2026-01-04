@@ -12,7 +12,11 @@
 <script lang="ts">
   import { onMount, onDestroy, untrack } from "svelte";
   import AnimatorCanvas from "$lib/shared/animation-engine/components/AnimatorCanvas.svelte";
-  import { resolve, loadPixiModule, loadFeatureModule } from "$lib/shared/inversify/di";
+  import {
+    resolve,
+    loadPixiModule,
+    loadFeatureModule,
+  } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import { animationSettings } from "$lib/shared/animation-engine/state/animation-settings-state.svelte";
   import { getTimelinePlayer } from "../services/implementations/TimelinePlaybackService";
@@ -52,7 +56,9 @@
   }
 
   // Animation orchestrator for calculating prop states
-  let animationOrchestrator = $state<ISequenceAnimationOrchestrator | null>(null);
+  let animationOrchestrator = $state<ISequenceAnimationOrchestrator | null>(
+    null
+  );
   let startPositionDeriver = $state<IStartPositionDeriver | null>(null);
   let initialized = $state(false);
   let loading = $state(true);
@@ -98,10 +104,12 @@
     const sourceDurationFraction = sourceEndFraction - sourceStartFraction;
 
     // Progress through the visible portion
-    const progressInClip = clipContentDuration > 0 ? timeInClip / clipContentDuration : 0;
+    const progressInClip =
+      clipContentDuration > 0 ? timeInClip / clipContentDuration : 0;
 
     // Map to source position (0-1 fraction through source content)
-    const sourcePosition = sourceStartFraction + (progressInClip * sourceDurationFraction);
+    const sourcePosition =
+      sourceStartFraction + progressInClip * sourceDurationFraction;
 
     // Convert to beat number (fractional for interpolation)
     // fullBeatRange = totalBeats + 1 to account for start position
@@ -149,7 +157,10 @@
     if (seq.beats && seq.beats.length > 0) {
       const beatNumber = Math.floor(clipBeatPosition); // 1, 2, 3, etc.
       const arrayIndex = beatNumber - 1; // beats[0] = beat 1, beats[1] = beat 2, etc.
-      const clampedIndex = Math.max(0, Math.min(arrayIndex, seq.beats.length - 1));
+      const clampedIndex = Math.max(
+        0,
+        Math.min(arrayIndex, seq.beats.length - 1)
+      );
       return seq.beats[clampedIndex]?.letter || null;
     }
 
@@ -171,7 +182,10 @@
     if (seq.beats && seq.beats.length > 0) {
       const beatNumber = Math.floor(clipBeatPosition); // 1, 2, 3, etc.
       const arrayIndex = beatNumber - 1; // beats[0] = beat 1, beats[1] = beat 2, etc.
-      const clampedIndex = Math.max(0, Math.min(arrayIndex, seq.beats.length - 1));
+      const clampedIndex = Math.max(
+        0,
+        Math.min(arrayIndex, seq.beats.length - 1)
+      );
       return seq.beats[clampedIndex] || null;
     }
 
@@ -188,8 +202,12 @@
       await loadPixiModule();
 
       // Resolve services
-      animationOrchestrator = resolve(TYPES.ISequenceAnimationOrchestrator) as ISequenceAnimationOrchestrator;
-      startPositionDeriver = resolve(TYPES.IStartPositionDeriver) as IStartPositionDeriver;
+      animationOrchestrator = resolve(
+        TYPES.ISequenceAnimationOrchestrator
+      ) as ISequenceAnimationOrchestrator;
+      startPositionDeriver = resolve(
+        TYPES.IStartPositionDeriver
+      ) as IStartPositionDeriver;
       initialized = true;
       loading = false;
     } catch (err) {
@@ -289,7 +307,10 @@
     <span class="preview-label">Preview</span>
     <span class="time-display">{formatTime(playheadPosition)}</span>
     {#if activeClip}
-      <span class="clip-info" title={activeClip.sequence.word || activeClip.sequence.name}>
+      <span
+        class="clip-info"
+        title={activeClip.sequence.word || activeClip.sequence.name}
+      >
         {activeClip.sequence.word || activeClip.sequence.name || "Clip"}
       </span>
     {/if}
@@ -327,7 +348,8 @@
         {#if isAtStartPosition}
           Start
         {:else}
-          Beat {Math.floor(clipBeatPosition)} / {activeClip.sequence.beats?.length || 1}
+          Beat {Math.floor(clipBeatPosition)} / {activeClip.sequence.beats
+            ?.length || 1}
         {/if}
       </div>
 
@@ -356,26 +378,53 @@
         max={totalDuration}
         step="0.01"
         value={playheadPosition}
-        oninput={(e) => getPlayback().seek(parseFloat((e.target as HTMLInputElement).value))}
+        oninput={(e) =>
+          getPlayback().seek(parseFloat((e.target as HTMLInputElement).value))}
         class="scrub-slider"
       />
     </div>
 
     <!-- Control buttons -->
     <div class="control-buttons">
-      <button class="transport-btn" onclick={() => getPlayback().goToStart()} title="Go to start (Home)" aria-label="Go to start">
+      <button
+        class="transport-btn"
+        onclick={() => getPlayback().goToStart()}
+        title="Go to start (Home)"
+        aria-label="Go to start"
+      >
         <i class="fas fa-backward-fast" aria-hidden="true"></i>
       </button>
-      <button class="transport-btn" onclick={() => getPlayback().stepBackward(1)} title="Previous frame (←)" aria-label="Previous frame">
+      <button
+        class="transport-btn"
+        onclick={() => getPlayback().stepBackward(1)}
+        title="Previous frame (←)"
+        aria-label="Previous frame"
+      >
         <i class="fas fa-backward-step" aria-hidden="true"></i>
       </button>
-      <button class="transport-btn play-btn" onclick={() => getPlayback().togglePlayPause()} title={isPlaying ? "Pause (Space)" : "Play (Space)"} aria-label={isPlaying ? "Pause" : "Play"}>
-        <i class="fas {isPlaying ? 'fa-pause' : 'fa-play'}" aria-hidden="true"></i>
+      <button
+        class="transport-btn play-btn"
+        onclick={() => getPlayback().togglePlayPause()}
+        title={isPlaying ? "Pause (Space)" : "Play (Space)"}
+        aria-label={isPlaying ? "Pause" : "Play"}
+      >
+        <i class="fas {isPlaying ? 'fa-pause' : 'fa-play'}" aria-hidden="true"
+        ></i>
       </button>
-      <button class="transport-btn" onclick={() => getPlayback().stepForward(1)} title="Next frame (→)" aria-label="Next frame">
+      <button
+        class="transport-btn"
+        onclick={() => getPlayback().stepForward(1)}
+        title="Next frame (→)"
+        aria-label="Next frame"
+      >
         <i class="fas fa-forward-step" aria-hidden="true"></i>
       </button>
-      <button class="transport-btn" onclick={() => getPlayback().goToEnd()} title="Go to end (End)" aria-label="Go to end">
+      <button
+        class="transport-btn"
+        onclick={() => getPlayback().goToEnd()}
+        title="Go to end (End)"
+        aria-label="Go to end"
+      >
         <i class="fas fa-forward-fast" aria-hidden="true"></i>
       </button>
     </div>
@@ -496,7 +545,9 @@
   }
 
   @keyframes spin {
-    to { transform: rotate(360deg); }
+    to {
+      transform: rotate(360deg);
+    }
   }
 
   .playback-status {
@@ -517,8 +568,15 @@
   }
 
   @keyframes pulse {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.7; transform: scale(0.95); }
+    0%,
+    100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 0.7;
+      transform: scale(0.95);
+    }
   }
 
   /* Transport Controls */

@@ -8,7 +8,14 @@
     onToggle: () => void;
   }
 
-  let { label, description, enabled = false, isBusy = false, disabled = false, onToggle }: Props = $props();
+  let {
+    label,
+    description,
+    enabled = false,
+    isBusy = false,
+    disabled = false,
+    onToggle,
+  }: Props = $props();
 </script>
 
 <button
@@ -83,11 +90,7 @@
   .preference-item.enabled {
     background: linear-gradient(
       150deg,
-      color-mix(
-        in srgb,
-        var(--theme-card-bg) 80%,
-        var(--theme-accent)
-      ),
+      color-mix(in srgb, var(--theme-card-bg) 80%, var(--theme-accent)),
       var(--theme-card-bg)
     );
     border-color: var(--theme-accent);
@@ -97,11 +100,7 @@
   .preference-item.enabled:hover:not(:disabled) {
     background: linear-gradient(
       150deg,
-      color-mix(
-        in srgb,
-        var(--theme-card-hover-bg) 75%,
-        var(--theme-accent)
-      ),
+      color-mix(in srgb, var(--theme-card-hover-bg) 75%, var(--theme-accent)),
       var(--theme-panel-bg)
     );
     border-color: var(--theme-accent-strong);

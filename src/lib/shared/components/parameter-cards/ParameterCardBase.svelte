@@ -42,12 +42,8 @@ Used by both Generate and Discover for consistent Bento card styling
   let cardElement: HTMLDivElement | null = $state(null);
 
   onMount(() => {
-    hapticService = tryResolve<IHapticFeedback>(
-      TYPES.IHapticFeedback
-    );
-    rippleService = tryResolve<IRippleEffect>(
-      TYPES.IRippleEffect
-    );
+    hapticService = tryResolve<IHapticFeedback>(TYPES.IHapticFeedback);
+    rippleService = tryResolve<IRippleEffect>(TYPES.IRippleEffect);
 
     if (clickable && cardElement && rippleService) {
       return rippleService.attachRipple(cardElement, {

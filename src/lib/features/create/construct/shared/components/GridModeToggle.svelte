@@ -13,9 +13,7 @@ Action-oriented pattern: Shows the mode you can switch TO (not current mode)
     onGridModeChange?: (gridMode: GridMode) => void;
   }>();
 
-  const hapticService = resolve<IHapticFeedback>(
-    TYPES.IHapticFeedback
-  );
+  const hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
 
   // Action-oriented: Show the mode you can switch TO
   const oppositeMode = $derived(

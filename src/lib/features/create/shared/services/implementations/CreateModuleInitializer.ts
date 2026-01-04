@@ -50,9 +50,7 @@ import type { IPanelPersister } from "../contracts/IPanelPersister";
 import type { BeatData } from "../../domain/models/BeatData";
 
 @injectable()
-export class CreateModuleInitializer
-  implements ICreateModuleInitializer
-{
+export class CreateModuleInitializer implements ICreateModuleInitializer {
   constructor(
     // Core services
     @inject(TYPES.ISequenceRepository)

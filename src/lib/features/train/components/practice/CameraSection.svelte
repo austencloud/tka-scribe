@@ -127,9 +127,7 @@
   }
 
   onMount(() => {
-    detectionService = resolve<IPositionDetector>(
-      TYPES.IPositionDetector
-    );
+    detectionService = resolve<IPositionDetector>(TYPES.IPositionDetector);
 
     // Update performance stats every 500ms
     perfInterval = window.setInterval(() => {
@@ -330,7 +328,11 @@
     font-weight: bold;
     color: var(--theme-text, white);
     text-shadow: 0 0 40px
-      color-mix(in srgb, var(--semantic-info, var(--semantic-info)) 80%, transparent);
+      color-mix(
+        in srgb,
+        var(--semantic-info, var(--semantic-info)) 80%,
+        transparent
+      );
     animation: pulse 1s ease-in-out infinite;
   }
 

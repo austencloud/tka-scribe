@@ -6,14 +6,7 @@
  */
 
 import { injectable } from "inversify";
-import {
-  Object3D,
-  Bone,
-  SkinnedMesh,
-  Skeleton,
-  Vector3,
-  Box3,
-} from "three";
+import { Object3D, Bone, SkinnedMesh, Skeleton, Vector3, Box3 } from "three";
 import { GLTFLoader, type GLTF } from "three/addons/loaders/GLTFLoader.js";
 import type {
   IAvatarSkeletonBuilder,
@@ -35,16 +28,34 @@ const BONE_NAME_ALIASES: Record<BoneName, string[]> = {
   Head: ["Head", "head"],
   LeftShoulder: ["LeftShoulder", "l_shoulder", "shoulder.L", "clavicle_l"],
   LeftArm: ["LeftArm", "l_arm", "arm.L", "upperarm_l", "LeftUpperArm"],
-  LeftForeArm: ["LeftForeArm", "l_forearm", "forearm.L", "lowerarm_l", "LeftLowerArm"],
+  LeftForeArm: [
+    "LeftForeArm",
+    "l_forearm",
+    "forearm.L",
+    "lowerarm_l",
+    "LeftLowerArm",
+  ],
   LeftHand: ["LeftHand", "l_hand", "hand.L", "hand_l"],
   RightShoulder: ["RightShoulder", "r_shoulder", "shoulder.R", "clavicle_r"],
   RightArm: ["RightArm", "r_arm", "arm.R", "upperarm_r", "RightUpperArm"],
-  RightForeArm: ["RightForeArm", "r_forearm", "forearm.R", "lowerarm_r", "RightLowerArm"],
+  RightForeArm: [
+    "RightForeArm",
+    "r_forearm",
+    "forearm.R",
+    "lowerarm_r",
+    "RightLowerArm",
+  ],
   RightHand: ["RightHand", "r_hand", "hand.R", "hand_r"],
   LeftUpLeg: ["LeftUpLeg", "l_thigh", "thigh.L", "upperleg_l", "LeftUpperLeg"],
   LeftLeg: ["LeftLeg", "l_shin", "shin.L", "lowerleg_l", "LeftLowerLeg"],
   LeftFoot: ["LeftFoot", "l_foot", "foot.L", "foot_l"],
-  RightUpLeg: ["RightUpLeg", "r_thigh", "thigh.R", "upperleg_r", "RightUpperLeg"],
+  RightUpLeg: [
+    "RightUpLeg",
+    "r_thigh",
+    "thigh.R",
+    "upperleg_r",
+    "RightUpperLeg",
+  ],
   RightLeg: ["RightLeg", "r_shin", "shin.R", "lowerleg_r", "RightLowerLeg"],
   RightFoot: ["RightFoot", "r_foot", "foot.R", "foot_r"],
 };
@@ -161,9 +172,13 @@ export class AvatarSkeletonBuilder implements IAvatarSkeletonBuilder {
     const boneName = bone.name.toLowerCase();
 
     // Skip finger bones
-    if (boneName.includes('thumb') || boneName.includes('index') ||
-        boneName.includes('middle') || boneName.includes('ring') ||
-        boneName.includes('pinky')) {
+    if (
+      boneName.includes("thumb") ||
+      boneName.includes("index") ||
+      boneName.includes("middle") ||
+      boneName.includes("ring") ||
+      boneName.includes("pinky")
+    ) {
       return;
     }
 
@@ -192,9 +207,13 @@ export class AvatarSkeletonBuilder implements IAvatarSkeletonBuilder {
     const boneName = bone.name.toLowerCase();
 
     // Skip finger bones - they contain hand name but aren't the hand
-    if (boneName.includes('thumb') || boneName.includes('index') ||
-        boneName.includes('middle') || boneName.includes('ring') ||
-        boneName.includes('pinky')) {
+    if (
+      boneName.includes("thumb") ||
+      boneName.includes("index") ||
+      boneName.includes("middle") ||
+      boneName.includes("ring") ||
+      boneName.includes("pinky")
+    ) {
       return; // Don't map finger bones
     }
 

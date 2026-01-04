@@ -40,7 +40,15 @@ Single responsibility: Combine header and grid for a letter type section.
     <OptionSectionHeader {letterType} />
   {/if}
 
-  <OptionGrid {options} {cardSize} {columns} {gap} {isFading} {onSelect} {currentSequence} />
+  <OptionGrid
+    {options}
+    {cardSize}
+    {columns}
+    {gap}
+    {isFading}
+    {onSelect}
+    {currentSequence}
+  />
 </div>
 
 <style>

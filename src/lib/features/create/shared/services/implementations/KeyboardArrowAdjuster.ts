@@ -20,9 +20,7 @@ import { injectable } from "inversify";
 import type { IKeyboardArrowAdjuster } from "../contracts/IKeyboardArrowAdjuster";
 
 @injectable()
-export class KeyboardArrowAdjuster
-  implements IKeyboardArrowAdjuster
-{
+export class KeyboardArrowAdjuster implements IKeyboardArrowAdjuster {
   private logger = createComponentLogger("KeyboardArrowAdjustment");
 
   /**

@@ -94,18 +94,14 @@ export class SequenceRepository implements ISequenceRepository {
 
       // If sequence not found, try to import from PNG metadata if import service is available
       if (!sequence && this.sequenceImportService) {
-        console.log(
-          `🎬 Sequence ${id} not found, attempting to import from PNG metadata`
-        );
         try {
           sequence = await this.sequenceImportService.importFromPNG(id);
           // Save it to persistence for future use
           if (sequence) {
             await this.persistenceService.saveSequence(sequence);
           }
-        } catch (error) {
-          console.error(`Failed to import sequence ${id} from PNG:`, error);
-          // Don't return null here - let the error bubble up so calling code knows why it failed
+        } catch {
+          // PNG import failed - sequence not available locally
           return null;
         }
       }
@@ -142,8 +138,7 @@ export class SequenceRepository implements ISequenceRepository {
       // Apply reversal detection and normalization to all sequences
       return sequences.map((sequence) => {
         // Apply reversal detection
-        const processed =
-          this.ReversalDetector.processReversals(sequence);
+        const processed = this.ReversalDetector.processReversals(sequence);
 
         // Normalize to separate start position from beats
         const normalized =

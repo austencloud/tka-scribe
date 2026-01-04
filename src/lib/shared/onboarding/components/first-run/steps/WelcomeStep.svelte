@@ -24,8 +24,8 @@
 
   <p class="description">
     TKA Scribe helps you <strong>create</strong>, <strong>learn</strong>, and
-    <strong>share</strong> flow arts choreography using the Kinetic Alphabet
-    notation system.
+    <strong>share</strong> flow arts choreography using the Kinetic Alphabet notation
+    system.
   </p>
 
   <p class="personalize-hint">

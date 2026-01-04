@@ -15,7 +15,7 @@
 -->
 <script lang="ts">
   let {
-    label = 'Export',
+    label = "Export",
     loading = false,
     disabled = false,
     progress = null,
@@ -36,7 +36,7 @@
   class:loading
   {disabled}
   {onclick}
-  aria-label={loading ? 'Exporting...' : label}
+  aria-label={loading ? "Exporting..." : label}
   aria-busy={loading}
 >
   {#if loading}

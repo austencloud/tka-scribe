@@ -94,15 +94,24 @@
         break;
       case "elemental":
         elementalGlyphVisible = !elementalGlyphVisible;
-        visibilityManager.setGlyphVisibility("elementalGlyph", elementalGlyphVisible);
+        visibilityManager.setGlyphVisibility(
+          "elementalGlyph",
+          elementalGlyphVisible
+        );
         break;
       case "positions":
         positionsGlyphVisible = !positionsGlyphVisible;
-        visibilityManager.setGlyphVisibility("positionsGlyph", positionsGlyphVisible);
+        visibilityManager.setGlyphVisibility(
+          "positionsGlyph",
+          positionsGlyphVisible
+        );
         break;
       case "reversals":
         reversalIndicatorsVisible = !reversalIndicatorsVisible;
-        visibilityManager.setGlyphVisibility("reversalIndicators", reversalIndicatorsVisible);
+        visibilityManager.setGlyphVisibility(
+          "reversalIndicators",
+          reversalIndicatorsVisible
+        );
         break;
       case "nonRadial":
         nonRadialVisible = !nonRadialVisible;
@@ -118,15 +127,23 @@
       case "grid":
         animGridVisible = !animGridVisible;
         // When visible, use diamond (sequence will override); when hidden, use none
-        animationVisibilityManager.setGridMode(animGridVisible ? "diamond" : "none");
+        animationVisibilityManager.setGridMode(
+          animGridVisible ? "diamond" : "none"
+        );
         break;
       case "beatNumbers":
         animBeatNumbersVisible = !animBeatNumbersVisible;
-        animationVisibilityManager.setVisibility("beatNumbers", animBeatNumbersVisible);
+        animationVisibilityManager.setVisibility(
+          "beatNumbers",
+          animBeatNumbersVisible
+        );
         break;
       case "tka":
         animTkaGlyphVisible = !animTkaGlyphVisible;
-        animationVisibilityManager.setVisibility("tkaGlyph", animTkaGlyphVisible);
+        animationVisibilityManager.setVisibility(
+          "tkaGlyph",
+          animTkaGlyphVisible
+        );
         break;
     }
   }
@@ -166,7 +183,9 @@
         break;
       case "startPosition":
         imgIncludeStartPosition = !imgIncludeStartPosition;
-        imageCompositionManager.setIncludeStartPosition(imgIncludeStartPosition);
+        imageCompositionManager.setIncludeStartPosition(
+          imgIncludeStartPosition
+        );
         break;
       case "userInfo":
         imgAddUserInfo = !imgAddUserInfo;
@@ -181,14 +200,18 @@
     // Load initial pictograph visibility
     tkaGlyphVisible = visibilityManager.getRawGlyphVisibility("tkaGlyph");
     vtgGlyphVisible = visibilityManager.getRawGlyphVisibility("vtgGlyph");
-    elementalGlyphVisible = visibilityManager.getRawGlyphVisibility("elementalGlyph");
-    positionsGlyphVisible = visibilityManager.getRawGlyphVisibility("positionsGlyph");
-    reversalIndicatorsVisible = visibilityManager.getRawGlyphVisibility("reversalIndicators");
+    elementalGlyphVisible =
+      visibilityManager.getRawGlyphVisibility("elementalGlyph");
+    positionsGlyphVisible =
+      visibilityManager.getRawGlyphVisibility("positionsGlyph");
+    reversalIndicatorsVisible =
+      visibilityManager.getRawGlyphVisibility("reversalIndicators");
     nonRadialVisible = visibilityManager.getNonRadialVisibility();
 
     // Load initial animation visibility
     animGridVisible = animationVisibilityManager.isGridVisible();
-    animBeatNumbersVisible = animationVisibilityManager.getVisibility("beatNumbers");
+    animBeatNumbersVisible =
+      animationVisibilityManager.getVisibility("beatNumbers");
     animTrailStyle = animationVisibilityManager.getTrailStyle();
     animPlaybackMode = animationVisibilityManager.getPlaybackMode();
     animBpm = animationVisibilityManager.getBpm();
@@ -205,19 +228,24 @@
     const pictographObserver = () => {
       tkaGlyphVisible = visibilityManager.getRawGlyphVisibility("tkaGlyph");
       vtgGlyphVisible = visibilityManager.getRawGlyphVisibility("vtgGlyph");
-      elementalGlyphVisible = visibilityManager.getRawGlyphVisibility("elementalGlyph");
-      positionsGlyphVisible = visibilityManager.getRawGlyphVisibility("positionsGlyph");
-      reversalIndicatorsVisible = visibilityManager.getRawGlyphVisibility("reversalIndicators");
+      elementalGlyphVisible =
+        visibilityManager.getRawGlyphVisibility("elementalGlyph");
+      positionsGlyphVisible =
+        visibilityManager.getRawGlyphVisibility("positionsGlyph");
+      reversalIndicatorsVisible =
+        visibilityManager.getRawGlyphVisibility("reversalIndicators");
       nonRadialVisible = visibilityManager.getNonRadialVisibility();
     };
 
     const animationObserver = () => {
       animGridVisible = animationVisibilityManager.isGridVisible();
-      animBeatNumbersVisible = animationVisibilityManager.getVisibility("beatNumbers");
+      animBeatNumbersVisible =
+        animationVisibilityManager.getVisibility("beatNumbers");
       animTrailStyle = animationVisibilityManager.getTrailStyle();
       animPlaybackMode = animationVisibilityManager.getPlaybackMode();
       animBpm = animationVisibilityManager.getBpm();
-      animTkaGlyphVisible = animationVisibilityManager.getVisibility("tkaGlyph");
+      animTkaGlyphVisible =
+        animationVisibilityManager.getVisibility("tkaGlyph");
     };
 
     const imageObserver = () => {
@@ -246,7 +274,10 @@
 <div class="visibility-tab" class:visible={isVisible}>
   <!-- Mobile: Segmented Control (hidden on desktop via container query) -->
   <div class="mobile-only">
-    <MobileSegmentControl currentMode={mobileMode} onModeChange={handleModeChange} />
+    <MobileSegmentControl
+      currentMode={mobileMode}
+      onModeChange={handleModeChange}
+    />
   </div>
 
   <!-- Panels Container -->

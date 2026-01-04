@@ -47,9 +47,7 @@
   // Set up toggle event listener for chevron rotation
   onMount(() => {
     // Resolve haptic service
-    hapticService = resolve<IHapticFeedback>(
-      TYPES.IHapticFeedback
-    );
+    hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
 
     const element = popoverElement;
     if (!element) return;
@@ -77,7 +75,11 @@
 >
   <span class="current-tab-icon">{@html currentSectionData?.icon || ""}</span>
   <span class="current-tab-label">{currentSectionData?.label || "Select"}</span>
-  <i class="fas fa-chevron-down chevron" class:rotated={isOpen} aria-hidden="true"></i>
+  <i
+    class="fas fa-chevron-down chevron"
+    class:rotated={isOpen}
+    aria-hidden="true"
+  ></i>
 </button>
 
 <!-- Popover with all tabs -->
@@ -319,7 +321,11 @@
     border-color: var(--theme-accent, var(--theme-accent));
     box-shadow:
       0 0 0 2px
-        color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 25%, transparent),
+        color-mix(
+          in srgb,
+          var(--theme-accent, var(--theme-accent)) 25%,
+          transparent
+        ),
       inset 0 1px 0 0 hsl(0 0% 100% / 0.1);
   }
 

@@ -223,7 +223,11 @@
     box-shadow:
       inset 0 1px 0 var(--theme-stroke),
       0 0 0 1px
-        color-mix(in srgb, var(--theme-accent, var(--semantic-info)) 20%, transparent);
+        color-mix(
+          in srgb,
+          var(--theme-accent, var(--semantic-info)) 20%,
+          transparent
+        );
   }
 
   .control-btn.active:hover {
@@ -241,9 +245,17 @@
     box-shadow:
       inset 0 1px 0 rgba(255, 255, 255, 0.12),
       0 0 0 1px
-        color-mix(in srgb, var(--theme-accent, var(--semantic-info)) 30%, transparent),
+        color-mix(
+          in srgb,
+          var(--theme-accent, var(--semantic-info)) 30%,
+          transparent
+        ),
       0 4px 12px
-        color-mix(in srgb, var(--theme-accent, var(--semantic-info)) 20%, transparent);
+        color-mix(
+          in srgb,
+          var(--theme-accent, var(--semantic-info)) 20%,
+          transparent
+        );
   }
 
   /* Motion Color Variants - Use prop colors for motion icons */
@@ -262,7 +274,11 @@
     box-shadow:
       inset 0 1px 0 var(--theme-stroke),
       0 0 0 1px
-        color-mix(in srgb, var(--theme-accent, var(--semantic-info)) 20%, transparent);
+        color-mix(
+          in srgb,
+          var(--theme-accent, var(--semantic-info)) 20%,
+          transparent
+        );
   }
 
   .control-btn.motion-blue.active i {
@@ -298,7 +314,11 @@
     box-shadow:
       inset 0 1px 0 var(--theme-stroke),
       0 0 0 1px
-        color-mix(in srgb, var(--theme-accent, var(--semantic-info)) 20%, transparent);
+        color-mix(
+          in srgb,
+          var(--theme-accent, var(--semantic-info)) 20%,
+          transparent
+        );
   }
 
   .control-btn.motion-red.active i {

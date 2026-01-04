@@ -17,11 +17,7 @@
 </script>
 
 <div class="ios-install-container">
-  <button
-    class="btn btn-primary"
-    onclick={onToggle}
-    aria-expanded={isExpanded}
-  >
+  <button class="btn btn-primary" onclick={onToggle} aria-expanded={isExpanded}>
     <i class="fas fa-plus-square" aria-hidden="true"></i>
     <span>Add to Home Screen</span>
     <i

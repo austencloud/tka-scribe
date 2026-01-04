@@ -80,7 +80,9 @@
           class="base-chip"
           class:selected={selectedBaseWord === baseWord.id}
           onclick={() =>
-            onBaseWordChange(selectedBaseWord === baseWord.id ? null : baseWord.id)}
+            onBaseWordChange(
+              selectedBaseWord === baseWord.id ? null : baseWord.id
+            )}
         >
           {baseWord.name}
         </button>
@@ -113,7 +115,9 @@
       class="btn-next"
       onclick={onNext}
       disabled={!canProceed}
-      title={!canProceed ? "Save or clear your current selection first" : "Go to next sequence"}
+      title={!canProceed
+        ? "Save or clear your current selection first"
+        : "Go to next sequence"}
     >
       Next
       <FontAwesomeIcon icon="arrow-right" size="0.9em" />
@@ -276,7 +280,11 @@
     justify-content: center;
     gap: var(--spacing-sm);
     padding: var(--spacing-md);
-    background: linear-gradient(135deg, var(--semantic-success) 0%, #16a34a 100%);
+    background: linear-gradient(
+      135deg,
+      var(--semantic-success) 0%,
+      #16a34a 100%
+    );
     border: none;
     border-radius: 8px;
     color: var(--foreground);

@@ -11,7 +11,12 @@
    */
 
   import { T, useTask } from "@threlte/core";
-  import { Vector3, BufferGeometry, Float32BufferAttribute, AdditiveBlending } from "three";
+  import {
+    Vector3,
+    BufferGeometry,
+    Float32BufferAttribute,
+    AdditiveBlending,
+  } from "three";
 
   interface Props {
     /** Arc start point */
@@ -66,9 +71,8 @@
     const segment = new Vector3().subVectors(p2, p1).normalize();
 
     // Create an arbitrary vector not parallel to segment
-    const arbitrary = Math.abs(segment.x) < 0.9
-      ? new Vector3(1, 0, 0)
-      : new Vector3(0, 1, 0);
+    const arbitrary =
+      Math.abs(segment.x) < 0.9 ? new Vector3(1, 0, 0) : new Vector3(0, 1, 0);
 
     // Cross product gives perpendicular
     const perp1 = new Vector3().crossVectors(segment, arbitrary).normalize();
@@ -76,7 +80,8 @@
 
     // Random combination of both perpendiculars for 3D variation
     const angle = Math.random() * Math.PI * 2;
-    return perp1.multiplyScalar(Math.cos(angle))
+    return perp1
+      .multiplyScalar(Math.cos(angle))
       .add(perp2.multiplyScalar(Math.sin(angle)));
   }
 
@@ -116,7 +121,10 @@
   /**
    * Generate branch arcs from random points along the main arc
    */
-  function generateBranches(mainPath: Vector3[], branchProbability: number): Vector3[][] {
+  function generateBranches(
+    mainPath: Vector3[],
+    branchProbability: number
+  ): Vector3[][] {
     const branches: Vector3[][] = [];
     if (mainPath.length < 3) return branches;
 
@@ -136,15 +144,15 @@
         ).normalize();
 
         // Branch length proportional to main arc
-        const mainLength = new Vector3().subVectors(
-          lastPoint,
-          firstPoint
-        ).length();
-        const branchLength = mainLength * BRANCH_LENGTH_RATIO * (0.5 + Math.random() * 0.5);
+        const mainLength = new Vector3()
+          .subVectors(lastPoint, firstPoint)
+          .length();
+        const branchLength =
+          mainLength * BRANCH_LENGTH_RATIO * (0.5 + Math.random() * 0.5);
 
-        const branchEnd = branchStart.clone().add(
-          direction.multiplyScalar(branchLength)
-        );
+        const branchEnd = branchStart
+          .clone()
+          .add(direction.multiplyScalar(branchLength));
 
         // Generate smaller lightning path for branch
         const branchPath = generateLightningPath(
@@ -179,7 +187,8 @@
         Math.cos(phi)
       );
 
-      const length = CRACKLE_LENGTH_MIN +
+      const length =
+        CRACKLE_LENGTH_MIN +
         Math.random() * (CRACKLE_LENGTH_MAX - CRACKLE_LENGTH_MIN);
 
       const arcEnd = center.clone().add(direction.multiplyScalar(length));
@@ -271,7 +280,16 @@
   $effect(() => {
     if (enabled) {
       // Access dependencies to track them
-      const _ = [start.x, start.y, start.z, end?.x, end?.y, end?.z, mode, intensity];
+      const _ = [
+        start.x,
+        start.y,
+        start.z,
+        end?.x,
+        end?.y,
+        end?.z,
+        mode,
+        intensity,
+      ];
       regeneratePaths();
     }
   });

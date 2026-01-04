@@ -163,7 +163,7 @@ Integrates all Assembly components and manages state transitions.
   // Are we selecting the start position? (first position of either phase)
   const isSelectingStartPosition = $derived(
     (currentPhase === "blue" && bluePathLength === 0) ||
-    (currentPhase === "red" && redPathLength === 0)
+      (currentPhase === "red" && redPathLength === 0)
   );
 
   // Can proceed to red hand? Need at least 2 positions
@@ -267,14 +267,23 @@ Integrates all Assembly components and manages state transitions.
       if (isRedFirstPosition && onStartPositionSet) {
         const blueStartPosition = assemblyState.blueHandPath[0];
         if (blueStartPosition) {
-          console.log("[HandPathOrchestrator] Red first position selected:", position);
-          console.log("[HandPathOrchestrator] Blue start position:", blueStartPosition);
+          console.log(
+            "[HandPathOrchestrator] Red first position selected:",
+            position
+          );
+          console.log(
+            "[HandPathOrchestrator] Blue start position:",
+            blueStartPosition
+          );
           const startPositionPictograph = createDualHandStartPositionPictograph(
             blueStartPosition,
             position,
             assemblyState.gridMode
           );
-          console.log("[HandPathOrchestrator] Dual hand pictograph motions:", startPositionPictograph.motions);
+          console.log(
+            "[HandPathOrchestrator] Dual hand pictograph motions:",
+            startPositionPictograph.motions
+          );
           onStartPositionSet(startPositionPictograph);
         }
       }

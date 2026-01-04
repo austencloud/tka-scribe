@@ -45,7 +45,10 @@ class MemoryProfiler {
   /**
    * Get current memory metrics
    */
-  private getCurrentMemory(): Omit<MemorySnapshot, "timestamp" | "label"> | null {
+  private getCurrentMemory(): Omit<
+    MemorySnapshot,
+    "timestamp" | "label"
+  > | null {
     if (!this.hasMemoryAPI) return null;
 
     const memory = (
@@ -99,7 +102,9 @@ class MemoryProfiler {
 
     const memory = this.getCurrentMemory();
     if (!memory) {
-      console.warn("🧠 [Memory Profiler] Memory API not available (Chrome/Edge only)");
+      console.warn(
+        "🧠 [Memory Profiler] Memory API not available (Chrome/Edge only)"
+      );
       return;
     }
 
@@ -128,7 +133,9 @@ class MemoryProfiler {
       this.takeSnapshot(`auto-${Date.now()}`);
     }, intervalMs);
 
-    console.log(`🧠 [Memory Profiler] Auto-tracking every ${intervalMs / 1000}s`);
+    console.log(
+      `🧠 [Memory Profiler] Auto-tracking every ${intervalMs / 1000}s`
+    );
   }
 
   /**
@@ -157,7 +164,11 @@ class MemoryProfiler {
     for (let i = 1; i < recentSnapshots.length; i++) {
       const current = recentSnapshots[i];
       const previous = recentSnapshots[i - 1];
-      if (current && previous && current.usedJSHeapSize > previous.usedJSHeapSize) {
+      if (
+        current &&
+        previous &&
+        current.usedJSHeapSize > previous.usedJSHeapSize
+      ) {
         growthCount++;
       }
     }
@@ -169,10 +180,13 @@ class MemoryProfiler {
     // Check if exceeding 80% of heap limit
     const latest = this.snapshots[this.snapshots.length - 1];
     if (latest) {
-      const usagePercent = (latest.usedJSHeapSize / latest.jsHeapSizeLimit) * 100;
+      const usagePercent =
+        (latest.usedJSHeapSize / latest.jsHeapSizeLimit) * 100;
 
       if (usagePercent > 80) {
-        warnings.push(`⚠️ High memory usage: ${usagePercent.toFixed(1)}% of heap limit`);
+        warnings.push(
+          `⚠️ High memory usage: ${usagePercent.toFixed(1)}% of heap limit`
+        );
       }
     }
 
@@ -252,5 +266,6 @@ if (typeof window !== "undefined") {
   memoryProfiler.enable();
 
   // Expose to window for debugging
-  (window as unknown as { memoryProfiler: MemoryProfiler }).memoryProfiler = memoryProfiler;
+  (window as unknown as { memoryProfiler: MemoryProfiler }).memoryProfiler =
+    memoryProfiler;
 }

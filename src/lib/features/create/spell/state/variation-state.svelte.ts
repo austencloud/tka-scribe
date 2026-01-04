@@ -148,7 +148,7 @@ export function createVariationState() {
   // Derived: selected variation
   const selectedVariation = $derived(
     selectedVariationId
-      ? variations.find((v) => v.id === selectedVariationId) ?? null
+      ? (variations.find((v) => v.id === selectedVariationId) ?? null)
       : null
   );
 
@@ -156,10 +156,12 @@ export function createVariationState() {
   const stats = $derived({
     totalUnique: variations.length,
     totalFiltered: filteredVariations.length,
-    bestScore: variations.length > 0
-      ? Math.max(...variations.map((v) => v.score.total))
-      : 0,
-    zeroReversalCount: variations.filter((v) => v.score.reversalCount === 0).length,
+    bestScore:
+      variations.length > 0
+        ? Math.max(...variations.map((v) => v.score.total))
+        : 0,
+    zeroReversalCount: variations.filter((v) => v.score.reversalCount === 0)
+      .length,
   });
 
   return {
@@ -347,7 +349,8 @@ export function createVariationState() {
 }
 
 /** Singleton instance of variation state */
-let variationStateInstance: ReturnType<typeof createVariationState> | null = null;
+let variationStateInstance: ReturnType<typeof createVariationState> | null =
+  null;
 
 /**
  * Get the global variation state instance

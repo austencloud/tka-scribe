@@ -57,7 +57,8 @@
       aria-label={isLoading ? "Loading" : "Refresh"}
       title="Refresh"
     >
-      <i class="fas fa-sync-alt" class:spinning={isLoading} aria-hidden="true"></i>
+      <i class="fas fa-sync-alt" class:spinning={isLoading} aria-hidden="true"
+      ></i>
     </button>
   </header>
 

@@ -29,7 +29,7 @@ export interface PictographVisibilityOptions {
   showPositions?: boolean;
   showReversals?: boolean;
   showNonRadialPoints?: boolean;
-  /** Lights Off - dark background, inverted grid, white text/outlines */
+  /** Dark Mode - dark background, inverted grid, white text/outlines */
   lightsOff?: boolean;
   /** Prop Glow - glowing drop-shadow effect on props */
   propGlow?: boolean;
@@ -87,8 +87,9 @@ export async function renderPictographToSVG(
       componentProps.showElemental = visibilityOptions.showElemental;
       componentProps.showPositions = visibilityOptions.showPositions;
       componentProps.showReversals = visibilityOptions.showReversals;
-      componentProps.showNonRadialPoints = visibilityOptions.showNonRadialPoints;
-      componentProps.ledMode = visibilityOptions.lightsOff; // Lights Off controls background/grid
+      componentProps.showNonRadialPoints =
+        visibilityOptions.showNonRadialPoints;
+      componentProps.ledMode = visibilityOptions.lightsOff; // Dark Mode controls background/grid
       // Note: propGlow would need to be added to PictographRenderer if needed in the future
     }
 
@@ -331,9 +332,7 @@ async function waitForImagesLoaded(container: HTMLElement): Promise<void> {
   }
 
   // Get glyph cache service
-  const glyphCache = await resolveService<IGlyphCache>(
-    TYPES.IGlyphCache
-  );
+  const glyphCache = await resolveService<IGlyphCache>(TYPES.IGlyphCache);
 
   const imagePromises = Array.from(images).map(async (img) => {
     const imageElement = img as SVGImageElement;

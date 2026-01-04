@@ -33,10 +33,10 @@ Refactored to use Drawer component for consistent behavior
 
   onMount(async () => {
     const container = await getContainerInstance();
-    hapticService = container.get<IHapticFeedback>(
-      TYPES.IHapticFeedback
+    hapticService = container.get<IHapticFeedback>(TYPES.IHapticFeedback);
+    LOOPTypeResolver = container.get<ILOOPTypeResolver>(
+      TYPES.ILOOPTypeResolver
     );
-    LOOPTypeResolver = container.get<ILOOPTypeResolver>(TYPES.ILOOPTypeResolver);
   });
 
   // Generate explanation text based on selected components
@@ -299,7 +299,11 @@ Refactored to use Drawer component for consistent behavior
       transparent
     );
     border: 2px solid
-      color-mix(in srgb, var(--semantic-warning, var(--semantic-warning)) 60%, transparent);
+      color-mix(
+        in srgb,
+        var(--semantic-warning, var(--semantic-warning)) 60%,
+        transparent
+      );
     border-radius: 8px;
     padding: 8px 12px;
     color: var(--semantic-warning);

@@ -19,9 +19,7 @@ Orchestrator component that manages navigation between 5 lesson pages:
 
   let { onComplete }: { onComplete?: () => void } = $props();
 
-  const hapticService = resolve<IHapticFeedback>(
-    TYPES.IHapticFeedback
-  );
+  const hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
 
   const state = createType1ConceptState({
     hapticService,

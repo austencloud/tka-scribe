@@ -26,9 +26,7 @@
   let hapticService: IHapticFeedback;
 
   onMount(async () => {
-    hapticService = await resolve<IHapticFeedback>(
-      TYPES.IHapticFeedback
-    );
+    hapticService = await resolve<IHapticFeedback>(TYPES.IHapticFeedback);
   });
 
   // Toggle expansion
@@ -51,7 +49,10 @@
       <i class="fas fa-sliders header-icon" aria-hidden="true"></i>
       <span class="header-title">Image Options</span>
     </div>
-    <i class="fas fa-chevron-{isExpanded ? 'up' : 'down'} chevron-icon" aria-hidden="true"></i>
+    <i
+      class="fas fa-chevron-{isExpanded ? 'up' : 'down'} chevron-icon"
+      aria-hidden="true"
+    ></i>
   </button>
 
   {#if isExpanded && options && onOptionsChange}

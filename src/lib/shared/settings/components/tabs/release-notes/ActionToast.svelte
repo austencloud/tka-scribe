@@ -63,7 +63,11 @@
       transparent
     );
     border: 1px solid
-      color-mix(in srgb, var(--theme-accent, var(--theme-accent-strong)) 40%, transparent);
+      color-mix(
+        in srgb,
+        var(--theme-accent, var(--theme-accent-strong)) 40%,
+        transparent
+      );
     border-radius: 6px;
     color: var(--theme-accent);
     font-size: var(--font-size-compact);
@@ -73,11 +77,7 @@
   }
 
   .toast-btn:hover {
-    background: color-mix(
-      in srgb,
-      var(--theme-accent) 30%,
-      transparent
-    );
+    background: color-mix(in srgb, var(--theme-accent) 30%, transparent);
     color: var(--theme-accent-strong);
   }
 </style>
