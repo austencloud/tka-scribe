@@ -219,9 +219,9 @@
     <div class="clip-info">
       <span class="clip-name">{displayName}</span>
       <div class="clip-badges">
-        {#if speedLabel}<span class="badge speed">{speedLabel}</span>{/if}
-        {#if trimLabel}<span class="badge trim">{trimLabel}</span>{/if}
-        {#if clip.loop}<span class="badge loop" title="Looping"
+        {#if speedLabel}<span class="clip-badge speed">{speedLabel}</span>{/if}
+        {#if trimLabel}<span class="clip-badge trim">{trimLabel}</span>{/if}
+        {#if clip.loop}<span class="clip-badge loop" title="Looping"
             ><i class="fa-solid fa-repeat" aria-hidden="true"></i></span
           >{/if}
       </div>
@@ -427,7 +427,7 @@
     flex-wrap: wrap;
   }
 
-  .badge {
+  .clip-badge {
     font-size: var(--font-size-compact);
     padding: 2px 5px;
     border-radius: 4px;
@@ -438,19 +438,19 @@
     border: 1px solid rgba(255, 255, 255, 0.2);
   }
 
-  .badge.speed {
+  .clip-badge.speed {
     background: color-mix(in srgb, var(--semantic-success) 25%, transparent);
     color: var(--semantic-success);
     border-color: var(--semantic-success);
   }
 
-  .badge.trim {
+  .clip-badge.trim {
     background: color-mix(in srgb, var(--semantic-warning) 25%, transparent);
     color: var(--semantic-warning);
     border-color: var(--semantic-warning);
   }
 
-  .badge.loop {
+  .clip-badge.loop {
     background: color-mix(in srgb, var(--semantic-info) 25%, transparent);
     color: var(--semantic-info);
     border-color: var(--semantic-info);

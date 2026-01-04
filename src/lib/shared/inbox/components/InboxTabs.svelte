@@ -135,7 +135,7 @@
       <i class="fas {tab.icon}" aria-hidden="true"></i>
       <span>{tab.label}</span>
       {#if unreadCount > 0}
-        <span class="badge" aria-label="{unreadCount} unread">
+        <span class="inbox-tab-badge" aria-label="{unreadCount} unread">
           {unreadCount > 99 ? "99+" : unreadCount}
         </span>
       {/if}
@@ -217,7 +217,7 @@
   }
 
   /* Badge */
-  .badge {
+  .inbox-tab-badge {
     min-width: 20px;
     height: 20px;
     padding: 0 6px;
@@ -230,11 +230,11 @@
     transition: background 0.2s ease;
   }
 
-  .tab.active .badge {
+  .tab.active .inbox-tab-badge {
     background: rgba(255, 255, 255, 0.3);
   }
 
-  .tab:not(.active) .badge {
+  .tab:not(.active) .inbox-tab-badge {
     background: var(--theme-accent, var(--semantic-info));
     color: white;
   }
@@ -244,7 +244,7 @@
     .tab-indicator,
     .tab,
     .tab i,
-    .badge {
+    .inbox-tab-badge {
       transition: none !important;
     }
   }

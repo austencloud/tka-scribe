@@ -23,7 +23,7 @@ with pre-prepared data for better performance.
 
 <script lang="ts">
   import { onMount } from "svelte";
-  import { resolve, TYPES } from "../../../inversify/di";
+  import { resolveAsync, TYPES } from "../../../inversify/di";
   import { getVisibilityStateManager } from "../state/visibility-state.svelte";
   import { getAnimationVisibilityManager } from "../../../animation-engine/state/animation-visibility-state.svelte";
   import { getSettings } from "../../../application/state/app-state.svelte";
@@ -199,7 +199,9 @@ with pre-prepared data for better performance.
       isLoading = true;
       try {
         if (!preparer) {
-          preparer = resolve<IPictographPreparer>(TYPES.IPictographPreparer);
+          preparer = await resolveAsync<IPictographPreparer>(
+            TYPES.IPictographPreparer
+          );
         }
         const result = await preparer.prepareSingle(data as PictographData);
         if (!cancelled) {

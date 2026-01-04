@@ -42,7 +42,7 @@
           href={badge.link}
           target="_blank"
           rel="noopener noreferrer"
-          class="badge"
+          class="trust-badge"
         >
           {#if badge.logoUrl}
             <img src={badge.logoUrl} alt={badge.name} />
@@ -52,7 +52,7 @@
           <span>{badge.name}</span>
         </a>
       {:else}
-        <div class="badge">
+        <div class="trust-badge">
           {#if badge.logoUrl}
             <img src={badge.logoUrl} alt={badge.name} />
           {:else if badge.icon}
@@ -78,7 +78,7 @@
     align-items: center;
   }
 
-  .badge {
+  .trust-badge {
     display: flex;
     align-items: center;
     gap: var(--spacing-xs, 4px);
@@ -92,18 +92,18 @@
     transition: all var(--transition-fast, 150ms ease);
   }
 
-  a.badge:hover {
+  a.trust-badge:hover {
     background: var(--theme-card-hover-bg);
     color: var(--theme-text);
     border-color: var(--theme-accent, var(--theme-accent));
   }
 
-  .badge i {
+  .trust-badge i {
     font-size: var(--font-size-min);
     color: var(--theme-accent, var(--theme-accent));
   }
 
-  .badge img {
+  .trust-badge img {
     height: 20px;
     width: auto;
   }

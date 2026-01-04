@@ -60,7 +60,7 @@
       <i class="fas fa-envelope" aria-hidden="true"></i>
       <span>Messages</span>
       {#if unreadMessages > 0}
-        <span class="badge">{unreadMessages > 99 ? "99+" : unreadMessages}</span
+        <span class="tab-count-badge">{unreadMessages > 99 ? "99+" : unreadMessages}</span
         >
       {/if}
     </button>
@@ -73,7 +73,7 @@
       <i class="fas fa-bell" aria-hidden="true"></i>
       <span>Alerts</span>
       {#if unreadNotifications > 0}
-        <span class="badge"
+        <span class="tab-count-badge"
           >{unreadNotifications > 99 ? "99+" : unreadNotifications}</span
         >
       {/if}
@@ -237,7 +237,7 @@
     font-size: var(--font-size-sm);
   }
 
-  .badge {
+  .tab-count-badge {
     min-width: 18px;
     height: 18px;
     padding: 0 5px;

@@ -250,7 +250,7 @@ ${
                     >
                       {db}
                       {#if db.includes("the-kinetic-constructor")}
-                        <span class="badge badge-error">OLD PROJECT</span>
+                        <span class="dev-status-badge dev-status-badge-error">OLD PROJECT</span>
                       {/if}
                     </li>
                   {/each}
@@ -646,14 +646,14 @@ ${
     font-style: italic;
   }
 
-  .badge {
+  .dev-status-badge {
     font-size: var(--font-size-compact);
     padding: 2px 6px;
     border-radius: 4px;
     font-weight: 600;
   }
 
-  .badge-error {
+  .dev-status-badge-error {
     background: var(--semantic-error);
     color: white;
   }

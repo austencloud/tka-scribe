@@ -36,7 +36,7 @@
 >
   <span class="chip-label">{label}</span>
   {#if badgeText}
-    <span class="badge">{badgeText}</span>
+    <span class="chip-badge">{badgeText}</span>
   {/if}
 </button>
 
@@ -146,7 +146,7 @@
     letter-spacing: -0.08px;
   }
 
-  .badge {
+  .chip-badge {
     font-size: var(--font-size-compact);
     font-weight: 400;
     color: rgba(255, 193, 7, 0.9);
@@ -176,7 +176,7 @@
       font-size: var(--font-size-compact);
     }
 
-    .badge {
+    .chip-badge {
       font-size: var(--font-size-compact);
     }
   }
@@ -194,7 +194,7 @@
       font-size: var(--font-size-compact);
     }
 
-    .badge {
+    .chip-badge {
       font-size: var(--font-size-compact);
     }
   }

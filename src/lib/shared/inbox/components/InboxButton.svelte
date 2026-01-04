@@ -93,7 +93,7 @@
   <div class="button-icon">
     <i class="fas fa-inbox" aria-hidden="true"></i>
     {#if inboxState.totalUnreadCount > 0}
-      <span class="badge" aria-hidden="true">
+      <span class="inbox-btn-badge" aria-hidden="true">
         {formatCount(inboxState.totalUnreadCount)}
       </span>
     {/if}
@@ -190,7 +190,7 @@
     font-weight: 500;
   }
 
-  .badge {
+  .inbox-btn-badge {
     position: absolute;
     top: -6px;
     right: -6px;
@@ -231,7 +231,7 @@
   @media (prefers-reduced-motion: reduce) {
     .inbox-button,
     .button-icon,
-    .badge {
+    .inbox-btn-badge {
       transition: none !important;
       animation: none !important;
     }

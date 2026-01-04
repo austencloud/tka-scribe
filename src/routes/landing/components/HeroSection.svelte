@@ -11,7 +11,6 @@
   </div>
 
   <div class="hero-content">
-    <div class="badge">Free & Open</div>
     <h1>The Kinetic Alphabet</h1>
     <p class="tagline">Digital Sheet Music for Flow Arts</p>
     <p class="subtitle">
@@ -82,17 +81,6 @@
     max-width: 800px;
   }
 
-  .badge {
-    display: inline-block;
-    padding: 6px 16px;
-    background: rgba(99, 102, 241, 0.2);
-    border: 1px solid rgba(99, 102, 241, 0.3);
-    border-radius: 100px;
-    font-size: 0.875rem;
-    font-weight: 500;
-    color: var(--primary-light, #818cf8);
-    margin-bottom: 24px;
-  }
 
   .hero h1 {
     font-size: clamp(2.5rem, 8vw, 4.5rem);

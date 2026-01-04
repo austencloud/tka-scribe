@@ -374,18 +374,18 @@
               <h4>{challenge.title}</h4>
               <p>{challenge.description}</p>
               <div class="challenge-meta">
-                <span class="badge difficulty-{challenge.difficulty}">
+                <span class="challenge-badge difficulty-{challenge.difficulty}">
                   {challenge.difficulty}
                 </span>
-                <span class="badge xp">
+                <span class="challenge-badge xp">
                   {challenge.xpReward} XP
                 </span>
                 {#if challenge.requirement.metadata?.mode}
-                  <span class="badge mode">
+                  <span class="challenge-badge mode">
                     {challenge.requirement.metadata.mode}
                   </span>
                 {/if}
-                <span class="badge">
+                <span class="challenge-badge">
                   Target: {challenge.requirement.target}
                 </span>
               </div>
@@ -693,7 +693,7 @@
     gap: 6px;
   }
 
-  .badge {
+  .challenge-badge {
     display: inline-flex;
     align-items: center;
     padding: 3px 8px;
@@ -704,32 +704,32 @@
     color: rgba(255, 255, 255, 0.8);
   }
 
-  .badge.difficulty-easy {
+  .challenge-badge.difficulty-easy {
     background: rgba(34, 197, 94, 0.2);
     color: var(--semantic-success);
   }
 
-  .badge.difficulty-medium {
+  .challenge-badge.difficulty-medium {
     background: rgba(59, 130, 246, 0.2);
     color: var(--semantic-info);
   }
 
-  .badge.difficulty-hard {
+  .challenge-badge.difficulty-hard {
     background: rgba(239, 68, 68, 0.2);
     color: var(--semantic-error);
   }
 
-  .badge.difficulty-expert {
+  .challenge-badge.difficulty-expert {
     background: rgba(168, 85, 247, 0.2);
     color: #a855f7;
   }
 
-  .badge.xp {
+  .challenge-badge.xp {
     background: rgba(139, 92, 246, 0.2);
     color: #a78bfa;
   }
 
-  .badge.mode {
+  .challenge-badge.mode {
     background: rgba(59, 130, 246, 0.2);
     color: var(--semantic-info);
   }
