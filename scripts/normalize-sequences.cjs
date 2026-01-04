@@ -13,10 +13,16 @@
  *   node scripts/normalize-sequences.cjs --confirm    # Apply changes
  */
 
-const fs = require('fs');
-const path = require('path');
+const fs = require("fs");
+const path = require("path");
 
-const SEQUENCE_INDEX_PATH = path.join(__dirname, '..', 'static', 'data', 'sequence-index.json');
+const SEQUENCE_INDEX_PATH = path.join(
+  __dirname,
+  "..",
+  "static",
+  "data",
+  "sequence-index.json"
+);
 
 // Type check: is this beat a start position?
 function isStartPosition(beat) {
@@ -39,20 +45,27 @@ function normalizeSequenceBeats(sequenceArray) {
   if (!Array.isArray(sequenceArray)) return { beats: [], startPosition: null };
 
   // First element is often metadata, not a beat
-  const metadataEntry = sequenceArray.find(item =>
-    item.word !== undefined &&
-    item.author !== undefined &&
-    item.beat === undefined &&
-    item.beatNumber === undefined
+  const metadataEntry = sequenceArray.find(
+    (item) =>
+      item.word !== undefined &&
+      item.author !== undefined &&
+      item.beat === undefined &&
+      item.beatNumber === undefined
   );
 
   // Find start position
-  const startPosition = sequenceArray.find(item => isStartPosition(item)) || null;
+  const startPosition =
+    sequenceArray.find((item) => isStartPosition(item)) || null;
 
   // Get actual beats (not metadata, not start position)
-  const beats = sequenceArray.filter(item => {
+  const beats = sequenceArray.filter((item) => {
     // Skip metadata entries
-    if (item.word !== undefined && item.author !== undefined && item.beat === undefined && item.beatNumber === undefined) {
+    if (
+      item.word !== undefined &&
+      item.author !== undefined &&
+      item.beat === undefined &&
+      item.beatNumber === undefined
+    ) {
       return false;
     }
     // Skip start position
@@ -74,7 +87,9 @@ function needsNormalization(sequence) {
   const seqArray = sequence.fullMetadata.sequence;
 
   // Find if there's a beat 0 / start position mixed in
-  const hasStartPositionInArray = seqArray.some(item => isStartPosition(item));
+  const hasStartPositionInArray = seqArray.some((item) =>
+    isStartPosition(item)
+  );
 
   // Also check if top-level startPosition is missing when it should exist
   const hasSeparateStartPosition = sequence.startPosition !== undefined;
@@ -86,7 +101,9 @@ function needsNormalization(sequence) {
 function normalizeSequence(sequence) {
   if (!sequence.fullMetadata?.sequence) return sequence;
 
-  const { beats, startPosition, metadata } = normalizeSequenceBeats(sequence.fullMetadata.sequence);
+  const { beats, startPosition, metadata } = normalizeSequenceBeats(
+    sequence.fullMetadata.sequence
+  );
 
   // Create normalized fullMetadata.sequence (metadata + beats only, no start position)
   const normalizedSequenceArray = [];
@@ -102,8 +119,8 @@ function normalizeSequence(sequence) {
     beats: beats,
     fullMetadata: {
       ...sequence.fullMetadata,
-      sequence: normalizedSequenceArray
-    }
+      sequence: normalizedSequenceArray,
+    },
   };
 
   // Also add startingPositionGroup if we can derive it
@@ -127,20 +144,22 @@ function derivePositionGroup(posName) {
 
 // Main function
 async function main() {
-  const confirmMode = process.argv.includes('--confirm');
+  const confirmMode = process.argv.includes("--confirm");
 
-  console.log('='.repeat(60));
-  console.log('Sequence Normalization Script');
-  console.log('='.repeat(60));
+  console.log("=".repeat(60));
+  console.log("Sequence Normalization Script");
+  console.log("=".repeat(60));
   console.log();
 
   // Read sequence index
   if (!fs.existsSync(SEQUENCE_INDEX_PATH)) {
-    console.error(`Error: sequence-index.json not found at ${SEQUENCE_INDEX_PATH}`);
+    console.error(
+      `Error: sequence-index.json not found at ${SEQUENCE_INDEX_PATH}`
+    );
     process.exit(1);
   }
 
-  const data = JSON.parse(fs.readFileSync(SEQUENCE_INDEX_PATH, 'utf8'));
+  const data = JSON.parse(fs.readFileSync(SEQUENCE_INDEX_PATH, "utf8"));
   const sequences = data.sequences || [];
 
   console.log(`Total sequences: ${sequences.length}`);
@@ -149,25 +168,31 @@ async function main() {
   // Find sequences needing normalization
   const needingNormalization = sequences.filter(needsNormalization);
 
-  console.log(`Sequences needing normalization: ${needingNormalization.length}`);
+  console.log(
+    `Sequences needing normalization: ${needingNormalization.length}`
+  );
   console.log();
 
   if (needingNormalization.length === 0) {
-    console.log('All sequences are already normalized!');
+    console.log("All sequences are already normalized!");
     return;
   }
 
   // Show what will be changed
-  console.log('Sequences to normalize:');
-  console.log('-'.repeat(40));
+  console.log("Sequences to normalize:");
+  console.log("-".repeat(40));
 
   for (const seq of needingNormalization.slice(0, 20)) {
     const seqArray = seq.fullMetadata?.sequence || [];
     const startPos = seqArray.find(isStartPosition);
-    const beatCount = seqArray.filter(item => !isStartPosition(item) && item.beat !== undefined).length;
+    const beatCount = seqArray.filter(
+      (item) => !isStartPosition(item) && item.beat !== undefined
+    ).length;
 
     console.log(`  - ${seq.word || seq.name || seq.id}`);
-    console.log(`    Start position: ${startPos?.sequenceStartPosition || startPos?.endPos || 'unknown'}`);
+    console.log(
+      `    Start position: ${startPos?.sequenceStartPosition || startPos?.endPos || "unknown"}`
+    );
     console.log(`    Beat count: ${beatCount}`);
   }
 
@@ -177,15 +202,15 @@ async function main() {
   console.log();
 
   if (!confirmMode) {
-    console.log('Preview mode - no changes made.');
-    console.log('Run with --confirm to apply normalization.');
+    console.log("Preview mode - no changes made.");
+    console.log("Run with --confirm to apply normalization.");
     return;
   }
 
   // Apply normalization
-  console.log('Applying normalization...');
+  console.log("Applying normalization...");
 
-  const normalizedSequences = sequences.map(seq => {
+  const normalizedSequences = sequences.map((seq) => {
     if (needsNormalization(seq)) {
       return normalizeSequence(seq);
     }
@@ -196,7 +221,7 @@ async function main() {
   const outputData = { ...data, sequences: normalizedSequences };
 
   // Backup original
-  const backupPath = SEQUENCE_INDEX_PATH.replace('.json', '.backup.json');
+  const backupPath = SEQUENCE_INDEX_PATH.replace(".json", ".backup.json");
   fs.copyFileSync(SEQUENCE_INDEX_PATH, backupPath);
   console.log(`Backup created: ${backupPath}`);
 
@@ -206,7 +231,7 @@ async function main() {
   console.log(`Updated: ${SEQUENCE_INDEX_PATH}`);
 }
 
-main().catch(err => {
-  console.error('Error:', err);
+main().catch((err) => {
+  console.error("Error:", err);
   process.exit(1);
 });

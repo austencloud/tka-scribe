@@ -7,8 +7,8 @@
  * - Common rgba patterns for theme variables
  */
 
-const fs = require('fs');
-const path = require('path');
+const fs = require("fs");
+const path = require("path");
 
 // =============================================================================
 // MIGRATION RULES
@@ -17,142 +17,142 @@ const path = require('path');
 const MIGRATIONS = [
   // Semantic Colors - These are constants, safe to replace everywhere
   {
-    name: 'semantic-error',
+    name: "semantic-error",
     pattern: /#ef4444\b/gi,
-    replacement: 'var(--semantic-error)',
-    contexts: ['color', 'background', 'border', 'fill', 'stroke', 'box-shadow']
+    replacement: "var(--semantic-error)",
+    contexts: ["color", "background", "border", "fill", "stroke", "box-shadow"],
   },
   {
-    name: 'semantic-error-light',
+    name: "semantic-error-light",
     pattern: /#f87171\b/gi,
-    replacement: 'var(--semantic-error)', // Light variant, map to same token
-    contexts: ['color', 'background', 'border', 'fill', 'stroke']
+    replacement: "var(--semantic-error)", // Light variant, map to same token
+    contexts: ["color", "background", "border", "fill", "stroke"],
   },
   {
-    name: 'semantic-error-dark',
+    name: "semantic-error-dark",
     pattern: /#dc2626\b/gi,
-    replacement: 'var(--semantic-error)',
-    contexts: ['color', 'background', 'border', 'fill', 'stroke']
+    replacement: "var(--semantic-error)",
+    contexts: ["color", "background", "border", "fill", "stroke"],
   },
   {
-    name: 'semantic-success',
+    name: "semantic-success",
     pattern: /#22c55e\b/gi,
-    replacement: 'var(--semantic-success)',
-    contexts: ['color', 'background', 'border', 'fill', 'stroke']
+    replacement: "var(--semantic-success)",
+    contexts: ["color", "background", "border", "fill", "stroke"],
   },
   {
-    name: 'semantic-success-alt',
+    name: "semantic-success-alt",
     pattern: /#10b981\b/gi,
-    replacement: 'var(--semantic-success)',
-    contexts: ['color', 'background', 'border', 'fill', 'stroke']
+    replacement: "var(--semantic-success)",
+    contexts: ["color", "background", "border", "fill", "stroke"],
   },
   {
-    name: 'semantic-warning',
+    name: "semantic-warning",
     pattern: /#f59e0b\b/gi,
-    replacement: 'var(--semantic-warning)',
-    contexts: ['color', 'background', 'border', 'fill', 'stroke']
+    replacement: "var(--semantic-warning)",
+    contexts: ["color", "background", "border", "fill", "stroke"],
   },
   {
-    name: 'semantic-warning-alt',
+    name: "semantic-warning-alt",
     pattern: /#fbbf24\b/gi,
-    replacement: 'var(--semantic-warning)',
-    contexts: ['color', 'background', 'border', 'fill', 'stroke']
+    replacement: "var(--semantic-warning)",
+    contexts: ["color", "background", "border", "fill", "stroke"],
   },
   {
-    name: 'semantic-info',
+    name: "semantic-info",
     pattern: /#3b82f6\b/gi,
-    replacement: 'var(--semantic-info)',
-    contexts: ['color', 'background', 'border', 'fill', 'stroke']
+    replacement: "var(--semantic-info)",
+    contexts: ["color", "background", "border", "fill", "stroke"],
   },
   {
-    name: 'semantic-info-light',
+    name: "semantic-info-light",
     pattern: /#60a5fa\b/gi,
-    replacement: 'var(--semantic-info)',
-    contexts: ['color', 'background', 'border', 'fill', 'stroke']
+    replacement: "var(--semantic-info)",
+    contexts: ["color", "background", "border", "fill", "stroke"],
   },
 
   // Accent Colors - Theme-adaptive
   {
-    name: 'theme-accent',
+    name: "theme-accent",
     pattern: /#6366f1\b/gi,
-    replacement: 'var(--theme-accent, #6366f1)',
-    contexts: ['color', 'background', 'border', 'fill', 'stroke', 'box-shadow']
+    replacement: "var(--theme-accent, #6366f1)",
+    contexts: ["color", "background", "border", "fill", "stroke", "box-shadow"],
   },
   {
-    name: 'theme-accent-strong',
+    name: "theme-accent-strong",
     pattern: /#8b5cf6\b/gi,
-    replacement: 'var(--theme-accent-strong, #8b5cf6)',
-    contexts: ['color', 'background', 'border', 'fill', 'stroke', 'box-shadow']
+    replacement: "var(--theme-accent-strong, #8b5cf6)",
+    contexts: ["color", "background", "border", "fill", "stroke", "box-shadow"],
   },
 
   // RGBA White patterns - Theme-adaptive (most impactful)
   {
-    name: 'theme-stroke',
+    name: "theme-stroke",
     pattern: /rgba\(\s*255\s*,\s*255\s*,\s*255\s*,\s*0\.1\s*\)/gi,
-    replacement: 'var(--theme-stroke, rgba(255, 255, 255, 0.1))',
-    contexts: ['border', 'outline', 'box-shadow']
+    replacement: "var(--theme-stroke, rgba(255, 255, 255, 0.1))",
+    contexts: ["border", "outline", "box-shadow"],
   },
   {
-    name: 'theme-stroke-strong',
+    name: "theme-stroke-strong",
     pattern: /rgba\(\s*255\s*,\s*255\s*,\s*255\s*,\s*0\.15\s*\)/gi,
-    replacement: 'var(--theme-stroke-strong, rgba(255, 255, 255, 0.15))',
-    contexts: ['border', 'outline']
+    replacement: "var(--theme-stroke-strong, rgba(255, 255, 255, 0.15))",
+    contexts: ["border", "outline"],
   },
   {
-    name: 'theme-card-bg-08',
+    name: "theme-card-bg-08",
     pattern: /rgba\(\s*255\s*,\s*255\s*,\s*255\s*,\s*0\.08\s*\)/gi,
-    replacement: 'var(--theme-card-bg, rgba(255, 255, 255, 0.08))',
-    contexts: ['background']
+    replacement: "var(--theme-card-bg, rgba(255, 255, 255, 0.08))",
+    contexts: ["background"],
   },
   {
-    name: 'theme-card-bg-05',
+    name: "theme-card-bg-05",
     pattern: /rgba\(\s*255\s*,\s*255\s*,\s*255\s*,\s*0\.05\s*\)/gi,
-    replacement: 'var(--theme-card-bg, rgba(255, 255, 255, 0.05))',
-    contexts: ['background']
+    replacement: "var(--theme-card-bg, rgba(255, 255, 255, 0.05))",
+    contexts: ["background"],
   },
   {
-    name: 'theme-card-hover-bg',
+    name: "theme-card-hover-bg",
     pattern: /rgba\(\s*255\s*,\s*255\s*,\s*255\s*,\s*0\.12\s*\)/gi,
-    replacement: 'var(--theme-card-hover-bg, rgba(255, 255, 255, 0.12))',
-    contexts: ['background']
+    replacement: "var(--theme-card-hover-bg, rgba(255, 255, 255, 0.12))",
+    contexts: ["background"],
   },
   {
-    name: 'theme-text',
+    name: "theme-text",
     pattern: /rgba\(\s*255\s*,\s*255\s*,\s*255\s*,\s*0\.9\s*\)/gi,
-    replacement: 'var(--theme-text, rgba(255, 255, 255, 0.9))',
-    contexts: ['color']
+    replacement: "var(--theme-text, rgba(255, 255, 255, 0.9))",
+    contexts: ["color"],
   },
   {
-    name: 'theme-text-dim-07',
+    name: "theme-text-dim-07",
     pattern: /rgba\(\s*255\s*,\s*255\s*,\s*255\s*,\s*0\.7\s*\)/gi,
-    replacement: 'var(--theme-text-dim, rgba(255, 255, 255, 0.7))',
-    contexts: ['color']
+    replacement: "var(--theme-text-dim, rgba(255, 255, 255, 0.7))",
+    contexts: ["color"],
   },
   {
-    name: 'theme-text-dim-06',
+    name: "theme-text-dim-06",
     pattern: /rgba\(\s*255\s*,\s*255\s*,\s*255\s*,\s*0\.6\s*\)/gi,
-    replacement: 'var(--theme-text-dim, rgba(255, 255, 255, 0.6))',
-    contexts: ['color']
+    replacement: "var(--theme-text-dim, rgba(255, 255, 255, 0.6))",
+    contexts: ["color"],
   },
   {
-    name: 'theme-text-dim-05',
+    name: "theme-text-dim-05",
     pattern: /rgba\(\s*255\s*,\s*255\s*,\s*255\s*,\s*0\.5\s*\)/gi,
-    replacement: 'var(--theme-text-dim, rgba(255, 255, 255, 0.5))',
-    contexts: ['color']
+    replacement: "var(--theme-text-dim, rgba(255, 255, 255, 0.5))",
+    contexts: ["color"],
   },
 
   // Shadow patterns
   {
-    name: 'theme-shadow-03',
+    name: "theme-shadow-03",
     pattern: /rgba\(\s*0\s*,\s*0\s*,\s*0\s*,\s*0\.3\s*\)/gi,
-    replacement: 'var(--theme-shadow, rgba(0, 0, 0, 0.3))',
-    contexts: ['box-shadow']
+    replacement: "var(--theme-shadow, rgba(0, 0, 0, 0.3))",
+    contexts: ["box-shadow"],
   },
   {
-    name: 'theme-shadow-02',
+    name: "theme-shadow-02",
     pattern: /rgba\(\s*0\s*,\s*0\s*,\s*0\s*,\s*0\.2\s*\)/gi,
-    replacement: 'var(--theme-shadow, rgba(0, 0, 0, 0.2))',
-    contexts: ['box-shadow']
+    replacement: "var(--theme-shadow, rgba(0, 0, 0, 0.2))",
+    contexts: ["box-shadow"],
   },
 ];
 
@@ -169,11 +169,18 @@ function getAllSvelteAndCssFiles(dir) {
     for (const entry of entries) {
       const fullPath = path.join(currentDir, entry.name);
 
-      if (entry.isDirectory() && !entry.name.startsWith('.') && entry.name !== 'node_modules') {
+      if (
+        entry.isDirectory() &&
+        !entry.name.startsWith(".") &&
+        entry.name !== "node_modules"
+      ) {
         walk(fullPath);
-      } else if (entry.isFile() && (entry.name.endsWith('.svelte') || entry.name.endsWith('.css'))) {
+      } else if (
+        entry.isFile() &&
+        (entry.name.endsWith(".svelte") || entry.name.endsWith(".css"))
+      ) {
         // Skip app.css - that's where tokens are defined
-        if (entry.name !== 'app.css') {
+        if (entry.name !== "app.css") {
           files.push(fullPath);
         }
       }
@@ -189,7 +196,10 @@ function getAllSvelteAndCssFiles(dir) {
  */
 function isInRelevantContext(content, matchIndex, contexts) {
   // Look backwards for the CSS property name
-  const beforeMatch = content.substring(Math.max(0, matchIndex - 100), matchIndex);
+  const beforeMatch = content.substring(
+    Math.max(0, matchIndex - 100),
+    matchIndex
+  );
 
   // Find the most recent property declaration
   const propertyMatch = beforeMatch.match(/([a-z-]+)\s*:\s*[^;]*$/i);
@@ -203,12 +213,16 @@ function isInRelevantContext(content, matchIndex, contexts) {
   }
 
   // Special cases
-  if (contexts.includes('background') && property === 'background') return true;
-  if (contexts.includes('color') && property === 'color') return true;
-  if (contexts.includes('border') && (property.startsWith('border') || property === 'outline')) return true;
-  if (contexts.includes('box-shadow') && property === 'box-shadow') return true;
-  if (contexts.includes('fill') && property === 'fill') return true;
-  if (contexts.includes('stroke') && property === 'stroke') return true;
+  if (contexts.includes("background") && property === "background") return true;
+  if (contexts.includes("color") && property === "color") return true;
+  if (
+    contexts.includes("border") &&
+    (property.startsWith("border") || property === "outline")
+  )
+    return true;
+  if (contexts.includes("box-shadow") && property === "box-shadow") return true;
+  if (contexts.includes("fill") && property === "fill") return true;
+  if (contexts.includes("stroke") && property === "stroke") return true;
 
   return false;
 }
@@ -217,12 +231,15 @@ function isInRelevantContext(content, matchIndex, contexts) {
  * Skip if already wrapped in var()
  */
 function isAlreadyTokenized(content, matchIndex) {
-  const beforeMatch = content.substring(Math.max(0, matchIndex - 10), matchIndex);
-  return beforeMatch.includes('var(');
+  const beforeMatch = content.substring(
+    Math.max(0, matchIndex - 10),
+    matchIndex
+  );
+  return beforeMatch.includes("var(");
 }
 
 function processFile(filePath) {
-  let content = fs.readFileSync(filePath, 'utf8');
+  let content = fs.readFileSync(filePath, "utf8");
   let totalChanges = 0;
   const changesPerRule = {};
 
@@ -250,11 +267,18 @@ function processFile(filePath) {
 
       // For semantic colors, always replace (they're constants)
       // For theme colors, check context
-      const isSemantic = migration.name.startsWith('semantic');
+      const isSemantic = migration.name.startsWith("semantic");
 
-      if (isSemantic || isInRelevantContext(content, index, migration.contexts)) {
-        newContent = newContent.substring(0, index) + migration.replacement + newContent.substring(index + matchStr.length);
-        changesPerRule[migration.name] = (changesPerRule[migration.name] || 0) + 1;
+      if (
+        isSemantic ||
+        isInRelevantContext(content, index, migration.contexts)
+      ) {
+        newContent =
+          newContent.substring(0, index) +
+          migration.replacement +
+          newContent.substring(index + matchStr.length);
+        changesPerRule[migration.name] =
+          (changesPerRule[migration.name] || 0) + 1;
         totalChanges++;
       }
     }
@@ -263,7 +287,7 @@ function processFile(filePath) {
   }
 
   if (totalChanges > 0) {
-    fs.writeFileSync(filePath, content, 'utf8');
+    fs.writeFileSync(filePath, content, "utf8");
   }
 
   return { totalChanges, changesPerRule };
@@ -274,9 +298,9 @@ function processFile(filePath) {
 // =============================================================================
 
 function main() {
-  const srcDir = path.join(__dirname, '..', 'src');
+  const srcDir = path.join(__dirname, "..", "src");
 
-  console.log('🎨 Migrating hardcoded colors to CSS tokens...\n');
+  console.log("🎨 Migrating hardcoded colors to CSS tokens...\n");
 
   const files = getAllSvelteAndCssFiles(srcDir);
   const results = [];
@@ -296,26 +320,34 @@ function main() {
   }
 
   // Summary by rule
-  console.log('📊 Migrations by token:\n');
-  const sortedRules = Object.entries(globalRuleCounts).sort((a, b) => b[1] - a[1]);
+  console.log("📊 Migrations by token:\n");
+  const sortedRules = Object.entries(globalRuleCounts).sort(
+    (a, b) => b[1] - a[1]
+  );
   for (const [rule, count] of sortedRules) {
     console.log(`  ${count.toString().padStart(5)} → ${rule}`);
   }
 
-  console.log('\n📝 Files modified:\n');
+  console.log("\n📝 Files modified:\n");
   results.sort((a, b) => b.totalChanges - a.totalChanges);
 
   for (const { filePath, totalChanges } of results.slice(0, 30)) {
-    const relativePath = path.relative(path.join(__dirname, '..'), filePath);
-    console.log(`  ${totalChanges.toString().padStart(4)} changes: ${relativePath}`);
+    const relativePath = path.relative(path.join(__dirname, ".."), filePath);
+    console.log(
+      `  ${totalChanges.toString().padStart(4)} changes: ${relativePath}`
+    );
   }
 
   if (results.length > 30) {
     console.log(`  ... and ${results.length - 30} more files`);
   }
 
-  console.log(`\n✅ Migrated ${grandTotal} color values across ${results.length} files`);
-  console.log('\n⚠️  Review changes - some edge cases may need manual adjustment');
+  console.log(
+    `\n✅ Migrated ${grandTotal} color values across ${results.length} files`
+  );
+  console.log(
+    "\n⚠️  Review changes - some edge cases may need manual adjustment"
+  );
 }
 
 main();

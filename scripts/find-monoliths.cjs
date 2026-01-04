@@ -22,11 +22,11 @@
  *   node scripts/find-monoliths.cjs --clear-expired  # Clear claims older than 2 hours
  */
 
-const fs = require('fs');
-const path = require('path');
+const fs = require("fs");
+const path = require("path");
 
 // Configuration
-const SRC_DIR = path.join(__dirname, '..', 'src');
+const SRC_DIR = path.join(__dirname, "..", "src");
 const DEFAULT_THRESHOLD = 300; // Files over this are worth reviewing
 const MONOLITH_THRESHOLD = 600; // Likely has multiple responsibilities
 
@@ -40,36 +40,37 @@ const MONOLITH_THRESHOLD = 600; // Likely has multiple responsibilities
  * To add a file: include its path relative to src/ and the audit date.
  */
 const AUDITED_FILES = {
-  'lib/shared/animation-engine/components/AnimatorCanvas.svelte': {
-    auditDate: '2025-12-26',
-    reason: 'Orchestrator coordinating 11+ animation services. Logic lives in services, this file is reactive glue.',
+  "lib/shared/animation-engine/components/AnimatorCanvas.svelte": {
+    auditDate: "2025-12-26",
+    reason:
+      "Orchestrator coordinating 11+ animation services. Logic lives in services, this file is reactive glue.",
     services: [
-      'AnimatorCanvasInitializer',
-      'AnimationRenderLoopService',
-      'PropTextureService',
-      'GlyphTextureService',
-      'AnimationVisibilitySyncService',
-      'TrailSettingsSyncService',
-      'PropTypeChangeService',
-      'SequenceCacheService',
-      'GlyphTransitionService',
-      'CanvasResizer',
-      'AnimationPrecomputationService',
+      "AnimatorCanvasInitializer",
+      "AnimationRenderLoopService",
+      "PropTextureService",
+      "GlyphTextureService",
+      "AnimationVisibilitySyncService",
+      "TrailSettingsSyncService",
+      "PropTypeChangeService",
+      "SequenceCacheService",
+      "GlyphTransitionService",
+      "CanvasResizer",
+      "AnimationPrecomputationService",
     ],
   },
 };
 
 // Scoring weights
 const WEIGHTS = {
-  lines: 1,           // Base score = line count
-  effects: 15,        // Each $effect adds complexity
-  imports: 2,         // Each import = dependency
-  functions: 3,       // Each function = responsibility
-  deriveds: 5,        // Each $derived = reactive complexity
+  lines: 1, // Base score = line count
+  effects: 15, // Each $effect adds complexity
+  imports: 2, // Each import = dependency
+  functions: 3, // Each function = responsibility
+  deriveds: 5, // Each $derived = reactive complexity
 };
 
 // Claims configuration
-const CLAIMS_FILE = path.join(__dirname, '..', '.monolith-claims.json');
+const CLAIMS_FILE = path.join(__dirname, "..", ".monolith-claims.json");
 const CLAIM_EXPIRY_MS = 2 * 60 * 60 * 1000; // 2 hours
 
 /**
@@ -78,11 +79,11 @@ const CLAIM_EXPIRY_MS = 2 * 60 * 60 * 1000; // 2 hours
 function readClaims() {
   try {
     if (fs.existsSync(CLAIMS_FILE)) {
-      const data = fs.readFileSync(CLAIMS_FILE, 'utf-8');
+      const data = fs.readFileSync(CLAIMS_FILE, "utf-8");
       return JSON.parse(data);
     }
   } catch (err) {
-    console.error('Warning: Could not read claims file:', err.message);
+    console.error("Warning: Could not read claims file:", err.message);
   }
   return { claims: {} };
 }
@@ -95,7 +96,7 @@ function writeClaims(claimsData) {
     fs.writeFileSync(CLAIMS_FILE, JSON.stringify(claimsData, null, 2));
     return true;
   } catch (err) {
-    console.error('Error writing claims file:', err.message);
+    console.error("Error writing claims file:", err.message);
     return false;
   }
 }
@@ -121,10 +122,10 @@ function normalizePath(filePath) {
   }
 
   // Remove leading src/ or lib/ if present
-  normalized = normalized.replace(/^src[\/\\]/, '');
+  normalized = normalized.replace(/^src[\/\\]/, "");
 
   // Convert to forward slashes
-  return normalized.replace(/\\/g, '/');
+  return normalized.replace(/\\/g, "/");
 }
 
 /**
@@ -152,14 +153,16 @@ function claimFile(filePath) {
   // Create new claim
   claimsData.claims[normalizedPath] = {
     claimedAt: new Date().toISOString(),
-    status: 'in-progress',
-    agentId: `agent-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`
+    status: "in-progress",
+    agentId: `agent-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
   };
 
   if (writeClaims(claimsData)) {
     console.log(`\n✅ Claimed: ${normalizedPath}`);
     console.log(`   Status: in-progress`);
-    console.log(`   Expires: ${new Date(Date.now() + CLAIM_EXPIRY_MS).toLocaleTimeString()}\n`);
+    console.log(
+      `   Expires: ${new Date(Date.now() + CLAIM_EXPIRY_MS).toLocaleTimeString()}\n`
+    );
     return true;
   }
   return false;
@@ -194,19 +197,19 @@ function showClaims() {
   const claims = Object.entries(claimsData.claims);
 
   if (claims.length === 0) {
-    console.log('\n📋 No active claims.\n');
+    console.log("\n📋 No active claims.\n");
     return;
   }
 
-  console.log('\n📋 Active Claims:\n');
+  console.log("\n📋 Active Claims:\n");
 
   let activeCount = 0;
   let expiredCount = 0;
 
   claims.forEach(([filePath, claim]) => {
     const expired = isExpired(claim);
-    const icon = expired ? '⏰' : '🔒';
-    const status = expired ? 'EXPIRED' : claim.status;
+    const icon = expired ? "⏰" : "🔒";
+    const status = expired ? "EXPIRED" : claim.status;
 
     if (expired) expiredCount++;
     else activeCount++;
@@ -215,10 +218,13 @@ function showClaims() {
     console.log(`   Status: ${status}`);
     console.log(`   Claimed: ${new Date(claim.claimedAt).toLocaleString()}`);
     if (!expired) {
-      const expiresIn = Math.round((CLAIM_EXPIRY_MS - (Date.now() - new Date(claim.claimedAt).getTime())) / 60000);
+      const expiresIn = Math.round(
+        (CLAIM_EXPIRY_MS - (Date.now() - new Date(claim.claimedAt).getTime())) /
+          60000
+      );
       console.log(`   Expires in: ${expiresIn} minutes`);
     }
-    console.log('');
+    console.log("");
   });
 
   console.log(`Summary: ${activeCount} active, ${expiredCount} expired`);
@@ -247,7 +253,7 @@ function clearExpiredClaims() {
     writeClaims(claimsData);
     console.log(`\n🧹 Cleared ${removed} expired claim(s).\n`);
   } else {
-    console.log('\n✨ No expired claims to clear.\n');
+    console.log("\n✨ No expired claims to clear.\n");
   }
 }
 
@@ -269,19 +275,20 @@ function getClaimedPaths() {
 
 // Parse arguments
 const args = process.argv.slice(2);
-const showAll = args.includes('--all');
-const includeAudited = args.includes('--include-audited');
-const thresholdIdx = args.indexOf('--threshold');
-const threshold = thresholdIdx !== -1 ? parseInt(args[thresholdIdx + 1]) : DEFAULT_THRESHOLD;
-const typeIdx = args.indexOf('--type');
+const showAll = args.includes("--all");
+const includeAudited = args.includes("--include-audited");
+const thresholdIdx = args.indexOf("--threshold");
+const threshold =
+  thresholdIdx !== -1 ? parseInt(args[thresholdIdx + 1]) : DEFAULT_THRESHOLD;
+const typeIdx = args.indexOf("--type");
 const fileType = typeIdx !== -1 ? args[typeIdx + 1] : null;
 const limit = showAll ? Infinity : 20;
 
 // Claim-related arguments
-const claimIdx = args.indexOf('--claim');
-const releaseIdx = args.indexOf('--release');
-const showClaimsFlag = args.includes('--claims');
-const clearExpiredFlag = args.includes('--clear-expired');
+const claimIdx = args.indexOf("--claim");
+const releaseIdx = args.indexOf("--release");
+const showClaimsFlag = args.includes("--claims");
+const clearExpiredFlag = args.includes("--clear-expired");
 
 // Handle claim commands before main scan
 if (showClaimsFlag) {
@@ -297,7 +304,7 @@ if (clearExpiredFlag) {
 if (claimIdx !== -1) {
   const pathToClaim = args[claimIdx + 1];
   if (!pathToClaim) {
-    console.error('\n❌ Usage: --claim <file-path>\n');
+    console.error("\n❌ Usage: --claim <file-path>\n");
     process.exit(1);
   }
   const success = claimFile(pathToClaim);
@@ -307,7 +314,7 @@ if (claimIdx !== -1) {
 if (releaseIdx !== -1) {
   const pathToRelease = args[releaseIdx + 1];
   if (!pathToRelease) {
-    console.error('\n❌ Usage: --release <file-path>\n');
+    console.error("\n❌ Usage: --release <file-path>\n");
     process.exit(1);
   }
   const success = releaseClaim(pathToRelease);
@@ -316,8 +323,8 @@ if (releaseIdx !== -1) {
 
 // File analysis
 function analyzeFile(filePath) {
-  const content = fs.readFileSync(filePath, 'utf-8');
-  const lines = content.split('\n');
+  const content = fs.readFileSync(filePath, "utf-8");
+  const lines = content.split("\n");
   const lineCount = lines.length;
 
   // Skip small files
@@ -325,7 +332,7 @@ function analyzeFile(filePath) {
 
   const relativePath = path.relative(SRC_DIR, filePath);
   // Normalize to forward slashes for cross-platform matching
-  const normalizedPath = relativePath.replace(/\\/g, '/');
+  const normalizedPath = relativePath.replace(/\\/g, "/");
 
   // Check if file has been audited
   const auditInfo = AUDITED_FILES[normalizedPath];
@@ -341,7 +348,9 @@ function analyzeFile(filePath) {
   const importCount = (content.match(/^import\s/gm) || []).length;
 
   // Count functions (rough heuristic)
-  const functionCount = (content.match(/(?:function\s+\w+|=>\s*{|\w+\s*\([^)]*\)\s*{)/g) || []).length;
+  const functionCount = (
+    content.match(/(?:function\s+\w+|=>\s*{|\w+\s*\([^)]*\)\s*{)/g) || []
+  ).length;
 
   // Calculate score
   const score =
@@ -352,11 +361,11 @@ function analyzeFile(filePath) {
     functionCount * WEIGHTS.functions;
 
   // Determine severity
-  let severity = 'candidate';
-  if (lineCount >= MONOLITH_THRESHOLD) severity = 'monolith';
-  if (lineCount >= 1000) severity = 'critical';
-  if (isAudited) severity = 'audited';
-  if (isClaimed) severity = 'claimed';
+  let severity = "candidate";
+  if (lineCount >= MONOLITH_THRESHOLD) severity = "monolith";
+  if (lineCount >= 1000) severity = "critical";
+  if (isAudited) severity = "audited";
+  if (isClaimed) severity = "claimed";
 
   return {
     path: relativePath,
@@ -386,10 +395,10 @@ function findFiles(dir, extensions) {
 
       if (stat.isDirectory()) {
         // Skip node_modules, .git, etc.
-        if (!item.startsWith('.') && item !== 'node_modules') {
+        if (!item.startsWith(".") && item !== "node_modules") {
           results = results.concat(findFiles(fullPath, extensions));
         }
-      } else if (extensions.some(ext => item.endsWith(ext))) {
+      } else if (extensions.some((ext) => item.endsWith(ext))) {
         results.push(fullPath);
       }
     }
@@ -403,17 +412,19 @@ function findFiles(dir, extensions) {
 // Main
 function main() {
   // Determine file extensions
-  let extensions = ['.svelte', '.ts'];
-  if (fileType === 'svelte') extensions = ['.svelte'];
-  if (fileType === 'ts') extensions = ['.ts'];
+  let extensions = [".svelte", ".ts"];
+  if (fileType === "svelte") extensions = [".svelte"];
+  if (fileType === "ts") extensions = [".ts"];
 
-  console.log('\n🔍 Scanning for monoliths...\n');
+  console.log("\n🔍 Scanning for monoliths...\n");
   console.log(`   Threshold: ${threshold} lines`);
-  console.log(`   File types: ${extensions.join(', ')}`);
+  console.log(`   File types: ${extensions.join(", ")}`);
   if (!includeAudited) {
-    console.log(`   Excluding: ${Object.keys(AUDITED_FILES).length} audited orchestrators`);
+    console.log(
+      `   Excluding: ${Object.keys(AUDITED_FILES).length} audited orchestrators`
+    );
   }
-  console.log('');
+  console.log("");
 
   // Find and analyze files
   const files = findFiles(SRC_DIR, extensions);
@@ -423,15 +434,17 @@ function main() {
     .sort((a, b) => b.score - a.score);
 
   // Separate audited files
-  const auditedFiles = allAnalyses.filter(a => a.isAudited);
+  const auditedFiles = allAnalyses.filter((a) => a.isAudited);
   const analyses = includeAudited
     ? allAnalyses
-    : allAnalyses.filter(a => !a.isAudited);
+    : allAnalyses.filter((a) => !a.isAudited);
 
   if (analyses.length === 0) {
-    console.log('✅ No monoliths found above threshold!\n');
+    console.log("✅ No monoliths found above threshold!\n");
     if (auditedFiles.length > 0) {
-      console.log(`   (${auditedFiles.length} audited orchestrators excluded)\n`);
+      console.log(
+        `   (${auditedFiles.length} audited orchestrators excluded)\n`
+      );
     }
     return;
   }
@@ -440,17 +453,23 @@ function main() {
   const toShow = analyses.slice(0, limit);
 
   console.log(`Found ${analyses.length} files over ${threshold} lines.\n`);
-  console.log('┌─────────────────────────────────────────────────────────────────────────────────────────────────┐');
-  console.log('│  #  │ Score │ Lines │ $eff │ $der │ Imp │ Func │ Severity  │ File                              │');
-  console.log('├─────────────────────────────────────────────────────────────────────────────────────────────────┤');
+  console.log(
+    "┌─────────────────────────────────────────────────────────────────────────────────────────────────┐"
+  );
+  console.log(
+    "│  #  │ Score │ Lines │ $eff │ $der │ Imp │ Func │ Severity  │ File                              │"
+  );
+  console.log(
+    "├─────────────────────────────────────────────────────────────────────────────────────────────────┤"
+  );
 
   toShow.forEach((file, index) => {
     const severityIcon = {
-      critical: '🔴',
-      monolith: '🟠',
-      candidate: '🟡',
-      audited: '✅',
-      claimed: '🔒',
+      critical: "🔴",
+      monolith: "🟠",
+      candidate: "🟡",
+      audited: "✅",
+      claimed: "🔒",
     }[file.severity];
 
     const num = String(index + 1).padStart(3);
@@ -465,23 +484,27 @@ function main() {
     // Truncate long paths
     let displayPath = file.path;
     if (displayPath.length > 35) {
-      displayPath = '...' + displayPath.slice(-32);
+      displayPath = "..." + displayPath.slice(-32);
     }
     displayPath = displayPath.padEnd(35);
 
-    console.log(`│ ${num} │ ${score} │ ${lines} │ ${effects} │ ${deriveds} │ ${imports} │ ${funcs} │ ${severityIcon} ${severity}│ ${displayPath}│`);
+    console.log(
+      `│ ${num} │ ${score} │ ${lines} │ ${effects} │ ${deriveds} │ ${imports} │ ${funcs} │ ${severityIcon} ${severity}│ ${displayPath}│`
+    );
   });
 
-  console.log('└─────────────────────────────────────────────────────────────────────────────────────────────────┘');
+  console.log(
+    "└─────────────────────────────────────────────────────────────────────────────────────────────────┘"
+  );
 
   // Summary
-  const critical = analyses.filter(a => a.severity === 'critical').length;
-  const monoliths = analyses.filter(a => a.severity === 'monolith').length;
-  const candidates = analyses.filter(a => a.severity === 'candidate').length;
-  const claimed = analyses.filter(a => a.severity === 'claimed').length;
+  const critical = analyses.filter((a) => a.severity === "critical").length;
+  const monoliths = analyses.filter((a) => a.severity === "monolith").length;
+  const candidates = analyses.filter((a) => a.severity === "candidate").length;
+  const claimed = analyses.filter((a) => a.severity === "claimed").length;
   const audited = auditedFiles.length;
 
-  console.log('\n📊 Summary:');
+  console.log("\n📊 Summary:");
   console.log(`   🔴 Critical (1000+ lines): ${critical}`);
   console.log(`   🟠 Monolith (500+ lines):  ${monoliths}`);
   console.log(`   🟡 Candidate (${threshold}+ lines): ${candidates}`);
@@ -493,27 +516,33 @@ function main() {
   }
 
   // Top recommendation - skip audited AND claimed files
-  const availableToWork = toShow.filter(f => !f.isAudited && !f.isClaimed);
+  const availableToWork = toShow.filter((f) => !f.isAudited && !f.isClaimed);
   if (availableToWork.length > 0) {
     const top = availableToWork[0];
-    console.log('\n🎯 Top refactor candidate (available):');
+    console.log("\n🎯 Top refactor candidate (available):");
     console.log(`   ${top.path}`);
-    console.log(`   ${top.lines} lines, ${top.effects} $effects, ${top.imports} imports`);
+    console.log(
+      `   ${top.lines} lines, ${top.effects} $effects, ${top.imports} imports`
+    );
     console.log(`   Score: ${top.score}`);
   } else if (toShow.length > 0) {
-    console.log('\n⚠️  All top candidates are either audited or claimed.');
-    console.log('   Use --claims to see active claims, or --include-audited to see audited files.');
+    console.log("\n⚠️  All top candidates are either audited or claimed.");
+    console.log(
+      "   Use --claims to see active claims, or --include-audited to see audited files."
+    );
   }
 
   // Show audited files summary if any
   if (auditedFiles.length > 0 && !includeAudited) {
-    console.log('\n📋 Audited orchestrators (use --include-audited to show):');
-    auditedFiles.forEach(f => {
-      console.log(`   ✅ ${f.path} (${f.lines} lines, audited ${f.auditInfo.auditDate})`);
+    console.log("\n📋 Audited orchestrators (use --include-audited to show):");
+    auditedFiles.forEach((f) => {
+      console.log(
+        `   ✅ ${f.path} (${f.lines} lines, audited ${f.auditInfo.auditDate})`
+      );
     });
   }
 
-  console.log('');
+  console.log("");
 }
 
 main();

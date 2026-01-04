@@ -345,8 +345,12 @@ async function claimNextFeedback(priorityFilter = null) {
 
     if (!itemToClaim) {
       console.log("\n" + "=".repeat(70));
-      console.log("\n  ✨ QUEUE EMPTY - No unclaimed or in-progress feedback items!\n");
-      console.log("  Run `node scripts/fetch-feedback.js.js list` to see all items.");
+      console.log(
+        "\n  ✨ QUEUE EMPTY - No unclaimed or in-progress feedback items!\n"
+      );
+      console.log(
+        "  Run `node scripts/fetch-feedback.js.js list` to see all items."
+      );
       console.log("\n" + "=".repeat(70) + "\n");
       return null;
     }
@@ -1752,8 +1756,12 @@ async function main() {
   } else if (args[0] === "search") {
     // Search: search <query>
     if (!args[1]) {
-      console.log("\n  Usage: node scripts/fetch-feedback.js.js search <query>\n");
-      console.log('  Example: node scripts/fetch-feedback.js.js search "button"\n');
+      console.log(
+        "\n  Usage: node scripts/fetch-feedback.js.js search <query>\n"
+      );
+      console.log(
+        '  Example: node scripts/fetch-feedback.js.js search "button"\n'
+      );
       return;
     }
     await searchFeedback(args.slice(1).join(" "));
@@ -1767,7 +1775,9 @@ async function main() {
   } else if (args[0] === "unclaim") {
     // Unclaim: unclaim <id>
     if (!args[1]) {
-      console.log("\n  Usage: node scripts/fetch-feedback.js.js unclaim <id>\n");
+      console.log(
+        "\n  Usage: node scripts/fetch-feedback.js.js unclaim <id>\n"
+      );
       return;
     }
     await unclaimFeedback(args[1]);

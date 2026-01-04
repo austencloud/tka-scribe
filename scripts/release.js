@@ -38,20 +38,20 @@
  *   node scripts/release.js --from-main        - Release directly from main (skip branch workflow)
  */
 
-import admin from 'firebase-admin';
-import { readFileSync, writeFileSync, existsSync } from 'fs';
-import { execSync } from 'child_process';
-import * as readline from 'readline';
+import admin from "firebase-admin";
+import { readFileSync, writeFileSync, existsSync } from "fs";
+import { execSync } from "child_process";
+import * as readline from "readline";
 
 // Load service account key
 const serviceAccount = JSON.parse(
-  readFileSync('./serviceAccountKey.json', 'utf8')
+  readFileSync("./serviceAccountKey.json", "utf8")
 );
 
 // Initialize Firebase Admin
 if (!admin.apps.length) {
   admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount)
+    credential: admin.credential.cert(serviceAccount),
   });
 }
 
@@ -63,7 +63,7 @@ const db = admin.firestore();
 function createPrompt() {
   return readline.createInterface({
     input: process.stdin,
-    output: process.stdout
+    output: process.stdout,
   });
 }
 
@@ -86,21 +86,23 @@ function askQuestion(rl, question) {
 async function promptForHighlights(changelogEntries) {
   // Get potential highlights (features and major improvements)
   const potentialHighlights = changelogEntries
-    .filter(e => e.category === 'added' || e.category === 'improved')
-    .map(e => e.text);
+    .filter((e) => e.category === "added" || e.category === "improved")
+    .map((e) => e.text);
 
   if (potentialHighlights.length === 0) {
-    console.log('\n📌 No feature/improvement entries to highlight.\n');
+    console.log("\n📌 No feature/improvement entries to highlight.\n");
     return [];
   }
 
-  console.log('\n' + '═'.repeat(60));
-  console.log('⭐ HIGHLIGHT SELECTION');
-  console.log('═'.repeat(60));
-  console.log('\nHighlights appear prominently at the top of the "What\'s New" modal.');
-  console.log('Only select items that are genuinely exciting for users.\n');
+  console.log("\n" + "═".repeat(60));
+  console.log("⭐ HIGHLIGHT SELECTION");
+  console.log("═".repeat(60));
+  console.log(
+    '\nHighlights appear prominently at the top of the "What\'s New" modal.'
+  );
+  console.log("Only select items that are genuinely exciting for users.\n");
 
-  console.log('Potential highlights from this release:\n');
+  console.log("Potential highlights from this release:\n");
   potentialHighlights.forEach((text, i) => {
     console.log(`  [${i + 1}] ${text}`);
   });
@@ -110,15 +112,18 @@ async function promptForHighlights(changelogEntries) {
   const rl = createPrompt();
 
   try {
-    const answer = await askQuestion(rl, 'Select highlights (comma-separated numbers, 0 for none, or c for custom): ');
+    const answer = await askQuestion(
+      rl,
+      "Select highlights (comma-separated numbers, 0 for none, or c for custom): "
+    );
 
-    if (answer === '0' || answer === '') {
-      console.log('\n✓ No highlights selected.\n');
+    if (answer === "0" || answer === "") {
+      console.log("\n✓ No highlights selected.\n");
       return [];
     }
 
-    if (answer.toLowerCase() === 'c') {
-      const customText = await askQuestion(rl, 'Enter custom highlight text: ');
+    if (answer.toLowerCase() === "c") {
+      const customText = await askQuestion(rl, "Enter custom highlight text: ");
       if (customText) {
         console.log(`\n✓ Custom highlight: "${customText}"\n`);
         return [customText];
@@ -128,18 +133,20 @@ async function promptForHighlights(changelogEntries) {
 
     // Parse comma-separated numbers
     const selectedIndices = answer
-      .split(',')
-      .map(s => parseInt(s.trim()) - 1)
-      .filter(i => i >= 0 && i < potentialHighlights.length);
+      .split(",")
+      .map((s) => parseInt(s.trim()) - 1)
+      .filter((i) => i >= 0 && i < potentialHighlights.length);
 
-    const selectedHighlights = selectedIndices.map(i => potentialHighlights[i]);
+    const selectedHighlights = selectedIndices.map(
+      (i) => potentialHighlights[i]
+    );
 
     if (selectedHighlights.length > 0) {
-      console.log('\n✓ Selected highlights:');
-      selectedHighlights.forEach(h => console.log(`   • ${h}`));
-      console.log('');
+      console.log("\n✓ Selected highlights:");
+      selectedHighlights.forEach((h) => console.log(`   • ${h}`));
+      console.log("");
     } else {
-      console.log('\n✓ No valid highlights selected.\n');
+      console.log("\n✓ No valid highlights selected.\n");
     }
 
     return selectedHighlights;
@@ -152,13 +159,14 @@ async function promptForHighlights(changelogEntries) {
  * Get completed feedback items ready for release
  */
 async function getCompletedFeedback() {
-  const snapshot = await db.collection('feedback')
-    .where('status', '==', 'completed')
+  const snapshot = await db
+    .collection("feedback")
+    .where("status", "==", "completed")
     .get();
 
-  return snapshot.docs.map(doc => ({
+  return snapshot.docs.map((doc) => ({
     id: doc.id,
-    ...doc.data()
+    ...doc.data(),
   }));
 }
 
@@ -172,27 +180,32 @@ function generateChangelogFromFeedback(items, includeInternalOnly = false) {
   const userFacing = [];
   const developerNotes = [];
 
-  items.forEach(item => {
+  items.forEach((item) => {
     let category;
     switch (item.type) {
-      case 'bug':
-        category = 'fixed';
+      case "bug":
+        category = "fixed";
         break;
-      case 'feature':
-        category = 'added';
+      case "feature":
+        category = "added";
         break;
       default:
-        category = 'improved';
+        category = "improved";
     }
 
-    let text = item.title || item.description?.substring(0, 100) || 'Untitled change';
+    let text =
+      item.title || item.description?.substring(0, 100) || "Untitled change";
 
     // Add appropriate prefix if not already present
     const lowerText = text.toLowerCase();
-    if (category === 'fixed' && !lowerText.startsWith('fixed')) {
-      text = 'Fixed ' + text.charAt(0).toLowerCase() + text.slice(1);
-    } else if (category === 'added' && !lowerText.startsWith('added') && !lowerText.startsWith('new')) {
-      text = 'Added ' + text.charAt(0).toLowerCase() + text.slice(1);
+    if (category === "fixed" && !lowerText.startsWith("fixed")) {
+      text = "Fixed " + text.charAt(0).toLowerCase() + text.slice(1);
+    } else if (
+      category === "added" &&
+      !lowerText.startsWith("added") &&
+      !lowerText.startsWith("new")
+    ) {
+      text = "Added " + text.charAt(0).toLowerCase() + text.slice(1);
     }
 
     const entry = { category, text, feedbackId: item.id };
@@ -213,8 +226,10 @@ function generateChangelogFromFeedback(items, includeInternalOnly = false) {
  */
 function getLatestTag() {
   try {
-    const tag = execSync('git describe --tags --abbrev=0', { encoding: 'utf8' }).trim();
-    return tag.replace(/^v/, '');
+    const tag = execSync("git describe --tags --abbrev=0", {
+      encoding: "utf8",
+    }).trim();
+    return tag.replace(/^v/, "");
   } catch (error) {
     // No tags exist
     return null;
@@ -226,17 +241,20 @@ function getLatestTag() {
  */
 function generateChangelogFromGitHistory() {
   const latestTag = getLatestTag();
-  const range = latestTag ? `v${latestTag}..HEAD` : 'HEAD';
+  const range = latestTag ? `v${latestTag}..HEAD` : "HEAD";
 
   try {
-    const commits = execSync(`git log ${range} --pretty=format:"%s" --no-merges`, {
-      encoding: 'utf8'
-    }).trim();
+    const commits = execSync(
+      `git log ${range} --pretty=format:"%s" --no-merges`,
+      {
+        encoding: "utf8",
+      }
+    ).trim();
 
     if (!commits) return [];
 
-    return commits.split('\n').map(commit => {
-      let category = 'improved';
+    return commits.split("\n").map((commit) => {
+      let category = "improved";
       let text = commit;
 
       // Parse conventional commit format
@@ -247,13 +265,13 @@ function generateChangelogFromGitHistory() {
       const choreMatch = commit.match(/^chore(\(.+?\))?:\s*(.+)/i);
 
       if (fixMatch) {
-        category = 'fixed';
+        category = "fixed";
         text = fixMatch[2];
       } else if (featMatch) {
-        category = 'added';
+        category = "added";
         text = featMatch[2];
       } else if (refactorMatch || styleMatch || choreMatch) {
-        category = 'improved';
+        category = "improved";
         text = refactorMatch?.[2] || styleMatch?.[2] || choreMatch?.[2] || text;
       }
 
@@ -263,7 +281,7 @@ function generateChangelogFromGitHistory() {
       return { category, text, commit };
     });
   } catch (error) {
-    console.error('Warning: Could not read git history:', error.message);
+    console.error("Warning: Could not read git history:", error.message);
     return [];
   }
 }
@@ -280,13 +298,15 @@ function generateChangelogFromGitHistory() {
  * - Keywords: "new module", "major", "refactor", "redesign", "architecture"
  */
 function suggestVersion(currentVersion, changelogEntries) {
-  const parts = currentVersion.replace('-beta', '').split('.');
+  const parts = currentVersion.replace("-beta", "").split(".");
   const major = parseInt(parts[0]) || 0;
   const minor = parseInt(parts[1]) || 0;
   const patch = parseInt(parts[2]) || 0;
 
   // Check if any features exist
-  const hasFeatures = changelogEntries.some(entry => entry.category === 'added');
+  const hasFeatures = changelogEntries.some(
+    (entry) => entry.category === "added"
+  );
 
   if (!hasFeatures) {
     // Only bugs/improvements → patch bump
@@ -295,15 +315,22 @@ function suggestVersion(currentVersion, changelogEntries) {
 
   // Analyze feature significance
   const significantKeywords = [
-    'new module', 'major', 'refactor', 'redesign', 'architecture',
-    'new tab', 'new feature set', 'migration', 'overhaul'
+    "new module",
+    "major",
+    "refactor",
+    "redesign",
+    "architecture",
+    "new tab",
+    "new feature set",
+    "migration",
+    "overhaul",
   ];
 
   const allChangeText = changelogEntries
-    .map(e => e.text.toLowerCase())
-    .join(' ');
+    .map((e) => e.text.toLowerCase())
+    .join(" ");
 
-  const hasSignificantChange = significantKeywords.some(keyword =>
+  const hasSignificantChange = significantKeywords.some((keyword) =>
     allChangeText.includes(keyword)
   );
 
@@ -321,7 +348,7 @@ function suggestVersion(currentVersion, changelogEntries) {
  * Get current version from package.json
  */
 function getCurrentVersion() {
-  const packageJson = JSON.parse(readFileSync('./package.json', 'utf8'));
+  const packageJson = JSON.parse(readFileSync("./package.json", "utf8"));
   return packageJson.version;
 }
 
@@ -329,9 +356,9 @@ function getCurrentVersion() {
  * Update package.json version
  */
 function updatePackageVersion(newVersion) {
-  const packageJson = JSON.parse(readFileSync('./package.json', 'utf8'));
+  const packageJson = JSON.parse(readFileSync("./package.json", "utf8"));
   packageJson.version = newVersion;
-  writeFileSync('./package.json', JSON.stringify(packageJson, null, 2) + '\n');
+  writeFileSync("./package.json", JSON.stringify(packageJson, null, 2) + "\n");
 }
 
 /**
@@ -339,13 +366,13 @@ function updatePackageVersion(newVersion) {
  * This ensures users get fresh assets after a release
  */
 function updateServiceWorkerVersion(newVersion) {
-  const swPath = './static/sw.js';
+  const swPath = "./static/sw.js";
   if (!existsSync(swPath)) {
-    console.log('   ⚠️  No service worker found, skipping SW version update');
+    console.log("   ⚠️  No service worker found, skipping SW version update");
     return;
   }
 
-  let swContent = readFileSync(swPath, 'utf8');
+  let swContent = readFileSync(swPath, "utf8");
   // Replace the CACHE_VERSION line
   swContent = swContent.replace(
     /const CACHE_VERSION = "[^"]+";/,
@@ -358,35 +385,40 @@ function updateServiceWorkerVersion(newVersion) {
  * Prepare release in Firestore
  * (archives completed feedback and creates version record)
  */
-async function prepareFirestoreRelease(version, changelogEntries, feedbackItems, highlights = []) {
+async function prepareFirestoreRelease(
+  version,
+  changelogEntries,
+  feedbackItems,
+  highlights = []
+) {
   const batch = db.batch();
 
   // Calculate summary counts
   const summary = { bugs: 0, features: 0, general: 0 };
-  feedbackItems.forEach(item => {
-    if (item.type === 'bug') summary.bugs++;
-    else if (item.type === 'feature') summary.features++;
+  feedbackItems.forEach((item) => {
+    if (item.type === "bug") summary.bugs++;
+    else if (item.type === "feature") summary.features++;
     else summary.general++;
   });
 
   // Update all completed feedback items
-  feedbackItems.forEach(item => {
-    const ref = db.collection('feedback').doc(item.id);
+  feedbackItems.forEach((item) => {
+    const ref = db.collection("feedback").doc(item.id);
     batch.update(ref, {
       fixedInVersion: version,
-      status: 'archived',
-      archivedAt: admin.firestore.FieldValue.serverTimestamp()
+      status: "archived",
+      archivedAt: admin.firestore.FieldValue.serverTimestamp(),
     });
   });
 
   // Create version document
-  const versionRef = db.collection('versions').doc(version);
+  const versionRef = db.collection("versions").doc(version);
   const versionData = {
     version,
     feedbackCount: feedbackItems.length,
     feedbackSummary: summary,
     changelogEntries,
-    releasedAt: admin.firestore.FieldValue.serverTimestamp()
+    releasedAt: admin.firestore.FieldValue.serverTimestamp(),
   };
 
   // Only include highlights if there are any (keeps data clean)
@@ -405,10 +437,10 @@ async function prepareFirestoreRelease(version, changelogEntries, feedbackItems,
  */
 function checkGitStatus() {
   try {
-    const status = execSync('git status --porcelain', { encoding: 'utf8' });
+    const status = execSync("git status --porcelain", { encoding: "utf8" });
     return status.trim();
   } catch (error) {
-    return '';
+    return "";
   }
 }
 
@@ -417,7 +449,7 @@ function checkGitStatus() {
  */
 function getCurrentBranch() {
   try {
-    return execSync('git branch --show-current', { encoding: 'utf8' }).trim();
+    return execSync("git branch --show-current", { encoding: "utf8" }).trim();
   } catch (error) {
     return null;
   }
@@ -427,14 +459,14 @@ function getCurrentBranch() {
  * Switch to a git branch
  */
 function switchToBranch(branch) {
-  execSync(`git checkout ${branch}`, { stdio: 'inherit' });
+  execSync(`git checkout ${branch}`, { stdio: "inherit" });
 }
 
 /**
  * Merge a branch into current branch
  */
 function mergeBranch(sourceBranch) {
-  execSync(`git merge ${sourceBranch} --no-edit`, { stdio: 'inherit' });
+  execSync(`git merge ${sourceBranch} --no-edit`, { stdio: "inherit" });
 }
 
 /**
@@ -444,7 +476,9 @@ function mergeBranch(sourceBranch) {
 function stashChanges() {
   const status = checkGitStatus();
   if (status) {
-    execSync('git stash push -m "release-script-auto-stash"', { stdio: 'inherit' });
+    execSync('git stash push -m "release-script-auto-stash"', {
+      stdio: "inherit",
+    });
     return true;
   }
   return false;
@@ -455,9 +489,9 @@ function stashChanges() {
  */
 function popStash() {
   try {
-    execSync('git stash pop', { stdio: 'inherit' });
+    execSync("git stash pop", { stdio: "inherit" });
   } catch (error) {
-    console.log('⚠️  Could not restore stashed changes automatically.');
+    console.log("⚠️  Could not restore stashed changes automatically.");
     console.log('   Run "git stash pop" manually if needed.');
   }
 }
@@ -466,8 +500,8 @@ function popStash() {
  * Push branch and tags to remote
  */
 function pushToRemote(branch) {
-  execSync(`git push origin ${branch}`, { stdio: 'inherit' });
-  execSync('git push --tags', { stdio: 'inherit' });
+  execSync(`git push origin ${branch}`, { stdio: "inherit" });
+  execSync("git push --tags", { stdio: "inherit" });
 }
 
 /**
@@ -475,28 +509,32 @@ function pushToRemote(branch) {
  */
 function createGitRelease(version, changelog) {
   // Stage package.json and sw.js
-  execSync('git add package.json static/sw.js', { stdio: 'inherit' });
+  execSync("git add package.json static/sw.js", { stdio: "inherit" });
 
   // Create commit message
   const changelogSummary = changelog
     .slice(0, 5)
-    .map(e => `- ${e.text}`)
-    .join('\n');
+    .map((e) => `- ${e.text}`)
+    .join("\n");
 
   const commitMessage = `chore(release): v${version}
 
-${changelogSummary}${changelog.length > 5 ? '\n...' : ''}
+${changelogSummary}${changelog.length > 5 ? "\n..." : ""}
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 
 Co-Authored-By: Claude <noreply@anthropic.com>`;
 
   // Create commit
-  execSync(`git commit -m "${commitMessage.replace(/"/g, '\\"')}"`, { stdio: 'inherit' });
+  execSync(`git commit -m "${commitMessage.replace(/"/g, '\\"')}"`, {
+    stdio: "inherit",
+  });
 
   // Create annotated tag
-  const tagMessage = changelog.map(e => `- ${e.text}`).join('\n');
-  execSync(`git tag -a v${version} -m "Release v${version}\n\n${tagMessage}"`, { stdio: 'inherit' });
+  const tagMessage = changelog.map((e) => `- ${e.text}`).join("\n");
+  execSync(`git tag -a v${version} -m "Release v${version}\n\n${tagMessage}"`, {
+    stdio: "inherit",
+  });
 }
 
 /**
@@ -504,50 +542,54 @@ Co-Authored-By: Claude <noreply@anthropic.com>`;
  */
 function createGitHubRelease(version, changelog) {
   // Format release notes
-  const fixed = changelog.filter(e => e.category === 'fixed');
-  const added = changelog.filter(e => e.category === 'added');
-  const improved = changelog.filter(e => e.category === 'improved');
+  const fixed = changelog.filter((e) => e.category === "fixed");
+  const added = changelog.filter((e) => e.category === "added");
+  const improved = changelog.filter((e) => e.category === "improved");
 
-  let releaseNotes = '';
+  let releaseNotes = "";
 
   if (fixed.length > 0) {
-    releaseNotes += '## 🐛 Bug Fixes\n\n';
-    fixed.forEach(e => {
+    releaseNotes += "## 🐛 Bug Fixes\n\n";
+    fixed.forEach((e) => {
       releaseNotes += `- ${e.text}\n`;
     });
-    releaseNotes += '\n';
+    releaseNotes += "\n";
   }
 
   if (added.length > 0) {
-    releaseNotes += '## ✨ New Features\n\n';
-    added.forEach(e => {
+    releaseNotes += "## ✨ New Features\n\n";
+    added.forEach((e) => {
       releaseNotes += `- ${e.text}\n`;
     });
-    releaseNotes += '\n';
+    releaseNotes += "\n";
   }
 
   if (improved.length > 0) {
-    releaseNotes += '## 🔧 Improvements\n\n';
-    improved.forEach(e => {
+    releaseNotes += "## 🔧 Improvements\n\n";
+    improved.forEach((e) => {
       releaseNotes += `- ${e.text}\n`;
     });
-    releaseNotes += '\n';
+    releaseNotes += "\n";
   }
 
-  releaseNotes += '\n---\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)';
+  releaseNotes +=
+    "\n---\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)";
 
   // Write release notes to temp file to handle special characters
-  writeFileSync('.release-notes.tmp', releaseNotes);
+  writeFileSync(".release-notes.tmp", releaseNotes);
 
   try {
     // Create GitHub release
-    execSync(`gh release create v${version} --title "v${version}" --notes-file .release-notes.tmp`, {
-      stdio: 'inherit'
-    });
+    execSync(
+      `gh release create v${version} --title "v${version}" --notes-file .release-notes.tmp`,
+      {
+        stdio: "inherit",
+      }
+    );
   } finally {
     // Clean up temp file
     try {
-      execSync('rm .release-notes.tmp', { stdio: 'ignore' });
+      execSync("rm .release-notes.tmp", { stdio: "ignore" });
     } catch (e) {
       // Ignore cleanup errors
     }
@@ -558,28 +600,28 @@ function createGitHubRelease(version, changelog) {
  * Display changelog preview
  */
 function displayChangelog(entries) {
-  const fixed = entries.filter(e => e.category === 'fixed');
-  const added = entries.filter(e => e.category === 'added');
-  const improved = entries.filter(e => e.category === 'improved');
+  const fixed = entries.filter((e) => e.category === "fixed");
+  const added = entries.filter((e) => e.category === "added");
+  const improved = entries.filter((e) => e.category === "improved");
 
-  console.log('\n📋 Changelog Preview:\n');
+  console.log("\n📋 Changelog Preview:\n");
 
   if (fixed.length > 0) {
-    console.log('  🐛 Fixed:');
-    fixed.forEach(e => console.log(`     - ${e.text}`));
-    console.log('');
+    console.log("  🐛 Fixed:");
+    fixed.forEach((e) => console.log(`     - ${e.text}`));
+    console.log("");
   }
 
   if (added.length > 0) {
-    console.log('  ✨ Added:');
-    added.forEach(e => console.log(`     - ${e.text}`));
-    console.log('');
+    console.log("  ✨ Added:");
+    added.forEach((e) => console.log(`     - ${e.text}`));
+    console.log("");
   }
 
   if (improved.length > 0) {
-    console.log('  🔧 Improved:');
-    improved.forEach(e => console.log(`     - ${e.text}`));
-    console.log('');
+    console.log("  🔧 Improved:");
+    improved.forEach((e) => console.log(`     - ${e.text}`));
+    console.log("");
   }
 }
 
@@ -587,16 +629,16 @@ function displayChangelog(entries) {
  * Show what was released in the last version
  */
 async function showLastRelease() {
-  console.log('📦 Last Release Summary\n');
-  console.log('='.repeat(70));
+  console.log("📦 Last Release Summary\n");
+  console.log("=".repeat(70));
 
   try {
     // Get latest version from git tags
     const latestTag = getLatestTag();
 
     if (!latestTag) {
-      console.log('\n⚠️  No releases found.');
-      console.log('   Create your first release with /release\n');
+      console.log("\n⚠️  No releases found.");
+      console.log("   Create your first release with /release\n");
       return;
     }
 
@@ -605,8 +647,12 @@ async function showLastRelease() {
 
     // Get tag date and message
     try {
-      const tagInfo = execSync(`git tag -l -n99 v${version}`, { encoding: 'utf8' }).trim();
-      const tagDate = execSync(`git log -1 --format=%ai v${version}`, { encoding: 'utf8' }).trim();
+      const tagInfo = execSync(`git tag -l -n99 v${version}`, {
+        encoding: "utf8",
+      }).trim();
+      const tagDate = execSync(`git log -1 --format=%ai v${version}`, {
+        encoding: "utf8",
+      }).trim();
 
       console.log(`📅 Released: ${tagDate}\n`);
     } catch (e) {
@@ -614,21 +660,25 @@ async function showLastRelease() {
     }
 
     // Query Firestore for feedback items fixed in this version
-    const snapshot = await db.collection('feedback')
-      .where('fixedInVersion', '==', version)
+    const snapshot = await db
+      .collection("feedback")
+      .where("fixedInVersion", "==", version)
       .get();
 
     if (snapshot.empty) {
-      console.log('⚠️  No feedback items found for this version in Firestore.');
-      console.log('   This might be a git-only release.\n');
+      console.log("⚠️  No feedback items found for this version in Firestore.");
+      console.log("   This might be a git-only release.\n");
 
       // Show git tag message as fallback
       try {
-        const tagMessage = execSync(`git tag -l -n99 v${version} | tail -n +2`, { encoding: 'utf8' }).trim();
+        const tagMessage = execSync(
+          `git tag -l -n99 v${version} | tail -n +2`,
+          { encoding: "utf8" }
+        ).trim();
         if (tagMessage) {
-          console.log('📋 Release Notes:\n');
+          console.log("📋 Release Notes:\n");
           console.log(tagMessage);
-          console.log('');
+          console.log("");
         }
       } catch (e) {
         // Ignore
@@ -636,29 +686,30 @@ async function showLastRelease() {
       return;
     }
 
-    const items = snapshot.docs.map(doc => ({
+    const items = snapshot.docs.map((doc) => ({
       id: doc.id,
-      ...doc.data()
+      ...doc.data(),
     }));
 
     // Group by type
-    const bugs = items.filter(i => i.type === 'bug');
-    const features = items.filter(i => i.type === 'feature');
-    const general = items.filter(i => i.type === 'general');
+    const bugs = items.filter((i) => i.type === "bug");
+    const features = items.filter((i) => i.type === "feature");
+    const general = items.filter((i) => i.type === "general");
 
     console.log(`✅ Shipped ${items.length} items:`);
     console.log(`   🐛 ${bugs.length} bug fixes`);
     console.log(`   ✨ ${features.length} new features`);
     console.log(`   🔧 ${general.length} improvements\n`);
 
-    console.log('─'.repeat(70));
+    console.log("─".repeat(70));
 
     // Show details
     if (bugs.length > 0) {
-      console.log('\n🐛 Bug Fixes:\n');
-      bugs.forEach(item => {
-        const title = item.title || item.description?.substring(0, 60) || 'Untitled';
-        console.log(`   • ${title}${item.title ? '' : '...'}`);
+      console.log("\n🐛 Bug Fixes:\n");
+      bugs.forEach((item) => {
+        const title =
+          item.title || item.description?.substring(0, 60) || "Untitled";
+        console.log(`   • ${title}${item.title ? "" : "..."}`);
         if (item.id) {
           console.log(`     └─ ID: ${item.id.substring(0, 8)}...`);
         }
@@ -666,10 +717,11 @@ async function showLastRelease() {
     }
 
     if (features.length > 0) {
-      console.log('\n✨ New Features:\n');
-      features.forEach(item => {
-        const title = item.title || item.description?.substring(0, 60) || 'Untitled';
-        console.log(`   • ${title}${item.title ? '' : '...'}`);
+      console.log("\n✨ New Features:\n");
+      features.forEach((item) => {
+        const title =
+          item.title || item.description?.substring(0, 60) || "Untitled";
+        console.log(`   • ${title}${item.title ? "" : "..."}`);
         if (item.id) {
           console.log(`     └─ ID: ${item.id.substring(0, 8)}...`);
         }
@@ -677,22 +729,24 @@ async function showLastRelease() {
     }
 
     if (general.length > 0) {
-      console.log('\n🔧 Improvements:\n');
-      general.forEach(item => {
-        const title = item.title || item.description?.substring(0, 60) || 'Untitled';
-        console.log(`   • ${title}${item.title ? '' : '...'}`);
+      console.log("\n🔧 Improvements:\n");
+      general.forEach((item) => {
+        const title =
+          item.title || item.description?.substring(0, 60) || "Untitled";
+        console.log(`   • ${title}${item.title ? "" : "..."}`);
         if (item.id) {
           console.log(`     └─ ID: ${item.id.substring(0, 8)}...`);
         }
       });
     }
 
-    console.log('\n' + '─'.repeat(70));
+    console.log("\n" + "─".repeat(70));
     console.log(`\n💡 View on GitHub: gh release view v${version}`);
-    console.log(`💡 In app: "What's New" modal shows automatically on first login\n`);
-
+    console.log(
+      `💡 In app: "What's New" modal shows automatically on first login\n`
+    );
   } catch (error) {
-    console.error('❌ Error fetching last release:', error.message);
+    console.error("❌ Error fetching last release:", error.message);
     process.exit(1);
   }
 }
@@ -702,14 +756,16 @@ async function showLastRelease() {
  */
 async function main() {
   const args = process.argv.slice(2);
-  const dryRun = args.includes('--dry-run');
-  const quickPreview = args.includes('--preview') || args.includes('-p');
-  const showLast = args.includes('--show-last') || args.includes('--last');
-  const manualVersionIndex = args.indexOf('--version');
-  const manualVersion = manualVersionIndex >= 0 ? args[manualVersionIndex + 1] : null;
-  const changelogFileIndex = args.indexOf('--changelog');
-  const changelogFile = changelogFileIndex >= 0 ? args[changelogFileIndex + 1] : null;
-  const fromMain = args.includes('--from-main');
+  const dryRun = args.includes("--dry-run");
+  const quickPreview = args.includes("--preview") || args.includes("-p");
+  const showLast = args.includes("--show-last") || args.includes("--last");
+  const manualVersionIndex = args.indexOf("--version");
+  const manualVersion =
+    manualVersionIndex >= 0 ? args[manualVersionIndex + 1] : null;
+  const changelogFileIndex = args.indexOf("--changelog");
+  const changelogFile =
+    changelogFileIndex >= 0 ? args[changelogFileIndex + 1] : null;
+  const fromMain = args.includes("--from-main");
 
   // Show last release mode
   if (showLast) {
@@ -719,14 +775,14 @@ async function main() {
 
   // Check current branch
   const startingBranch = getCurrentBranch();
-  const isOnDevelop = startingBranch === 'develop';
-  const isOnMain = startingBranch === 'main';
+  const isOnDevelop = startingBranch === "develop";
+  const isOnMain = startingBranch === "main";
 
   // Quick preview mode - minimal output
   if (quickPreview) {
-    console.log('🔍 Quick Release Preview\n');
+    console.log("🔍 Quick Release Preview\n");
   } else {
-    console.log('📦 Starting release process...\n');
+    console.log("📦 Starting release process...\n");
   }
 
   // Branch check (skip for preview modes)
@@ -753,7 +809,7 @@ async function main() {
   }
 
   // 1. Check completed feedback
-  console.log('🔍 Checking completed feedback...');
+  console.log("🔍 Checking completed feedback...");
   const feedbackItems = await getCompletedFeedback();
 
   let changelog;
@@ -763,7 +819,7 @@ async function main() {
   // Check if a custom changelog file was provided (user-friendly entries from Claude)
   if (changelogFile && existsSync(changelogFile)) {
     try {
-      changelog = JSON.parse(readFileSync(changelogFile, 'utf8'));
+      changelog = JSON.parse(readFileSync(changelogFile, "utf8"));
       useCustomChangelog = true;
       console.log(`✓ Using custom changelog from ${changelogFile}`);
       console.log(`  (${changelog.length} user-friendly entries)\n`);
@@ -772,37 +828,44 @@ async function main() {
       process.exit(1);
     }
   } else if (feedbackItems.length === 0) {
-    console.log('⚠️  No completed feedback found.');
-    console.log('📝 Using git commit history instead...\n');
+    console.log("⚠️  No completed feedback found.");
+    console.log("📝 Using git commit history instead...\n");
 
     changelog = generateChangelogFromGitHistory();
 
     if (changelog.length === 0) {
-      console.error('❌ No commits found to release.');
-      console.error('   Either:');
-      console.error('   1. Complete some feedback items, or');
-      console.error('   2. Make some commits to include in the release');
+      console.error("❌ No commits found to release.");
+      console.error("   Either:");
+      console.error("   1. Complete some feedback items, or");
+      console.error("   2. Make some commits to include in the release");
       process.exit(1);
     }
 
     useGitHistory = true;
     console.log(`✓ Found ${changelog.length} commits since last release\n`);
   } else {
-    const { userFacing, developerNotes } = generateChangelogFromFeedback(feedbackItems);
+    const { userFacing, developerNotes } =
+      generateChangelogFromFeedback(feedbackItems);
 
     // Count user-facing items only for summary
     const summary = { bugs: 0, features: 0, general: 0 };
-    feedbackItems.filter(item => !item.isInternalOnly).forEach(item => {
-      if (item.type === 'bug') summary.bugs++;
-      else if (item.type === 'feature') summary.features++;
-      else summary.general++;
-    });
+    feedbackItems
+      .filter((item) => !item.isInternalOnly)
+      .forEach((item) => {
+        if (item.type === "bug") summary.bugs++;
+        else if (item.type === "feature") summary.features++;
+        else summary.general++;
+      });
 
     console.log(`✓ Found ${userFacing.length} completed items`);
-    console.log(`  (${summary.bugs} bugs, ${summary.features} features, ${summary.general} general)\n`);
+    console.log(
+      `  (${summary.bugs} bugs, ${summary.features} features, ${summary.general} general)\n`
+    );
 
     if (developerNotes.length > 0) {
-      console.log(`📝 ${developerNotes.length} internal-only items (excluded from user changelog)\n`);
+      console.log(
+        `📝 ${developerNotes.length} internal-only items (excluded from user changelog)\n`
+      );
     }
 
     // Use only user-facing items for changelog
@@ -811,25 +874,26 @@ async function main() {
 
   // 2. Determine version
   const currentVersion = getCurrentVersion();
-  const suggestedVersion = manualVersion || suggestVersion(currentVersion, changelog);
+  const suggestedVersion =
+    manualVersion || suggestVersion(currentVersion, changelog);
 
   console.log(`📌 Current version: ${currentVersion}`);
   console.log(`📌 Suggested version: ${suggestedVersion}`);
 
   // Explain the bump type
-  const parts = currentVersion.split('.');
+  const parts = currentVersion.split(".");
   const currentMinor = parseInt(parts[1]) || 0;
-  const suggestedParts = suggestedVersion.split('.');
+  const suggestedParts = suggestedVersion.split(".");
   const suggestedMinor = parseInt(suggestedParts[1]) || 0;
 
   if (suggestedMinor > currentMinor) {
-    console.log('   (minor bump - significant features detected)');
+    console.log("   (minor bump - significant features detected)");
   } else {
-    console.log('   (patch bump - regular changes)');
+    console.log("   (patch bump - regular changes)");
   }
 
-  console.log('   💡 Override with: --version X.Y.Z');
-  console.log('');
+  console.log("   💡 Override with: --version X.Y.Z");
+  console.log("");
 
   // 3. Display changelog
   displayChangelog(changelog);
@@ -837,25 +901,32 @@ async function main() {
   // 4. Check git status
   const gitStatus = checkGitStatus();
   if (gitStatus) {
-    console.log('⚠️  Warning: Working directory has uncommitted changes:');
-    console.log(gitStatus.split('\n').map(line => `   ${line}`).join('\n'));
-    console.log('');
+    console.log("⚠️  Warning: Working directory has uncommitted changes:");
+    console.log(
+      gitStatus
+        .split("\n")
+        .map((line) => `   ${line}`)
+        .join("\n")
+    );
+    console.log("");
   }
 
   if (dryRun || quickPreview) {
     if (quickPreview) {
-      console.log('\n💡 Tip: Run /release to create this release interactively.');
+      console.log(
+        "\n💡 Tip: Run /release to create this release interactively."
+      );
     } else {
-      console.log('🔍 Dry run complete. No changes made.');
+      console.log("🔍 Dry run complete. No changes made.");
     }
     process.exit(0);
   }
 
   // In actual use, Claude will handle confirmation via AskUserQuestion
   // For now, require --confirm flag
-  if (!args.includes('--confirm')) {
-    console.log('💡 This is a preview. Add --confirm to execute the release.');
-    console.log('   Or use the /release slash command for interactive flow.');
+  if (!args.includes("--confirm")) {
+    console.log("💡 This is a preview. Add --confirm to execute the release.");
+    console.log("   Or use the /release slash command for interactive flow.");
     process.exit(0);
   }
 
@@ -866,7 +937,7 @@ async function main() {
   }
 
   // 6. Execute release
-  console.log('🚀 Executing release...\n');
+  console.log("🚀 Executing release...\n");
 
   let didStash = false;
 
@@ -875,55 +946,60 @@ async function main() {
     // Stash any uncommitted changes
     const gitStatus = checkGitStatus();
     if (gitStatus) {
-      console.log('📦 Stashing uncommitted changes...');
+      console.log("📦 Stashing uncommitted changes...");
       didStash = stashChanges();
     }
 
     // Switch to main
-    console.log('🔀 Switching to main branch...');
-    switchToBranch('main');
+    console.log("🔀 Switching to main branch...");
+    switchToBranch("main");
 
     // Pull latest main (in case remote has changes)
     try {
-      console.log('⬇️  Pulling latest main...');
-      execSync('git pull origin main --no-edit', { stdio: 'inherit' });
+      console.log("⬇️  Pulling latest main...");
+      execSync("git pull origin main --no-edit", { stdio: "inherit" });
     } catch (error) {
-      console.log('   (No remote changes or not connected)');
+      console.log("   (No remote changes or not connected)");
     }
 
     // Merge develop into main
-    console.log('🔀 Merging develop → main...');
-    mergeBranch('develop');
+    console.log("🔀 Merging develop → main...");
+    mergeBranch("develop");
   }
 
   // Update package.json
-  console.log('✓ Updating package.json...');
+  console.log("✓ Updating package.json...");
   updatePackageVersion(suggestedVersion);
 
   // Update service worker cache version (forces cache bust for users)
-  console.log('✓ Updating service worker cache version...');
+  console.log("✓ Updating service worker cache version...");
   updateServiceWorkerVersion(suggestedVersion);
 
   // Prepare Firestore (only if using feedback or custom changelog with feedback)
   if (!useGitHistory && feedbackItems.length > 0) {
-    console.log('✓ Archiving feedback in Firestore...');
+    console.log("✓ Archiving feedback in Firestore...");
     // Use custom changelog entries if provided, otherwise use generated ones
     // Include selected highlights (if any) in the version document
-    await prepareFirestoreRelease(suggestedVersion, changelog, feedbackItems, selectedHighlights);
+    await prepareFirestoreRelease(
+      suggestedVersion,
+      changelog,
+      feedbackItems,
+      selectedHighlights
+    );
   } else if (useGitHistory) {
-    console.log('⏭️  Skipping Firestore operations (git history mode)');
+    console.log("⏭️  Skipping Firestore operations (git history mode)");
   }
 
   // Create git commit and tag
-  console.log('✓ Creating git commit and tag...');
+  console.log("✓ Creating git commit and tag...");
   createGitRelease(suggestedVersion, changelog);
 
   // Push main branch and tags
-  console.log('✓ Pushing to remote...');
-  pushToRemote('main');
+  console.log("✓ Pushing to remote...");
+  pushToRemote("main");
 
   // Create GitHub release
-  console.log('✓ Creating GitHub release...');
+  console.log("✓ Creating GitHub release...");
   createGitHubRelease(suggestedVersion, changelog);
 
   // Note: "What's New" modal is handled by WhatsNewChecker component
@@ -931,39 +1007,41 @@ async function main() {
 
   // Switch back to develop and restore stash
   if (isOnDevelop) {
-    console.log('🔀 Switching back to develop...');
-    switchToBranch('develop');
+    console.log("🔀 Switching back to develop...");
+    switchToBranch("develop");
 
     // Merge main back to develop (so develop has the version bump)
-    console.log('🔀 Syncing main → develop...');
-    mergeBranch('main');
+    console.log("🔀 Syncing main → develop...");
+    mergeBranch("main");
 
     // Push develop
-    console.log('✓ Pushing develop...');
-    execSync('git push origin develop', { stdio: 'inherit' });
+    console.log("✓ Pushing develop...");
+    execSync("git push origin develop", { stdio: "inherit" });
 
     // Restore stashed changes
     if (didStash) {
-      console.log('📦 Restoring stashed changes...');
+      console.log("📦 Restoring stashed changes...");
       popStash();
     }
   }
 
   console.log(`\n🎉 Release v${suggestedVersion} complete!\n`);
-  console.log('   Summary:');
+  console.log("   Summary:");
   console.log(`   - Version: v${suggestedVersion}`);
   console.log(`   - Branch: main (tagged and pushed)`);
-  console.log(`   - Current branch: ${isOnDevelop ? 'develop' : 'main'}`);
-  console.log('');
-  console.log('   View the release:');
+  console.log(`   - Current branch: ${isOnDevelop ? "develop" : "main"}`);
+  console.log("");
+  console.log("   View the release:");
   console.log(`   - GitHub: gh release view v${suggestedVersion}`);
-  console.log('   - In app: "What\'s New" modal shows automatically on first login');
-  console.log('');
+  console.log(
+    '   - In app: "What\'s New" modal shows automatically on first login'
+  );
+  console.log("");
 
   process.exit(0);
 }
 
-main().catch(error => {
-  console.error('❌ Release failed:', error.message);
+main().catch((error) => {
+  console.error("❌ Release failed:", error.message);
   process.exit(1);
 });

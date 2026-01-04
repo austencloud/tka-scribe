@@ -8,24 +8,25 @@
  * REMOVES: Blur on content panels (--theme-*, solid backgrounds)
  */
 
-const fs = require('fs');
-const path = require('path');
+const fs = require("fs");
+const path = require("path");
 
 // Files with blur that should be KEPT (modal overlays verified manually)
 const WHITELIST = new Set([
   // These use blur correctly on modal/overlay backdrops
-  'ErrorModal.svelte', // Line 230 - overlay class
-  'ConfirmDialog.svelte', // Modal backdrop
-  'MigrationModal.svelte', // Modal backdrop
-  'VideoRecordSettingsSheet.svelte', // Sheet overlay
-  'ShortcutsHelp.svelte', // Help modal overlay (but not the panel inside)
-  'MobileFullscreenPrompt.svelte', // Fullscreen prompt overlay
+  "ErrorModal.svelte", // Line 230 - overlay class
+  "ConfirmDialog.svelte", // Modal backdrop
+  "MigrationModal.svelte", // Modal backdrop
+  "VideoRecordSettingsSheet.svelte", // Sheet overlay
+  "ShortcutsHelp.svelte", // Help modal overlay (but not the panel inside)
+  "MobileFullscreenPrompt.svelte", // Fullscreen prompt overlay
   // Scrollbar decorative blur (low priority, not content)
-  'SimpleGlassScroll.svelte',
+  "SimpleGlassScroll.svelte",
 ]);
 
 // Pattern: backdrop-filter: blur(Xpx) including webkit prefix
-const BLUR_PATTERN = /^\s*(backdrop-filter:\s*blur\([^)]+\);?|-webkit-backdrop-filter:\s*blur\([^)]+\);?)\s*$/gm;
+const BLUR_PATTERN =
+  /^\s*(backdrop-filter:\s*blur\([^)]+\);?|-webkit-backdrop-filter:\s*blur\([^)]+\);?)\s*$/gm;
 
 // Pattern to detect if this is likely a content panel (has theme vars in nearby lines)
 const CONTENT_PANEL_INDICATORS = [
@@ -43,9 +44,13 @@ function getAllSvelteFiles(dir) {
     for (const entry of entries) {
       const fullPath = path.join(currentDir, entry.name);
 
-      if (entry.isDirectory() && !entry.name.startsWith('.') && entry.name !== 'node_modules') {
+      if (
+        entry.isDirectory() &&
+        !entry.name.startsWith(".") &&
+        entry.name !== "node_modules"
+      ) {
         walk(fullPath);
-      } else if (entry.isFile() && entry.name.endsWith('.svelte')) {
+      } else if (entry.isFile() && entry.name.endsWith(".svelte")) {
         files.push(fullPath);
       }
     }
@@ -60,18 +65,18 @@ function analyzeAndFixFile(filePath) {
 
   // Skip whitelisted files
   if (WHITELIST.has(fileName)) {
-    return { skipped: true, reason: 'whitelisted' };
+    return { skipped: true, reason: "whitelisted" };
   }
 
-  const content = fs.readFileSync(filePath, 'utf8');
+  const content = fs.readFileSync(filePath, "utf8");
 
   // Check if file has blur
-  if (!content.includes('backdrop-filter')) {
-    return { skipped: true, reason: 'no blur' };
+  if (!content.includes("backdrop-filter")) {
+    return { skipped: true, reason: "no blur" };
   }
 
   // Split into lines for analysis
-  const lines = content.split('\n');
+  const lines = content.split("\n");
   const removedLines = [];
   let modified = false;
 
@@ -81,7 +86,7 @@ function analyzeAndFixFile(filePath) {
       // Look at surrounding context (10 lines before and after)
       const contextStart = Math.max(0, index - 10);
       const contextEnd = Math.min(lines.length, index + 10);
-      const context = lines.slice(contextStart, contextEnd).join('\n');
+      const context = lines.slice(contextStart, contextEnd).join("\n");
 
       // If context has theme variables, this is likely a content panel - remove blur
       const isContentPanel = CONTENT_PANEL_INDICATORS.some((pattern) =>
@@ -108,17 +113,17 @@ function analyzeAndFixFile(filePath) {
   });
 
   if (modified) {
-    fs.writeFileSync(filePath, newLines.join('\n'), 'utf8');
+    fs.writeFileSync(filePath, newLines.join("\n"), "utf8");
     return { modified: true, removedLines };
   }
 
-  return { skipped: true, reason: 'blur appears to be on overlays (kept)' };
+  return { skipped: true, reason: "blur appears to be on overlays (kept)" };
 }
 
 function main() {
-  const srcDir = path.join(__dirname, '..', 'src', 'lib');
+  const srcDir = path.join(__dirname, "..", "src", "lib");
 
-  console.log('🔍 Scanning for blur violations...\n');
+  console.log("🔍 Scanning for blur violations...\n");
 
   const files = getAllSvelteFiles(srcDir);
   const results = {
@@ -129,14 +134,14 @@ function main() {
 
   for (const file of files) {
     const result = analyzeAndFixFile(file);
-    const relativePath = path.relative(path.join(__dirname, '..'), file);
+    const relativePath = path.relative(path.join(__dirname, ".."), file);
 
     if (result.modified) {
       results.modified.push({
         file: relativePath,
         removedLines: result.removedLines,
       });
-    } else if (result.reason === 'whitelisted') {
+    } else if (result.reason === "whitelisted") {
       results.whitelisted.push(relativePath);
     } else {
       results.skipped.push({ file: relativePath, reason: result.reason });
@@ -144,21 +149,21 @@ function main() {
   }
 
   // Report
-  console.log('📝 BLUR VIOLATIONS FIXED:\n');
+  console.log("📝 BLUR VIOLATIONS FIXED:\n");
 
   if (results.modified.length === 0) {
-    console.log('  No violations found that could be auto-fixed.\n');
+    console.log("  No violations found that could be auto-fixed.\n");
   } else {
     for (const { file, removedLines } of results.modified) {
       console.log(`  ${file}:`);
       for (const { lineNum, content } of removedLines) {
         console.log(`    L${lineNum}: ${content.substring(0, 60)}...`);
       }
-      console.log('');
+      console.log("");
     }
   }
 
-  console.log('\n⏭️  WHITELISTED (kept blur - modal overlays):');
+  console.log("\n⏭️  WHITELISTED (kept blur - modal overlays):");
   for (const file of results.whitelisted) {
     console.log(`  ✓ ${file}`);
   }
@@ -167,7 +172,7 @@ function main() {
   console.log(`   ${results.modified.length} files fixed`);
   console.log(`   ${results.whitelisted.length} files whitelisted`);
   console.log(
-    `   ${results.skipped.filter((s) => s.reason === 'blur appears to be on overlays (kept)').length} files with blur kept (overlay context)`
+    `   ${results.skipped.filter((s) => s.reason === "blur appears to be on overlays (kept)").length} files with blur kept (overlay context)`
   );
 }
 

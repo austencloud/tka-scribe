@@ -38,34 +38,70 @@ try {
 // Beat-pair graph transformation maps (includes 90° and 270° rotations)
 // Note: "CCW" = counterclockwise as viewed from above
 const ROTATE_270_CCW = {
-  n: "e", e: "s", s: "w", w: "n",
-  ne: "se", se: "sw", sw: "nw", nw: "ne",
+  n: "e",
+  e: "s",
+  s: "w",
+  w: "n",
+  ne: "se",
+  se: "sw",
+  sw: "nw",
+  nw: "ne",
 };
 
 const ROTATE_180 = {
-  n: "s", s: "n", e: "w", w: "e",
-  ne: "sw", sw: "ne", nw: "se", se: "nw",
+  n: "s",
+  s: "n",
+  e: "w",
+  w: "e",
+  ne: "sw",
+  sw: "ne",
+  nw: "se",
+  se: "nw",
 };
 
 const ROTATE_90_CCW = {
-  n: "w", w: "s", s: "e", e: "n",
-  ne: "nw", nw: "sw", sw: "se", se: "ne",
+  n: "w",
+  w: "s",
+  s: "e",
+  e: "n",
+  ne: "nw",
+  nw: "sw",
+  sw: "se",
+  se: "ne",
 };
 
 // Clockwise rotation (opposite of CCW)
 const ROTATE_90_CW = {
-  n: "e", e: "s", s: "w", w: "n",
-  ne: "se", se: "sw", sw: "nw", nw: "ne",
+  n: "e",
+  e: "s",
+  s: "w",
+  w: "n",
+  ne: "se",
+  se: "sw",
+  sw: "nw",
+  nw: "ne",
 };
 
 const MIRROR_VERTICAL = {
-  n: "n", s: "s", e: "w", w: "e",
-  ne: "nw", nw: "ne", se: "sw", sw: "se",
+  n: "n",
+  s: "s",
+  e: "w",
+  w: "e",
+  ne: "nw",
+  nw: "ne",
+  se: "sw",
+  sw: "se",
 };
 
 const FLIP_HORIZONTAL = {
-  n: "s", s: "n", e: "e", w: "w",
-  ne: "se", se: "ne", nw: "sw", sw: "nw",
+  n: "s",
+  s: "n",
+  e: "e",
+  w: "w",
+  ne: "se",
+  se: "ne",
+  nw: "sw",
+  sw: "nw",
 };
 
 function invertMotionType(type) {
@@ -77,7 +113,9 @@ function invertMotionType(type) {
 function isCircular(sequence) {
   const beats = sequence.fullMetadata?.sequence?.filter((b) => b.beat >= 1);
   if (!beats || beats.length < 2) return false;
-  const startPosition = sequence.fullMetadata?.sequence?.find((b) => b.beat === 0);
+  const startPosition = sequence.fullMetadata?.sequence?.find(
+    (b) => b.beat === 0
+  );
   const lastBeat = beats[beats.length - 1];
   if (!startPosition || !lastBeat) return false;
   const startPos = startPosition.endPos || startPosition.sequenceStartPosition;
@@ -109,8 +147,12 @@ function extractBeats(sequence) {
 }
 
 function isRotated(beat1, beat2) {
-  const b1Blue = beat1.blue, b1Red = beat1.red, b2Blue = beat2.blue, b2Red = beat2.red;
-  if (!b1Blue?.endLoc || !b2Blue?.endLoc || !b1Red?.endLoc || !b2Red?.endLoc) return false;
+  const b1Blue = beat1.blue,
+    b1Red = beat1.red,
+    b2Blue = beat2.blue,
+    b2Red = beat2.red;
+  if (!b1Blue?.endLoc || !b2Blue?.endLoc || !b1Red?.endLoc || !b2Red?.endLoc)
+    return false;
   return (
     ROTATE_180[b1Blue.startLoc] === b2Blue.startLoc &&
     ROTATE_180[b1Blue.endLoc] === b2Blue.endLoc &&
@@ -120,31 +162,47 @@ function isRotated(beat1, beat2) {
 }
 
 function isSwapped(beat1, beat2) {
-  const b1Blue = beat1.blue, b1Red = beat1.red, b2Blue = beat2.blue, b2Red = beat2.red;
-  if (!b1Blue?.endLoc || !b2Blue?.endLoc || !b1Red?.endLoc || !b2Red?.endLoc) return false;
+  const b1Blue = beat1.blue,
+    b1Red = beat1.red,
+    b2Blue = beat2.blue,
+    b2Red = beat2.red;
+  if (!b1Blue?.endLoc || !b2Blue?.endLoc || !b1Red?.endLoc || !b2Red?.endLoc)
+    return false;
   if (b1Blue.motionType === b1Red.motionType) return false;
   return (
-    b1Blue.startLoc === b2Red.startLoc && b1Blue.endLoc === b2Red.endLoc &&
+    b1Blue.startLoc === b2Red.startLoc &&
+    b1Blue.endLoc === b2Red.endLoc &&
     b1Blue.motionType === b2Red.motionType &&
-    b1Red.startLoc === b2Blue.startLoc && b1Red.endLoc === b2Blue.endLoc &&
+    b1Red.startLoc === b2Blue.startLoc &&
+    b1Red.endLoc === b2Blue.endLoc &&
     b1Red.motionType === b2Blue.motionType
   );
 }
 
 function isRepeated(beat1, beat2) {
-  const b1Blue = beat1.blue, b1Red = beat1.red, b2Blue = beat2.blue, b2Red = beat2.red;
-  if (!b1Blue?.endLoc || !b2Blue?.endLoc || !b1Red?.endLoc || !b2Red?.endLoc) return false;
+  const b1Blue = beat1.blue,
+    b1Red = beat1.red,
+    b2Blue = beat2.blue,
+    b2Red = beat2.red;
+  if (!b1Blue?.endLoc || !b2Blue?.endLoc || !b1Red?.endLoc || !b2Red?.endLoc)
+    return false;
   return (
-    b1Blue.startLoc === b2Blue.startLoc && b1Blue.endLoc === b2Blue.endLoc &&
+    b1Blue.startLoc === b2Blue.startLoc &&
+    b1Blue.endLoc === b2Blue.endLoc &&
     b1Blue.motionType === b2Blue.motionType &&
-    b1Red.startLoc === b2Red.startLoc && b1Red.endLoc === b2Red.endLoc &&
+    b1Red.startLoc === b2Red.startLoc &&
+    b1Red.endLoc === b2Red.endLoc &&
     b1Red.motionType === b2Red.motionType
   );
 }
 
 function isMirrored(beat1, beat2) {
-  const b1Blue = beat1.blue, b1Red = beat1.red, b2Blue = beat2.blue, b2Red = beat2.red;
-  if (!b1Blue?.endLoc || !b2Blue?.endLoc || !b1Red?.endLoc || !b2Red?.endLoc) return false;
+  const b1Blue = beat1.blue,
+    b1Red = beat1.red,
+    b2Blue = beat2.blue,
+    b2Red = beat2.red;
+  if (!b1Blue?.endLoc || !b2Blue?.endLoc || !b1Red?.endLoc || !b2Red?.endLoc)
+    return false;
   return (
     MIRROR_VERTICAL[b1Blue.startLoc] === b2Blue.startLoc &&
     MIRROR_VERTICAL[b1Blue.endLoc] === b2Blue.endLoc &&
@@ -154,8 +212,12 @@ function isMirrored(beat1, beat2) {
 }
 
 function isFlipped(beat1, beat2) {
-  const b1Blue = beat1.blue, b1Red = beat1.red, b2Blue = beat2.blue, b2Red = beat2.red;
-  if (!b1Blue?.endLoc || !b2Blue?.endLoc || !b1Red?.endLoc || !b2Red?.endLoc) return false;
+  const b1Blue = beat1.blue,
+    b1Red = beat1.red,
+    b2Blue = beat2.blue,
+    b2Red = beat2.red;
+  if (!b1Blue?.endLoc || !b2Blue?.endLoc || !b1Red?.endLoc || !b2Red?.endLoc)
+    return false;
   return (
     FLIP_HORIZONTAL[b1Blue.startLoc] === b2Blue.startLoc &&
     FLIP_HORIZONTAL[b1Blue.endLoc] === b2Blue.endLoc &&
@@ -165,11 +227,16 @@ function isFlipped(beat1, beat2) {
 }
 
 function isInverted(beat1, beat2) {
-  const b1Blue = beat1.blue, b1Red = beat1.red, b2Blue = beat2.blue, b2Red = beat2.red;
+  const b1Blue = beat1.blue,
+    b1Red = beat1.red,
+    b2Blue = beat2.blue,
+    b2Red = beat2.red;
   if (!b1Blue?.motionType || !b2Blue?.motionType) return false;
   const positionsMatch =
-    b1Blue.startLoc === b2Blue.startLoc && b1Blue.endLoc === b2Blue.endLoc &&
-    b1Red.startLoc === b2Red.startLoc && b1Red.endLoc === b2Red.endLoc;
+    b1Blue.startLoc === b2Blue.startLoc &&
+    b1Blue.endLoc === b2Blue.endLoc &&
+    b1Red.startLoc === b2Red.startLoc &&
+    b1Red.endLoc === b2Red.endLoc;
   const motionsInverted =
     invertMotionType(b1Blue.motionType) === b2Blue.motionType &&
     invertMotionType(b1Red.motionType) === b2Red.motionType;
@@ -177,8 +244,12 @@ function isInverted(beat1, beat2) {
 }
 
 function isRotatedThenSwapped(beat1, beat2) {
-  const b1Blue = beat1.blue, b1Red = beat1.red, b2Blue = beat2.blue, b2Red = beat2.red;
-  if (!b1Blue?.endLoc || !b2Blue?.endLoc || !b1Red?.endLoc || !b2Red?.endLoc) return false;
+  const b1Blue = beat1.blue,
+    b1Red = beat1.red,
+    b2Blue = beat2.blue,
+    b2Red = beat2.red;
+  if (!b1Blue?.endLoc || !b2Blue?.endLoc || !b1Red?.endLoc || !b2Red?.endLoc)
+    return false;
   return (
     ROTATE_180[b1Red.startLoc] === b2Blue.startLoc &&
     ROTATE_180[b1Red.endLoc] === b2Blue.endLoc &&
@@ -190,8 +261,12 @@ function isRotatedThenSwapped(beat1, beat2) {
 }
 
 function isMirroredThenSwapped(beat1, beat2) {
-  const b1Blue = beat1.blue, b1Red = beat1.red, b2Blue = beat2.blue, b2Red = beat2.red;
-  if (!b1Blue?.endLoc || !b2Blue?.endLoc || !b1Red?.endLoc || !b2Red?.endLoc) return false;
+  const b1Blue = beat1.blue,
+    b1Red = beat1.red,
+    b2Blue = beat2.blue,
+    b2Red = beat2.red;
+  if (!b1Blue?.endLoc || !b2Blue?.endLoc || !b1Red?.endLoc || !b2Red?.endLoc)
+    return false;
   return (
     MIRROR_VERTICAL[b1Red.startLoc] === b2Blue.startLoc &&
     MIRROR_VERTICAL[b1Red.endLoc] === b2Blue.endLoc &&
@@ -203,8 +278,12 @@ function isMirroredThenSwapped(beat1, beat2) {
 }
 
 function isMirroredSwappedInverted(beat1, beat2) {
-  const b1Blue = beat1.blue, b1Red = beat1.red, b2Blue = beat2.blue, b2Red = beat2.red;
-  if (!b1Blue?.endLoc || !b2Blue?.endLoc || !b1Red?.endLoc || !b2Red?.endLoc) return false;
+  const b1Blue = beat1.blue,
+    b1Red = beat1.red,
+    b2Blue = beat2.blue,
+    b2Red = beat2.red;
+  if (!b1Blue?.endLoc || !b2Blue?.endLoc || !b1Red?.endLoc || !b2Red?.endLoc)
+    return false;
   return (
     MIRROR_VERTICAL[b1Red.startLoc] === b2Blue.startLoc &&
     MIRROR_VERTICAL[b1Red.endLoc] === b2Blue.endLoc &&
@@ -216,8 +295,12 @@ function isMirroredSwappedInverted(beat1, beat2) {
 }
 
 function isFlippedThenInverted(beat1, beat2) {
-  const b1Blue = beat1.blue, b1Red = beat1.red, b2Blue = beat2.blue, b2Red = beat2.red;
-  if (!b1Blue?.endLoc || !b2Blue?.endLoc || !b1Red?.endLoc || !b2Red?.endLoc) return false;
+  const b1Blue = beat1.blue,
+    b1Red = beat1.red,
+    b2Blue = beat2.blue,
+    b2Red = beat2.red;
+  if (!b1Blue?.endLoc || !b2Blue?.endLoc || !b1Red?.endLoc || !b2Red?.endLoc)
+    return false;
   const positionsFlipped =
     FLIP_HORIZONTAL[b1Blue.startLoc] === b2Blue.startLoc &&
     FLIP_HORIZONTAL[b1Blue.endLoc] === b2Blue.endLoc &&
@@ -231,8 +314,12 @@ function isFlippedThenInverted(beat1, beat2) {
 }
 
 function isQuarteredRotatedOnly(beat1, beat2) {
-  const b1Blue = beat1.blue, b1Red = beat1.red, b2Blue = beat2.blue, b2Red = beat2.red;
-  if (!b1Blue?.endLoc || !b2Blue?.endLoc || !b1Red?.endLoc || !b2Red?.endLoc) return false;
+  const b1Blue = beat1.blue,
+    b1Red = beat1.red,
+    b2Blue = beat2.blue,
+    b2Red = beat2.red;
+  if (!b1Blue?.endLoc || !b2Blue?.endLoc || !b1Red?.endLoc || !b2Red?.endLoc)
+    return false;
   return (
     ROTATE_90_CCW[b1Blue.startLoc] === b2Blue.startLoc &&
     ROTATE_90_CCW[b1Blue.endLoc] === b2Blue.endLoc &&
@@ -244,8 +331,12 @@ function isQuarteredRotatedOnly(beat1, beat2) {
 }
 
 function isQuarteredRotatedSwapped(beat1, beat2) {
-  const b1Blue = beat1.blue, b1Red = beat1.red, b2Blue = beat2.blue, b2Red = beat2.red;
-  if (!b1Blue?.endLoc || !b2Blue?.endLoc || !b1Red?.endLoc || !b2Red?.endLoc) return false;
+  const b1Blue = beat1.blue,
+    b1Red = beat1.red,
+    b2Blue = beat2.blue,
+    b2Red = beat2.red;
+  if (!b1Blue?.endLoc || !b2Blue?.endLoc || !b1Red?.endLoc || !b2Red?.endLoc)
+    return false;
   return (
     ROTATE_90_CCW[b1Red.startLoc] === b2Blue.startLoc &&
     ROTATE_90_CCW[b1Red.endLoc] === b2Blue.endLoc &&
@@ -268,15 +359,15 @@ function detectRotationDirection(beats) {
 
   // Get representative beats at each quarter
   const quarterBeats = [
-    beats[0],                      // Q1: beat 1
-    beats[quarterLength],          // Q2: beat 5 (for 16-beat)
-    beats[quarterLength * 2],      // Q3: beat 9
-    beats[quarterLength * 3],      // Q4: beat 13
+    beats[0], // Q1: beat 1
+    beats[quarterLength], // Q2: beat 5 (for 16-beat)
+    beats[quarterLength * 2], // Q3: beat 9
+    beats[quarterLength * 3], // Q4: beat 13
   ];
 
   // Track the progression of Blue's startLoc through quarters
-  const blueStartLocs = quarterBeats.map(b => b.blue?.startLoc);
-  const redStartLocs = quarterBeats.map(b => b.red?.startLoc);
+  const blueStartLocs = quarterBeats.map((b) => b.blue?.startLoc);
+  const redStartLocs = quarterBeats.map((b) => b.red?.startLoc);
 
   // Check if positions follow CCW or CW progression
   // CCW progression: n→w→s→e→n or any rotation of this (s→e→n→w, etc.)
@@ -324,10 +415,17 @@ function detectRotationDirection(beats) {
  * This allows finding the COMMON transformation across all beat pairs.
  */
 function compareBeatPair(beat1, beat2) {
-  const b1Blue = beat1.blue, b1Red = beat1.red;
-  const b2Blue = beat2.blue, b2Red = beat2.red;
+  const b1Blue = beat1.blue,
+    b1Red = beat1.red;
+  const b2Blue = beat2.blue,
+    b2Red = beat2.red;
 
-  if (!b1Blue?.startLoc || !b2Blue?.startLoc || !b1Red?.startLoc || !b2Red?.startLoc) {
+  if (
+    !b1Blue?.startLoc ||
+    !b2Blue?.startLoc ||
+    !b1Red?.startLoc ||
+    !b2Red?.startLoc
+  ) {
     return [];
   }
 
@@ -335,9 +433,11 @@ function compareBeatPair(beat1, beat2) {
 
   // Check if beats are identical (repeated)
   const isRepeated =
-    b1Blue.startLoc === b2Blue.startLoc && b1Blue.endLoc === b2Blue.endLoc &&
+    b1Blue.startLoc === b2Blue.startLoc &&
+    b1Blue.endLoc === b2Blue.endLoc &&
     b1Blue.motionType === b2Blue.motionType &&
-    b1Red.startLoc === b2Red.startLoc && b1Red.endLoc === b2Red.endLoc &&
+    b1Red.startLoc === b2Red.startLoc &&
+    b1Red.endLoc === b2Red.endLoc &&
     b1Red.motionType === b2Red.motionType;
 
   if (isRepeated) {
@@ -522,9 +622,12 @@ function compareBeatPair(beat1, beat2) {
 
   // Check if colors are swapped (without position change)
   const colorsSwapped =
-    b1Blue.startLoc === b2Red.startLoc && b1Blue.endLoc === b2Red.endLoc &&
-    b1Red.startLoc === b2Blue.startLoc && b1Red.endLoc === b2Blue.endLoc &&
-    b1Blue.motionType === b2Red.motionType && b1Red.motionType === b2Blue.motionType;
+    b1Blue.startLoc === b2Red.startLoc &&
+    b1Blue.endLoc === b2Red.endLoc &&
+    b1Red.startLoc === b2Blue.startLoc &&
+    b1Red.endLoc === b2Blue.endLoc &&
+    b1Blue.motionType === b2Red.motionType &&
+    b1Red.motionType === b2Blue.motionType;
 
   if (colorsSwapped && !transformations.includes("swapped")) {
     transformations.push("swapped");
@@ -532,8 +635,10 @@ function compareBeatPair(beat1, beat2) {
 
   // Check if motion types are inverted (same positions)
   const motionInverted =
-    b1Blue.startLoc === b2Blue.startLoc && b1Blue.endLoc === b2Blue.endLoc &&
-    b1Red.startLoc === b2Red.startLoc && b1Red.endLoc === b2Red.endLoc &&
+    b1Blue.startLoc === b2Blue.startLoc &&
+    b1Blue.endLoc === b2Blue.endLoc &&
+    b1Red.startLoc === b2Red.startLoc &&
+    b1Red.endLoc === b2Red.endLoc &&
     invertMotionType(b1Blue.motionType) === b2Blue.motionType &&
     invertMotionType(b1Red.motionType) === b2Red.motionType;
 
@@ -586,15 +691,17 @@ function generateHalvedBeatPairs(beats) {
     const rawTransformations = compareBeatPair(beat1, beat2);
 
     // Format transformations as human-readable strings
-    const formattedTransformations = formatBeatPairTransformations(rawTransformations);
+    const formattedTransformations =
+      formatBeatPairTransformations(rawTransformations);
 
     beatPairs.push({
       keyBeat: beat1.beatNumber,
       correspondingBeat: beat2.beatNumber,
       rawTransformations: rawTransformations, // Keep raw for finding common transformation
-      detectedTransformations: formattedTransformations.length > 0
-        ? formattedTransformations
-        : ["UNKNOWN"],
+      detectedTransformations:
+        formattedTransformations.length > 0
+          ? formattedTransformations
+          : ["UNKNOWN"],
     });
   }
 
@@ -621,15 +728,17 @@ function generateQuarteredBeatPairs(beats) {
     // Note: 90° rotations are already detected by compareBeatPair() with proper motion checks.
     // No need for additional position-only checks here.
 
-    const formattedTransformations = formatBeatPairTransformations(rawTransformations);
+    const formattedTransformations =
+      formatBeatPairTransformations(rawTransformations);
 
     beatPairs.push({
       keyBeat: beat1.beatNumber,
       correspondingBeat: beat2.beatNumber,
       rawTransformations: rawTransformations,
-      detectedTransformations: formattedTransformations.length > 0
-        ? formattedTransformations
-        : ["UNKNOWN"],
+      detectedTransformations:
+        formattedTransformations.length > 0
+          ? formattedTransformations
+          : ["UNKNOWN"],
     });
   }
 
@@ -647,30 +756,30 @@ function generateQuarteredBeatPairs(beats) {
  */
 const TRANSFORMATION_PRIORITY = [
   // Pure directional rotations first (simplest explanation)
-  "rotated_90_cw",                    // 90° CW rotation (pure)
-  "rotated_90_ccw",                   // 90° CCW rotation (pure)
-  "rotated_180",                      // 180° rotation (pure)
+  "rotated_90_cw", // 90° CW rotation (pure)
+  "rotated_90_ccw", // 90° CCW rotation (pure)
+  "rotated_180", // 180° rotation (pure)
   // Rotation + inversion (more specific than pure rotation)
-  "rotated_90_cw_inverted",           // 90° CW rotation + motion inversion
-  "rotated_90_ccw_inverted",          // 90° CCW rotation + motion inversion
-  "rotated_180_inverted",             // 180° rotation + motion inversion
+  "rotated_90_cw_inverted", // 90° CW rotation + motion inversion
+  "rotated_90_ccw_inverted", // 90° CCW rotation + motion inversion
+  "rotated_180_inverted", // 180° rotation + motion inversion
   // Rotation + swap (compound)
-  "rotated_90_cw_swapped",            // Quartered CW rotation + swap
-  "rotated_90_ccw_swapped",           // Quartered CCW rotation + swap
-  "rotated_180_swapped",              // Halved rotation + swap
+  "rotated_90_cw_swapped", // Quartered CW rotation + swap
+  "rotated_90_ccw_swapped", // Quartered CCW rotation + swap
+  "rotated_180_swapped", // Halved rotation + swap
   // Rotation + swap + inversion (triple compound)
-  "rotated_90_cw_swapped_inverted",   // Quartered CW + swap + inversion
-  "rotated_90_ccw_swapped_inverted",  // Quartered CCW + swap + inversion
-  "rotated_180_swapped_inverted",     // Halved + swap + inversion
+  "rotated_90_cw_swapped_inverted", // Quartered CW + swap + inversion
+  "rotated_90_ccw_swapped_inverted", // Quartered CCW + swap + inversion
+  "rotated_180_swapped_inverted", // Halved + swap + inversion
   // Other compound transformations
-  "flipped_inverted",                 // Flip + motion inversion
-  "mirrored_swapped",                 // Mirror + swap
+  "flipped_inverted", // Flip + motion inversion
+  "mirrored_swapped", // Mirror + swap
   // Simple transformations
-  "mirrored",                         // Vertical mirror
-  "flipped",                          // Horizontal flip
-  "swapped",                          // Color swap only
-  "inverted",                         // Motion inversion only
-  "repeated",                         // Identical (lowest priority)
+  "mirrored", // Vertical mirror
+  "flipped", // Horizontal flip
+  "swapped", // Color swap only
+  "inverted", // Motion inversion only
+  "repeated", // Identical (lowest priority)
 ];
 
 /**
@@ -686,18 +795,33 @@ function formatBeatPairTransformations(rawTransformations) {
   const sorted = [...rawTransformations].sort((a, b) => {
     const priorityA = TRANSFORMATION_PRIORITY.indexOf(a);
     const priorityB = TRANSFORMATION_PRIORITY.indexOf(b);
-    return (priorityA === -1 ? 999 : priorityA) - (priorityB === -1 ? 999 : priorityB);
+    return (
+      (priorityA === -1 ? 999 : priorityA) -
+      (priorityB === -1 ? 999 : priorityB)
+    );
   });
 
   // Format primary (highest priority) transformation
   // Convert underscores to readable format with direction info
   let primary = sorted[0].toUpperCase();
   // Triple compound (rotation + swap + invert) - order matters!
-  primary = primary.replace(/ROTATED_90_CCW_SWAPPED_INVERTED/, "ROTATED_90_CCW+SWAPPED+INVERTED");
-  primary = primary.replace(/ROTATED_90_CW_SWAPPED_INVERTED/, "ROTATED_90_CW+SWAPPED+INVERTED");
-  primary = primary.replace(/ROTATED_180_SWAPPED_INVERTED/, "ROTATED_180+SWAPPED+INVERTED");
+  primary = primary.replace(
+    /ROTATED_90_CCW_SWAPPED_INVERTED/,
+    "ROTATED_90_CCW+SWAPPED+INVERTED"
+  );
+  primary = primary.replace(
+    /ROTATED_90_CW_SWAPPED_INVERTED/,
+    "ROTATED_90_CW+SWAPPED+INVERTED"
+  );
+  primary = primary.replace(
+    /ROTATED_180_SWAPPED_INVERTED/,
+    "ROTATED_180+SWAPPED+INVERTED"
+  );
   // Double compound (rotation + invert)
-  primary = primary.replace(/ROTATED_90_CCW_INVERTED/, "ROTATED_90_CCW+INVERTED");
+  primary = primary.replace(
+    /ROTATED_90_CCW_INVERTED/,
+    "ROTATED_90_CCW+INVERTED"
+  );
   primary = primary.replace(/ROTATED_90_CW_INVERTED/, "ROTATED_90_CW+INVERTED");
   primary = primary.replace(/ROTATED_180_INVERTED/, "ROTATED_180+INVERTED");
   // Double compound (rotation + swap)
@@ -729,11 +853,13 @@ function findCommonTransformation(beatPairs) {
   if (beatPairs.length === 0) return null;
 
   // Get the set of transformations for each beat pair
-  const allTransformations = beatPairs.map(pair => new Set(pair.rawTransformations || []));
+  const allTransformations = beatPairs.map(
+    (pair) => new Set(pair.rawTransformations || [])
+  );
 
   // Find intersection - transformations that appear in ALL pairs
-  const common = [...allTransformations[0]].filter(t =>
-    allTransformations.every(set => set.has(t))
+  const common = [...allTransformations[0]].filter((t) =>
+    allTransformations.every((set) => set.has(t))
   );
 
   if (common.length === 0) return null;
@@ -742,7 +868,10 @@ function findCommonTransformation(beatPairs) {
   const sorted = common.sort((a, b) => {
     const priorityA = TRANSFORMATION_PRIORITY.indexOf(a);
     const priorityB = TRANSFORMATION_PRIORITY.indexOf(b);
-    return (priorityA === -1 ? 999 : priorityA) - (priorityB === -1 ? 999 : priorityB);
+    return (
+      (priorityA === -1 ? 999 : priorityA) -
+      (priorityB === -1 ? 999 : priorityB)
+    );
   });
 
   return sorted[0];
@@ -757,18 +886,23 @@ function findAllCommonTransformations(beatPairs) {
   if (beatPairs.length === 0) return [];
 
   // Get the set of transformations for each beat pair
-  const allTransformations = beatPairs.map(pair => new Set(pair.rawTransformations || []));
+  const allTransformations = beatPairs.map(
+    (pair) => new Set(pair.rawTransformations || [])
+  );
 
   // Find intersection - transformations that appear in ALL pairs
-  const common = [...allTransformations[0]].filter(t =>
-    allTransformations.every(set => set.has(t))
+  const common = [...allTransformations[0]].filter((t) =>
+    allTransformations.every((set) => set.has(t))
   );
 
   // Sort by priority for consistent ordering
   return common.sort((a, b) => {
     const priorityA = TRANSFORMATION_PRIORITY.indexOf(a);
     const priorityB = TRANSFORMATION_PRIORITY.indexOf(b);
-    return (priorityA === -1 ? 999 : priorityA) - (priorityB === -1 ? 999 : priorityB);
+    return (
+      (priorityA === -1 ? 999 : priorityA) -
+      (priorityB === -1 ? 999 : priorityB)
+    );
   });
 }
 
@@ -788,7 +922,8 @@ function buildCandidateDesignations(allCommon, interval, rotationDirection) {
     const components = deriveComponentsFromBeatPairPattern(transformation);
     if (components.length === 0) continue;
 
-    const direction = extractRotationDirection(transformation) || rotationDirection;
+    const direction =
+      extractRotationDirection(transformation) || rotationDirection;
 
     // Create unique key for deduplication
     const key = components.sort().join("+") + "|" + (direction || "none");
@@ -829,26 +964,54 @@ function formatCandidateDescription(transformation, direction) {
   const upper = transformation.toUpperCase();
 
   // Triple compound: rotation + swap + invert (check first, most specific)
-  if (upper.includes("ROTATED_90") && upper.includes("SWAPPED") && upper.includes("INVERTED")) {
-    const dir = upper.includes("CCW") ? "CCW" : upper.includes("CW") ? "CW" : "";
+  if (
+    upper.includes("ROTATED_90") &&
+    upper.includes("SWAPPED") &&
+    upper.includes("INVERTED")
+  ) {
+    const dir = upper.includes("CCW")
+      ? "CCW"
+      : upper.includes("CW")
+        ? "CW"
+        : "";
     return `Rotated 90° ${dir} + Swapped + Inverted`;
   }
-  if (upper.includes("ROTATED_180") && upper.includes("SWAPPED") && upper.includes("INVERTED")) {
+  if (
+    upper.includes("ROTATED_180") &&
+    upper.includes("SWAPPED") &&
+    upper.includes("INVERTED")
+  ) {
     return "Rotated 180° + Swapped + Inverted";
   }
 
   // Double compound: rotation + invert
-  if (upper.includes("ROTATED_90") && upper.includes("INVERTED") && !upper.includes("SWAPPED")) {
-    const dir = upper.includes("CCW") ? "CCW" : upper.includes("CW") ? "CW" : "";
+  if (
+    upper.includes("ROTATED_90") &&
+    upper.includes("INVERTED") &&
+    !upper.includes("SWAPPED")
+  ) {
+    const dir = upper.includes("CCW")
+      ? "CCW"
+      : upper.includes("CW")
+        ? "CW"
+        : "";
     return `Rotated 90° ${dir} + Inverted`;
   }
-  if (upper.includes("ROTATED_180") && upper.includes("INVERTED") && !upper.includes("SWAPPED")) {
+  if (
+    upper.includes("ROTATED_180") &&
+    upper.includes("INVERTED") &&
+    !upper.includes("SWAPPED")
+  ) {
     return "Rotated 180° + Inverted";
   }
 
   // Double compound: rotation + swap
   if (upper.includes("ROTATED_90") && upper.includes("SWAPPED")) {
-    const dir = upper.includes("CCW") ? "CCW" : upper.includes("CW") ? "CW" : "";
+    const dir = upper.includes("CCW")
+      ? "CCW"
+      : upper.includes("CW")
+        ? "CW"
+        : "";
     return `Rotated 90° ${dir} + Swapped`;
   }
   if (upper.includes("ROTATED_180") && upper.includes("SWAPPED")) {
@@ -857,7 +1020,11 @@ function formatCandidateDescription(transformation, direction) {
 
   // Pure rotations
   if (upper.includes("ROTATED_90")) {
-    const dir = upper.includes("CCW") ? "CCW" : upper.includes("CW") ? "CW" : "";
+    const dir = upper.includes("CCW")
+      ? "CCW"
+      : upper.includes("CW")
+        ? "CW"
+        : "";
     return `Rotated 90° ${dir}`;
   }
   if (upper.includes("ROTATED_180")) {
@@ -948,7 +1115,8 @@ function analyzeLetterGroupPattern(beatNumbers, graph) {
   }
 
   // Also check last to first (circular)
-  const lastToFirst = graph[beatNumbers[beatNumbers.length - 1]]?.[beatNumbers[0]] || [];
+  const lastToFirst =
+    graph[beatNumbers[beatNumbers.length - 1]]?.[beatNumbers[0]] || [];
   transformationSequence.push({
     from: beatNumbers[beatNumbers.length - 1],
     to: beatNumbers[0],
@@ -1017,7 +1185,9 @@ function detectModularPattern(beats) {
 
   // Analyze each letter group's pattern
   const letterPatterns = {};
-  for (const [letter, beatNumbers] of Object.entries(nonConsecutiveLetterGroups)) {
+  for (const [letter, beatNumbers] of Object.entries(
+    nonConsecutiveLetterGroups
+  )) {
     letterPatterns[letter] = analyzeLetterGroupPattern(beatNumbers, graph);
   }
 
@@ -1025,7 +1195,9 @@ function detectModularPattern(beats) {
   const uniquePatterns = new Set();
   for (const [letter, analysis] of Object.entries(letterPatterns)) {
     const patternSig = JSON.stringify(
-      analysis.transformationSequence.map(t => t.transformations.sort().join("+"))
+      analysis.transformationSequence.map((t) =>
+        t.transformations.sort().join("+")
+      )
     );
     uniquePatterns.add(patternSig);
   }
@@ -1083,28 +1255,39 @@ function detectLOOPType(sequence) {
     if (isRotatedThenSwapped(beat1, beat2)) results.rotatedSwapped.matches++;
     if (isMirroredThenSwapped(beat1, beat2)) results.mirroredSwapped.matches++;
     if (isFlippedThenInverted(beat1, beat2)) results.flippedInverted.matches++;
-    if (isMirroredSwappedInverted(beat1, beat2)) results.mirroredSwappedInverted.matches++;
+    if (isMirroredSwappedInverted(beat1, beat2))
+      results.mirroredSwappedInverted.matches++;
     if (isRepeated(beat1, beat2)) results.repeated.matches++;
   }
 
   const detectedComponents = [];
 
-  if (results.rotated.matches === halfLength) detectedComponents.push("rotated");
-  if (results.swapped.matches === halfLength) detectedComponents.push("swapped");
-  if (results.mirrored.matches === halfLength) detectedComponents.push("mirrored");
-  if (results.flipped.matches === halfLength) detectedComponents.push("flipped");
-  if (results.inverted.matches === halfLength) detectedComponents.push("inverted");
-  if (results.repeated.matches === halfLength) detectedComponents.push("repeated");
+  if (results.rotated.matches === halfLength)
+    detectedComponents.push("rotated");
+  if (results.swapped.matches === halfLength)
+    detectedComponents.push("swapped");
+  if (results.mirrored.matches === halfLength)
+    detectedComponents.push("mirrored");
+  if (results.flipped.matches === halfLength)
+    detectedComponents.push("flipped");
+  if (results.inverted.matches === halfLength)
+    detectedComponents.push("inverted");
+  if (results.repeated.matches === halfLength)
+    detectedComponents.push("repeated");
 
   // Check compound types
   if (results.rotatedSwapped.matches === halfLength) {
-    const swapIsMeaningful = beats.slice(0, halfLength).some((beat) => beat.blue?.motionType !== beat.red?.motionType);
+    const swapIsMeaningful = beats
+      .slice(0, halfLength)
+      .some((beat) => beat.blue?.motionType !== beat.red?.motionType);
     if (swapIsMeaningful && !detectedComponents.includes("rotated+swapped")) {
       detectedComponents.push("rotated+swapped");
     }
   }
   if (results.mirroredSwapped.matches === halfLength) {
-    const swapIsMeaningful = beats.slice(0, halfLength).some((beat) => beat.blue?.motionType !== beat.red?.motionType);
+    const swapIsMeaningful = beats
+      .slice(0, halfLength)
+      .some((beat) => beat.blue?.motionType !== beat.red?.motionType);
     if (swapIsMeaningful && !detectedComponents.includes("mirrored+swapped")) {
       detectedComponents.push("mirrored+swapped");
     }
@@ -1115,9 +1298,17 @@ function detectLOOPType(sequence) {
     detectedComponents.push("flipped+inverted");
   }
   if (results.mirroredSwappedInverted.matches === halfLength) {
-    const swapIsMeaningful = beats.slice(0, halfLength).some((beat) => beat.blue?.motionType !== beat.red?.motionType);
+    const swapIsMeaningful = beats
+      .slice(0, halfLength)
+      .some((beat) => beat.blue?.motionType !== beat.red?.motionType);
     if (swapIsMeaningful) {
-      ["mirrored", "swapped", "inverted", "mirrored+swapped", "flipped+inverted"].forEach((c) => {
+      [
+        "mirrored",
+        "swapped",
+        "inverted",
+        "mirrored+swapped",
+        "flipped+inverted",
+      ].forEach((c) => {
         const idx = detectedComponents.indexOf(c);
         if (idx !== -1) detectedComponents.splice(idx, 1);
       });
@@ -1134,17 +1325,21 @@ function detectLOOPType(sequence) {
       for (let i = 0; i < quarterLength; i++) {
         const beat1 = beats[q * quarterLength + i];
         const beat2 = beats[(q + 1) * quarterLength + i];
-        if (isQuarteredRotatedSwapped(beat1, beat2)) quarteredRotatedSwappedMatches++;
+        if (isQuarteredRotatedSwapped(beat1, beat2))
+          quarteredRotatedSwappedMatches++;
       }
     }
 
     const totalQuarteredPairs = quarterLength * 3;
     if (quarteredRotatedSwappedMatches === totalQuarteredPairs) {
-      const swapIsMeaningful = beats.slice(0, quarterLength).some((beat) => beat.blue?.motionType !== beat.red?.motionType);
+      const swapIsMeaningful = beats
+        .slice(0, quarterLength)
+        .some((beat) => beat.blue?.motionType !== beat.red?.motionType);
       if (swapIsMeaningful) {
         const rotatedIdx = detectedComponents.indexOf("rotated");
         if (rotatedIdx !== -1) detectedComponents.splice(rotatedIdx, 1);
-        if (!detectedComponents.includes("rotated+swapped")) detectedComponents.push("rotated+swapped");
+        if (!detectedComponents.includes("rotated+swapped"))
+          detectedComponents.push("rotated+swapped");
       }
     }
 
@@ -1158,18 +1353,20 @@ function detectLOOPType(sequence) {
       quarterTransitions.push({
         pureRotation: isQuarteredRotatedOnly(b1, b2),
         rotationSwap: isQuarteredRotatedSwapped(b1, b2),
-        has90Rotation: isQuarteredRotatedOnly(b1, b2) || isQuarteredRotatedSwapped(b1, b2)
+        has90Rotation:
+          isQuarteredRotatedOnly(b1, b2) || isQuarteredRotatedSwapped(b1, b2),
       });
     }
 
-    const allHave90Rotation = quarterTransitions.every(t => t.has90Rotation);
-    const someHaveSwap = quarterTransitions.some(t => t.rotationSwap);
-    const someArePure = quarterTransitions.some(t => t.pureRotation);
+    const allHave90Rotation = quarterTransitions.every((t) => t.has90Rotation);
+    const someHaveSwap = quarterTransitions.some((t) => t.rotationSwap);
+    const someArePure = quarterTransitions.some((t) => t.pureRotation);
 
     if (allHave90Rotation && someHaveSwap && someArePure) {
       const rotatedIdx = detectedComponents.indexOf("rotated");
       if (rotatedIdx !== -1) detectedComponents.splice(rotatedIdx, 1);
-      if (!detectedComponents.includes("rotated+swapped")) detectedComponents.push("rotated+swapped");
+      if (!detectedComponents.includes("rotated+swapped"))
+        detectedComponents.push("rotated+swapped");
     }
   }
 
@@ -1178,20 +1375,30 @@ function detectLOOPType(sequence) {
   let rotationDirection = null;
 
   // Rotation interval: Check if rotation is at ½ (180°) or ¼ (90°)
-  if (detectedComponents.includes("rotated") || detectedComponents.includes("rotated+swapped")) {
+  if (
+    detectedComponents.includes("rotated") ||
+    detectedComponents.includes("rotated+swapped")
+  ) {
     // If quartered rotation was detected, it's 90° (quartered)
     // Otherwise if halved rotation matched, it's 180° (halved)
-    const hasQuarteredRotation = beats.length >= 4 && beats.length % 4 === 0 && (() => {
-      const quarterLength = beats.length / 4;
-      for (let i = 0; i < quarterLength; i++) {
-        if (!isQuarteredRotatedOnly(beats[i], beats[quarterLength + i]) &&
-            !isQuarteredRotatedSwapped(beats[i], beats[quarterLength + i])) {
-          return false;
+    const hasQuarteredRotation =
+      beats.length >= 4 &&
+      beats.length % 4 === 0 &&
+      (() => {
+        const quarterLength = beats.length / 4;
+        for (let i = 0; i < quarterLength; i++) {
+          if (
+            !isQuarteredRotatedOnly(beats[i], beats[quarterLength + i]) &&
+            !isQuarteredRotatedSwapped(beats[i], beats[quarterLength + i])
+          ) {
+            return false;
+          }
         }
-      }
-      return true;
-    })();
-    transformationIntervals.rotation = hasQuarteredRotation ? "quartered" : "halved";
+        return true;
+      })();
+    transformationIntervals.rotation = hasQuarteredRotation
+      ? "quartered"
+      : "halved";
 
     // Detect rotation direction for quartered rotations
     if (hasQuarteredRotation) {
@@ -1200,39 +1407,48 @@ function detectLOOPType(sequence) {
   }
 
   // Swap interval: Check if swap is at ½ or ¼
-  if (detectedComponents.includes("swapped") ||
-      detectedComponents.includes("rotated+swapped") ||
-      detectedComponents.includes("mirrored+swapped") ||
-      detectedComponents.includes("mirrored+swapped+inverted")) {
+  if (
+    detectedComponents.includes("swapped") ||
+    detectedComponents.includes("rotated+swapped") ||
+    detectedComponents.includes("mirrored+swapped") ||
+    detectedComponents.includes("mirrored+swapped+inverted")
+  ) {
     // Check if swap happens at quarter boundaries
-    const hasQuarteredSwap = beats.length >= 4 && beats.length % 4 === 0 && (() => {
-      const quarterLength = beats.length / 4;
-      // For quartered swap: beat 1 should swap with beat at quarterLength+1
-      for (let i = 0; i < quarterLength; i++) {
-        const b1 = beats[i];
-        const b2 = beats[quarterLength + i];
-        // Check if blue/red swap at quarter boundary
-        const swappedAtQuarter =
-          b1.blue?.startLoc === b2.red?.startLoc &&
-          b1.red?.startLoc === b2.blue?.startLoc;
-        if (!swappedAtQuarter) return false;
-      }
-      return true;
-    })();
+    const hasQuarteredSwap =
+      beats.length >= 4 &&
+      beats.length % 4 === 0 &&
+      (() => {
+        const quarterLength = beats.length / 4;
+        // For quartered swap: beat 1 should swap with beat at quarterLength+1
+        for (let i = 0; i < quarterLength; i++) {
+          const b1 = beats[i];
+          const b2 = beats[quarterLength + i];
+          // Check if blue/red swap at quarter boundary
+          const swappedAtQuarter =
+            b1.blue?.startLoc === b2.red?.startLoc &&
+            b1.red?.startLoc === b2.blue?.startLoc;
+          if (!swappedAtQuarter) return false;
+        }
+        return true;
+      })();
     transformationIntervals.swap = hasQuarteredSwap ? "quartered" : "halved";
   }
 
   // Mirror interval
-  if (detectedComponents.includes("mirrored") ||
-      detectedComponents.includes("mirrored+swapped") ||
-      detectedComponents.includes("mirrored+swapped+inverted")) {
+  if (
+    detectedComponents.includes("mirrored") ||
+    detectedComponents.includes("mirrored+swapped") ||
+    detectedComponents.includes("mirrored+swapped+inverted")
+  ) {
     transformationIntervals.mirror = "halved"; // Mirror is typically halved
   }
 
   // Invert interval
-  if (detectedComponents.includes("inverted") ||
-      detectedComponents.includes("mirrored+swapped+inverted") ||
-      detectedComponents.includes("flipped+inverted")) {
+  if (
+    detectedComponents.includes("inverted") ||
+    detectedComponents.includes("mirrored+swapped+inverted") ||
+    detectedComponents.includes("flipped+inverted")
+  ) {
     transformationIntervals.invert = "halved"; // Invert is typically halved
   }
 
@@ -1250,8 +1466,9 @@ function detectLOOPType(sequence) {
     const allQuarteredCommon = findAllCommonTransformations(quarteredBeatPairs);
 
     // Filter to only 90° rotation patterns
-    const rotation90Patterns = allQuarteredCommon.filter(t =>
-      t.includes("rotated_90") || t.includes("90_ccw") || t.includes("90_cw")
+    const rotation90Patterns = allQuarteredCommon.filter(
+      (t) =>
+        t.includes("rotated_90") || t.includes("90_ccw") || t.includes("90_cw")
     );
 
     if (rotation90Patterns.length > 0) {
@@ -1265,37 +1482,52 @@ function detectLOOPType(sequence) {
       // ALSO check for halved 180° pattern as an additional valid designation
       // This is often the "simpler" explanation when motion types differ between halves
       const allHalvedCommon = findAllCommonTransformations(beatPairs);
-      const halved180Patterns = allHalvedCommon.filter(t =>
-        t.includes("rotated_180") || t === "rotated"
+      const halved180Patterns = allHalvedCommon.filter(
+        (t) => t.includes("rotated_180") || t === "rotated"
       );
 
       // Build halved candidates if 180° rotation exists
-      const halvedCandidates = halved180Patterns.length > 0
-        ? buildCandidateDesignations(halved180Patterns, "halved", null)
-        : [];
+      const halvedCandidates =
+        halved180Patterns.length > 0
+          ? buildCandidateDesignations(halved180Patterns, "halved", null)
+          : [];
 
       // Combine: halved 180° first (simpler), then quartered 90° patterns
       // The simpler 180° explanation is often more intuitive when halves are distinct
-      const candidateDesignations = [...halvedCandidates, ...quarteredCandidates];
+      const candidateDesignations = [
+        ...halvedCandidates,
+        ...quarteredCandidates,
+      ];
 
       // Use halved 180° as primary if available, otherwise first quartered pattern
-      const primaryPattern = halved180Patterns.length > 0 ? halved180Patterns[0] : rotation90Patterns[0];
-      const primaryInterval = halved180Patterns.length > 0 ? "halved" : "quartered";
-      const derivedComponents = deriveComponentsFromBeatPairPattern(primaryPattern);
-      const derivedDirection = primaryInterval === "quartered"
-        ? (extractRotationDirection(primaryPattern) || rotationDirection)
-        : null;
+      const primaryPattern =
+        halved180Patterns.length > 0
+          ? halved180Patterns[0]
+          : rotation90Patterns[0];
+      const primaryInterval =
+        halved180Patterns.length > 0 ? "halved" : "quartered";
+      const derivedComponents =
+        deriveComponentsFromBeatPairPattern(primaryPattern);
+      const derivedDirection =
+        primaryInterval === "quartered"
+          ? extractRotationDirection(primaryPattern) || rotationDirection
+          : null;
 
       if (derivedComponents.length > 0) {
         const derivedIntervals = {};
-        if (derivedComponents.includes("rotated")) derivedIntervals.rotation = primaryInterval;
-        if (derivedComponents.includes("swapped")) derivedIntervals.swap = primaryInterval;
-        if (derivedComponents.includes("mirrored")) derivedIntervals.mirror = primaryInterval;
-        if (derivedComponents.includes("inverted")) derivedIntervals.invert = primaryInterval;
+        if (derivedComponents.includes("rotated"))
+          derivedIntervals.rotation = primaryInterval;
+        if (derivedComponents.includes("swapped"))
+          derivedIntervals.swap = primaryInterval;
+        if (derivedComponents.includes("mirrored"))
+          derivedIntervals.mirror = primaryInterval;
+        if (derivedComponents.includes("inverted"))
+          derivedIntervals.invert = primaryInterval;
 
-        const loopType = primaryInterval === "halved"
-          ? derivedComponents.sort().join("_")
-          : derivedComponents.sort().join("_") + "_quartered";
+        const loopType =
+          primaryInterval === "halved"
+            ? derivedComponents.sort().join("_")
+            : derivedComponents.sort().join("_") + "_quartered";
 
         return {
           loopType,
@@ -1307,7 +1539,10 @@ function detectLOOPType(sequence) {
           commonTransformation: primaryPattern,
           // ALL valid candidate designations (halved 180° + quartered 90°)
           candidateDesignations,
-          allCommonTransformations: [...halved180Patterns, ...rotation90Patterns],
+          allCommonTransformations: [
+            ...halved180Patterns,
+            ...rotation90Patterns,
+          ],
         };
       }
     }
@@ -1318,7 +1553,8 @@ function detectLOOPType(sequence) {
   // This is the most accurate way to identify the LOOP pattern
   // ============================================================
   const allHalvedCommon = findAllCommonTransformations(beatPairs);
-  const commonTransformation = allHalvedCommon.length > 0 ? allHalvedCommon[0] : null;
+  const commonTransformation =
+    allHalvedCommon.length > 0 ? allHalvedCommon[0] : null;
 
   if (commonTransformation) {
     // Build ALL candidate designations from common transformations
@@ -1329,15 +1565,21 @@ function detectLOOPType(sequence) {
     );
 
     // We found a transformation that ALL beat pairs share!
-    const derivedComponents = deriveComponentsFromBeatPairPattern(commonTransformation);
+    const derivedComponents =
+      deriveComponentsFromBeatPairPattern(commonTransformation);
 
     if (derivedComponents.length > 0) {
       const derivedIntervals = {};
-      if (derivedComponents.includes("inverted")) derivedIntervals.invert = "halved";
-      if (derivedComponents.includes("rotated")) derivedIntervals.rotation = "halved";
-      if (derivedComponents.includes("swapped")) derivedIntervals.swap = "halved";
-      if (derivedComponents.includes("mirrored")) derivedIntervals.mirror = "halved";
-      if (derivedComponents.includes("flipped")) derivedIntervals.flip = "halved";
+      if (derivedComponents.includes("inverted"))
+        derivedIntervals.invert = "halved";
+      if (derivedComponents.includes("rotated"))
+        derivedIntervals.rotation = "halved";
+      if (derivedComponents.includes("swapped"))
+        derivedIntervals.swap = "halved";
+      if (derivedComponents.includes("mirrored"))
+        derivedIntervals.mirror = "halved";
+      if (derivedComponents.includes("flipped"))
+        derivedIntervals.flip = "halved";
 
       const loopType = derivedComponents.sort().join("_");
 
@@ -1364,15 +1606,21 @@ function detectLOOPType(sequence) {
 
   if (groupKeys.length === 1 && groupKeys[0] !== "UNKNOWN") {
     const unifiedPattern = groupKeys[0];
-    const derivedComponents = deriveComponentsFromBeatPairPattern(unifiedPattern);
+    const derivedComponents =
+      deriveComponentsFromBeatPairPattern(unifiedPattern);
 
     if (derivedComponents.length > 0) {
       const derivedIntervals = {};
-      if (derivedComponents.includes("inverted")) derivedIntervals.invert = "halved";
-      if (derivedComponents.includes("rotated")) derivedIntervals.rotation = "halved";
-      if (derivedComponents.includes("swapped")) derivedIntervals.swap = "halved";
-      if (derivedComponents.includes("mirrored")) derivedIntervals.mirror = "halved";
-      if (derivedComponents.includes("flipped")) derivedIntervals.flip = "halved";
+      if (derivedComponents.includes("inverted"))
+        derivedIntervals.invert = "halved";
+      if (derivedComponents.includes("rotated"))
+        derivedIntervals.rotation = "halved";
+      if (derivedComponents.includes("swapped"))
+        derivedIntervals.swap = "halved";
+      if (derivedComponents.includes("mirrored"))
+        derivedIntervals.mirror = "halved";
+      if (derivedComponents.includes("flipped"))
+        derivedIntervals.flip = "halved";
 
       const loopType = derivedComponents.sort().join("_");
 
@@ -1418,19 +1666,19 @@ function detectLOOPType(sequence) {
       inverted: "inverted",
       repeated: "repeated",
       // Double compounds
-      "rotated_swapped": "rotated_swapped",
+      rotated_swapped: "rotated_swapped",
       "rotated+swapped": "rotated_swapped",
-      "rotated_inverted": "rotated_inverted",
+      rotated_inverted: "rotated_inverted",
       "rotated+inverted": "rotated_inverted",
-      "inverted_rotated": "rotated_inverted",
-      "mirrored_swapped": "mirrored_swapped",
+      inverted_rotated: "rotated_inverted",
+      mirrored_swapped: "mirrored_swapped",
       "mirrored+swapped": "mirrored_swapped",
-      "flipped_inverted": "flipped_inverted",
+      flipped_inverted: "flipped_inverted",
       "flipped+inverted": "flipped_inverted",
       // Triple compounds
-      "rotated_swapped_inverted": "rotated_swapped_inverted",
+      rotated_swapped_inverted: "rotated_swapped_inverted",
       "rotated+swapped+inverted": "rotated_swapped_inverted",
-      "inverted_rotated_swapped": "rotated_swapped_inverted",
+      inverted_rotated_swapped: "rotated_swapped_inverted",
       "mirrored+swapped+inverted": "mirrored_swapped_inverted",
     };
     loopType = typeMap[sorted] || sorted;
@@ -1462,16 +1710,32 @@ function deriveComponentsFromBeatPairPattern(pattern) {
   if (upper.includes("ROTATED") || upper.includes("ROT")) {
     components.push("rotated");
   }
-  if (upper.includes("SWAPPED") || upper.includes("SWAP") || upper.includes("SW")) {
+  if (
+    upper.includes("SWAPPED") ||
+    upper.includes("SWAP") ||
+    upper.includes("SW")
+  ) {
     // Only add swap if it's explicitly mentioned (not as part of other words)
-    if (upper.includes("SWAPPED") || upper.match(/\bSW\b/) || upper.match(/\bSWAP\b/)) {
+    if (
+      upper.includes("SWAPPED") ||
+      upper.match(/\bSW\b/) ||
+      upper.match(/\bSWAP\b/)
+    ) {
       components.push("swapped");
     }
   }
-  if (upper.includes("MIRRORED") || upper.includes("MIRROR") || upper.match(/\bMIR\b/)) {
+  if (
+    upper.includes("MIRRORED") ||
+    upper.includes("MIRROR") ||
+    upper.match(/\bMIR\b/)
+  ) {
     components.push("mirrored");
   }
-  if (upper.includes("FLIPPED") || upper.includes("FLIP") || upper.includes("HORIZONTAL_FLIP")) {
+  if (
+    upper.includes("FLIPPED") ||
+    upper.includes("FLIP") ||
+    upper.includes("HORIZONTAL_FLIP")
+  ) {
     components.push("flipped");
   }
   if (upper.includes("REPEATED") || upper === "SAME") {
@@ -1508,7 +1772,7 @@ function generateMinimalSequenceJSON(sequence, detected) {
     isCircular: isCircular(sequence),
 
     // ALL equally-valid candidate designations (can confirm/deny each)
-    candidateDesignations: (detected.candidateDesignations || []).map(c => ({
+    candidateDesignations: (detected.candidateDesignations || []).map((c) => ({
       label: c.label,
       description: c.description,
       components: c.components,
@@ -1531,8 +1795,16 @@ function generateMinimalSequenceJSON(sequence, detected) {
     beats: beats.map((b) => ({
       beat: b.beatNumber,
       letter: b.letter,
-      blue: { start: b.blue.startLoc, end: b.blue.endLoc, motion: b.blue.motionType },
-      red: { start: b.red.startLoc, end: b.red.endLoc, motion: b.red.motionType },
+      blue: {
+        start: b.blue.startLoc,
+        end: b.blue.endLoc,
+        motion: b.blue.motionType,
+      },
+      red: {
+        start: b.red.startLoc,
+        end: b.red.endLoc,
+        motion: b.red.motionType,
+      },
     })),
   };
 
@@ -1548,13 +1820,17 @@ async function main() {
   const wordIndex = args.indexOf("--word");
   const singleWord = wordArg
     ? wordArg.split("=")[1]
-    : (wordIndex >= 0 ? args[wordIndex + 1] : null);
+    : wordIndex >= 0
+      ? args[wordIndex + 1]
+      : null;
 
   // Skip header output in format mode
   if (!formatMode) {
     console.log("=".repeat(70));
     const modeLabel = applyMode
-      ? (forceMode ? "AUTO-LABEL LOOP SEQUENCES (APPLY + FORCE MODE)" : "AUTO-LABEL LOOP SEQUENCES (APPLY MODE)")
+      ? forceMode
+        ? "AUTO-LABEL LOOP SEQUENCES (APPLY + FORCE MODE)"
+        : "AUTO-LABEL LOOP SEQUENCES (APPLY MODE)"
       : "AUTO-LABEL LOOP SEQUENCES (DRY RUN)";
     console.log(modeLabel);
     console.log("=".repeat(70));
@@ -1562,16 +1838,26 @@ async function main() {
   }
 
   // Load sequence index
-  const sequenceIndexPath = path.join(__dirname, "..", "static", "data", "sequence-index.json");
+  const sequenceIndexPath = path.join(
+    __dirname,
+    "..",
+    "static",
+    "data",
+    "sequence-index.json"
+  );
   const sequenceIndex = JSON.parse(fs.readFileSync(sequenceIndexPath, "utf8"));
   const sequences = sequenceIndex.sequences;
-  if (!formatMode) console.log(`Loaded ${sequences.length} sequences from sequence-index.json`);
+  if (!formatMode)
+    console.log(
+      `Loaded ${sequences.length} sequences from sequence-index.json`
+    );
 
   // Get existing labels
   const snapshot = await db.collection("loop-labels").get();
   const existingLabels = new Set();
   snapshot.forEach((doc) => existingLabels.add(doc.id));
-  if (!formatMode) console.log(`Found ${existingLabels.size} existing labels in Firebase`);
+  if (!formatMode)
+    console.log(`Found ${existingLabels.size} existing labels in Firebase`);
 
   // Filter to circular sequences (optionally skip already-labeled check with --force)
   let toLabel = sequences.filter((s) => {
@@ -1627,7 +1913,9 @@ async function main() {
       .sort((a, b) => b[1].length - a[1].length)
       .forEach(([type, words]) => {
         console.log(`\n${type.toUpperCase()} (${words.length}):`);
-        console.log(`  ${words.slice(0, 20).join(", ")}${words.length > 20 ? "..." : ""}`);
+        console.log(
+          `  ${words.slice(0, 20).join(", ")}${words.length > 20 ? "..." : ""}`
+        );
       });
   }
 
@@ -1646,7 +1934,7 @@ async function main() {
       const docRef = db.collection("loop-labels").doc(result.word);
 
       // Build ALL candidate designations for Firebase storage
-      const candidates = (result.candidateDesignations || []).map(c => ({
+      const candidates = (result.candidateDesignations || []).map((c) => ({
         components: c.components,
         loopType: c.components.sort().join("_"),
         transformationIntervals: c.intervals,
@@ -1669,15 +1957,25 @@ async function main() {
       }
 
       // Build notes with beat-pair grouping summary
-      let notesParts = [`Auto-labeled by detection algorithm. Detected: ${result.components.join("+") || "none"}`];
+      let notesParts = [
+        `Auto-labeled by detection algorithm. Detected: ${result.components.join("+") || "none"}`,
+      ];
       if (Object.keys(result.transformationIntervals || {}).length > 0) {
-        notesParts.push(`Intervals: ${Object.entries(result.transformationIntervals).map(([k,v]) => `${k}=${v}`).join(", ")}`);
+        notesParts.push(
+          `Intervals: ${Object.entries(result.transformationIntervals)
+            .map(([k, v]) => `${k}=${v}`)
+            .join(", ")}`
+        );
       }
       if (result.rotationDirection) {
-        notesParts.push(`Rotation direction: ${result.rotationDirection.toUpperCase()}`);
+        notesParts.push(
+          `Rotation direction: ${result.rotationDirection.toUpperCase()}`
+        );
       }
       if (candidates.length > 1) {
-        notesParts.push(`Multiple valid designations detected: ${candidates.length}`);
+        notesParts.push(
+          `Multiple valid designations detected: ${candidates.length}`
+        );
       }
       if (Object.keys(result.beatPairGroups || {}).length > 1) {
         // Multiple groups = modular or mixed transformations
@@ -1707,7 +2005,10 @@ async function main() {
       if (result.beatPairs && result.beatPairs.length > 0) {
         labelData.beatPairs = result.beatPairs;
       }
-      if (result.beatPairGroups && Object.keys(result.beatPairGroups).length > 0) {
+      if (
+        result.beatPairGroups &&
+        Object.keys(result.beatPairGroups).length > 0
+      ) {
         labelData.beatPairGroups = result.beatPairGroups;
       }
 
@@ -1747,15 +2048,26 @@ async function main() {
     console.log(`  LOOP Type: ${result.loopType || "none"}`);
     console.log(`  Components: ${result.components.join("+") || "none"}`);
     if (Object.keys(result.transformationIntervals || {}).length > 0) {
-      console.log(`  Intervals: ${Object.entries(result.transformationIntervals).map(([k,v]) => `${k}=${v}`).join(", ")}`);
+      console.log(
+        `  Intervals: ${Object.entries(result.transformationIntervals)
+          .map(([k, v]) => `${k}=${v}`)
+          .join(", ")}`
+      );
     }
     if (result.rotationDirection) {
-      console.log(`  Rotation Direction: ${result.rotationDirection.toUpperCase()}`);
+      console.log(
+        `  Rotation Direction: ${result.rotationDirection.toUpperCase()}`
+      );
     }
-    console.log(`  Already labeled: ${existingLabels.has(singleWord) ? "YES" : "NO"}`);
+    console.log(
+      `  Already labeled: ${existingLabels.has(singleWord) ? "YES" : "NO"}`
+    );
 
     // Show candidate designations
-    if (result.candidateDesignations && result.candidateDesignations.length > 0) {
+    if (
+      result.candidateDesignations &&
+      result.candidateDesignations.length > 0
+    ) {
       console.log();
       console.log("  CANDIDATE DESIGNATIONS:");
       console.log("  " + "-".repeat(50));
@@ -1773,7 +2085,9 @@ async function main() {
       console.log("  BEAT-PAIR ANALYSIS:");
       console.log("  " + "-".repeat(50));
       for (const pair of result.beatPairs) {
-        console.log(`    Beat ${pair.keyBeat} ↔ Beat ${pair.correspondingBeat}:`);
+        console.log(
+          `    Beat ${pair.keyBeat} ↔ Beat ${pair.correspondingBeat}:`
+        );
         for (const t of pair.detectedTransformations) {
           console.log(`      • ${t}`);
         }
@@ -1781,7 +2095,10 @@ async function main() {
     }
 
     // Show beat-pair groups
-    if (result.beatPairGroups && Object.keys(result.beatPairGroups).length > 0) {
+    if (
+      result.beatPairGroups &&
+      Object.keys(result.beatPairGroups).length > 0
+    ) {
       console.log();
       console.log("  BEAT-PAIR GROUPS (by transformation pattern):");
       console.log("  " + "-".repeat(50));
@@ -1798,7 +2115,7 @@ async function main() {
       const docRef = db.collection("loop-labels").doc(result.word);
 
       // Build ALL candidate designations for Firebase storage (same as batch mode)
-      const candidates = (result.candidateDesignations || []).map(c => ({
+      const candidates = (result.candidateDesignations || []).map((c) => ({
         components: c.components,
         loopType: c.components.sort().join("_"),
         transformationIntervals: c.intervals,
@@ -1821,15 +2138,25 @@ async function main() {
       }
 
       // Build notes with beat-pair grouping summary
-      let notesParts = [`Auto-labeled by detection algorithm. Detected: ${result.components.join("+") || "none"}`];
+      let notesParts = [
+        `Auto-labeled by detection algorithm. Detected: ${result.components.join("+") || "none"}`,
+      ];
       if (Object.keys(result.transformationIntervals || {}).length > 0) {
-        notesParts.push(`Intervals: ${Object.entries(result.transformationIntervals).map(([k,v]) => `${k}=${v}`).join(", ")}`);
+        notesParts.push(
+          `Intervals: ${Object.entries(result.transformationIntervals)
+            .map(([k, v]) => `${k}=${v}`)
+            .join(", ")}`
+        );
       }
       if (result.rotationDirection) {
-        notesParts.push(`Rotation direction: ${result.rotationDirection.toUpperCase()}`);
+        notesParts.push(
+          `Rotation direction: ${result.rotationDirection.toUpperCase()}`
+        );
       }
       if (candidates.length > 1) {
-        notesParts.push(`Multiple valid designations detected: ${candidates.length}`);
+        notesParts.push(
+          `Multiple valid designations detected: ${candidates.length}`
+        );
       }
       if (Object.keys(result.beatPairGroups || {}).length > 1) {
         const groupSummary = Object.entries(result.beatPairGroups)
@@ -1858,7 +2185,10 @@ async function main() {
       if (result.beatPairs && result.beatPairs.length > 0) {
         labelData.beatPairs = result.beatPairs;
       }
-      if (result.beatPairGroups && Object.keys(result.beatPairGroups).length > 0) {
+      if (
+        result.beatPairGroups &&
+        Object.keys(result.beatPairGroups).length > 0
+      ) {
         labelData.beatPairGroups = result.beatPairGroups;
       }
 
@@ -1876,7 +2206,9 @@ async function main() {
     console.log("=".repeat(70));
     console.log("DRY RUN COMPLETE");
     console.log("=".repeat(70));
-    console.log(`\nRun with --apply to write ${results.length} labels to Firebase`);
+    console.log(
+      `\nRun with --apply to write ${results.length} labels to Firebase`
+    );
   }
 
   process.exit(0);

@@ -648,7 +648,13 @@ function detectLOOPType(sequence) {
     if (swapIsMeaningful) {
       // Three-component compound - report as mirrored+swapped+inverted
       // Remove any individual components since the compound is more specific
-      ["mirrored", "swapped", "inverted", "mirrored+swapped", "flipped+inverted"].forEach((c) => {
+      [
+        "mirrored",
+        "swapped",
+        "inverted",
+        "mirrored+swapped",
+        "flipped+inverted",
+      ].forEach((c) => {
         const idx = detectedComponents.indexOf(c);
         if (idx !== -1) {
           detectedComponents.splice(idx, 1);
@@ -695,7 +701,7 @@ function detectLOOPType(sequence) {
         // Add note that this is quartered
         beatPairDetails.push({
           pair: "QUARTERED",
-          transformations: ["90° ROTATED+SWAPPED across all quarters"]
+          transformations: ["90° ROTATED+SWAPPED across all quarters"],
         });
       }
     }
@@ -717,17 +723,17 @@ function detectLOOPType(sequence) {
       const isRotationSwap = isQuarteredRotatedSwapped(b1, b2);
 
       quarterTransitions.push({
-        transition: `Q${q+1}→Q${(q % 4) + 2 > 4 ? 1 : (q % 4) + 2}`,
+        transition: `Q${q + 1}→Q${(q % 4) + 2 > 4 ? 1 : (q % 4) + 2}`,
         pureRotation: isPureRotation,
         rotationSwap: isRotationSwap,
-        has90Rotation: isPureRotation || isRotationSwap
+        has90Rotation: isPureRotation || isRotationSwap,
       });
     }
 
     // Check if all quarters have 90° rotation (some with swap, some without)
-    const allHave90Rotation = quarterTransitions.every(t => t.has90Rotation);
-    const someHaveSwap = quarterTransitions.some(t => t.rotationSwap);
-    const someArePure = quarterTransitions.some(t => t.pureRotation);
+    const allHave90Rotation = quarterTransitions.every((t) => t.has90Rotation);
+    const someHaveSwap = quarterTransitions.some((t) => t.rotationSwap);
+    const someArePure = quarterTransitions.some((t) => t.pureRotation);
 
     // Mixed-slice pattern: all have 90° rotation, but swap alternates (not all same)
     if (allHave90Rotation && someHaveSwap && someArePure) {
@@ -746,7 +752,9 @@ function detectLOOPType(sequence) {
       }
       beatPairDetails.push({
         pair: "MIXED-SLICE",
-        transformations: ["Rotated(¼) + Swapped(½): 90° rotation at quarters, swap at halves"]
+        transformations: [
+          "Rotated(¼) + Swapped(½): 90° rotation at quarters, swap at halves",
+        ],
       });
     }
   }
@@ -766,16 +774,16 @@ function detectLOOPType(sequence) {
       flipped: "STRICT_FLIPPED",
       inverted: "STRICT_INVERTED",
       repeated: "STRICT_REPEATED",
-      "rotated_swapped": "ROTATED_SWAPPED",
+      rotated_swapped: "ROTATED_SWAPPED",
       "rotated+swapped": "ROTATED_SWAPPED",
-      "mirrored_swapped": "MIRRORED_SWAPPED",
+      mirrored_swapped: "MIRRORED_SWAPPED",
       "mirrored+swapped": "MIRRORED_SWAPPED",
-      "flipped_inverted": "FLIPPED_INVERTED",
+      flipped_inverted: "FLIPPED_INVERTED",
       "flipped+inverted": "FLIPPED_INVERTED",
       inverted_rotated: "ROTATED_INVERTED",
       inverted_mirrored: "MIRRORED_INVERTED",
       "mirrored+swapped+inverted": "MIRRORED_SWAPPED_INVERTED",
-      "inverted_mirrored_swapped": "MIRRORED_SWAPPED_INVERTED",
+      inverted_mirrored_swapped: "MIRRORED_SWAPPED_INVERTED",
     };
 
     loopType = typeMap[sorted] || `CUSTOM_${sorted.toUpperCase()}`;
@@ -822,9 +830,18 @@ function normalizeComponents(components) {
   // Define compound equivalents - when these parts appear, treat as single compound
   // Order matters: check three-component compounds first
   const compoundPairs = [
-    { parts: ["mirrored", "swapped", "inverted"], compound: "mirrored_swapped_inverted" },
-    { parts: ["mirrored_swapped", "inverted"], compound: "mirrored_swapped_inverted" },
-    { parts: ["inverted", "mirrored_swapped"], compound: "mirrored_swapped_inverted" },
+    {
+      parts: ["mirrored", "swapped", "inverted"],
+      compound: "mirrored_swapped_inverted",
+    },
+    {
+      parts: ["mirrored_swapped", "inverted"],
+      compound: "mirrored_swapped_inverted",
+    },
+    {
+      parts: ["inverted", "mirrored_swapped"],
+      compound: "mirrored_swapped_inverted",
+    },
     { parts: ["flipped", "inverted"], compound: "flipped_inverted" },
     { parts: ["rotated", "swapped"], compound: "rotated_swapped" },
     { parts: ["mirrored", "swapped"], compound: "mirrored_swapped" },
@@ -853,14 +870,20 @@ function compareResults(detected, labeled) {
   if (labeled.isUnknown) {
     return {
       match: detected.components.length === 0,
-      reason: detected.components.length === 0 ? "Both unknown" : "Labeled unknown but detected components",
+      reason:
+        detected.components.length === 0
+          ? "Both unknown"
+          : "Labeled unknown but detected components",
     };
   }
 
   if (labeled.isFreeform) {
     return {
       match: detected.components.length === 0,
-      reason: detected.components.length === 0 ? "Both freeform" : "Labeled freeform but detected components",
+      reason:
+        detected.components.length === 0
+          ? "Both freeform"
+          : "Labeled freeform but detected components",
     };
   }
 
@@ -979,7 +1002,9 @@ async function main() {
   console.log("SUMMARY");
   console.log("=".repeat(70));
   console.log(`Total validated: ${results.total}`);
-  console.log(`Matches: ${results.matches} (${((results.matches / results.total) * 100).toFixed(1)}%)`);
+  console.log(
+    `Matches: ${results.matches} (${((results.matches / results.total) * 100).toFixed(1)}%)`
+  );
   console.log(`Mismatches: ${results.mismatches}`);
   console.log(`Not found in index: ${results.notFound}`);
   console.log();
