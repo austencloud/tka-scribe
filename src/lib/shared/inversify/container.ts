@@ -525,6 +525,12 @@ export async function loadFeatureModule(feature: string): Promise<void> {
         ]);
         break;
 
+      case "mandala":
+        // Wait for tier 2 (pictograph module has arrow loading services)
+        if (tier2Promise) await tier2Promise;
+        await loadIfNeeded("mandala", () => import("./modules/mandala.module"));
+        break;
+
       default:
         console.warn(`Unknown feature module: ${feature}`);
         return;

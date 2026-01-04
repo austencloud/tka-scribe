@@ -72,6 +72,9 @@
     settings: () => import("../../features/settings/SettingsModule.svelte"),
     // 3D viewer module - admin-only for exploring sequences in 3D space
     "3d-viewer": () => import("../3d-animation/Viewer3DModule.svelte"),
+    // Mandala generator - kaleidoscope art studio with TKA elements
+    mandala: () =>
+      import("../../features/mandala-generator/components/MandalaGeneratorModule.svelte"),
   };
 
   // Load module with caching

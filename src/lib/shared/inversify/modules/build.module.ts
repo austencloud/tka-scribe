@@ -67,7 +67,6 @@ import { OptionOrganizer } from "../../../features/create/construct/option-picke
 import { OptionLoader } from "../../../features/create/construct/option-picker/services/implementations/OptionLoader";
 import { OptionTransitionCoordinator } from "../../../features/create/construct/option-picker/services/implementations/OptionTransitionCoordinator";
 import { SectionTitleFormatter } from "../../../features/create/construct/option-picker/services/implementations/SectionTitleFormatter";
-import { PictographPreparer } from "../../pictograph/shared/services/implementations/PictographPreparer";
 import { SequenceExtender } from "../../../features/create/shared/services/implementations/SequenceExtender";
 import { LOOPValidator } from "../../../features/create/shared/services/implementations/LOOPValidator";
 import { OrientationAlignmentCalculator } from "../../../features/create/shared/services/implementations/OrientationAlignmentCalculator";
@@ -133,7 +132,6 @@ export const createModule = new ContainerModule(
       .bind(TYPES.IOptionTransitionCoordinator)
       .to(OptionTransitionCoordinator);
     options.bind(TYPES.ISectionTitleFormatter).to(SectionTitleFormatter);
-    options.bind(TYPES.IPictographPreparer).to(PictographPreparer);
 
     // === START POSITION SERVICES ===
     options

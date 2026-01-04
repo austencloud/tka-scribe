@@ -55,6 +55,7 @@ import { PropSvgLoader } from "../../pictograph/prop/services/implementations/Pr
 import { CSVPictographParser } from "../../pictograph/shared/services/implementations/CSVPictographParser";
 import { MotionQueryHandler } from "../../pictograph/shared/services/implementations/MotionQueryHandler";
 import { PictographCoordinator } from "../../pictograph/shared/services/implementations/PictographCoordinator";
+import { PictographPreparer } from "../../pictograph/shared/services/implementations/PictographPreparer";
 import { StartPositionDeriver } from "../../pictograph/shared/services/implementations/StartPositionDeriver";
 import { SvgPreloader } from "../../pictograph/shared/services/implementations/SvgPreloader";
 import { LetterQueryHandler } from "../../pictograph/tka-glyph/services/implementations/LetterQueryHandler";
@@ -150,6 +151,7 @@ export const pictographModule = new ContainerModule(
 
     // === COORDINATION SERVICES ===
     options.bind(TYPES.IPictographCoordinator).to(PictographCoordinator);
+    options.bind(TYPES.IPictographPreparer).to(PictographPreparer);
 
     // === SVG SERVICES ===
     options

@@ -153,6 +153,15 @@ export const MODULE_DEFINITIONS: ModuleDefinition[] = [
     sections: [], // No sub-tabs for now
   },
   {
+    id: "mandala",
+    label: "Mandala",
+    icon: '<i class="fas fa-dharmachakra" style="color: #f472b6;" aria-hidden="true"></i>',
+    color: "#f472b6", // Pink - artistic/creative
+    description: "Create kaleidoscope art with TKA elements",
+    isMain: true, // Visibility controlled by feature flags (admin-only for now)
+    sections: [], // Single-tab creative studio
+  },
+  {
     id: "settings",
     label: "Settings",
     icon: '<i class="fas fa-cog" style="color: #64748b;" aria-hidden="true"></i>',
