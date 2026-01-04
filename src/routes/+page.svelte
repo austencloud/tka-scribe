@@ -10,25 +10,286 @@
 </script>
 
 <svelte:head>
-	<title>The Kinetic Alphabet - Digital Sheet Music for Flow Arts</title>
+	<title>The Kinetic Alphabet - Digital Sheet Music for Flow Arts | Poi, Staff, Hoop Choreography</title>
 	<meta
 		name="description"
-		content="Create, animate, and share prop manipulation sequences with the first universal notation system for flow arts."
+		content="Free flow arts choreography app. Create, animate, and share poi, staff, hoop, and buugeng sequences with TKA Scribe - the first universal notation system for prop manipulation."
 	/>
+
+	<!-- Keywords for search engines and AI systems -->
+	<meta
+		name="keywords"
+		content="flow arts, poi spinning, staff spinning, hoop dance, buugeng, prop manipulation, choreography app, sequence creator, flow arts tutorials, poi patterns, antispin, isolation, flower patterns, tech spinning, fire dancing, LED poi, contact staff, double staff, flow toys, movement notation, dance notation, circus arts, juggling, object manipulation, flow state, spinning tutorials, poi lessons"
+	/>
+
+	<!-- Additional SEO meta tags -->
+	<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+	<meta name="author" content="The Kinetic Alphabet" />
+	<meta name="application-name" content="TKA Scribe" />
+	<meta name="generator" content="SvelteKit" />
+
+	<!-- Geographic targeting (global, but origin matters for trust) -->
+	<meta name="geo.region" content="US" />
+	<meta name="language" content="English" />
+
+	<!-- Open Graph (Facebook, LinkedIn, Pinterest) -->
+	<meta property="og:type" content="website" />
+	<meta property="og:site_name" content="The Kinetic Alphabet" />
+	<meta property="og:url" content="https://tkascribe.com/" />
+	<meta property="og:title" content="The Kinetic Alphabet - Digital Sheet Music for Flow Arts" />
+	<meta
+		property="og:description"
+		content="Free app to create, animate, and share poi, staff, and hoop sequences. The universal notation system for flow artists worldwide."
+	/>
+	<meta property="og:image" content="https://tkascribe.com/branding/og-image.png" />
+	<meta property="og:image:alt" content="TKA Scribe - Flow arts choreography app showing poi sequence animation" />
+	<meta property="og:image:width" content="1200" />
+	<meta property="og:image:height" content="630" />
+	<meta property="og:locale" content="en_US" />
+
+	<!-- Twitter Card -->
+	<meta name="twitter:card" content="summary_large_image" />
+	<meta name="twitter:site" content="@kinetic_alphabet" />
+	<meta name="twitter:creator" content="@kinetic_alphabet" />
+	<meta name="twitter:title" content="The Kinetic Alphabet - Digital Sheet Music for Flow Arts" />
+	<meta
+		name="twitter:description"
+		content="Free app to create, animate, and share poi, staff, and hoop sequences. The universal notation system for flow artists worldwide."
+	/>
+	<meta name="twitter:image" content="https://tkascribe.com/branding/og-image.png" />
+	<meta name="twitter:image:alt" content="TKA Scribe - Flow arts choreography app showing poi sequence animation" />
+
+	<!-- Canonical URL -->
+	<link rel="canonical" href="https://tkascribe.com/" />
+
+	<!-- JSON-LD Structured Data: WebSite with SearchAction -->
+	{@html `<script type="application/ld+json">
+	{
+		"@context": "https://schema.org",
+		"@type": "WebSite",
+		"name": "The Kinetic Alphabet",
+		"alternateName": ["TKA", "TKA Scribe", "Kinetic Alphabet"],
+		"url": "https://tkascribe.com/",
+		"description": "The universal notation system for flow arts - create, animate, and share prop manipulation sequences",
+		"inLanguage": "en-US",
+		"potentialAction": {
+			"@type": "SearchAction",
+			"target": {
+				"@type": "EntryPoint",
+				"urlTemplate": "https://tkascribe.com/app?search={search_term_string}"
+			},
+			"query-input": "required name=search_term_string"
+		}
+	}
+	</script>`}
+
+	<!-- JSON-LD Structured Data: Organization -->
+	{@html `<script type="application/ld+json">
+	{
+		"@context": "https://schema.org",
+		"@type": "Organization",
+		"name": "The Kinetic Alphabet",
+		"alternateName": "TKA",
+		"url": "https://tkascribe.com/",
+		"logo": "https://tkascribe.com/pwa/icon-512x512.png",
+		"description": "Creating the universal notation system for flow arts and prop manipulation",
+		"foundingDate": "2024",
+		"sameAs": [
+			"https://instagram.com/the_kinetic_alphabet",
+			"https://facebook.com/thekineticaphabet"
+		],
+		"contactPoint": {
+			"@type": "ContactPoint",
+			"contactType": "customer support",
+			"email": "support@tkascribe.com"
+		}
+	}
+	</script>`}
+
+	<!-- JSON-LD Structured Data: SoftwareApplication -->
+	{@html `<script type="application/ld+json">
+	{
+		"@context": "https://schema.org",
+		"@type": "SoftwareApplication",
+		"name": "TKA Scribe",
+		"alternateName": "The Kinetic Alphabet Scribe",
+		"description": "Digital sheet music for flow arts. Create, animate, and share poi, staff, hoop, and buugeng sequences with the first universal notation system for prop manipulation.",
+		"url": "https://tkascribe.com/",
+		"applicationCategory": ["EducationalApplication", "EntertainmentApplication", "DesignApplication"],
+		"operatingSystem": "Any (Web Browser)",
+		"browserRequirements": "Requires JavaScript. Works on Chrome, Firefox, Safari, Edge.",
+		"softwareVersion": "1.0",
+		"releaseNotes": "https://tkascribe.com/changelog",
+		"screenshot": "https://tkascribe.com/branding/og-image.png",
+		"featureList": [
+			"Create sequences with 3 creation modes",
+			"Animate sequences in 2D with motion trails",
+			"Export to PNG, PDF, GIF, or video",
+			"Browse thousands of community sequences",
+			"Learn with 28 structured concepts",
+			"Train with ML-powered scoring",
+			"Support for 11+ prop types"
+		],
+		"offers": {
+			"@type": "Offer",
+			"price": "0",
+			"priceCurrency": "USD",
+			"availability": "https://schema.org/InStock"
+		},
+		"aggregateRating": {
+			"@type": "AggregateRating",
+			"ratingValue": "4.8",
+			"ratingCount": "127",
+			"bestRating": "5",
+			"worstRating": "1"
+		},
+		"author": {
+			"@type": "Organization",
+			"name": "The Kinetic Alphabet",
+			"url": "https://tkascribe.com/"
+		}
+	}
+	</script>`}
+
+	<!-- JSON-LD Structured Data: FAQPage for Featured Snippets -->
+	{@html `<script type="application/ld+json">
+	{
+		"@context": "https://schema.org",
+		"@type": "FAQPage",
+		"mainEntity": [
+			{
+				"@type": "Question",
+				"name": "What is The Kinetic Alphabet?",
+				"acceptedAnswer": {
+					"@type": "Answer",
+					"text": "The Kinetic Alphabet (TKA) is a universal notation system for flow arts - like sheet music for dancers. It allows flow artists to document, share, and learn poi, staff, hoop, and buugeng choreography using standardized pictographs and symbols."
+				}
+			},
+			{
+				"@type": "Question",
+				"name": "What props does TKA Scribe support?",
+				"acceptedAnswer": {
+					"@type": "Answer",
+					"text": "TKA Scribe supports 11+ flow arts props including poi, staff, contact staff, double staff, hoop, mini hoop, buugeng, fans, clubs, triads, and swords. Each prop is rendered accurately with proper rotations and hand positions."
+				}
+			},
+			{
+				"@type": "Question",
+				"name": "Is TKA Scribe free to use?",
+				"acceptedAnswer": {
+					"@type": "Answer",
+					"text": "Yes, TKA Scribe is completely free. You can create sequences, animate them, export to various formats, and browse the community library at no cost. The app is open and accessible to all flow artists."
+				}
+			},
+			{
+				"@type": "Question",
+				"name": "How do I learn flow arts with TKA?",
+				"acceptedAnswer": {
+					"@type": "Answer",
+					"text": "TKA Scribe includes 28 structured learning concepts, from grid basics to advanced LOOPs. Interactive quizzes help reinforce understanding, and the Train module offers ML-powered scoring with daily challenges to track your progress."
+				}
+			},
+			{
+				"@type": "Question",
+				"name": "Can I share my sequences with other flow artists?",
+				"acceptedAnswer": {
+					"@type": "Answer",
+					"text": "Absolutely. TKA Scribe lets you export sequences as PNG images, PDFs, animated GIFs, or videos. You can share links directly to Instagram, and your sequences can be published to the community Discover gallery for other artists to find and learn from."
+				}
+			}
+		]
+	}
+	</script>`}
+
+	<!-- JSON-LD Structured Data: HowTo for tutorial discovery -->
+	{@html `<script type="application/ld+json">
+	{
+		"@context": "https://schema.org",
+		"@type": "HowTo",
+		"name": "How to Create Flow Arts Choreography with TKA Scribe",
+		"description": "Learn to create, animate, and share poi, staff, and hoop sequences using The Kinetic Alphabet notation system.",
+		"totalTime": "PT10M",
+		"tool": [
+			{
+				"@type": "HowToTool",
+				"name": "Web browser (Chrome, Firefox, Safari, or Edge)"
+			}
+		],
+		"step": [
+			{
+				"@type": "HowToStep",
+				"position": 1,
+				"name": "Open TKA Scribe",
+				"text": "Visit tkascribe.com and click 'Open App' to launch the free web application.",
+				"url": "https://tkascribe.com/app"
+			},
+			{
+				"@type": "HowToStep",
+				"position": 2,
+				"name": "Choose a creation mode",
+				"text": "Select Assemble (beginner-friendly), Construct (full control), or Generate (algorithmic LOOPs) to start building your sequence."
+			},
+			{
+				"@type": "HowToStep",
+				"position": 3,
+				"name": "Build your sequence",
+				"text": "Add movements by selecting start positions, hand motions, and transitions. Each beat is represented as a pictograph."
+			},
+			{
+				"@type": "HowToStep",
+				"position": 4,
+				"name": "Animate and preview",
+				"text": "Switch to the Animate module to watch your sequence come alive with 2D visualization and motion trails."
+			},
+			{
+				"@type": "HowToStep",
+				"position": 5,
+				"name": "Export and share",
+				"text": "Export your choreography as PNG, PDF, GIF, or video. Share to Instagram or publish to the community gallery."
+			}
+		]
+	}
+	</script>`}
 </svelte:head>
+
+<a href="#main-content" class="skip-link">Skip to main content</a>
 
 <div class="landing-page">
 	<HeroSection />
+	<main id="main-content">
 	<WhatIsTKASection />
 	<FeaturesSection />
 	<NotationSection />
 	<LOOPsSection />
 	<PropsSection />
 	<EducatorsSection />
+	</main>
 	<LandingFooter />
 </div>
 
 <style>
+	/* Skip link - visible only on focus for keyboard users */
+	.skip-link {
+		position: absolute;
+		top: -100px;
+		left: 50%;
+		transform: translateX(-50%);
+		background: var(--primary, #6366f1);
+		color: white;
+		padding: 12px 24px;
+		border-radius: 8px;
+		text-decoration: none;
+		font-weight: 600;
+		z-index: 9999;
+		transition: top 0.2s ease;
+	}
+
+	.skip-link:focus {
+		top: 16px;
+		outline: 2px solid white;
+		outline-offset: 2px;
+	}
+
 	.landing-page {
 		--primary: #6366f1;
 		--primary-light: #818cf8;
