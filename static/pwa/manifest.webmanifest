@@ -9,7 +9,7 @@
   "orientation": "any",
   "scope": "/",
   "start_url": "/app",
-  "id": "tka-kinetic-alphabet",
+  "id": "tka-scribe-2025",
   "related_applications": [
     {
       "platform": "webapp",
@@ -25,7 +25,13 @@
   "launch_handler": {
     "client_mode": "focus-existing"
   },
-  "categories": ["entertainment", "education", "productivity", "music", "lifestyle"],
+  "categories": [
+    "entertainment",
+    "education",
+    "productivity",
+    "music",
+    "lifestyle"
+  ],
   "lang": "en-US",
   "dir": "ltr",
   "iarc_rating_id": "",

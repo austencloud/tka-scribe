@@ -128,3 +128,6 @@ keystore.properties
 *.keystore
 android-twa/local.properties
 android-twa/keystore.properties
+
+# Screenshot capture credentials
+scripts/screenshot-capture/screenshot-config.local.json

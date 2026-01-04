@@ -23,7 +23,11 @@
       href="https://firebaseinstallations.googleapis.com"
     />
     <!-- 🚀 A+ PERF: Preconnect to Firebase Storage for thumbnails -->
-    <link rel="preconnect" href="https://firebasestorage.googleapis.com" crossorigin />
+    <link
+      rel="preconnect"
+      href="https://firebasestorage.googleapis.com"
+      crossorigin
+    />
     <link rel="preconnect" href="https://storage.googleapis.com" crossorigin />
 
     <!-- Viewport Configuration -->
@@ -433,22 +437,6 @@
 
     <!-- PWA Manifest -->
     <link rel="manifest" href="%sveltekit.assets%/pwa/manifest.webmanifest" />
-
-    <!-- PWA Install Prompt Capture (must be early to catch the event) -->
-    <script>
-      window.deferredInstallPrompt = null;
-      window.addEventListener('beforeinstallprompt', function(e) {
-        console.log('[PWA Global] beforeinstallprompt captured early!');
-        e.preventDefault();
-        window.deferredInstallPrompt = e;
-        // Dispatch custom event so components know the prompt is ready
-        window.dispatchEvent(new CustomEvent('pwa:prompt-ready'));
-      });
-      window.addEventListener('appinstalled', function() {
-        console.log('[PWA Global] App was installed');
-        window.deferredInstallPrompt = null;
-      });
-    </script>
 
     <!-- Font Awesome CSS with preload for critical font -->
     <link

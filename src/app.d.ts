@@ -56,8 +56,13 @@ declare global {
       accounts: {
         id: {
           initialize: (config: GoogleOneTapConfig) => void;
-          prompt: (callback?: (notification: GooglePromptNotification) => void) => void;
-          renderButton: (element: HTMLElement, config: GoogleButtonConfig) => void;
+          prompt: (
+            callback?: (notification: GooglePromptNotification) => void
+          ) => void;
+          renderButton: (
+            element: HTMLElement,
+            config: GoogleButtonConfig
+          ) => void;
           cancel: () => void;
           disableAutoSelect: () => void;
         };

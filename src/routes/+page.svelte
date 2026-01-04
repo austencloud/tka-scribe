@@ -1,69 +1,93 @@
 <script lang="ts">
-	import HeroSection from './landing/components/HeroSection.svelte';
-	import WhatIsTKASection from './landing/components/WhatIsTKASection.svelte';
-	import FeaturesSection from './landing/components/FeaturesSection.svelte';
-	import NotationSection from './landing/components/NotationSection.svelte';
-	import LOOPsSection from './landing/components/LOOPsSection.svelte';
-	import PropsSection from './landing/components/PropsSection.svelte';
-	import EducatorsSection from './landing/components/EducatorsSection.svelte';
-	import LandingFooter from './landing/components/LandingFooter.svelte';
+  import HeroSection from "./landing/components/HeroSection.svelte";
+  import WhatIsTKASection from "./landing/components/WhatIsTKASection.svelte";
+  import FeaturesSection from "./landing/components/FeaturesSection.svelte";
+  import NotationSection from "./landing/components/NotationSection.svelte";
+  import LOOPsSection from "./landing/components/LOOPsSection.svelte";
+  import PropsSection from "./landing/components/PropsSection.svelte";
+  import EducatorsSection from "./landing/components/EducatorsSection.svelte";
+  import LandingFooter from "./landing/components/LandingFooter.svelte";
 </script>
 
 <svelte:head>
-	<title>The Kinetic Alphabet - Digital Sheet Music for Flow Arts | Poi, Staff, Hoop Choreography</title>
-	<meta
-		name="description"
-		content="Free flow arts choreography app. Create, animate, and share poi, staff, hoop, and buugeng sequences with TKA Scribe - the first universal notation system for prop manipulation."
-	/>
+  <title
+    >The Kinetic Alphabet - Digital Sheet Music for Flow Arts | Poi, Staff, Hoop
+    Choreography</title
+  >
+  <meta
+    name="description"
+    content="Free flow arts choreography app. Create, animate, and share poi, staff, hoop, and buugeng sequences with TKA Scribe - the first universal notation system for prop manipulation."
+  />
 
-	<!-- Keywords for search engines and AI systems -->
-	<meta
-		name="keywords"
-		content="flow arts, poi spinning, staff spinning, hoop dance, buugeng, prop manipulation, choreography app, sequence creator, flow arts tutorials, poi patterns, antispin, isolation, flower patterns, tech spinning, fire dancing, LED poi, contact staff, double staff, flow toys, movement notation, dance notation, circus arts, juggling, object manipulation, flow state, spinning tutorials, poi lessons"
-	/>
+  <!-- Keywords for search engines and AI systems -->
+  <meta
+    name="keywords"
+    content="flow arts, poi spinning, staff spinning, hoop dance, buugeng, prop manipulation, choreography app, sequence creator, flow arts tutorials, poi patterns, antispin, isolation, flower patterns, tech spinning, fire dancing, LED poi, contact staff, double staff, flow toys, movement notation, dance notation, circus arts, juggling, object manipulation, flow state, spinning tutorials, poi lessons"
+  />
 
-	<!-- Additional SEO meta tags -->
-	<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
-	<meta name="author" content="The Kinetic Alphabet" />
-	<meta name="application-name" content="TKA Scribe" />
-	<meta name="generator" content="SvelteKit" />
+  <!-- Additional SEO meta tags -->
+  <meta
+    name="robots"
+    content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"
+  />
+  <meta name="author" content="The Kinetic Alphabet" />
+  <meta name="application-name" content="TKA Scribe" />
+  <meta name="generator" content="SvelteKit" />
 
-	<!-- Geographic targeting (global, but origin matters for trust) -->
-	<meta name="geo.region" content="US" />
-	<meta name="language" content="English" />
+  <!-- Geographic targeting (global, but origin matters for trust) -->
+  <meta name="geo.region" content="US" />
+  <meta name="language" content="English" />
 
-	<!-- Open Graph (Facebook, LinkedIn, Pinterest) -->
-	<meta property="og:type" content="website" />
-	<meta property="og:site_name" content="The Kinetic Alphabet" />
-	<meta property="og:url" content="https://tkascribe.com/" />
-	<meta property="og:title" content="The Kinetic Alphabet - Digital Sheet Music for Flow Arts" />
-	<meta
-		property="og:description"
-		content="Free app to create, animate, and share poi, staff, and hoop sequences. The universal notation system for flow artists worldwide."
-	/>
-	<meta property="og:image" content="https://tkascribe.com/branding/og-image.png" />
-	<meta property="og:image:alt" content="TKA Scribe - Flow arts choreography app showing poi sequence animation" />
-	<meta property="og:image:width" content="1200" />
-	<meta property="og:image:height" content="630" />
-	<meta property="og:locale" content="en_US" />
+  <!-- Open Graph (Facebook, LinkedIn, Pinterest) -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="The Kinetic Alphabet" />
+  <meta property="og:url" content="https://tkascribe.com/" />
+  <meta
+    property="og:title"
+    content="The Kinetic Alphabet - Digital Sheet Music for Flow Arts"
+  />
+  <meta
+    property="og:description"
+    content="Free app to create, animate, and share poi, staff, and hoop sequences. The universal notation system for flow artists worldwide."
+  />
+  <meta
+    property="og:image"
+    content="https://tkascribe.com/branding/og-image.png"
+  />
+  <meta
+    property="og:image:alt"
+    content="TKA Scribe - Flow arts choreography app showing poi sequence animation"
+  />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:locale" content="en_US" />
 
-	<!-- Twitter Card -->
-	<meta name="twitter:card" content="summary_large_image" />
-	<meta name="twitter:site" content="@thekineticalphabet" />
-	<meta name="twitter:creator" content="@thekineticalphabet" />
-	<meta name="twitter:title" content="The Kinetic Alphabet - Digital Sheet Music for Flow Arts" />
-	<meta
-		name="twitter:description"
-		content="Free app to create, animate, and share poi, staff, and hoop sequences. The universal notation system for flow artists worldwide."
-	/>
-	<meta name="twitter:image" content="https://tkascribe.com/branding/og-image.png" />
-	<meta name="twitter:image:alt" content="TKA Scribe - Flow arts choreography app showing poi sequence animation" />
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:site" content="@thekineticalphabet" />
+  <meta name="twitter:creator" content="@thekineticalphabet" />
+  <meta
+    name="twitter:title"
+    content="The Kinetic Alphabet - Digital Sheet Music for Flow Arts"
+  />
+  <meta
+    name="twitter:description"
+    content="Free app to create, animate, and share poi, staff, and hoop sequences. The universal notation system for flow artists worldwide."
+  />
+  <meta
+    name="twitter:image"
+    content="https://tkascribe.com/branding/og-image.png"
+  />
+  <meta
+    name="twitter:image:alt"
+    content="TKA Scribe - Flow arts choreography app showing poi sequence animation"
+  />
 
-	<!-- Canonical URL -->
-	<link rel="canonical" href="https://tkascribe.com/" />
+  <!-- Canonical URL -->
+  <link rel="canonical" href="https://tkascribe.com/" />
 
-	<!-- JSON-LD Structured Data: WebSite with SearchAction -->
-	{@html `<script type="application/ld+json">
+  <!-- JSON-LD Structured Data: WebSite with SearchAction -->
+  {@html `<script type="application/ld+json">
 	{
 		"@context": "https://schema.org",
 		"@type": "WebSite",
@@ -83,8 +107,8 @@
 	}
 	</script>`}
 
-	<!-- JSON-LD Structured Data: Organization -->
-	{@html `<script type="application/ld+json">
+  <!-- JSON-LD Structured Data: Organization -->
+  {@html `<script type="application/ld+json">
 	{
 		"@context": "https://schema.org",
 		"@type": "Organization",
@@ -106,8 +130,8 @@
 	}
 	</script>`}
 
-	<!-- JSON-LD Structured Data: SoftwareApplication -->
-	{@html `<script type="application/ld+json">
+  <!-- JSON-LD Structured Data: SoftwareApplication -->
+  {@html `<script type="application/ld+json">
 	{
 		"@context": "https://schema.org",
 		"@type": "SoftwareApplication",
@@ -136,13 +160,6 @@
 			"priceCurrency": "USD",
 			"availability": "https://schema.org/InStock"
 		},
-		"aggregateRating": {
-			"@type": "AggregateRating",
-			"ratingValue": "4.8",
-			"ratingCount": "127",
-			"bestRating": "5",
-			"worstRating": "1"
-		},
 		"author": {
 			"@type": "Organization",
 			"name": "The Kinetic Alphabet",
@@ -151,8 +168,8 @@
 	}
 	</script>`}
 
-	<!-- JSON-LD Structured Data: FAQPage for Featured Snippets -->
-	{@html `<script type="application/ld+json">
+  <!-- JSON-LD Structured Data: FAQPage for Featured Snippets -->
+  {@html `<script type="application/ld+json">
 	{
 		"@context": "https://schema.org",
 		"@type": "FAQPage",
@@ -201,8 +218,8 @@
 	}
 	</script>`}
 
-	<!-- JSON-LD Structured Data: HowTo for tutorial discovery -->
-	{@html `<script type="application/ld+json">
+  <!-- JSON-LD Structured Data: HowTo for tutorial discovery -->
+  {@html `<script type="application/ld+json">
 	{
 		"@context": "https://schema.org",
 		"@type": "HowTo",
@@ -255,56 +272,60 @@
 <a href="#main-content" class="skip-link">Skip to main content</a>
 
 <div class="landing-page">
-	<HeroSection />
-	<main id="main-content">
-	<WhatIsTKASection />
-	<FeaturesSection />
-	<NotationSection />
-	<LOOPsSection />
-	<PropsSection />
-	<EducatorsSection />
-	</main>
-	<LandingFooter />
+  <HeroSection />
+  <main id="main-content">
+    <WhatIsTKASection />
+    <FeaturesSection />
+    <NotationSection />
+    <LOOPsSection />
+    <PropsSection />
+    <EducatorsSection />
+  </main>
+  <LandingFooter />
 </div>
 
 <style>
-	/* Skip link - visible only on focus for keyboard users */
-	.skip-link {
-		position: absolute;
-		top: -100px;
-		left: 50%;
-		transform: translateX(-50%);
-		background: var(--primary, #6366f1);
-		color: white;
-		padding: 12px 24px;
-		border-radius: 8px;
-		text-decoration: none;
-		font-weight: 600;
-		z-index: 9999;
-		transition: top 0.2s ease;
-	}
+  /* Skip link - visible only on focus for keyboard users */
+  .skip-link {
+    position: absolute;
+    top: -100px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--primary, #6366f1);
+    color: white;
+    padding: 12px 24px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    z-index: 9999;
+    transition: top 0.2s ease;
+  }
 
-	.skip-link:focus {
-		top: 16px;
-		outline: 2px solid white;
-		outline-offset: 2px;
-	}
+  .skip-link:focus {
+    top: 16px;
+    outline: 2px solid white;
+    outline-offset: 2px;
+  }
 
-	.landing-page {
-		--primary: #6366f1;
-		--primary-light: #818cf8;
-		--bg-dark: #0a0a0f;
-		--bg-card: rgba(255, 255, 255, 0.03);
-		--bg-card-hover: rgba(255, 255, 255, 0.06);
-		--text: #ffffff;
-		--text-muted: rgba(255, 255, 255, 0.6);
-		--border: rgba(255, 255, 255, 0.1);
-		--border-strong: rgba(255, 255, 255, 0.2);
+  .landing-page {
+    --primary: #6366f1;
+    --primary-light: #818cf8;
+    --bg-dark: #0a0a0f;
+    --bg-card: rgba(255, 255, 255, 0.03);
+    --bg-card-hover: rgba(255, 255, 255, 0.06);
+    --text: #ffffff;
+    --text-muted: rgba(255, 255, 255, 0.6);
+    --border: rgba(255, 255, 255, 0.1);
+    --border-strong: rgba(255, 255, 255, 0.2);
 
-		font-family: system-ui, -apple-system, sans-serif;
-		background: var(--bg-dark);
-		color: var(--text);
-		line-height: 1.6;
-		overflow-x: hidden;
-	}
+    font-family:
+      system-ui,
+      -apple-system,
+      sans-serif;
+    background: var(--bg-dark);
+    color: var(--text);
+    line-height: 1.6;
+    overflow-x: hidden;
+    scroll-behavior: smooth;
+  }
 </style>

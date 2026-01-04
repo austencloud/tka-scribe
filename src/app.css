@@ -866,9 +866,15 @@ body.sakura-drift {
   }
 
   /* Global reduction for all transform animations (WCAG AAA vestibular safety) */
-  *:not(.toast):not(.notification):not([role="alert"]):not(.drawer):not(.modal):not(.sheet),
-  *:not(.toast):not(.notification):not([role="alert"]):not(.drawer):not(.modal):not(.sheet)::before,
-  *:not(.toast):not(.notification):not([role="alert"]):not(.drawer):not(.modal):not(.sheet)::after {
+  *:not(.toast):not(.notification):not([role="alert"]):not(.drawer):not(
+      .modal
+    ):not(.sheet),
+  *:not(.toast):not(.notification):not([role="alert"]):not(.drawer):not(
+      .modal
+    ):not(.sheet)::before,
+  *:not(.toast):not(.notification):not([role="alert"]):not(.drawer):not(
+      .modal
+    ):not(.sheet)::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
