@@ -56,6 +56,9 @@ Last audit: 2025-12-27
     onCanvasReady = () => {},
     onPlaybackToggle = () => {},
     trailSettings: externalTrailSettings = $bindable(),
+    // Prop type overrides - bypass settings when provided (useful for demos/previews)
+    bluePropType = null,
+    redPropType = null,
   }: {
     blueProp: PropState | null;
     redProp: PropState | null;
@@ -72,6 +75,8 @@ Last audit: 2025-12-27
     onCanvasReady?: (canvas: HTMLCanvasElement | null) => void;
     onPlaybackToggle?: () => void;
     trailSettings?: TrailSettings;
+    bluePropType?: string | null;
+    redPropType?: string | null;
   } = $props();
 
   // Container element
@@ -130,6 +135,8 @@ Last audit: 2025-12-27
       currentBeat,
       isPlaying,
       externalTrailSettings,
+      bluePropType,
+      redPropType,
     };
     untrack(() => {
       engine.update(props);

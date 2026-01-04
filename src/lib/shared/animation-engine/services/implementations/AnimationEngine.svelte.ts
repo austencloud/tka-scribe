@@ -68,6 +68,9 @@ export interface AnimationEngineProps {
   currentBeat?: number;
   isPlaying?: boolean;
   externalTrailSettings?: TrailSettings;
+  // Prop type overrides - bypass settings when provided (useful for demos/previews)
+  bluePropType?: string | null;
+  redPropType?: string | null;
 }
 
 /**
@@ -204,6 +207,10 @@ export class AnimationEngine {
   private prevSequenceData: SequenceData | null = null;
   private prevIsPlaying: boolean = false;
   private prevGridMode: GridMode | null = null;
+
+  // Prop type overrides (bypass settings when provided)
+  private propTypeOverrideBlue: string | null = null;
+  private propTypeOverrideRed: string | null = null;
   private prevLightsOff: boolean = false;
 
   // Simple reference to last props for initial render (not a copy - avoids GC)
@@ -327,30 +334,55 @@ export class AnimationEngine {
       }
     }
 
-    // Handle prop type changes
-    this.propTypeChangeService?.checkForChanges(this.settingsService);
+    // Handle prop type changes - check for overrides first, then settings
+    const hasOverrides = props.bluePropType != null || props.redPropType != null;
 
-    // Handle texture reload signal (track last signal to detect changes)
-    const textureSignal = this.propTypeChangeService?.state.textureReloadSignal ?? 0;
-    if (textureSignal > 0 && textureSignal !== this.lastTextureReloadSignal) {
-      this.lastTextureReloadSignal = textureSignal;
+    if (hasOverrides) {
+      // Use overrides - bypass settings entirely
+      const newBlue = props.bluePropType ?? this.propTypeOverrideBlue ?? "staff";
+      const newRed = props.redPropType ?? this.propTypeOverrideRed ?? "staff";
 
-      // CRITICAL: Sync prop type state AFTER checkForChanges() detected the new values
-      // Otherwise loadPropTextures() would use stale values from the earlier syncServiceState() call
-      if (this.propTypeChangeService) {
-        this.state.currentBluePropType = this.propTypeChangeService.state.bluePropType;
-        this.state.currentRedPropType = this.propTypeChangeService.state.redPropType;
-        this.state.currentPropType = this.propTypeChangeService.state.legacyPropType;
+      // Check if overrides changed
+      if (newBlue !== this.propTypeOverrideBlue || newRed !== this.propTypeOverrideRed) {
+        this.propTypeOverrideBlue = newBlue;
+        this.propTypeOverrideRed = newRed;
+        this.state.currentBluePropType = newBlue;
+        this.state.currentRedPropType = newRed;
+        this.state.currentPropType = newBlue;
+
+        // Hot-swap textures
+        this.loadPropTextures().then(() => {
+          if (this.state.isInitialized) {
+            this.renderLoopService?.triggerRender(() => this.getFrameParams(props));
+          }
+        });
       }
+    } else {
+      // No overrides - use settings via propTypeChangeService
+      this.propTypeChangeService?.checkForChanges(this.settingsService);
 
-      // Hot-swap textures without full re-initialization
-      // The render loop keeps running with old textures until new ones load
-      this.loadPropTextures().then(() => {
-        // Trigger immediate re-render once new textures are ready
-        if (this.state.isInitialized) {
-          this.renderLoopService?.triggerRender(() => this.getFrameParams(props));
+      // Handle texture reload signal (track last signal to detect changes)
+      const textureSignal = this.propTypeChangeService?.state.textureReloadSignal ?? 0;
+      if (textureSignal > 0 && textureSignal !== this.lastTextureReloadSignal) {
+        this.lastTextureReloadSignal = textureSignal;
+
+        // CRITICAL: Sync prop type state AFTER checkForChanges() detected the new values
+        // Otherwise loadPropTextures() would use stale values from the earlier syncServiceState() call
+        if (this.propTypeChangeService) {
+          this.state.currentBluePropType = this.propTypeChangeService.state.bluePropType;
+          this.state.currentRedPropType = this.propTypeChangeService.state.redPropType;
+          this.state.currentPropType = this.propTypeChangeService.state.legacyPropType;
         }
-      });
+
+        // Hot-swap textures without full re-initialization
+        // The render loop keeps running with old textures until new ones load
+        this.loadPropTextures().then(() => {
+          // Trigger immediate re-render once new textures are ready
+          if (this.state.isInitialized) {
+            this.renderLoopService?.triggerRender(() => this.getFrameParams(props));
+          }
+        });
+      }
     }
 
     // Handle trail settings changes
@@ -642,12 +674,16 @@ export class AnimationEngine {
   private async loadPropTextures(): Promise<void> {
     if (!this.propTextureService) return;
 
-    // Read prop types from settings service directly to ensure we have the latest values
-    // This handles both initial load (before checkForChanges ran) and subsequent updates
+    // Use overrides if set, otherwise read from settings
     let bluePropType = this.state.currentBluePropType;
     let redPropType = this.state.currentRedPropType;
 
-    if (this.settingsService?.currentSettings) {
+    if (this.propTypeOverrideBlue != null || this.propTypeOverrideRed != null) {
+      // Use overrides - bypass settings entirely
+      bluePropType = this.propTypeOverrideBlue ?? "staff";
+      redPropType = this.propTypeOverrideRed ?? "staff";
+    } else if (this.settingsService?.currentSettings) {
+      // No overrides - read from settings
       const settings = this.settingsService.currentSettings;
       bluePropType = settings.bluePropType || settings.propType || "staff";
       redPropType = settings.redPropType || settings.propType || "staff";
