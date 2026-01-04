@@ -1,5 +1,5 @@
 <script lang="ts">
-	import LegalSheet from './LegalSheet.svelte';
+	import LegalSheet from '$lib/shared/legal/components/LegalSheet.svelte';
 
 	const footerLinks = [
 		{ href: '/app', label: 'App' },
@@ -44,7 +44,7 @@
 	</div>
 </section>
 
-<footer class="landing-footer">
+<footer class="footer">
 	<div class="container">
 		<div class="footer-content">
 			<div class="footer-brand">
@@ -74,10 +74,15 @@
 <LegalSheet isOpen={sheetOpen} type={sheetType} onClose={closeSheet} />
 
 <style>
+	.final-cta {
+		padding: 120px 24px;
+		text-align: center;
+		background: radial-gradient(ellipse at center, rgba(99, 102, 241, 0.15) 0%, transparent 70%);
+	}
+
 	.container {
 		max-width: 1200px;
 		margin: 0 auto;
-		padding: 0 24px;
 	}
 
 	h2 {
@@ -88,11 +93,8 @@
 		line-height: 1.2;
 	}
 
-	/* Final CTA */
-	.final-cta {
-		padding: 120px 24px;
-		text-align: center;
-		background: radial-gradient(ellipse at center, rgba(99, 102, 241, 0.15) 0%, transparent 70%);
+	.small {
+		color: var(--text-muted, rgba(255, 255, 255, 0.6));
 	}
 
 	.final-cta p {
@@ -102,10 +104,10 @@
 
 	.final-cta .small {
 		font-size: 1rem;
-		color: var(--text-muted, rgba(255, 255, 255, 0.6));
 		margin-bottom: 32px;
 	}
 
+	/* Button styles */
 	.btn {
 		display: inline-flex;
 		align-items: center;
@@ -143,8 +145,7 @@
 		transform: translateX(4px);
 	}
 
-	/* Footer */
-	.landing-footer {
+	.footer {
 		padding: 48px 24px;
 		border-top: 1px solid var(--border, rgba(255, 255, 255, 0.1));
 	}
@@ -171,6 +172,8 @@
 
 	.footer-links {
 		display: flex;
+		flex-wrap: wrap;
+		justify-content: center;
 		gap: 24px;
 	}
 
@@ -205,9 +208,10 @@
 	}
 
 	.footer-legal a {
-		color: var(--text-muted, rgba(255, 255, 255, 0.5));
+		color: rgba(255, 255, 255, 0.7);
 		text-decoration: none;
 		font-size: 0.75rem;
+		padding: 8px 0;
 		transition: color 0.2s ease;
 	}
 

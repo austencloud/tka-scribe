@@ -49,19 +49,19 @@
 		margin: 0 auto 3rem;
 	}
 
-	.educator-grid {
-		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-		gap: 24px;
-		margin-bottom: 48px;
-	}
-
 	.educator-card {
 		background: var(--bg-card, rgba(255, 255, 255, 0.03));
 		border: 1px solid var(--border, rgba(255, 255, 255, 0.1));
 		border-radius: 16px;
 		padding: 28px;
 		text-align: center;
+	}
+
+	.educator-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+		gap: 24px;
+		margin-bottom: 48px;
 	}
 
 	.edu-icon {

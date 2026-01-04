@@ -1,7 +1,20 @@
 <script lang="ts">
   /**
-   * LandingPage - Full-screen auth gate for logged-out users
-   * Minimal, focused design that gets users signed in quickly
+   * AuthGate (LandingPage.svelte)
+   *
+   * This is the AUTH GATE - shown by MainApplication when user is not authenticated.
+   * NOT the marketing landing page (that's /routes/+page.svelte).
+   *
+   * This component:
+   * - Respects user theme preferences (dynamic --theme-* variables)
+   * - Provides sign-in/sign-up flow
+   * - Has background toggle easter egg
+   *
+   * The marketing landing page:
+   * - Lives at /routes/+page.svelte
+   * - Uses fixed dark theme (static CSS variables in .landing-page)
+   * - Is SEO-focused with feature sections
+   * - Uses shared utilities from src/styles/landing-utilities.css
    */
   import { fly, fade } from "svelte/transition";
   import { cubicOut } from "svelte/easing";
@@ -10,7 +23,7 @@
   import EmailPasswordAuth from "./EmailPasswordAuth.svelte";
   import AuthFooter from "./AuthFooter.svelte";
   import GoogleOneTap from "./GoogleOneTap.svelte";
-  import LegalSheet from "../../../../routes/landing/components/LegalSheet.svelte";
+  import LegalSheet from "../../legal/components/LegalSheet.svelte";
   import { resolve } from "../../inversify/di";
   import { TYPES } from "../../inversify/types";
   import type { IAuthenticator } from "../services/contracts/IAuthenticator";

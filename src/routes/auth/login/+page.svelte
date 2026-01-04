@@ -15,7 +15,7 @@
   import EmailLinkAuth from "$lib/shared/auth/components/EmailLinkAuth.svelte";
   import GoogleOneTap from "$lib/shared/auth/components/GoogleOneTap.svelte";
   import { isGoogleOneTapConfigured } from "$lib/shared/auth/config/google-oauth";
-  import LegalSheet from "../../landing/components/LegalSheet.svelte";
+  import LegalSheet from "$lib/shared/legal/components/LegalSheet.svelte";
 
   let emailAuthMode: "password" | "link" = $state("link"); // Default to passwordless
   let hasRedirected = $state(false);
@@ -242,7 +242,11 @@
     width: 48px;
     height: 48px;
     border: 4px solid
-      color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 20%, transparent);
+      color-mix(
+        in srgb,
+        var(--theme-accent, var(--theme-accent)) 20%,
+        transparent
+      );
     border-top-color: var(--theme-accent, var(--theme-accent));
     border-radius: 50%;
     animation: spin 0.8s linear infinite;

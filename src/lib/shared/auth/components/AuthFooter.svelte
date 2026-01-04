@@ -6,7 +6,7 @@
   On desktop (≥768px): Navigates to /terms or /privacy pages
 -->
 <script lang="ts">
-  import LegalSheet from "../../../../routes/landing/components/LegalSheet.svelte";
+  import LegalSheet from "../../legal/components/LegalSheet.svelte";
 
   // Local sheet state
   let sheetOpen = $state(false);

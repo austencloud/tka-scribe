@@ -46,6 +46,7 @@
 		margin: 0 auto 3rem;
 	}
 
+	/* Props showcase */
 	.props-showcase {
 		display: flex;
 		flex-wrap: wrap;
