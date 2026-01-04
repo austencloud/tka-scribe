@@ -94,12 +94,13 @@
     justify-content: center;
     gap: 8px;
     padding: 10px 20px;
+    min-height: 48px; /* WCAG 2.1 AA touch target */
     background: transparent;
     border: none;
     border-radius: 8px;
     font-size: var(--font-size-min);
     font-weight: 600;
-    color: var(--theme-text-dim, var(--theme-text-dim));
+    color: var(--theme-text-dim);
     cursor: pointer;
     transition: color 0.2s ease;
     z-index: 1;

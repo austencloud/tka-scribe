@@ -74,13 +74,14 @@
     display: flex;
     align-items: center;
     gap: 8px;
-    padding: 10px 20px;
+    padding: 12px 20px;
+    min-height: 48px; /* WCAG 2.1 AA touch target */
     background: var(--theme-card-bg);
     border: 1.5px solid var(--theme-stroke);
     border-radius: 24px;
     font-size: var(--font-size-min);
     font-weight: 500;
-    color: var(--theme-text-dim, var(--theme-text-dim));
+    color: var(--theme-text-dim);
     cursor: pointer;
     transition: all 0.2s ease;
     white-space: nowrap;
@@ -92,8 +93,8 @@
 
   .format-chip:hover {
     border-color: var(--theme-accent);
-    color: var(--theme-text, var(--theme-text));
-    transform: translateY(-1px);
+    color: var(--theme-text);
+    transform: translateY(-2px);
   }
 
   .format-chip:focus-visible {

@@ -1,21 +1,28 @@
 <!--
   ShareHubDrawer.svelte
 
-  Drawer wrapper for unified Share Hub panel, used across multiple modules (Discover, Create, Library).
-  Simpler than CreatePanelDrawer since it doesn't depend on Create module context.
+  Drawer wrapper for unified Share Hub panel.
+  Provides AnimationExportContext to eliminate prop drilling.
 
-  - Mobile: Bottom drawer, 85vh height
+  - Mobile: Bottom drawer, 100dvh height
   - Desktop: Right drawer, full height
-  - Updated to use ShareHubPanel (unified Single Media | Composite architecture)
+  - Context-based animation state (no prop drilling)
 -->
 <script lang="ts">
-  import Drawer from '$lib/shared/foundation/ui/Drawer.svelte';
-  import ShareHubPanel from './ShareHubPanel.svelte';
-  import type { ExportSettings } from '../domain/models/ExportSettings';
-  import type { SequenceData } from '$lib/shared/foundation/domain/models/SequenceData';
-  import type { VideoExportProgress } from '$lib/features/compose/services/contracts/IVideoExportOrchestrator';
-  import type { PlaybackMode, StepPlaybackStepSize } from '$lib/features/compose/state/animation-panel-state.svelte';
-  import { tryGetCreateModuleContext } from '$lib/features/create/shared/context/create-module-context';
+  import Drawer from "$lib/shared/foundation/ui/Drawer.svelte";
+  import ShareHubPanel from "./ShareHubPanel.svelte";
+  import type { ExportSettings } from "../domain/models/ExportSettings";
+  import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
+  import type { VideoExportProgress } from "$lib/features/compose/services/contracts/IVideoExportOrchestrator";
+  import type {
+    PlaybackMode,
+    StepPlaybackStepSize,
+  } from "$lib/features/compose/state/animation-panel-state.svelte";
+  import { tryGetCreateModuleContext } from "$lib/features/create/shared/context/create-module-context";
+  import {
+    setAnimationExportContext,
+    createAnimationExportContext,
+  } from "../context/animation-export-context.svelte";
 
   let {
     isOpen = $bindable(false),
@@ -24,7 +31,7 @@
     isMobile = false,
     onClose,
     onExport,
-    // Animation props (optional - only passed when animation services ready)
+    // Animation props (converted to context)
     animationSequenceData = null,
     isAnimationPlaying = false,
     animationCurrentBeat = 0,
@@ -37,9 +44,8 @@
     animationExportProgress = null,
     animationServicesReady = false,
     animationLoading = false,
-    selectedFormat = 'animation',
-    // Full animation controls props
-    playbackMode = 'continuous' as PlaybackMode,
+    selectedFormat = "animation",
+    playbackMode = "continuous" as PlaybackMode,
     stepPlaybackPauseMs = 300,
     stepPlaybackStepSize = 1 as StepPlaybackStepSize,
     blueMotionVisible = true,
@@ -64,12 +70,13 @@
   }: {
     isOpen?: boolean;
     sequence: SequenceData | null;
-    /** Whether the sequence has been saved to the library */
     isSequenceSaved?: boolean;
-    /** Whether we're on a mobile device (affects button label) */
     isMobile?: boolean;
     onClose?: () => void;
-    onExport?: (mode: 'single' | 'composite', settings?: ExportSettings) => Promise<void>;
+    onExport?: (
+      mode: "single" | "composite",
+      settings?: ExportSettings
+    ) => Promise<void>;
     // Animation props
     animationSequenceData?: SequenceData | null;
     isAnimationPlaying?: boolean;
@@ -83,8 +90,7 @@
     animationExportProgress?: VideoExportProgress | null;
     animationServicesReady?: boolean;
     animationLoading?: boolean;
-    selectedFormat?: 'animation' | 'static' | 'performance';
-    // Full animation controls
+    selectedFormat?: "animation" | "static" | "performance";
     playbackMode?: PlaybackMode;
     stepPlaybackPauseMs?: number;
     stepPlaybackStepSize?: StepPlaybackStepSize;
@@ -101,13 +107,114 @@
     onCanvasReady?: (canvas: HTMLCanvasElement | null) => void;
     onCancelExport?: () => void;
     onExportVideo?: () => void;
-    onFormatChange?: (format: 'animation' | 'static' | 'performance') => void;
+    onFormatChange?: (format: "animation" | "static" | "performance") => void;
     onPlaybackModeChange?: (mode: PlaybackMode) => void;
     onStepPlaybackPauseMsChange?: (pauseMs: number) => void;
     onStepPlaybackStepSizeChange?: (stepSize: StepPlaybackStepSize) => void;
     onToggleBlue?: () => void;
     onToggleRed?: () => void;
   } = $props();
+
+  // Create and provide the animation export context
+  // This eliminates prop drilling through ShareHubPanel → SingleMediaView → AnimationExportView
+  //
+  // IMPORTANT: Context must be set during initialization, not reactively.
+  // We create a reactive state object that gets updated, and set the context once.
+  const animationContext = $state({
+    state: {
+      sequenceData: animationSequenceData,
+      isCircular,
+      isPlaying: isAnimationPlaying,
+      currentBeat: animationCurrentBeat,
+      speed: animationSpeed,
+      playbackMode,
+      stepPlaybackPauseMs,
+      stepPlaybackStepSize,
+      blueMotionVisible,
+      redMotionVisible,
+      bluePropState: animationBluePropState,
+      redPropState: animationRedPropState,
+      exportLoopCount,
+      isExporting: isAnimationExporting,
+      exportProgress: animationExportProgress,
+      servicesReady: animationServicesReady,
+      loading: animationLoading,
+      isSideBySideLayout,
+      selectedFormat,
+    },
+    actions: {
+      onPlaybackToggle: onPlaybackToggle ?? (() => {}),
+      onSpeedChange: onSpeedChange ?? (() => {}),
+      onPlaybackModeChange: onPlaybackModeChange ?? (() => {}),
+      onStepPlaybackPauseMsChange: onStepPlaybackPauseMsChange ?? (() => {}),
+      onStepPlaybackStepSizeChange: onStepPlaybackStepSizeChange ?? (() => {}),
+      onStepHalfBeatForward: onStepHalfBeatForward ?? (() => {}),
+      onStepHalfBeatBackward: onStepHalfBeatBackward ?? (() => {}),
+      onStepFullBeatForward: onStepFullBeatForward ?? (() => {}),
+      onStepFullBeatBackward: onStepFullBeatBackward ?? (() => {}),
+      onToggleBlue: onToggleBlue ?? (() => {}),
+      onToggleRed: onToggleRed ?? (() => {}),
+      onLoopCountChange: onLoopCountChange ?? (() => {}),
+      onExportVideo: onExportVideo ?? (() => {}),
+      onCancelExport: onCancelExport ?? (() => {}),
+      onCanvasReady: onCanvasReady ?? (() => {}),
+      onFormatChange: onFormatChange ?? (() => {}),
+    },
+  });
+
+  // Update the context state reactively when props change
+  $effect(() => {
+    animationContext.state.sequenceData = animationSequenceData;
+    animationContext.state.isCircular = isCircular;
+    animationContext.state.isPlaying = isAnimationPlaying;
+    animationContext.state.currentBeat = animationCurrentBeat;
+    animationContext.state.speed = animationSpeed;
+    animationContext.state.playbackMode = playbackMode;
+    animationContext.state.stepPlaybackPauseMs = stepPlaybackPauseMs;
+    animationContext.state.stepPlaybackStepSize = stepPlaybackStepSize;
+    animationContext.state.blueMotionVisible = blueMotionVisible;
+    animationContext.state.redMotionVisible = redMotionVisible;
+    animationContext.state.bluePropState = animationBluePropState;
+    animationContext.state.redPropState = animationRedPropState;
+    animationContext.state.exportLoopCount = exportLoopCount;
+    animationContext.state.isExporting = isAnimationExporting;
+    animationContext.state.exportProgress = animationExportProgress;
+    animationContext.state.servicesReady = animationServicesReady;
+    animationContext.state.loading = animationLoading;
+    animationContext.state.isSideBySideLayout = isSideBySideLayout;
+    animationContext.state.selectedFormat = selectedFormat;
+  });
+
+  // Update actions when callbacks change
+  $effect(() => {
+    animationContext.actions.onPlaybackToggle = onPlaybackToggle ?? (() => {});
+    animationContext.actions.onSpeedChange = onSpeedChange ?? (() => {});
+    animationContext.actions.onPlaybackModeChange =
+      onPlaybackModeChange ?? (() => {});
+    animationContext.actions.onStepPlaybackPauseMsChange =
+      onStepPlaybackPauseMsChange ?? (() => {});
+    animationContext.actions.onStepPlaybackStepSizeChange =
+      onStepPlaybackStepSizeChange ?? (() => {});
+    animationContext.actions.onStepHalfBeatForward =
+      onStepHalfBeatForward ?? (() => {});
+    animationContext.actions.onStepHalfBeatBackward =
+      onStepHalfBeatBackward ?? (() => {});
+    animationContext.actions.onStepFullBeatForward =
+      onStepFullBeatForward ?? (() => {});
+    animationContext.actions.onStepFullBeatBackward =
+      onStepFullBeatBackward ?? (() => {});
+    animationContext.actions.onToggleBlue = onToggleBlue ?? (() => {});
+    animationContext.actions.onToggleRed = onToggleRed ?? (() => {});
+    animationContext.actions.onLoopCountChange =
+      onLoopCountChange ?? (() => {});
+    animationContext.actions.onExportVideo = onExportVideo ?? (() => {});
+    animationContext.actions.onCancelExport = onCancelExport ?? (() => {});
+    animationContext.actions.onCanvasReady = onCanvasReady ?? (() => {});
+    animationContext.actions.onFormatChange = onFormatChange ?? (() => {});
+  });
+
+  // Set context once during initialization
+  setAnimationExportContext(animationContext);
 
   // Try to get Create module context for measured tool panel width
   const createModuleContext = tryGetCreateModuleContext();
@@ -117,29 +224,24 @@
     createModuleContext ? createModuleContext.panelState.toolPanelWidth : 0
   );
 
-  // Detect viewport width for placement (simple media query approach)
+  // Detect viewport width for placement
   let isDesktop = $state(false);
 
-  // Update on mount and resize
   $effect(() => {
     function updateLayout() {
-      isDesktop = window.innerWidth >= 1024; // Desktop breakpoint
+      isDesktop = window.innerWidth >= 1024;
     }
     updateLayout();
-    window.addEventListener('resize', updateLayout);
-    return () => window.removeEventListener('resize', updateLayout);
+    window.addEventListener("resize", updateLayout);
+    return () => window.removeEventListener("resize", updateLayout);
   });
 
-  const placement = $derived(isDesktop ? 'right' : 'bottom');
+  const placement = $derived(isDesktop ? "right" : "bottom");
 
-  // Dynamic inline style to set measured width CSS variable
-  // If measured width is available, use it; otherwise CSS will use fallback clamp value
-  const drawerStyle = $derived.by(() => {
-    if (toolPanelWidth > 0) {
-      return `--measured-panel-width: ${toolPanelWidth}px`;
-    }
-    return null; // Use null instead of empty string so {#if} block doesn't render
-  });
+  // CSS variable for measured width (null means use CSS fallback)
+  const measuredWidth = $derived(
+    toolPanelWidth > 0 ? `${toolPanelWidth}px` : null
+  );
 
   function handleClose() {
     isOpen = false;
@@ -147,68 +249,10 @@
   }
 </script>
 
-{#if drawerStyle !== null}
-  <div style={drawerStyle}>
-    <Drawer
-      bind:isOpen
-      ariaLabel="Share Hub - Choose export format"
-      onclose={handleClose}
-      closeOnBackdrop={false}
-      showHandle={!isDesktop}
-      dismissible={true}
-      respectLayoutMode={true}
-      placement={placement}
-      class="share-hub-drawer"
-      backdropClass="share-hub-backdrop"
-      trapFocus={false}
-      preventScroll={true}
-    >
-      <div class="share-hub-content">
-        <ShareHubPanel
-          {sequence}
-          {isSequenceSaved}
-          {isMobile}
-          {onExport}
-          {animationSequenceData}
-          {isAnimationPlaying}
-          {animationCurrentBeat}
-          {animationSpeed}
-          {animationBluePropState}
-          {animationRedPropState}
-          {isCircular}
-          {exportLoopCount}
-          {isAnimationExporting}
-          {animationExportProgress}
-          {animationServicesReady}
-          {animationLoading}
-          {selectedFormat}
-          {playbackMode}
-          {stepPlaybackPauseMs}
-          {stepPlaybackStepSize}
-          {blueMotionVisible}
-          {redMotionVisible}
-          {isSideBySideLayout}
-          {onPlaybackToggle}
-          {onSpeedChange}
-          {onStepHalfBeatForward}
-          {onStepHalfBeatBackward}
-          {onStepFullBeatForward}
-          {onStepFullBeatBackward}
-          {onLoopCountChange}
-          {onCanvasReady}
-          {onCancelExport}
-          {onExportVideo}
-          {onFormatChange}
-          {onPlaybackModeChange}
-          {onStepPlaybackPauseMsChange}
-          {onStepPlaybackStepSizeChange}
-          {onToggleBlue}
-          {onToggleRed}
-        />
-      </div>
-    </Drawer>
-  </div>
-{:else}
+<div
+  class="share-hub-drawer-wrapper"
+  style:--measured-panel-width={measuredWidth}
+>
   <Drawer
     bind:isOpen
     ariaLabel="Share Hub - Choose export format"
@@ -217,59 +261,23 @@
     showHandle={!isDesktop}
     dismissible={true}
     respectLayoutMode={true}
-    placement={placement}
+    {placement}
     class="share-hub-drawer"
     backdropClass="share-hub-backdrop"
     trapFocus={false}
     preventScroll={true}
   >
     <div class="share-hub-content">
-      <ShareHubPanel
-        {sequence}
-        {isSequenceSaved}
-        {isMobile}
-        {onExport}
-        {animationSequenceData}
-        {isAnimationPlaying}
-        {animationCurrentBeat}
-        {animationSpeed}
-        {animationBluePropState}
-        {animationRedPropState}
-        {isCircular}
-        {exportLoopCount}
-        {isAnimationExporting}
-        {animationExportProgress}
-        {animationServicesReady}
-        {animationLoading}
-        {selectedFormat}
-        {playbackMode}
-        {stepPlaybackPauseMs}
-        {stepPlaybackStepSize}
-        {blueMotionVisible}
-        {redMotionVisible}
-        {isSideBySideLayout}
-        {onPlaybackToggle}
-        {onSpeedChange}
-        {onStepHalfBeatForward}
-        {onStepHalfBeatBackward}
-        {onStepFullBeatForward}
-        {onStepFullBeatBackward}
-        {onLoopCountChange}
-        {onCanvasReady}
-        {onCancelExport}
-        {onExportVideo}
-        {onFormatChange}
-        {onPlaybackModeChange}
-        {onStepPlaybackPauseMsChange}
-        {onStepPlaybackStepSizeChange}
-        {onToggleBlue}
-        {onToggleRed}
-      />
+      <ShareHubPanel {sequence} {isSequenceSaved} {isMobile} {onExport} />
     </div>
   </Drawer>
-{/if}
+</div>
 
 <style>
+  .share-hub-drawer-wrapper {
+    display: contents;
+  }
+
   /* Drawer container styling - NO BLUR to keep content behind visible */
   :global(.drawer-content.share-hub-drawer) {
     background: linear-gradient(
@@ -289,20 +297,18 @@
 
   /* Desktop (right placement) - match Create module panel width */
   :global(.drawer-content.share-hub-drawer[data-placement="right"]) {
-    /* Use measured tool panel width when available (from Create module context) */
     width: var(--measured-panel-width, clamp(360px, 50vw, 1600px));
     max-width: 100vw;
     height: 100dvh;
-    /* Full viewport height - ShareHub is an overlay, not a Create module tool panel */
   }
 
-  /* Mobile (bottom placement) */
+  /* Mobile (bottom placement) - Full viewport */
   :global(.drawer-content.share-hub-drawer[data-placement="bottom"]) {
-    height: 85vh;
-    max-height: 85vh;
+    height: 100dvh;
+    max-height: 100dvh;
   }
 
-  /* Backdrop - Completely transparent, no darkening, no click blocking */
+  /* Backdrop - Completely transparent */
   :global(.drawer-overlay.share-hub-backdrop) {
     background: transparent !important;
     backdrop-filter: none !important;

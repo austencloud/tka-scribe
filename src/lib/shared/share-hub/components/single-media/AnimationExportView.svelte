@@ -2,10 +2,7 @@
   AnimationExportView.svelte
 
   PURE VIEW component for animation preview and export in Share Hub.
-  All state is received as props - no service resolution, no state management.
-
-  This replaces the broken AnimationPreview that had infinite loop issues
-  from bidirectional state binding.
+  All state is consumed from AnimationExportContext - no props needed.
 
   Uses the same AnimationControlsPanel as the original animation viewer
   to provide consistent UI and full controls.
@@ -14,97 +11,22 @@
   - Live animation preview via AnimatorCanvas
   - Full AnimationControlsPanel with transport, BPM, visibility, settings
   - Export progress overlay on canvas during export
-  - Same layout/controls as original animation viewer
-
-  Domain: Share Hub - Single Media - Animation Format
 -->
 <script lang="ts">
   import AnimatorCanvas from '$lib/shared/animation-engine/components/AnimatorCanvas.svelte';
   import AnimationControlsPanel from '$lib/features/compose/components/canvas/AnimationControlsPanel.svelte';
-  import type { SequenceData } from '$lib/shared/foundation/domain/models/SequenceData';
-  import type { VideoExportProgress } from '$lib/features/compose/services/contracts/IVideoExportOrchestrator';
-  import type { PlaybackMode, StepPlaybackStepSize } from '$lib/features/compose/state/animation-panel-state.svelte';
+  import { getAnimationExportContext } from '../../context/animation-export-context.svelte';
 
-  // All state received as props (unidirectional data flow)
-  let {
-    sequenceData = null,
-    isPlaying = false,
-    currentBeat = 0,
-    speed = 1,
-    isCircular = false,
-    exportLoopCount = 1,
-    isExporting = false,
-    exportProgress = null,
-    servicesReady = false,
-    loading = false,
-    bluePropState = null,
-    redPropState = null,
-    // Full animation controls
-    playbackMode = 'continuous' as PlaybackMode,
-    stepPlaybackPauseMs = 300,
-    stepPlaybackStepSize = 1 as StepPlaybackStepSize,
-    blueMotionVisible = true,
-    redMotionVisible = true,
-    isSideBySideLayout = false,
-    // Handlers
-    onPlaybackToggle,
-    onSpeedChange,
-    onStepHalfBeatForward,
-    onStepHalfBeatBackward,
-    onStepFullBeatForward,
-    onStepFullBeatBackward,
-    onLoopCountChange,
-    onCanvasReady,
-    onCancelExport,
-    onExportVideo,
-    onPlaybackModeChange,
-    onStepPlaybackPauseMsChange,
-    onStepPlaybackStepSizeChange,
-    onToggleBlue,
-    onToggleRed,
-  }: {
-    sequenceData?: SequenceData | null;
-    isPlaying?: boolean;
-    currentBeat?: number;
-    speed?: number;
-    isCircular?: boolean;
-    exportLoopCount?: number;
-    isExporting?: boolean;
-    exportProgress?: VideoExportProgress | null;
-    servicesReady?: boolean;
-    loading?: boolean;
-    bluePropState?: any;
-    redPropState?: any;
-    // Full animation controls
-    playbackMode?: PlaybackMode;
-    stepPlaybackPauseMs?: number;
-    stepPlaybackStepSize?: StepPlaybackStepSize;
-    blueMotionVisible?: boolean;
-    redMotionVisible?: boolean;
-    isSideBySideLayout?: boolean;
-    // Handlers
-    onPlaybackToggle?: () => void;
-    onSpeedChange?: (speed: number) => void;
-    onStepHalfBeatForward?: () => void;
-    onStepHalfBeatBackward?: () => void;
-    onStepFullBeatForward?: () => void;
-    onStepFullBeatBackward?: () => void;
-    onLoopCountChange?: (count: number) => void;
-    onCanvasReady?: (canvas: HTMLCanvasElement | null) => void;
-    onCancelExport?: () => void;
-    onExportVideo?: () => void;
-    onPlaybackModeChange?: (mode: PlaybackMode) => void;
-    onStepPlaybackPauseMsChange?: (pauseMs: number) => void;
-    onStepPlaybackStepSizeChange?: (stepSize: StepPlaybackStepSize) => void;
-    onToggleBlue?: () => void;
-    onToggleRed?: () => void;
-  } = $props();
+  // Get context object (don't destructure to maintain reactivity)
+  const context = getAnimationExportContext();
 
   // Canvas reference for export
   let canvasElement: HTMLCanvasElement | null = $state(null);
 
   // Derived values for AnimatorCanvas
   const currentBeatData = $derived.by(() => {
+    const sequenceData = context.state.sequenceData;
+    const currentBeat = context.state.currentBeat;
     if (!sequenceData) return null;
     if (currentBeat < 1 && sequenceData.startPosition) {
       return sequenceData.startPosition;
@@ -122,45 +44,45 @@
 
   // Export progress helpers
   const progressPercent = $derived(
-    exportProgress ? Math.round(exportProgress.progress * 100) : 0
+    context.state.exportProgress ? Math.round(context.state.exportProgress.progress * 100) : 0
   );
   const progressStage = $derived(
-    exportProgress?.stage === 'capturing' ? 'Capturing frames...' :
-    exportProgress?.stage === 'encoding' ? 'Encoding video...' :
-    exportProgress?.stage === 'complete' ? 'Complete!' :
-    exportProgress?.stage === 'error' ? 'Error' : ''
+    context.state.exportProgress?.stage === 'capturing' ? 'Capturing frames...' :
+    context.state.exportProgress?.stage === 'encoding' ? 'Encoding video...' :
+    context.state.exportProgress?.stage === 'complete' ? 'Complete!' :
+    context.state.exportProgress?.stage === 'error' ? 'Error' : ''
   );
 
   // Handle canvas ready from AnimatorCanvas
   function handleCanvasReady(canvas: HTMLCanvasElement | null) {
     canvasElement = canvas;
-    onCanvasReady?.(canvas);
+    context.actions.onCanvasReady(canvas);
   }
 </script>
 
 <div class="animation-export-view">
   <!-- Preview Canvas -->
   <div class="preview-canvas">
-    {#if loading}
+    {#if context.state.loading}
       <div class="loading-state">
         <div class="spinner"></div>
         <p>Loading animation...</p>
       </div>
-    {:else if !sequenceData}
+    {:else if !context.state.sequenceData}
       <div class="empty-state">
         <i class="fas fa-video" aria-hidden="true"></i>
         <p>No sequence loaded</p>
       </div>
-    {:else if servicesReady}
+    {:else if context.state.servicesReady}
       <AnimatorCanvas
-        blueProp={bluePropState}
-        redProp={redPropState}
+        blueProp={context.state.bluePropState}
+        redProp={context.state.redPropState}
         gridVisible={true}
-        gridMode={sequenceData?.gridMode ?? null}
+        gridMode={context.state.sequenceData?.gridMode ?? null}
         letter={currentLetter}
         beatData={currentBeatData}
-        {currentBeat}
-        {sequenceData}
+        currentBeat={context.state.currentBeat}
+        sequenceData={context.state.sequenceData}
         onCanvasReady={handleCanvasReady}
       />
     {:else}
@@ -171,15 +93,15 @@
     {/if}
 
     <!-- Export Progress Overlay -->
-    {#if isExporting && exportProgress}
+    {#if context.state.isExporting && context.state.exportProgress}
       <div class="export-overlay">
         <div class="export-progress-card">
           <div class="progress-header">
             <span class="progress-stage">{progressStage}</span>
-            {#if exportProgress.stage !== 'complete' && exportProgress.stage !== 'error'}
+            {#if context.state.exportProgress.stage !== 'complete' && context.state.exportProgress.stage !== 'error'}
               <button
                 class="cancel-button"
-                onclick={() => onCancelExport?.()}
+                onclick={() => context.actions.onCancelExport()}
                 aria-label="Cancel export"
               >
                 <i class="fas fa-times" aria-hidden="true"></i>
@@ -190,9 +112,9 @@
             <div class="progress-bar" style="width: {progressPercent}%"></div>
           </div>
           <span class="progress-percent">{progressPercent}%</span>
-          {#if exportProgress.currentFrame && exportProgress.totalFrames}
+          {#if context.state.exportProgress.currentFrame && context.state.exportProgress.totalFrames}
             <span class="frame-count">
-              Frame {exportProgress.currentFrame} / {exportProgress.totalFrames}
+              Frame {context.state.exportProgress.currentFrame} / {context.state.exportProgress.totalFrames}
             </span>
           {/if}
         </div>
@@ -200,37 +122,37 @@
     {/if}
   </div>
 
-  <!-- Animation Controls Panel (same as original animation viewer) -->
+  <!-- Animation Controls Panel -->
   <AnimationControlsPanel
-    {speed}
-    {isPlaying}
-    {blueMotionVisible}
-    {redMotionVisible}
-    {playbackMode}
-    {stepPlaybackPauseMs}
-    {stepPlaybackStepSize}
+    speed={context.state.speed}
+    isPlaying={context.state.isPlaying}
+    blueMotionVisible={context.state.blueMotionVisible}
+    redMotionVisible={context.state.redMotionVisible}
+    playbackMode={context.state.playbackMode}
+    stepPlaybackPauseMs={context.state.stepPlaybackPauseMs}
+    stepPlaybackStepSize={context.state.stepPlaybackStepSize}
     isSideBySideLayout={true}
     isExpanded={true}
-    {isExporting}
-    exportProgress={exportProgress ? { progress: exportProgress.progress, stage: exportProgress.stage } : null}
-    {sequenceData}
-    {currentBeat}
-    {isCircular}
-    loopCount={exportLoopCount}
-    onSpeedChange={(s) => onSpeedChange?.(s)}
-    onPlaybackToggle={() => onPlaybackToggle?.()}
-    onPlaybackModeChange={(m) => onPlaybackModeChange?.(m)}
-    onStepPlaybackPauseMsChange={(p) => onStepPlaybackPauseMsChange?.(p)}
-    onStepPlaybackStepSizeChange={(s) => onStepPlaybackStepSizeChange?.(s)}
-    onStepHalfBeatBackward={() => onStepHalfBeatBackward?.()}
-    onStepHalfBeatForward={() => onStepHalfBeatForward?.()}
-    onStepFullBeatBackward={() => onStepFullBeatBackward?.()}
-    onStepFullBeatForward={() => onStepFullBeatForward?.()}
-    onToggleBlue={() => onToggleBlue?.()}
-    onToggleRed={() => onToggleRed?.()}
-    onExportVideo={() => onExportVideo?.()}
-    onCancelExport={() => onCancelExport?.()}
-    onLoopCountChange={(c) => onLoopCountChange?.(c)}
+    isExporting={context.state.isExporting}
+    exportProgress={context.state.exportProgress ? { progress: context.state.exportProgress.progress, stage: context.state.exportProgress.stage } : null}
+    sequenceData={context.state.sequenceData}
+    currentBeat={context.state.currentBeat}
+    isCircular={context.state.isCircular}
+    loopCount={context.state.exportLoopCount}
+    onSpeedChange={(s) => context.actions.onSpeedChange(s)}
+    onPlaybackToggle={() => context.actions.onPlaybackToggle()}
+    onPlaybackModeChange={(m) => context.actions.onPlaybackModeChange(m)}
+    onStepPlaybackPauseMsChange={(p) => context.actions.onStepPlaybackPauseMsChange(p)}
+    onStepPlaybackStepSizeChange={(s) => context.actions.onStepPlaybackStepSizeChange(s)}
+    onStepHalfBeatBackward={() => context.actions.onStepHalfBeatBackward()}
+    onStepHalfBeatForward={() => context.actions.onStepHalfBeatForward()}
+    onStepFullBeatBackward={() => context.actions.onStepFullBeatBackward()}
+    onStepFullBeatForward={() => context.actions.onStepFullBeatForward()}
+    onToggleBlue={() => context.actions.onToggleBlue()}
+    onToggleRed={() => context.actions.onToggleRed()}
+    onExportVideo={() => context.actions.onExportVideo()}
+    onCancelExport={() => context.actions.onCancelExport()}
+    onLoopCountChange={(c) => context.actions.onLoopCountChange(c)}
   />
 </div>
 
@@ -373,7 +295,6 @@
     color: var(--theme-text-dim);
   }
 
-  /* Reduced motion */
   @media (prefers-reduced-motion: reduce) {
     .spinner {
       animation: none;

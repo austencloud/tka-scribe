@@ -164,9 +164,9 @@
     -webkit-appearance: none;
     appearance: none;
     width: 100%;
-    height: 6px;
-    background: var(--theme-card-bg, var(--theme-card-bg));
-    border-radius: 3px;
+    height: 8px;
+    background: var(--theme-card-bg);
+    border-radius: 4px;
     outline: none;
     cursor: pointer;
   }
@@ -174,8 +174,8 @@
   .slider::-webkit-slider-thumb {
     -webkit-appearance: none;
     appearance: none;
-    width: 20px;
-    height: 20px;
+    width: 24px;
+    height: 24px;
     background: var(--theme-accent);
     border-radius: 50%;
     cursor: pointer;
@@ -187,9 +187,14 @@
     transform: scale(1.1);
   }
 
+  .slider:focus-visible::-webkit-slider-thumb {
+    outline: 2px solid var(--theme-accent);
+    outline-offset: 2px;
+  }
+
   .slider::-moz-range-thumb {
-    width: 20px;
-    height: 20px;
+    width: 24px;
+    height: 24px;
     background: var(--theme-accent);
     border: none;
     border-radius: 50%;
@@ -202,11 +207,16 @@
     transform: scale(1.1);
   }
 
+  .slider:focus-visible::-moz-range-thumb {
+    outline: 2px solid var(--theme-accent);
+    outline-offset: 2px;
+  }
+
   .slider-labels {
     display: flex;
     justify-content: space-between;
     font-size: var(--font-size-compact);
-    color: var(--theme-text-dim, var(--theme-text-dim));
+    color: var(--theme-text-dim);
   }
 
   .toggle-row {
@@ -245,14 +255,14 @@
 
   .toggle-description {
     font-size: var(--font-size-compact);
-    color: var(--theme-text-dim, var(--theme-text-dim));
+    color: var(--theme-text-dim);
   }
 
   .toggle-button {
     position: relative;
     width: 48px;
     height: 28px;
-    background: var(--theme-card-bg, var(--theme-card-bg));
+    background: var(--theme-card-bg);
     border: 2px solid var(--theme-stroke);
     border-radius: 14px;
     cursor: pointer;
