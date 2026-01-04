@@ -7,10 +7,10 @@
 /**
  * Complete kinetic alphabet letter order
  * Organized by type in the canonical sequence
- * Types 1-5: UPPERCASE, Type 6: lowercase (α, β, γ, ζ, η, τ)
+ * Types 1-5: UPPERCASE, Type 6: Static letters (α, β, Γ, etc.)
  */
 const KINETIC_ALPHABET_ORDER = [
-  // Type 1: Dual-Shift (A-V + uppercase Gamma)
+  // Type 1: Dual-Shift 
   "A",
   "B",
   "C",
@@ -33,7 +33,6 @@ const KINETIC_ALPHABET_ORDER = [
   "T",
   "U",
   "V",
-  "Γ",
   // Type 2: Shift
   "W",
   "X",
@@ -43,8 +42,9 @@ const KINETIC_ALPHABET_ORDER = [
   "Δ",
   "Θ",
   "Ω",
-  "Μ",
-  "Ν",
+  // Advanced Type 2s (spelled out for readability)
+  "Mu",
+  "Nu",
   // Type 3: Cross-Shift
   "W-",
   "X-",
@@ -62,11 +62,11 @@ const KINETIC_ALPHABET_ORDER = [
   "Φ-",
   "Ψ-",
   "Λ-",
-  // Type 6: Static (lowercase)
+  // Type 6: Static
   "α",
   "β",
-  "γ",
-  "θ",
+  "Γ",
+  // Advanced Type 6s 
   "ζ",
   "η",
   "τ",
@@ -83,39 +83,28 @@ function getLetterSortIndex(letter: string): number {
 
 /**
  * Extract the base letter from a word (first letter or first letter+dash)
- * Type 6 letters are normalized to lowercase (α, β, γ, ζ, η, τ, ⊕)
+ * Type 6 letters: α, β, Γ, ζ, η, τ, ⊕
  */
 function extractBaseLetter(word: string): string {
   if (!word || word.length === 0) return "";
 
   const firstChar = word[0]!;
-  const TYPE6_UPPERCASE_TO_LOWERCASE: { [key: string]: string } = {
-    Α: "α",
-    Β: "β",
-    Γ: "γ",
-    Θ: "θ",
-    Ζ: "ζ",
-    Η: "η",
-    Τ: "τ",
-  };
-  const TYPE6_LOWERCASE = ["α", "β", "γ", "θ", "ζ", "η", "τ", "⊕"];
 
-  // Handle both uppercase Type 6 (convert to lowercase) and already-lowercase Type 6
+  // Type 6 static letters (these should not be uppercased)
+  const TYPE6_LETTERS = ["α", "β", "Γ", "ζ", "η", "τ", "⊕"];
+
   let char: string;
-  if (TYPE6_UPPERCASE_TO_LOWERCASE[firstChar]) {
-    // Uppercase Type 6 letter - convert to lowercase
-    char = TYPE6_UPPERCASE_TO_LOWERCASE[firstChar];
-  } else if (TYPE6_LOWERCASE.includes(firstChar)) {
-    // Already lowercase Type 6 letter - keep as-is
+  if (TYPE6_LETTERS.includes(firstChar)) {
+    // Type 6 letter - keep as-is
     char = firstChar;
   } else {
-    // Not Type 6, so uppercase it (Type 1-5)
+    // Type 1-5, uppercase it
     char = firstChar.toUpperCase();
   }
 
   const secondChar = word[1];
 
-  // Check if it's a dash variant (e.g., "W-" or "Σ-" or "θ-")
+  // Check if it's a dash variant (e.g., "W-" or "Σ-")
   if (secondChar === "-") {
     return `${char}-`;
   }

@@ -9,6 +9,7 @@ import type { SequenceData } from "$lib/shared/foundation/domain/models/Sequence
 import { injectable } from "inversify";
 import { ExploreSortMethod } from "$lib/features/discover/shared/domain/enums/discover-enums";
 import type { IDiscoverSorter } from "../contracts/IDiscoverSorter";
+import { sortSequencesByKineticAlphabet } from "$lib/features/discover/shared/utils/kinetic-alphabet-sort";
 
 @injectable()
 export class DiscoverSorter implements IDiscoverSorter {
@@ -60,19 +61,8 @@ export class DiscoverSorter implements IDiscoverSorter {
   // ============================================================================
 
   private sortAlphabetically(sequences: SequenceData[]): SequenceData[] {
-    return sequences.sort((a, b) => {
-      // First compare by first letter
-      const letterCompare = (a.word[0]?.toUpperCase() ?? "").localeCompare(
-        b.word[0]?.toUpperCase() ?? ""
-      );
-
-      // If same letter, sort by sequence length (ascending)
-      if (letterCompare === 0) {
-        return (a.sequenceLength ?? 0) - (b.sequenceLength ?? 0);
-      }
-
-      return letterCompare;
-    });
+    // Use the kinetic alphabet order (Type 1-6 letters in proper TKA sequence)
+    return sortSequencesByKineticAlphabet(sequences);
   }
 
   private sortByDateAdded(sequences: SequenceData[]): SequenceData[] {
@@ -132,7 +122,30 @@ export class DiscoverSorter implements IDiscoverSorter {
   }
 
   private getAlphabeticalSection(sequence: SequenceData): string {
-    return sequence.word[0]?.toUpperCase() ?? "#";
+    const word = sequence.word;
+    if (!word || word.length === 0) return "#";
+
+    const firstChar = word[0]!;
+
+    // Type 6 letters: α, β, Γ, ζ, η, τ, ⊕
+    const TYPE6_LETTERS = ["α", "β", "Γ", "ζ", "η", "τ", "⊕"];
+
+    let char: string;
+    if (TYPE6_LETTERS.includes(firstChar)) {
+      // Type 6 letter - keep as-is
+      char = firstChar;
+    } else {
+      // Type 1-5, uppercase it
+      char = firstChar.toUpperCase();
+    }
+
+    // Check for dash variant (e.g., "Θ-" should return "Θ-" not just "Θ")
+    const secondChar = word[1];
+    if (secondChar === "-") {
+      return `${char}-`;
+    }
+
+    return char;
   }
 
   private getLengthSection(sequence: SequenceData): string {

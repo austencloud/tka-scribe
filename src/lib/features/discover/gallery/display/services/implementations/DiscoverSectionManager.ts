@@ -119,29 +119,16 @@ export class DiscoverSectionManager implements IDiscoverSectionManager {
       case "letter": {
         // Sub-group by letter AND beat count for consistent row heights
         // Handle letter types: "W" vs "W-" (type 3 letters)
-        // Type 6 letters should be lowercase (α, β, γ, θ, ζ, η, τ, ⊕)
+        // Type 6 letters: α, β, Γ, ζ, η, τ, ⊕
         const firstChar = sequence.word.charAt(0);
-        const TYPE6_UPPERCASE_TO_LOWERCASE: { [key: string]: string } = {
-          Α: "α",
-          Β: "β",
-          Γ: "γ",
-          Θ: "θ",
-          Ζ: "ζ",
-          Η: "η",
-          Τ: "τ",
-        };
-        const TYPE6_LOWERCASE = ["α", "β", "γ", "θ", "ζ", "η", "τ", "⊕"];
+        const TYPE6_LETTERS = ["α", "β", "Γ", "ζ", "η", "τ", "⊕"];
 
-        // Handle both uppercase Type 6 (convert to lowercase) and already-lowercase Type 6
         let char: string;
-        if (TYPE6_UPPERCASE_TO_LOWERCASE[firstChar]) {
-          // Uppercase Type 6 letter - convert to lowercase
-          char = TYPE6_UPPERCASE_TO_LOWERCASE[firstChar];
-        } else if (TYPE6_LOWERCASE.includes(firstChar)) {
-          // Already lowercase Type 6 letter - keep as-is
+        if (TYPE6_LETTERS.includes(firstChar)) {
+          // Type 6 letter - keep as-is
           char = firstChar;
         } else {
-          // Not Type 6, so uppercase it (Type 1-5)
+          // Type 1-5, uppercase it
           char = firstChar.toUpperCase();
         }
 
@@ -321,9 +308,9 @@ export class DiscoverSectionManager implements IDiscoverSectionManager {
     key: string,
     groupBy: SectionConfig["groupBy"]
   ): number {
-    // Kinetic alphabet order - Uppercase for Type 1-5, lowercase for Type 6
+    // Kinetic alphabet order
     const KINETIC_ALPHABET_ORDER = [
-      // Type 1
+      // Type 1: Dual-Shift (A-V, includes M and N)
       "A",
       "B",
       "C",
@@ -346,38 +333,40 @@ export class DiscoverSectionManager implements IDiscoverSectionManager {
       "T",
       "U",
       "V",
-      "Γ",
-      // Type 2
+      // Type 2: Shift
       "W",
       "X",
       "Y",
       "Z",
       "Σ",
       "Δ",
+      "Θ",
       "Ω",
-      "Μ",
-      "Ν",
-      // Type 3
+      // Advanced Type 2s (spelled out for readability)
+      "Mu",
+      "Nu",
+      // Type 3: Cross-Shift
       "W-",
       "X-",
       "Y-",
       "Z-",
       "Σ-",
       "Δ-",
+      "Θ-",
       "Ω-",
-      // Type 4
+      // Type 4: Dash
       "Φ",
       "Ψ",
       "Λ",
-      // Type 5
+      // Type 5: Dual-Dash
       "Φ-",
       "Ψ-",
       "Λ-",
-      // Type 6 (lowercase)
+      // Type 6: Static
       "α",
       "β",
-      "γ",
-      "θ",
+      "Γ",
+      // Advanced Type 6s
       "ζ",
       "η",
       "τ",
