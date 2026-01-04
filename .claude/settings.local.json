@@ -1709,7 +1709,8 @@
       "Bash(src/lib/shared/navigation/components/profile-settings/DeveloperTab.svelte )",
       "Bash(src/lib/shared/pictograph/shared/components/PictographContainer.svelte )",
       "Bash(src/lib/shared/settings/components/tabs/visibility/ChipRow.svelte )",
-      "Bash(src/routes/landing/components/HeroSection.svelte)"
+      "Bash(src/routes/landing/components/HeroSection.svelte)",
+      "Skill(release)"
     ],
     "deny": [],
     "ask": []
