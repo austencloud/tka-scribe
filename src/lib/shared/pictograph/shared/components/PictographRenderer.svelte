@@ -21,8 +21,10 @@ Usage:
   import GridSvg from "../../grid/components/GridSvg.svelte";
   import PropSvg from "../../prop/components/PropSvg.svelte";
   import ArrowSvg from "../../arrow/rendering/components/ArrowSvg.svelte";
-  import TKAGlyph from "../../tka-glyph/components/TKAGlyph.svelte";
+  import TKAGlyph, { getLetterDimensions } from "../../tka-glyph/components/TKAGlyph.svelte";
   import TurnsColumn from "../../tka-glyph/components/TurnsColumn.svelte";
+  import DirectionDot from "../../tka-glyph/components/DirectionDot.svelte";
+  import { parseTurnsTuple } from "../../tka-glyph/utils/turn-tuple-parser";
   import ReversalIndicators from "./ReversalIndicators.svelte";
   import VTGGlyph from "./VTGGlyph.svelte";
   import ElementalGlyph from "./ElementalGlyph.svelte";
@@ -159,6 +161,15 @@ Usage:
 
   // Check if we have valid data for glyphs
   const hasValidData = $derived(!!pictograph?.motions?.blue || !!pictograph?.motions?.red);
+
+  // Get letter dimensions for direction dot positioning
+  // NOTE: For dash letters (Type3/Type5), getLetterDimensions returns the BASE letter dimensions
+  // because TKAGlyph now loads the base letter SVG (e.g., X.svg) and caches it under the
+  // full letter key (e.g., "X-"). This means letterDimensions is already correct for dot centering.
+  const letterDimensions = $derived(getLetterDimensions(pictograph?.letter));
+
+  // Parse direction from turns tuple for direction dot
+  const parsedDirection = $derived(parseTurnsTuple(turnsTuple).direction);
 </script>
 
 <div class="pictograph-renderer" class:led-mode={ledMode}>
@@ -236,6 +247,19 @@ Usage:
       onToggle={onToggleTKA}
       {ledMode}
     />
+
+    <!-- Direction Dot (same/opp indicator) - positioned relative to letter -->
+    <!-- NOTE: letterDimensions is already the base letter dimensions for dash letters -->
+    {#if pictograph.letter}
+      <DirectionDot
+        direction={parsedDirection}
+        letter={pictograph.letter}
+        {letterDimensions}
+        visible={showTKA}
+        {previewMode}
+        {ledMode}
+      />
+    {/if}
 
     <!-- Beat number overlay -->
     <BeatNumber

@@ -27,6 +27,7 @@ Props:
     getLetterDimensions,
     preloadLetterDimensions,
   } from "./TKAGlyph.svelte";
+  import { isDashLetter } from "../utils/letter-image-getter";
   import { getMotionColor } from "../../../utils/svg-color-utils";
   import { MotionColor } from "../../shared/domain/enums/pictograph-enums";
 
@@ -128,6 +129,9 @@ Props:
     return Math.max(topWidth, bottomWidth);
   });
 
+  // Check if this letter has a dash (Type3/Type5)
+  const hasDash = $derived(isDashLetter(letter));
+
   // Calculate positions for the numbers (with proper bottom number height)
   // In standalone mode, position at left edge (x=0) instead of right of letter
   const positions = $derived(() => {
@@ -141,8 +145,8 @@ Props:
         bottom: { x: 0, y: bottomY },
       };
     }
-    // Normal mode: position to the right of the letter
-    return calculateTurnPositions(dims, numberHeight);
+    // Normal mode: position to the right of the letter (or dash if present)
+    return calculateTurnPositions(dims, numberHeight, hasDash);
   });
 
   // Check visibility

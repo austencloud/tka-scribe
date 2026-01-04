@@ -8,17 +8,34 @@ Uses pure runes instead of stores for reactivity.
   import { getLetterImagePath as getPath } from "../utils/letter-image-getter";
   import { Letter as LetterType } from "$lib/shared/foundation/domain/models/Letter";
 
-  // Module-level caches shared across ALL TKAGlyph instances
-  // This prevents redundant fetches when multiple glyphs render the same letter
-  const globalDimensionsCache = new Map<
-    string,
-    { width: number; height: number }
-  >();
-  const globalSvgDataUrlCache = new Map<string, string>(); // Cache SVG as data URL for instant rendering
+  // ============================================================================
+  // HMR-AWARE MODULE-LEVEL CACHES
+  // ============================================================================
+  // These caches are shared across ALL TKAGlyph instances to prevent redundant
+  // SVG fetches. They're persisted across HMR to avoid mass network requests
+  // when code changes trigger module reloads.
+  //
+  // Without HMR persistence, every TKAGlyph on screen would refetch its SVG
+  // after any file change, causing 1000+ network requests and 20+ second delays.
+  // ============================================================================
+
+  // Restore caches from HMR data if available, otherwise create fresh
+  const globalDimensionsCache: Map<string, { width: number; height: number }> =
+    import.meta.hot?.data?.dimensionsCache ?? new Map();
+  const globalSvgDataUrlCache: Map<string, string> =
+    import.meta.hot?.data?.svgDataUrlCache ?? new Map();
   const globalLoadingPromises = new Map<
     string,
     Promise<{ width: number; height: number }>
-  >();
+  >(); // Not persisted - in-flight requests should restart
+
+  // Persist caches before HMR disposal
+  if (import.meta.hot) {
+    import.meta.hot.dispose((data) => {
+      data.dimensionsCache = globalDimensionsCache;
+      data.svgDataUrlCache = globalSvgDataUrlCache;
+    });
+  }
 
   /**
    * Get cached data URL for a letter, or null if not cached.
@@ -117,8 +134,9 @@ Uses pure runes instead of stores for reactivity.
 <script lang="ts">
   import type { PictographData } from "../../shared/domain/models/PictographData";
   import { Letter } from "$lib/shared/foundation/domain/models/Letter";
-  import { getLetterImagePath } from "../utils/letter-image-getter";
+  import { getLetterImagePath, isDashLetter } from "../utils/letter-image-getter";
   import { onMount } from "svelte";
+  import Dash from "./Dash.svelte";
 
   let {
     letter,
@@ -276,6 +294,9 @@ Uses pure runes instead of stores for reactivity.
   const dimensionsLoaded = $derived.by(
     () => letterDimensions.width > 0 && letterDimensions.height > 0
   );
+
+  // Check if this letter needs a separate dash rendered
+  const showDash = $derived(isDashLetter(letter));
 </script>
 
 <!-- TKA Glyph Group - only render when dimensions are loaded AND when visible
@@ -313,6 +334,17 @@ Uses pure runes instead of stores for reactivity.
       preserveAspectRatio="xMinYMin meet"
       class="letter-image"
     />
+
+    <!-- Dash for Type3/Type5 letters (rendered separately for dot centering) -->
+    <!-- Note: ledMode NOT passed - parent group already handles inversion via filter -->
+    {#if showDash}
+      <Dash
+        letterWidth={letterDimensions.width}
+        letterHeight={letterDimensions.height}
+        visible={visible}
+        {previewMode}
+      />
+    {/if}
   </g>
 {/if}
 
