@@ -54,7 +54,7 @@
     userChoice: Promise<{ outcome: "accepted" | "dismissed" }>;
   }
 
-  onMount(() => {
+  onMount(async () => {
     const platformService = resolve<IPlatformDetector>(TYPES.IPlatformDetector);
     const info = platformService.detectPlatformAndBrowser();
 
@@ -62,56 +62,127 @@
     browser = info.browser;
     inAppBrowser = info.inAppBrowser;
 
-    // Determine install state
-    if (info.isStandalone) {
-      installState = "installed";
-    } else if (info.inAppBrowser !== "none") {
-      installState = "in-app-browser";
-    } else if (info.platform === "ios" && info.browser === "safari") {
-      installState = "ios-safari";
-    } else if (info.platform === "ios" && info.browser !== "safari") {
-      installState = "ios-non-safari";
-    } else if (platformService.supportsNativeInstallPrompt(info.platform, info.browser)) {
-      installState = "native-prompt";
-    } else {
-      installState = "unsupported";
+    console.log("[PWA Install] Platform detection:", info);
+
+    // Check if prompt was already captured globally (race condition fix)
+    const globalPrompt = (window as any).deferredInstallPrompt;
+    if (globalPrompt) {
+      console.log("[PWA Install] Found globally captured prompt!");
+      deferredPrompt = globalPrompt;
     }
 
-    // Listen for beforeinstallprompt event
+    // Check if app is already installed via Related Apps API
+    let isAlreadyInstalled = false;
+    if ("getInstalledRelatedApps" in navigator) {
+      try {
+        const relatedApps = await (navigator as any).getInstalledRelatedApps();
+        console.log("[PWA Install] Related apps check:", relatedApps);
+        if (relatedApps.length > 0) {
+          isAlreadyInstalled = true;
+          console.log("[PWA Install] App is already installed (via related apps API)");
+        }
+      } catch (e) {
+        console.log("[PWA Install] Related apps check failed:", e);
+      }
+    }
+
+    // Also check display-mode media query
+    const isStandaloneMedia = window.matchMedia("(display-mode: standalone)").matches;
+    const isFullscreenMedia = window.matchMedia("(display-mode: fullscreen)").matches;
+    console.log("[PWA Install] Display mode check:", {
+      standalone: isStandaloneMedia,
+      fullscreen: isFullscreenMedia,
+      navigatorStandalone: (navigator as any).standalone
+    });
+
+    // Determine install state
+    if (info.isStandalone || isAlreadyInstalled) {
+      installState = "installed";
+      console.log("[PWA Install] Already installed (standalone mode or related apps)");
+    } else if (info.inAppBrowser !== "none") {
+      installState = "in-app-browser";
+      console.log("[PWA Install] In-app browser detected:", info.inAppBrowser);
+    } else if (info.platform === "ios" && info.browser === "safari") {
+      installState = "ios-safari";
+      console.log("[PWA Install] iOS Safari - manual install flow");
+    } else if (info.platform === "ios" && info.browser !== "safari") {
+      installState = "ios-non-safari";
+      console.log("[PWA Install] iOS non-Safari - redirect to Safari");
+    } else if (platformService.supportsNativeInstallPrompt(info.platform, info.browser)) {
+      installState = "native-prompt";
+      console.log("[PWA Install] Native prompt supported, deferredPrompt:", deferredPrompt ? "available" : "waiting...");
+    } else {
+      installState = "unsupported";
+      console.log("[PWA Install] Unsupported browser");
+    }
+
+    // Listen for prompt ready event (from global capture)
+    const handlePromptReady = () => {
+      console.log("[PWA Install] Prompt ready event received!");
+      deferredPrompt = (window as any).deferredInstallPrompt;
+      installState = "native-prompt";
+    };
+    window.addEventListener("pwa:prompt-ready", handlePromptReady);
+
+    // Listen for beforeinstallprompt event (backup)
     const handleBeforeInstallPrompt = (e: Event) => {
+      console.log("[PWA Install] beforeinstallprompt event received!");
       e.preventDefault();
       deferredPrompt = e as BeforeInstallPromptEvent;
       installState = "native-prompt";
     };
-
     window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
 
     // Listen for app installed
     window.addEventListener("appinstalled", () => {
+      console.log("[PWA Install] App installed successfully!");
       installState = "installed";
       deferredPrompt = null;
     });
 
     return () => {
+      window.removeEventListener("pwa:prompt-ready", handlePromptReady);
       window.removeEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
     };
   });
 
+  // Show Chrome menu fallback instructions
+  let showChromeMenuFallback = $state(false);
+
   // Trigger native install prompt
   async function triggerInstall() {
-    if (!deferredPrompt) return;
+    // Re-check global prompt in case it became available
+    if (!deferredPrompt) {
+      const globalPrompt = (window as any).deferredInstallPrompt;
+      if (globalPrompt) {
+        console.log("[PWA Install] Found global prompt on click!");
+        deferredPrompt = globalPrompt;
+      }
+    }
+
+    console.log("[PWA Install] Install button clicked, deferredPrompt:", deferredPrompt ? "available" : "NULL");
+
+    if (!deferredPrompt) {
+      console.warn("[PWA Install] No deferred prompt available! The beforeinstallprompt event may not have fired.");
+      console.warn("[PWA Install] Chrome requires ~30 seconds engagement OR multiple visits before showing prompt");
+      // Show inline fallback instead of alert
+      showChromeMenuFallback = true;
+      return;
+    }
 
     installing = true;
     try {
+      console.log("[PWA Install] Triggering native prompt...");
       await deferredPrompt.prompt();
       const { outcome } = await deferredPrompt.userChoice;
+      console.log("[PWA Install] User choice:", outcome);
 
       if (outcome === "accepted") {
         installState = "installed";
       }
       deferredPrompt = null;
     } catch (err) {
-      console.error("Install prompt failed:", err);
+      console.error("[PWA Install] Prompt failed:", err);
     } finally {
       installing = false;
     }
@@ -255,19 +326,39 @@
     </a>
   {:else if installState === "native-prompt"}
     <!-- Android/Desktop with native install support -->
-    <button
-      class="btn btn-primary"
-      onclick={triggerInstall}
-      disabled={installing}
-    >
-      {#if installing}
-        <i class="fas fa-spinner fa-spin" aria-hidden="true"></i>
-        <span>Installing...</span>
-      {:else}
-        <i class="fas fa-download" aria-hidden="true"></i>
-        <span>Install App</span>
-      {/if}
-    </button>
+    {#if showChromeMenuFallback}
+      <!-- Fallback: Guide user to Chrome's menu -->
+      <div class="chrome-menu-fallback" transition:slide={{ duration: 300 }}>
+        <p class="fallback-title">
+          <i class="fas fa-ellipsis-v" aria-hidden="true"></i>
+          Install from Chrome's menu
+        </p>
+        <ol class="fallback-steps">
+          <li>Tap the <strong>⋮</strong> menu (three dots)</li>
+          <li>Select <strong>"Install app"</strong> or <strong>"Add to Home screen"</strong></li>
+        </ol>
+        <button
+          class="btn btn-text"
+          onclick={() => (showChromeMenuFallback = false)}
+        >
+          Try again
+        </button>
+      </div>
+    {:else}
+      <button
+        class="btn btn-primary"
+        onclick={triggerInstall}
+        disabled={installing}
+      >
+        {#if installing}
+          <i class="fas fa-spinner fa-spin" aria-hidden="true"></i>
+          <span>Installing...</span>
+        {:else}
+          <i class="fas fa-download" aria-hidden="true"></i>
+          <span>Install App</span>
+        {/if}
+      </button>
+    {/if}
     <a href="/app" class="link-secondary">
       Or continue in browser →
     </a>
@@ -463,6 +554,55 @@
 
   .installed-note {
     color: #10b981;
+  }
+
+  /* Chrome Menu Fallback */
+  .chrome-menu-fallback {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    text-align: center;
+  }
+
+  .fallback-title {
+    font-weight: 600;
+    color: var(--text, white);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0;
+  }
+
+  .fallback-steps {
+    margin: 0;
+    padding-left: 24px;
+    text-align: left;
+    color: var(--text-muted, rgba(255, 255, 255, 0.7));
+    font-size: 0.9rem;
+    line-height: 1.6;
+  }
+
+  .fallback-steps li {
+    margin-bottom: 4px;
+  }
+
+  .btn-text {
+    background: transparent;
+    border: none;
+    color: var(--primary, #6366f1);
+    font-size: 0.875rem;
+    cursor: pointer;
+    padding: 8px 16px;
+    transition: opacity 0.2s;
+  }
+
+  .btn-text:hover {
+    opacity: 0.8;
   }
 
   /* iOS Instructions */
@@ -710,6 +850,30 @@
 
     .ios-install-container {
       max-width: 100%;
+    }
+  }
+
+  /* Small screens (iPhone SE, etc.) */
+  @media (max-width: 380px) {
+    .modal-card {
+      max-width: 100%;
+      padding: 28px 20px;
+      border-radius: 20px;
+    }
+
+    .browser-icon {
+      width: 64px;
+      height: 64px;
+      font-size: 32px;
+      margin-bottom: 16px;
+    }
+
+    .modal-header h2 {
+      font-size: 1.375rem;
+    }
+
+    .modal-instructions {
+      padding: 16px;
     }
   }
 

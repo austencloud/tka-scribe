@@ -4,6 +4,8 @@
 	import { cubicOut, backOut } from 'svelte/easing';
 	import AnimatorCanvas from '$lib/shared/animation-engine/components/AnimatorCanvas.svelte';
 	import type { SequenceData } from '$lib/shared/foundation/domain/models/SequenceData';
+	import type { BeatData } from '$lib/features/create/shared/domain/models/BeatData';
+	import type { StartPositionData } from '$lib/features/create/shared/domain/models/StartPositionData';
 	import type { IAnimationPlaybackController } from '$lib/features/compose/services/contracts/IAnimationPlaybackController';
 	import type { ISequenceRepository } from '$lib/features/create/shared/services/contracts/ISequenceRepository';
 	import type { IStartPositionDeriver } from '$lib/shared/pictograph/shared/services/contracts/IStartPositionDeriver';
@@ -17,10 +19,38 @@
 	import { getAnimationVisibilityManager } from '$lib/shared/animation-engine/state/animation-visibility-state.svelte';
 	import BeatGrid from '$lib/features/create/shared/workspace-panel/sequence-display/components/BeatGrid.svelte';
 	import { SHOWCASE_SEQUENCES, RANDOM_PROPS } from '../landing-content';
-	import type { PropType } from '$lib/shared/pictograph/prop/domain/enums/PropType';
+	import { PropType } from '$lib/shared/pictograph/prop/domain/enums/PropType';
+
+	/**
+	 * Apply prop type to all motions in sequence data.
+	 * Used to override props for demo display without affecting user settings.
+	 */
+	function applyPropTypeToSequence(sequence: SequenceData, propType: PropType): SequenceData {
+		const applyToMotions = (data: BeatData | StartPositionData) => {
+			if (!data.motions) return data;
+			return {
+				...data,
+				motions: {
+					blue: data.motions.blue ? { ...data.motions.blue, propType } : undefined,
+					red: data.motions.red ? { ...data.motions.red, propType } : undefined
+				}
+			};
+		};
+
+		return {
+			...sequence,
+			startPosition: sequence.startPosition ? applyToMotions(sequence.startPosition) as StartPositionData : undefined,
+			beats: sequence.beats?.map(beat => applyToMotions(beat) as BeatData) ?? []
+		};
+	}
 
 	// Transition key - changes trigger the crossfade animation
 	let transitionKey = $state(0);
+
+	// Lazy loading - only load animation engine when in viewport
+	let containerRef: HTMLElement | null = null;
+	let isInView = $state(false);
+	let hasStartedLoading = $state(false);
 
 	// Animation state
 	const animationState = createAnimationPanelState();
@@ -93,7 +123,28 @@
 	let gridMode = $derived(animationState.sequenceData?.gridMode ?? null);
 	let currentBeatNumber = $derived(Math.floor(animationState.currentBeat));
 
-	onMount(async () => {
+	// Intersection Observer for lazy loading - only load animation engine when visible
+	onMount(() => {
+		if (!containerRef) return;
+
+		const observer = new IntersectionObserver(
+			(entries) => {
+				if (entries[0]?.isIntersecting && !hasStartedLoading) {
+					isInView = true;
+					hasStartedLoading = true;
+					loadAnimationEngine();
+					observer.disconnect();
+				}
+			},
+			{ rootMargin: '100px', threshold: 0.1 }
+		);
+
+		observer.observe(containerRef);
+
+		return () => observer.disconnect();
+	});
+
+	async function loadAnimationEngine() {
 		try {
 			animationSettings.setTrackingMode(TrackingMode.BOTH_ENDS);
 
@@ -106,19 +157,21 @@
 			startPositionDeriver = resolve<IStartPositionDeriver>(TYPES.IStartPositionDeriver);
 			servicesReady = true;
 
+			// Prop type is passed directly to AnimatorCanvas via override props
+			// and applied to sequence data for BeatGrid - no settings modification needed
 			await loadSequence(SHOWCASE_SEQUENCES[0]!);
 		} catch (err) {
 			console.error('Failed to load hero animation:', err);
 			animationError = true;
 		}
-	});
+	}
 
 	onDestroy(() => {
 		playbackController?.dispose();
 		animationState.dispose();
 	});
 
-	async function loadSequence(word: string, propType?: PropType) {
+	async function loadSequence(word: string) {
 		if (!sequenceService || !playbackController) return;
 
 		transitionKey++;
@@ -131,14 +184,14 @@
 			}
 			animationState.reset();
 
-			let sequence = await sequenceService.getSequence(word);
-			if (!sequence) {
+			const rawSequence = await sequenceService.getSequence(word);
+			if (!rawSequence) {
 				throw new Error(`Failed to load sequence: ${word}`);
 			}
 
-			if (propType) {
-				sequence = { ...sequence, propType } as SequenceData;
-			}
+			// Apply current prop type to sequence data for BeatGrid
+			// AnimatorCanvas uses prop type overrides passed as props
+			const sequence = applyPropTypeToSequence(rawSequence, currentPropType);
 
 			animationState.setShouldLoop(true);
 			const success = playbackController.initialize(sequence, animationState);
@@ -166,10 +219,30 @@
 		}
 		currentSequenceIndex = newSequenceIndex;
 
+		// Pick a random prop type - loadSequence will apply it to sequence data
 		const newPropType = RANDOM_PROPS[Math.floor(Math.random() * RANDOM_PROPS.length)]!;
 		currentPropType = newPropType;
 
-		loadSequence(SHOWCASE_SEQUENCES[newSequenceIndex]!, newPropType);
+		loadSequence(SHOWCASE_SEQUENCES[newSequenceIndex]!);
+	}
+
+	function handleChangeProp() {
+		// Cycle to a different random prop type (avoid picking the same one)
+		let newPropType = currentPropType;
+		while (newPropType === currentPropType && RANDOM_PROPS.length > 1) {
+			newPropType = RANDOM_PROPS[Math.floor(Math.random() * RANDOM_PROPS.length)]!;
+		}
+		currentPropType = newPropType;
+
+		// Hot swap - instant prop change without transition animation:
+		// 1. AnimatorCanvas receives new prop type via bluePropType/redPropType props
+		//    (AnimationEngine detects the change and hot-swaps textures)
+		// 2. Update sequence data in animationState for BeatGrid
+		if (animationState.sequenceData) {
+			const updatedSequence = applyPropTypeToSequence(animationState.sequenceData, newPropType);
+			// Directly update the sequence data - playback continues uninterrupted
+			animationState.setSequenceData(updatedSequence);
+		}
 	}
 
 	function handleToggleDarkMode() {
@@ -178,7 +251,7 @@
 	}
 </script>
 
-<div class="demo-container">
+<div class="demo-container" bind:this={containerRef}>
 	{#key transitionKey}
 		<div
 			class="demo-transition-wrapper"
@@ -204,6 +277,8 @@
 									sequenceData={animationState.sequenceData}
 									isPlaying={animationState.isPlaying}
 									trailSettings={animationSettings.trail}
+									bluePropType={currentPropType}
+									redPropType={currentPropType}
 								/>
 							</div>
 						{:else if animationError}
@@ -249,6 +324,14 @@
 					fill={darkMode ? 'none' : 'currentColor'}
 				/>
 			</svg>
+		</button>
+
+		<button class="change-prop-btn" onclick={handleChangeProp} disabled={!servicesReady || isLoading}>
+			<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+				<!-- Prop/tool swap icon -->
+				<path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" stroke-linecap="round" />
+			</svg>
+			<span>Change Prop</span>
 		</button>
 
 		<button class="randomize-btn" onclick={handleRandomize} disabled={!servicesReady || isLoading}>
@@ -476,6 +559,43 @@
 		stroke-linejoin: round;
 	}
 
+	.change-prop-btn {
+		display: inline-flex;
+		align-items: center;
+		gap: 10px;
+		padding: 14px 28px;
+		background: linear-gradient(135deg, #0d9488 0%, #14b8a6 100%);
+		border: none;
+		border-radius: 100px;
+		color: white;
+		font-size: 1rem;
+		font-weight: 600;
+		cursor: pointer;
+		transition: all 0.2s ease;
+		box-shadow: 0 4px 20px rgba(13, 148, 136, 0.3);
+	}
+
+	.change-prop-btn:hover:not(:disabled) {
+		transform: translateY(-2px) scale(1.02);
+		box-shadow: 0 8px 30px rgba(13, 148, 136, 0.4);
+	}
+
+	.change-prop-btn:active:not(:disabled) {
+		transform: translateY(0) scale(0.98);
+	}
+
+	.change-prop-btn:disabled {
+		opacity: 0.6;
+		cursor: not-allowed;
+	}
+
+	.change-prop-btn svg {
+		width: 20px;
+		height: 20px;
+		stroke-linecap: round;
+		stroke-linejoin: round;
+	}
+
 	@media (max-width: 768px) {
 		.demo-content-row {
 			flex-wrap: wrap;
@@ -516,7 +636,8 @@
 			height: 22px;
 		}
 
-		.randomize-btn {
+		.randomize-btn,
+		.change-prop-btn {
 			padding: 12px 24px;
 			font-size: 0.9rem;
 		}
@@ -524,6 +645,7 @@
 
 	@media (prefers-reduced-motion: reduce) {
 		.randomize-btn,
+		.change-prop-btn,
 		.light-toggle-btn {
 			transition: none;
 		}
@@ -534,6 +656,8 @@
 
 		.randomize-btn:hover:not(:disabled),
 		.randomize-btn:active:not(:disabled),
+		.change-prop-btn:hover:not(:disabled),
+		.change-prop-btn:active:not(:disabled),
 		.light-toggle-btn:hover:not(:disabled),
 		.light-toggle-btn:active:not(:disabled) {
 			transform: none;
