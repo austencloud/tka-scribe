@@ -222,7 +222,8 @@ export default defineConfig({
     SvelteKitPWA({
       registerType: "autoUpdate",
       devOptions: {
-        enabled: false, // Disable in dev to avoid caching issues
+        enabled: true, // Enable in dev for PWA install testing
+        type: "module",
       },
       manifest: false, // We already have a manifest in static/pwa/
       injectRegister: "auto",
