@@ -1662,7 +1662,9 @@
       "Bash(src/lib/shared/onboarding/config/storage-keys.ts )",
       "Bash(src/lib/shared/navigation/components/desktop-sidebar/ModuleButton.svelte)",
       "Bash(src/app.html )",
-      "Bash(src/routes/+page.svelte)"
+      "Bash(src/routes/+page.svelte)",
+      "Bash(static/store-assets/ )",
+      "Bash(static/branding/og-image.html)"
     ],
     "deny": [],
     "ask": []
