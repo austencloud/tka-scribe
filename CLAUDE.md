@@ -182,6 +182,37 @@ class TurnManagementService implements ITurnManagementService { }
 - Container queries (`cqw`, `cqh`) for component-relative sizing
 - Mobile-first with progressive enhancement
 
+### ⛔️ NEVER Create Global CSS Utility Classes in Svelte
+
+**On January 3, 2026, Claude created `landing-utilities.css` with global classes like `.landing-section`, `.landing-container`, `.landing-h2` - then had to revert the entire change.**
+
+**This was wrong. Svelte scopes styles for good reasons.**
+
+**The mistake:** Seeing "duplicated" CSS like `.container { max-width: 1200px }` in multiple components and thinking "I should extract this to a shared file!"
+
+**Why it's wrong:**
+
+1. **Svelte scopes styles intentionally** - each component is self-contained and deleteable
+2. **"Duplication" in scoped styles isn't a problem** - it's explicit, isolated, no hidden dependencies
+3. **Global utility classes create coupling** - change the global, break N components
+4. **Goes against the framework's philosophy** - Svelte chose scoping for a reason
+
+**What to share in Svelte:**
+
+| ✅ SHARE (via CSS variables) | ❌ DON'T SHARE (keep scoped) |
+|------------------------------|------------------------------|
+| Colors: `var(--theme-card-bg)` | Layout: `.container { max-width }` |
+| Spacing tokens: `var(--spacing-md)` | Typography: `h2 { font-size }` |
+| Border radii: `var(--radius-lg)` | Section padding: `.section { padding }` |
+| Semantic colors: `var(--semantic-error)` | Grid definitions: `.grid { display: grid }` |
+
+**The rule:** Share design tokens (values), not layout classes (rules).
+
+**If you see "duplicated" layout CSS across Svelte components:**
+- That's fine. Leave it alone.
+- Each component owns its own layout.
+- The "duplication" is actually encapsulation.
+
 ### CSS Variable Hierarchy (3 Layers)
 
 See `src/lib/shared/settings/utils/background-theme-calculator.ts` for implementation.
@@ -606,7 +637,7 @@ Unlike app feedback (problem → resolution), terminal items are work logs:
 
 ---
 
-_Last updated: 2026-01-02_
+_Last updated: 2026-01-03_
 
 ---
 
