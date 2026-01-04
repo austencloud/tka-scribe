@@ -241,9 +241,9 @@ export function generateMatteTheme(
   }
 
   return {
-    panelBg: "rgba(0, 0, 0, 0.6)",
+    panelBg: "rgba(0, 0, 0, 0.75)",
     panelElevatedBg: "rgba(0, 0, 0, 0.5)",
-    cardBg: "rgba(0, 0, 0, 0.45)",
+    cardBg: "rgba(0, 0, 0, 0.75)",
     cardHoverBg: "rgba(0, 0, 0, 0.55)",
     accent,
     accentStrong: accent, // Use same accent for strong variant
@@ -441,7 +441,10 @@ export function applyThemeFromColors(
   root.style.setProperty("--semantic-warning", "#f59e0b");
   root.style.setProperty("--semantic-warning-dim", "rgba(245, 158, 11, 0.15)");
   root.style.setProperty("--semantic-warning-bg", "rgba(245, 158, 11, 0.1)");
-  root.style.setProperty("--semantic-warning-border", "rgba(245, 158, 11, 0.3)");
+  root.style.setProperty(
+    "--semantic-warning-border",
+    "rgba(245, 158, 11, 0.3)"
+  );
   root.style.setProperty("--semantic-warning-text", "#fbbf24");
   root.style.setProperty("--semantic-warning-glow", "rgba(245, 158, 11, 0.4)");
   root.style.setProperty("--semantic-warning-text-vivid", "#fcd34d");

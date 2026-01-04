@@ -29,9 +29,7 @@
   async function generatePreview() {
     isGenerating = true;
     try {
-      const compositionService = resolve<IImageComposer>(
-        TYPES.IImageComposer
-      );
+      const compositionService = resolve<IImageComposer>(TYPES.IImageComposer);
 
       // Derive start position from beat data if needed
       // Since we no longer store start position explicitly, derive it from first beat
@@ -102,7 +100,7 @@
     };
     compositionManager.registerObserver(handleSettingsChange);
 
-    // Subscribe to animation visibility changes (for Lights Off mode)
+    // Subscribe to animation visibility changes (for Dark Mode)
     animationVisibilityManager.registerObserver(handleSettingsChange);
 
     return () => {

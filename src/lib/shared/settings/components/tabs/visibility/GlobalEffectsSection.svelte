@@ -4,8 +4,8 @@
   Global effects controls that apply across all visibility domains:
   - Pictograph, Animation, and Image Export
 
-  Lights Off: Dark background, inverted grid, white text/outlines
-  (Prop glow is automatically enabled for animations when Lights Off is on)
+  Dark Mode: Dark background, inverted grid, white text/outlines
+  (Prop glow is automatically enabled for animations when Dark Mode is on)
 -->
 <script lang="ts">
   interface Props {
@@ -27,11 +27,11 @@
       onclick={onLightsOffToggle}
       {disabled}
       type="button"
-      aria-label={lightsOff ? "Disable Lights Off mode" : "Enable Lights Off mode"}
+      aria-label={lightsOff ? "Disable Dark Mode" : "Enable Dark Mode"}
       aria-pressed={lightsOff}
     >
       <i class="fas fa-moon" aria-hidden="true"></i>
-      <span class="effect-label">Lights Off</span>
+      <span class="effect-label">Dark Mode</span>
       <span class="effect-status">{lightsOff ? "ON" : "OFF"}</span>
     </button>
   </div>
@@ -54,8 +54,8 @@
     letter-spacing: 0.5px;
     color: var(--theme-text-dim);
     padding-left: 4px;
-    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui,
-      sans-serif;
+    font-family:
+      -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
   }
 
   .effects-row {
@@ -77,8 +77,8 @@
     color: var(--theme-text-dim);
     font-size: var(--font-size-sm, 14px);
     font-weight: 600;
-    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui,
-      sans-serif;
+    font-family:
+      -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
     cursor: pointer;
     transition: all 150ms ease;
     -webkit-tap-highlight-color: transparent;
@@ -119,7 +119,7 @@
     pointer-events: none;
   }
 
-  /* Lights Off Active - Electric cyan glow */
+  /* Dark Mode Active - Electric cyan glow */
   .effect-btn.lights-off.active {
     background: rgba(0, 255, 255, 0.12);
     border-color: rgba(0, 255, 255, 0.4);

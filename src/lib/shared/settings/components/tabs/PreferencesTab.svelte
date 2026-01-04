@@ -33,7 +33,7 @@
   // Entry animation
   let isVisible = $state(false);
 
-  // Lights Off state - derived from AppSettings
+  // Dark Mode state - derived from AppSettings
   const lightsOff = $derived(getSettings().lightsOff ?? false);
   const isPreview = $derived(isSettingsPreviewMode());
 
@@ -88,7 +88,7 @@
     </h2>
 
     <div class="toggle-list">
-      <!-- Lights Off Mode -->
+      <!-- Dark Mode -->
       <button
         type="button"
         class="toggle-row lights-off-row"
@@ -98,8 +98,7 @@
         disabled={isPreview}
       >
         <div class="toggle-info">
-          <span class="toggle-label">Lights Off Mode</span>
-
+          <span class="toggle-label">Dark Mode</span>
         </div>
         <div class="toggle-switch lights-off-switch" class:active={lightsOff}>
           <div class="toggle-knob"></div>
@@ -125,7 +124,6 @@
       >
         <div class="toggle-info">
           <span class="toggle-label">Ask before clearing sequence</span>
-
         </div>
         <div class="toggle-switch" class:active={showClearConfirmation}>
           <div class="toggle-knob"></div>
@@ -306,7 +304,7 @@
     transform: translateX(20px);
   }
 
-  /* Lights Off Toggle - Cyan glow effect */
+  /* Dark Mode Toggle - Cyan glow effect */
   .lights-off-row.disabled {
     opacity: 0.6;
     cursor: not-allowed;

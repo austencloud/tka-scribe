@@ -88,7 +88,7 @@ export interface AppSettings {
   skipClearConfirmation?: boolean; // Skip confirmation when clearing sequence (undo is available)
 
   // Global Visual Effects
-  lightsOff?: boolean; // Lights Off mode: dark background, inverted grid, white text/outlines
+  lightsOff?: boolean; // Dark Mode: dark background, inverted grid, white text/outlines
 }
 
 /**
