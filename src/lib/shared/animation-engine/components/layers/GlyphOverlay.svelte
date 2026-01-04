@@ -11,11 +11,11 @@ Displays TKA glyph and beat number with fade transitions.
   import BeatNumber from "$lib/shared/pictograph/shared/components/BeatNumber.svelte";
   import { getAnimationVisibilityManager } from "../../state/animation-visibility-state.svelte";
 
-  // Track Lights Off mode for styling (inverted glyphs)
+  // Track Dark Mode for styling (inverted glyphs)
   const visibilityManager = getAnimationVisibilityManager();
   let lightsOffEnabled = $state(visibilityManager.isLightsOff());
 
-  // Sync Lights Off mode from visibility manager
+  // Sync Dark Mode from visibility manager
   $effect(() => {
     lightsOffEnabled = visibilityManager.isLightsOff();
     const handler = () => {
@@ -54,7 +54,10 @@ Displays TKA glyph and beat number with fade transitions.
   } = $props();
 </script>
 
-<div class="glyph-overlay" data-lights-off={lightsOffEnabled ? "true" : "false"}>
+<div
+  class="glyph-overlay"
+  data-lights-off={lightsOffEnabled ? "true" : "false"}
+>
   <!-- Fading out glyph (previous letter + beat number) -->
   {#if fadingOutLetter || fadingOutBeatNumber !== null}
     <div class="glyph-wrapper fade-out">
@@ -84,7 +87,10 @@ Displays TKA glyph and beat number with fade transitions.
           />
         {/if}
         {#if beatNumbersVisible}
-          <BeatNumber beatNumber={fadingOutBeatNumber} ledMode={lightsOffEnabled} />
+          <BeatNumber
+            beatNumber={fadingOutBeatNumber}
+            ledMode={lightsOffEnabled}
+          />
         {/if}
       </svg>
     </div>
@@ -119,7 +125,10 @@ Displays TKA glyph and beat number with fade transitions.
           />
         {/if}
         {#if beatNumbersVisible}
-          <BeatNumber beatNumber={displayedBeatNumber} ledMode={lightsOffEnabled} />
+          <BeatNumber
+            beatNumber={displayedBeatNumber}
+            ledMode={lightsOffEnabled}
+          />
         {/if}
       </svg>
     </div>
@@ -171,12 +180,12 @@ Displays TKA glyph and beat number with fade transitions.
     height: 100%;
   }
 
-  /* Lights Off: invert TKA letter colors (but NOT turns column - keep red/blue) */
+  /* Dark Mode: invert TKA letter colors (but NOT turns column - keep red/blue) */
   .glyph-overlay[data-lights-off="true"] :global(.tka-glyph) {
     filter: invert(0.9);
   }
 
-  /* Lights Off: add white outline to turns column without inverting colors */
+  /* Dark Mode: add white outline to turns column without inverting colors */
   .glyph-overlay[data-lights-off="true"] :global(.turns-column) {
     filter: drop-shadow(0 0 1.5px white) drop-shadow(0 0 1.5px white);
   }

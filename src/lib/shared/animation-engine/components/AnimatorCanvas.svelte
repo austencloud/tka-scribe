@@ -181,8 +181,8 @@ Last audit: 2025-12-27
     {fadingOutTurnsTuple}
     {fadingOutBeatNumber}
     {isNewLetter}
-    tkaGlyphVisible={tkaGlyphVisible}
-    beatNumbersVisible={beatNumbersVisible}
+    {tkaGlyphVisible}
+    {beatNumbersVisible}
   />
 
   <ProgressOverlay
@@ -220,7 +220,7 @@ Last audit: 2025-12-27
     --canvas-bg: transparent;
   }
 
-  /* Lights Off: dark background for glowing light stick effect */
+  /* Dark Mode: dark background for glowing light stick effect */
   .canvas-wrapper[data-lights-off="true"] :global(canvas) {
     background: #0a0a0f !important;
     border-color: rgba(0, 255, 255, 0.2);

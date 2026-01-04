@@ -22,7 +22,7 @@ interface AnimationVisibilitySettings {
   speed: number; // Speed multiplier (1.0 = 60 BPM, range 0.1-3.0)
 
   // Global Effects (applies to pictograph, animation, and image export)
-  // Lights Off: dark background, inverted grid, white text/outlines
+  // Dark Mode: dark background, inverted grid, white text/outlines
   // Prop glow is automatically enabled for animations when lightsOff is true
   lightsOff: boolean;
 
@@ -61,7 +61,7 @@ export class AnimationVisibilityStateManager {
       speed: 1.0, // Default to 60 BPM
 
       // Global effects
-      lightsOff: false, // Lights off mode disabled by default
+      lightsOff: false, // Dark Mode disabled by default
 
       // Shared elements - defaults optimized for animation viewing
       tkaGlyph: true, // TKA Glyph includes turn numbers
@@ -143,7 +143,6 @@ export class AnimationVisibilityStateManager {
    * Notify observers of changes
    */
   private notifyObservers(): void {
-    console.log(`[AnimationVisibilityManager] Notifying ${this.observers.size} observers`);
     this.observers.forEach((callback) => {
       try {
         callback();
@@ -163,7 +162,10 @@ export class AnimationVisibilityStateManager {
    * (For ledMode, use isLightsOff() instead)
    */
   getVisibility(
-    key: Exclude<keyof AnimationVisibilitySettings, "gridMode" | "trailStyle" | "playbackMode" | "speed" | "ledMode">
+    key: Exclude<
+      keyof AnimationVisibilitySettings,
+      "gridMode" | "trailStyle" | "playbackMode" | "speed" | "ledMode"
+    >
   ): boolean {
     return this.settings[key];
   }
@@ -184,7 +186,10 @@ export class AnimationVisibilityStateManager {
    * (For gridMode, trailStyle, playbackMode, speed use dedicated setters)
    */
   setVisibility(
-    key: Exclude<keyof AnimationVisibilitySettings, "gridMode" | "trailStyle" | "playbackMode" | "speed">,
+    key: Exclude<
+      keyof AnimationVisibilitySettings,
+      "gridMode" | "trailStyle" | "playbackMode" | "speed"
+    >,
     visible: boolean
   ): void {
     this.settings[key] = visible;
@@ -326,7 +331,7 @@ export class AnimationVisibilityStateManager {
   }
 
   // ============================================================================
-  // DARK MODE (formerly "Lights Off")
+  // DARK MODE (formerly "Dark Mode")
   // ============================================================================
 
   /**

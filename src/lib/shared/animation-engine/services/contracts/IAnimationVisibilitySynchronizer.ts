@@ -17,7 +17,7 @@ export interface AnimationVisibilityState {
   tkaGlyph: boolean; // TKA Glyph includes turn numbers
   blueMotion: boolean;
   redMotion: boolean;
-  /** Lights Off: dark background, inverted grid, white text/outlines */
+  /** Dark Mode: dark background, inverted grid, white text/outlines */
   lightsOff: boolean;
   /** Prop Glow: glowing drop-shadow effect on props */
   propGlow: boolean;

@@ -86,7 +86,7 @@ Orchestrates specialized components and services:
   // Fade coordination: prevents premature fade-in during option loading
   let pendingFadeIn = $state(false);
 
-  // Global Lights Off state
+  // Global Dark Mode state
   const animationVisibilityManager = getAnimationVisibilityManager();
   let lightsOff = $state(animationVisibilityManager.isLightsOff());
   let lastCheckedLightsOff = animationVisibilityManager.isLightsOff();
@@ -146,9 +146,10 @@ Orchestrates specialized components and services:
     // This ensures the grid sizes correctly between the header and bottom nav
     const isFitToViewport = shouldFitToViewport();
     const effectiveWidth = containerDimensions.width;
-    const effectiveHeight = isFitToViewport && contentAreaDimensions.isReady
-      ? contentAreaDimensions.height
-      : containerDimensions.height;
+    const effectiveHeight =
+      isFitToViewport && contentAreaDimensions.isReady
+        ? contentAreaDimensions.height
+        : containerDimensions.height;
 
     if (!optionPickerSizingService || !optionPickerState) {
       return {
@@ -372,13 +373,11 @@ Orchestrates specialized components and services:
     // Prepare all pictographs in batch
     isPreparingOptions = true;
 
-    pictographPreparer.prepareBatch(filtered)
+    pictographPreparer
+      .prepareBatch(filtered)
       .then((prepared) => {
         // Memoize: reuse existing objects if ID matches (prevents component recreation)
-        const stabilized = stabilizePreparedOptions(
-          prepared,
-          preparedCache
-        );
+        const stabilized = stabilizePreparedOptions(prepared, preparedCache);
 
         preparedOptions = stabilized;
         isPreparingOptions = false;
@@ -471,7 +470,7 @@ Orchestrates specialized components and services:
 
   // ===== LIFECYCLE =====
   onMount(() => {
-    // Poll for Lights Off changes using requestAnimationFrame
+    // Poll for Dark Mode changes using requestAnimationFrame
     // This bypasses the observer pattern which has closure issues in Svelte 5
     let rafId: number | null = null;
     let isPolling = true;
@@ -502,18 +501,16 @@ Orchestrates specialized components and services:
       optionPickerSizingService = resolve<IOptionSizer>(
         TYPES.IOptionPickerSizingService
       );
-      LayoutDetector = resolve<ILayoutDetector>(
-        TYPES.ILayoutDetector
-      );
+      LayoutDetector = resolve<ILayoutDetector>(TYPES.ILayoutDetector);
       sectionTitleFormatter = resolve<ISectionTitleFormatter>(
         TYPES.ISectionTitleFormatter
       );
-      hapticService = resolve<IHapticFeedback>(
-        TYPES.IHapticFeedback
-      );
+      hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
 
       // Resolve batch preparer
-      pictographPreparer = resolve<IPictographPreparer>(TYPES.IPictographPreparer);
+      pictographPreparer = resolve<IPictographPreparer>(
+        TYPES.IPictographPreparer
+      );
 
       // Create state
       optionPickerState = createOptionPickerState({

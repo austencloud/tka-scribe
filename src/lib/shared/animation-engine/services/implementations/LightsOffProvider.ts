@@ -1,10 +1,10 @@
 /**
- * LightsOffProvider - DI wrapper for reactive Lights Off state
+ * LightsOffProvider - DI wrapper for reactive Dark Mode state
  *
  * Wraps the AnimationVisibilityStateManager singleton to provide:
  * 1. Clean DI interface for dependency injection
  * 2. Proper subscription pattern (vs polling)
- * 3. Type-safe access to Lights Off state
+ * 3. Type-safe access to Dark Mode state
  */
 
 import { injectable } from "inversify";

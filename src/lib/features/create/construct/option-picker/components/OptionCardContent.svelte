@@ -1,7 +1,7 @@
 <!--
 OptionCardContent.svelte - Desktop option card wrapper
 
-Subscribes to Lights Off state via DI and delegates rendering to shared primitive.
+Subscribes to Dark Mode state via DI and delegates rendering to shared primitive.
 Used by the desktop hierarchy: OptionSection → OptionGrid → OptionCard → OptionCardContent
 -->
 <script lang="ts">
@@ -23,7 +23,7 @@ Used by the desktop hierarchy: OptionSection → OptionGrid → OptionCard → O
     redReversal = false,
   }: Props = $props();
 
-  // Subscribe to Lights Off state via DI
+  // Subscribe to Dark Mode state via DI
   let lightsOff = $state(false);
 
   onMount(() => {
@@ -42,12 +42,7 @@ Used by the desktop hierarchy: OptionSection → OptionGrid → OptionCard → O
 </script>
 
 <div class="option-card-content">
-  <OptionPictograph
-    {pictograph}
-    {blueReversal}
-    {redReversal}
-    {lightsOff}
-  />
+  <OptionPictograph {pictograph} {blueReversal} {redReversal} {lightsOff} />
 </div>
 
 <style>

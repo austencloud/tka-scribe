@@ -74,7 +74,6 @@ Features:
   // Only render section content when bounds are ready to prevent size burst
   const boundsReady = $derived(() => {
     const ready = contentAreaBounds !== null && contentAreaBounds.width > 0;
-    console.log(`[SwipeLayout] boundsReady=${ready}, width=${contentAreaBounds?.width}`);
     return ready;
   });
 
@@ -101,7 +100,6 @@ Features:
     right: number;
     width: number;
   }) {
-    console.log(`[SwipeLayout] contentAreaBounds: width=${bounds.width}`);
     contentAreaBounds = bounds;
   }
 </script>

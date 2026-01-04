@@ -34,9 +34,16 @@ import { getAnimationVisibilityManager } from "../../state/animation-visibility-
 
 // Services
 import { CanvasResizer } from "./CanvasResizer.svelte";
-import { DEFAULT_CANVAS_SIZE, type ICanvasResizer } from "../contracts/ICanvasResizer";
+import {
+  DEFAULT_CANVAS_SIZE,
+  type ICanvasResizer,
+} from "../contracts/ICanvasResizer";
 import { PropTextureLoader } from "./PropTextureLoader.svelte";
-import { DEFAULT_PROP_DIMENSIONS, type IPropTextureLoader, type PropDimensions } from "../contracts/IPropTextureLoader";
+import {
+  DEFAULT_PROP_DIMENSIONS,
+  type IPropTextureLoader,
+  type PropDimensions,
+} from "../contracts/IPropTextureLoader";
 import { GlyphTextureLoader } from "./GlyphTextureLoader.svelte";
 import type { IGlyphTextureLoader } from "../contracts/IGlyphTextureLoader";
 import { AnimationPrecomputer } from "./AnimationPrecomputer.svelte";
@@ -270,30 +277,34 @@ export class AnimationEngine {
       blueMotion: visibilityManager.getVisibility("blueMotion"),
       redMotion: visibilityManager.getVisibility("redMotion"),
       lightsOff: visibilityManager.isLightsOff(),
-      // Prop glow is automatically enabled when Lights Off is on (for animations)
+      // Prop glow is automatically enabled when Dark Mode is on (for animations)
       propGlow: visibilityManager.isLightsOff(),
     };
 
     // Initialize services that don't need renderer
     this.visibilitySyncService = new AnimationVisibilitySynchronizer();
-    this.unsubscribeVisibility = this.visibilitySyncService.subscribe((state) => {
-      this.state.visibilityState = state;
+    this.unsubscribeVisibility = this.visibilitySyncService.subscribe(
+      (state) => {
+        this.state.visibilityState = state;
 
-      // Sync Lights Off mode to renderer when it changes
-      if (state.lightsOff !== this.prevLightsOff) {
-        this.prevLightsOff = state.lightsOff;
-        // Note: setLedMode on renderer controls the "Lights Off" effect (dark bg, inverted grid)
-        this.animationRenderer?.setLedMode(state.lightsOff);
+        // Sync Dark Mode to renderer when it changes
+        if (state.lightsOff !== this.prevLightsOff) {
+          this.prevLightsOff = state.lightsOff;
+          // Note: setLedMode on renderer controls the "Dark Mode" effect (dark bg, inverted grid)
+          this.animationRenderer?.setLedMode(state.lightsOff);
 
-        // CRITICAL: Reload prop textures when dark mode changes
-        // Prop colors are theme-dependent (light/dark mode), so textures must be regenerated
-        if (this.state.isInitialized) {
-          this.loadPropTextures().then(() => {
-            this.renderLoopService?.triggerRender(() => this.getFrameParams(this.lastPropsRef ?? DEFAULT_ENGINE_PROPS));
-          });
+          // CRITICAL: Reload prop textures when dark mode changes
+          // Prop colors are theme-dependent (light/dark mode), so textures must be regenerated
+          if (this.state.isInitialized) {
+            this.loadPropTextures().then(() => {
+              this.renderLoopService?.triggerRender(() =>
+                this.getFrameParams(this.lastPropsRef ?? DEFAULT_ENGINE_PROPS)
+              );
+            });
+          }
         }
       }
-    });
+    );
 
     this.glyphTransitionService = new GlyphTransitionController();
     this.sequenceCacheService = new SequenceCache();
@@ -335,15 +346,20 @@ export class AnimationEngine {
     }
 
     // Handle prop type changes - check for overrides first, then settings
-    const hasOverrides = props.bluePropType != null || props.redPropType != null;
+    const hasOverrides =
+      props.bluePropType != null || props.redPropType != null;
 
     if (hasOverrides) {
       // Use overrides - bypass settings entirely
-      const newBlue = props.bluePropType ?? this.propTypeOverrideBlue ?? "staff";
+      const newBlue =
+        props.bluePropType ?? this.propTypeOverrideBlue ?? "staff";
       const newRed = props.redPropType ?? this.propTypeOverrideRed ?? "staff";
 
       // Check if overrides changed
-      if (newBlue !== this.propTypeOverrideBlue || newRed !== this.propTypeOverrideRed) {
+      if (
+        newBlue !== this.propTypeOverrideBlue ||
+        newRed !== this.propTypeOverrideRed
+      ) {
         this.propTypeOverrideBlue = newBlue;
         this.propTypeOverrideRed = newRed;
         this.state.currentBluePropType = newBlue;
@@ -353,7 +369,9 @@ export class AnimationEngine {
         // Hot-swap textures
         this.loadPropTextures().then(() => {
           if (this.state.isInitialized) {
-            this.renderLoopService?.triggerRender(() => this.getFrameParams(props));
+            this.renderLoopService?.triggerRender(() =>
+              this.getFrameParams(props)
+            );
           }
         });
       }
@@ -362,16 +380,20 @@ export class AnimationEngine {
       this.propTypeChangeService?.checkForChanges(this.settingsService);
 
       // Handle texture reload signal (track last signal to detect changes)
-      const textureSignal = this.propTypeChangeService?.state.textureReloadSignal ?? 0;
+      const textureSignal =
+        this.propTypeChangeService?.state.textureReloadSignal ?? 0;
       if (textureSignal > 0 && textureSignal !== this.lastTextureReloadSignal) {
         this.lastTextureReloadSignal = textureSignal;
 
         // CRITICAL: Sync prop type state AFTER checkForChanges() detected the new values
         // Otherwise loadPropTextures() would use stale values from the earlier syncServiceState() call
         if (this.propTypeChangeService) {
-          this.state.currentBluePropType = this.propTypeChangeService.state.bluePropType;
-          this.state.currentRedPropType = this.propTypeChangeService.state.redPropType;
-          this.state.currentPropType = this.propTypeChangeService.state.legacyPropType;
+          this.state.currentBluePropType =
+            this.propTypeChangeService.state.bluePropType;
+          this.state.currentRedPropType =
+            this.propTypeChangeService.state.redPropType;
+          this.state.currentPropType =
+            this.propTypeChangeService.state.legacyPropType;
         }
 
         // Hot-swap textures without full re-initialization
@@ -379,7 +401,9 @@ export class AnimationEngine {
         this.loadPropTextures().then(() => {
           // Trigger immediate re-render once new textures are ready
           if (this.state.isInitialized) {
-            this.renderLoopService?.triggerRender(() => this.getFrameParams(props));
+            this.renderLoopService?.triggerRender(() =>
+              this.getFrameParams(props)
+            );
           }
         });
       }
@@ -387,14 +411,19 @@ export class AnimationEngine {
 
     // Handle trail settings changes
     if (props.externalTrailSettings !== undefined) {
-      this.trailSettingsSyncService?.handleExternalSettingsSync(props.externalTrailSettings);
+      this.trailSettingsSyncService?.handleExternalSettingsSync(
+        props.externalTrailSettings
+      );
     }
 
     // Handle synced trail settings from service
     const syncedSettings = this.trailSettingsSyncService?.state.syncedSettings;
     if (syncedSettings) {
       // Only update and notify if settings actually changed (shallow comparison - faster than JSON.stringify)
-      const settingsChanged = this.trailSettingsChanged(this.state.trailSettings, syncedSettings);
+      const settingsChanged = this.trailSettingsChanged(
+        this.state.trailSettings,
+        syncedSettings
+      );
 
       // CRITICAL: Only write to $state if settings actually changed to prevent infinite loops
       // In Svelte 5, assigning to a $state property triggers reactivity even for same value
@@ -427,7 +456,8 @@ export class AnimationEngine {
     }
 
     // Handle pre-render clear signals
-    const preRenderClearSignal = this.sequenceCacheService?.state.preRenderClearSignal;
+    const preRenderClearSignal =
+      this.sequenceCacheService?.state.preRenderClearSignal;
     if (preRenderClearSignal && preRenderClearSignal > 0) {
       this.precomputationService?.clearPreRenderedFrames();
     }
@@ -451,7 +481,9 @@ export class AnimationEngine {
       this.animationRenderer
         .loadGridTexture(currentGridMode ?? "diamond")
         .then(() => {
-          this.renderLoopService?.triggerRender(() => this.getFrameParams(props));
+          this.renderLoopService?.triggerRender(() =>
+            this.getFrameParams(props)
+          );
         });
     }
 
@@ -471,17 +503,27 @@ export class AnimationEngine {
     // Update glyph transition
     const beatNumber = this.calculateBeatNumber(props);
     const turnsTuple = this.calculateTurnsTuple(props);
-    this.glyphTransitionService?.updateTarget(props.letter ?? null, turnsTuple, beatNumber);
+    this.glyphTransitionService?.updateTarget(
+      props.letter ?? null,
+      turnsTuple,
+      beatNumber
+    );
 
     // Sync glyph state immediately after update so component sees new values
     // (syncServiceState() at start of update() syncs previous frame's values)
     if (this.glyphTransitionService) {
-      this.state.displayedLetter = this.glyphTransitionService.state.displayedLetter;
-      this.state.displayedTurnsTuple = this.glyphTransitionService.state.displayedTurnsTuple;
-      this.state.displayedBeatNumber = this.glyphTransitionService.state.displayedBeatNumber;
-      this.state.fadingOutLetter = this.glyphTransitionService.state.fadingOutLetter;
-      this.state.fadingOutTurnsTuple = this.glyphTransitionService.state.fadingOutTurnsTuple;
-      this.state.fadingOutBeatNumber = this.glyphTransitionService.state.fadingOutBeatNumber;
+      this.state.displayedLetter =
+        this.glyphTransitionService.state.displayedLetter;
+      this.state.displayedTurnsTuple =
+        this.glyphTransitionService.state.displayedTurnsTuple;
+      this.state.displayedBeatNumber =
+        this.glyphTransitionService.state.displayedBeatNumber;
+      this.state.fadingOutLetter =
+        this.glyphTransitionService.state.fadingOutLetter;
+      this.state.fadingOutTurnsTuple =
+        this.glyphTransitionService.state.fadingOutTurnsTuple;
+      this.state.fadingOutBeatNumber =
+        this.glyphTransitionService.state.fadingOutBeatNumber;
       this.state.isNewLetter = this.glyphTransitionService.state.isNewLetter;
     }
 
@@ -501,7 +543,13 @@ export class AnimationEngine {
     x: number,
     y: number
   ): void {
-    this.glyphTextureService?.handleGlyphSvgReady(svgString, width, height, x, y);
+    this.glyphTextureService?.handleGlyphSvgReady(
+      svgString,
+      width,
+      height,
+      x,
+      y
+    );
   }
 
   /**
@@ -588,7 +636,10 @@ export class AnimationEngine {
         initializeGlyphTextureLoader: () => this.initializeGlyphTextureLoader(),
         initializeRenderLoopService: () => this.initializeRenderLoopService(),
         loadPropTextures: () => this.loadPropTextures(),
-        startRenderLoop: () => this.renderLoopService?.triggerRender(() => this.getFrameParams(this.lastPropsRef ?? DEFAULT_ENGINE_PROPS)),
+        startRenderLoop: () =>
+          this.renderLoopService?.triggerRender(() =>
+            this.getFrameParams(this.lastPropsRef ?? DEFAULT_ENGINE_PROPS)
+          ),
       },
       {
         onPixiLoading: (loading) => {
@@ -599,7 +650,7 @@ export class AnimationEngine {
         },
         onPixiRendererReady: (renderer) => {
           this.animationRenderer = renderer;
-          // Set initial Lights Off mode on renderer
+          // Set initial Dark Mode on renderer
           renderer.setLedMode(this.prevLightsOff);
         },
         onInitialized: (initialized) => {
@@ -616,7 +667,8 @@ export class AnimationEngine {
     const result = await loadServices();
 
     if (!result.success) {
-      this.state.rendererError = result.error || "Failed to load animator services";
+      this.state.rendererError =
+        result.error || "Failed to load animator services";
       return false;
     }
 
@@ -626,7 +678,8 @@ export class AnimationEngine {
       return false;
     }
     if (!services.orchestrator) {
-      this.state.rendererError = "Failed to load animation orchestrator service";
+      this.state.rendererError =
+        "Failed to load animation orchestrator service";
       return false;
     }
     if (!services.TrailCapturer) {
@@ -659,7 +712,8 @@ export class AnimationEngine {
 
   private initializePropTextureLoader(): void {
     if (!this.animationRenderer || !this.svgGenerator) {
-      this.state.rendererError = "Cannot initialize PropTextureLoader: missing dependencies";
+      this.state.rendererError =
+        "Cannot initialize PropTextureLoader: missing dependencies";
       return;
     }
 
@@ -698,7 +752,8 @@ export class AnimationEngine {
 
     // CRITICAL: Sync dimensions to engine state immediately after loading
     // This ensures getFrameParams() has correct dimensions for the first render
-    this.state.bluePropDimensions = this.propTextureService.state.blueDimensions;
+    this.state.bluePropDimensions =
+      this.propTextureService.state.blueDimensions;
     this.state.redPropDimensions = this.propTextureService.state.redDimensions;
   }
 
@@ -706,7 +761,10 @@ export class AnimationEngine {
     if (!this.containerElement || !this.animationRenderer) return;
 
     this.canvasResizerService = new CanvasResizer();
-    this.canvasResizerService.initialize(this.containerElement, this.animationRenderer);
+    this.canvasResizerService.initialize(
+      this.containerElement,
+      this.animationRenderer
+    );
   }
 
   private initializeGlyphTextureLoader(): void {
@@ -748,33 +806,47 @@ export class AnimationEngine {
   private syncServiceState(): void {
     // Sync from precomputation service
     if (this.precomputationService) {
-      this.state.isPreRendering = this.precomputationService.state.isPreRendering;
-      this.state.preRenderProgress = this.precomputationService.state.preRenderProgress;
-      this.state.preRenderedFramesReady = this.precomputationService.state.preRenderedFramesReady;
+      this.state.isPreRendering =
+        this.precomputationService.state.isPreRendering;
+      this.state.preRenderProgress =
+        this.precomputationService.state.preRenderProgress;
+      this.state.preRenderedFramesReady =
+        this.precomputationService.state.preRenderedFramesReady;
     }
 
     // Sync from glyph transition service
     if (this.glyphTransitionService) {
-      this.state.displayedLetter = this.glyphTransitionService.state.displayedLetter;
-      this.state.displayedTurnsTuple = this.glyphTransitionService.state.displayedTurnsTuple;
-      this.state.displayedBeatNumber = this.glyphTransitionService.state.displayedBeatNumber;
-      this.state.fadingOutLetter = this.glyphTransitionService.state.fadingOutLetter;
-      this.state.fadingOutTurnsTuple = this.glyphTransitionService.state.fadingOutTurnsTuple;
-      this.state.fadingOutBeatNumber = this.glyphTransitionService.state.fadingOutBeatNumber;
+      this.state.displayedLetter =
+        this.glyphTransitionService.state.displayedLetter;
+      this.state.displayedTurnsTuple =
+        this.glyphTransitionService.state.displayedTurnsTuple;
+      this.state.displayedBeatNumber =
+        this.glyphTransitionService.state.displayedBeatNumber;
+      this.state.fadingOutLetter =
+        this.glyphTransitionService.state.fadingOutLetter;
+      this.state.fadingOutTurnsTuple =
+        this.glyphTransitionService.state.fadingOutTurnsTuple;
+      this.state.fadingOutBeatNumber =
+        this.glyphTransitionService.state.fadingOutBeatNumber;
       this.state.isNewLetter = this.glyphTransitionService.state.isNewLetter;
     }
 
     // Sync from prop type service
     if (this.propTypeChangeService) {
-      this.state.currentBluePropType = this.propTypeChangeService.state.bluePropType;
-      this.state.currentRedPropType = this.propTypeChangeService.state.redPropType;
-      this.state.currentPropType = this.propTypeChangeService.state.legacyPropType;
+      this.state.currentBluePropType =
+        this.propTypeChangeService.state.bluePropType;
+      this.state.currentRedPropType =
+        this.propTypeChangeService.state.redPropType;
+      this.state.currentPropType =
+        this.propTypeChangeService.state.legacyPropType;
     }
 
     // Sync from prop texture service
     if (this.propTextureService) {
-      this.state.bluePropDimensions = this.propTextureService.state.blueDimensions;
-      this.state.redPropDimensions = this.propTextureService.state.redDimensions;
+      this.state.bluePropDimensions =
+        this.propTextureService.state.blueDimensions;
+      this.state.redPropDimensions =
+        this.propTextureService.state.redDimensions;
     }
 
     // Sync from resize service
@@ -790,7 +862,9 @@ export class AnimationEngine {
   private calculateBeatNumber(props: AnimationEngineProps): number {
     if (!props.sequenceData || !props.beatData) return 0;
 
-    const beatIndex = props.sequenceData.beats?.findIndex((b) => b === props.beatData);
+    const beatIndex = props.sequenceData.beats?.findIndex(
+      (b) => b === props.beatData
+    );
     if (beatIndex !== undefined && beatIndex >= 0) {
       return beatIndex + 1;
     }
@@ -798,10 +872,17 @@ export class AnimationEngine {
   }
 
   private calculateTurnsTuple(props: AnimationEngineProps): string {
-    if (!props.beatData || !props.beatData.motions?.blue || !props.beatData.motions?.red) {
+    if (
+      !props.beatData ||
+      !props.beatData.motions?.blue ||
+      !props.beatData.motions?.red
+    ) {
       return "(s, 0, 0)";
     }
-    return this.turnsTupleGenerator?.generateTurnsTuple(props.beatData) ?? "(s, 0, 0)";
+    return (
+      this.turnsTupleGenerator?.generateTurnsTuple(props.beatData) ??
+      "(s, 0, 0)"
+    );
   }
 
   /**

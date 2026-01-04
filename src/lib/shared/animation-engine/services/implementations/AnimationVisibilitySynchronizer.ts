@@ -12,9 +12,7 @@ import type {
   VisibilityStateCallback,
 } from "../contracts/IAnimationVisibilitySynchronizer";
 
-export class AnimationVisibilitySynchronizer
-  implements IAnimationVisibilitySynchronizer
-{
+export class AnimationVisibilitySynchronizer implements IAnimationVisibilitySynchronizer {
   private manager = getAnimationVisibilityManager();
   private callbacks: Set<VisibilityStateCallback> = new Set();
   private boundObserver: () => void;
@@ -34,7 +32,7 @@ export class AnimationVisibilitySynchronizer
       blueMotion: this.manager.getVisibility("blueMotion"),
       redMotion: this.manager.getVisibility("redMotion"),
       lightsOff: this.manager.isLightsOff(),
-      // Prop glow is automatically enabled when Lights Off is on (for animations)
+      // Prop glow is automatically enabled when Dark Mode is on (for animations)
       propGlow: this.manager.isLightsOff(),
     };
   }

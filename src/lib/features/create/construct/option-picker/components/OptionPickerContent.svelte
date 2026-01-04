@@ -46,7 +46,7 @@ Uses organizer and sizer services for section grouping and sizing.
     currentSequence = [],
   }: Props = $props();
 
-  // Subscribe to Lights Off state via DI
+  // Subscribe to Dark Mode state via DI
   let lightsOff = $state(false);
   let lightsOffUnsubscribe: (() => void) | null = null;
 
@@ -204,7 +204,7 @@ Uses organizer and sizer services for section grouping and sizing.
     gridGap: "8px",
   }));
 
-  // Subscribe to Lights Off changes via DI
+  // Subscribe to Dark Mode changes via DI
   $effect(() => {
     // Use tryResolve to handle HMR gracefully - animator module may not be loaded yet
     const provider = tryResolve<ILightsOffProvider>(TYPES.ILightsOffProvider);
@@ -240,7 +240,6 @@ Uses organizer and sizer services for section grouping and sizing.
           const w = entry.contentRect.width;
           const h = entry.contentRect.height;
           if (w > 100 && h > 100) {
-            console.log(`[OptionPickerContent] ResizeObserver: ${w}x${h}, sizingStable=${sizingStable}`);
             containerWidth = w;
             containerHeight = h;
             sizingStable = true;
@@ -253,12 +252,10 @@ Uses organizer and sizer services for section grouping and sizing.
 
     // Initial measurement
     const rect = containerElement.getBoundingClientRect();
-    console.log(`[OptionPickerContent] Initial measurement: ${rect.width}x${rect.height}`);
     if (rect.width > 100 && rect.height > 100) {
       containerWidth = rect.width;
       containerHeight = rect.height;
       sizingStable = true;
-      console.log(`[OptionPickerContent] sizingStable=true, swipeLayout=${shouldUseSwipeLayout()}`);
     }
 
     return () => {
@@ -290,7 +287,9 @@ Uses organizer and sizer services for section grouping and sizing.
               : "Showing all - click for continuous only"}
             aria-pressed={isContinuousOnly}
           >
-            <i class="fas" aria-hidden="true"
+            <i
+              class="fas"
+              aria-hidden="true"
               class:fa-link={isContinuousOnly}
               class:fa-th={!isContinuousOnly}
             ></i>

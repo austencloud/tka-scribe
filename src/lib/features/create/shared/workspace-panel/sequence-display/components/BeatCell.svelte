@@ -39,9 +39,7 @@
   let hapticService: IHapticFeedback;
 
   onMount(() => {
-    hapticService = resolve<IHapticFeedback>(
-      TYPES.IHapticFeedback
-    );
+    hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
   });
 
   const isStartPosition = $derived.by(() => {
@@ -389,7 +387,13 @@
     border: 3px solid transparent;
     background:
       linear-gradient(transparent, transparent) padding-box,
-      linear-gradient(135deg, var(--semantic-warning), var(--semantic-warning), #d97706) border-box;
+      linear-gradient(
+          135deg,
+          var(--semantic-warning),
+          var(--semantic-warning),
+          #d97706
+        )
+        border-box;
     border-radius: 12px;
 
     /* Layered shadows for depth and premium glow */
@@ -406,6 +410,27 @@
 
     /* Smooth spring animation */
     transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  /* Selection styling DURING animation - border/glow visible while beat animates in */
+  .beat-cell.animate.selected {
+    z-index: 10;
+    border: 3px solid transparent;
+    background:
+      linear-gradient(transparent, transparent) padding-box,
+      linear-gradient(
+          135deg,
+          var(--semantic-warning),
+          var(--semantic-warning),
+          #d97706
+        )
+        border-box;
+    border-radius: 12px;
+    box-shadow:
+      0 0 20px rgba(251, 191, 36, 0.5),
+      0 8px 32px rgba(251, 191, 36, 0.3),
+      0 0 0 1px rgba(251, 191, 36, 0.2);
+    /* Let animation control transform/opacity, but show selection border/glow */
   }
 
   .beat-cell.selected:hover {
