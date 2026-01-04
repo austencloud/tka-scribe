@@ -8,6 +8,7 @@
  * - Request deduplication (prevents duplicate concurrent fetches)
  * - Cached metadata parsing (viewBox, center)
  * - Performance monitoring (cache hit/miss tracking)
+ * - HMR-aware cache persistence (prevents mass refetches on code changes)
  */
 
 import type { MotionData } from "../../../shared/domain/models/MotionData";
@@ -19,19 +20,35 @@ import { MotionColor } from "../../../shared/domain/enums/pictograph-enums";
 import { applyMotionColorToSvg, type ThemeMode } from "../../../../utils/svg-color-utils";
 import { getAnimationVisibilityManager } from "../../../../animation-engine/state/animation-visibility-state.svelte";
 
+// ============================================================================
+// HMR-AWARE MODULE-LEVEL CACHE STORAGE
+// ============================================================================
+// Persist caches across HMR to prevent mass network requests during development.
+// Without this, every code change would trigger many SVG refetches.
+// ============================================================================
+
+const hmrRawSvgCache: Map<string, string> =
+  import.meta.hot?.data?.propRawSvgCache ?? new Map();
+const hmrTransformedSvgCache: Map<string, PropRenderData> =
+  import.meta.hot?.data?.propTransformedSvgCache ?? new Map();
+const hmrMetadataCache: Map<string, { viewBox: { width: number; height: number }; center: { x: number; y: number } }> =
+  import.meta.hot?.data?.propMetadataCache ?? new Map();
+
+if (import.meta.hot) {
+  import.meta.hot.dispose((data) => {
+    data.propRawSvgCache = hmrRawSvgCache;
+    data.propTransformedSvgCache = hmrTransformedSvgCache;
+    data.propMetadataCache = hmrMetadataCache;
+  });
+}
+
 @injectable()
 export class PropSvgLoader implements IPropSvgLoader {
-  // 🚀 OPTIMIZATION: Multi-level caching
-  private rawSvgCache = new Map<string, string>(); // path -> raw SVG text
-  private transformedSvgCache = new Map<string, PropRenderData>(); // path:color:themeMode -> transformed data
-  private loadingPromises = new Map<string, Promise<string>>(); // path -> loading promise (deduplication)
-  private metadataCache = new Map<
-    string,
-    {
-      viewBox: { width: number; height: number };
-      center: { x: number; y: number };
-    }
-  >();
+  // 🚀 OPTIMIZATION: Use HMR-aware module-level caches
+  private rawSvgCache = hmrRawSvgCache; // path -> raw SVG text
+  private transformedSvgCache = hmrTransformedSvgCache; // path:color:themeMode -> transformed data
+  private loadingPromises = new Map<string, Promise<string>>(); // path -> loading promise (not persisted)
+  private metadataCache = hmrMetadataCache;
 
   // Performance monitoring
   private cacheHits = 0;

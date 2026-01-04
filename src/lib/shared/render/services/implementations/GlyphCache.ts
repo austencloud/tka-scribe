@@ -4,11 +4,30 @@
  * Pre-loads and caches all letter SVG glyphs AND turn number SVGs to eliminate
  * network requests during sequence preview rendering. This dramatically improves
  * performance by converting external <image> references to inline data URLs.
+ *
+ * HMR-aware: Cache persists across hot module reloads to prevent mass network
+ * requests during development (1000+ requests would otherwise occur on each save).
  */
 
 import { injectable } from "inversify";
 import { getLetterImagePath } from "../../../pictograph/tka-glyph/utils/letter-image-getter";
 import { Letter } from "../../../foundation/domain/models/Letter";
+
+// ============================================================================
+// HMR-AWARE MODULE-LEVEL CACHE STORAGE
+// ============================================================================
+// Persist cache across HMR to prevent mass network requests during development.
+// Without this, every code change would trigger 1000+ SVG fetches.
+// ============================================================================
+
+const hmrGlyphCache: Map<string, string> =
+  import.meta.hot?.data?.glyphCache ?? new Map();
+
+if (import.meta.hot) {
+  import.meta.hot.dispose((data) => {
+    data.glyphCache = hmrGlyphCache;
+  });
+}
 
 // Turn number values that need to be cached
 type TurnNumberValue = 0.5 | 1 | 1.5 | 2 | 2.5 | 3 | "float";
@@ -57,7 +76,8 @@ export interface IGlyphCache {
 
 @injectable()
 export class GlyphCache implements IGlyphCache {
-  private cache = new Map<string, string>();
+  // Use HMR-aware module-level cache
+  private cache = hmrGlyphCache;
   private ready = false;
   private loadedCount = 0;
   private failedCount = 0;

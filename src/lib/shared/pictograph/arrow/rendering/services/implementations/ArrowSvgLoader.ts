@@ -7,6 +7,7 @@
  * - Multi-level caching (raw SVG + transformed SVG by color AND theme mode)
  * - Request deduplication (prevents duplicate concurrent fetches)
  * - Performance monitoring (cache hit/miss tracking)
+ * - HMR-aware cache persistence (prevents mass refetches on code changes)
  *
  * Theme mode is read dynamically from AnimationVisibilityStateManager
  * to ensure colors match the current pictograph background mode.
@@ -26,12 +27,36 @@ import { inject, injectable } from "inversify";
 import type { ThemeMode } from "../../../../../utils/svg-color-utils";
 import { getAnimationVisibilityManager } from "../../../../../animation-engine/state/animation-visibility-state.svelte";
 
+// ============================================================================
+// HMR-AWARE MODULE-LEVEL CACHE STORAGE
+// ============================================================================
+// These module-level caches persist across HMR to prevent mass network requests
+// when code changes trigger module reloads. The ArrowSvgLoader singleton
+// uses these shared caches instead of instance properties.
+//
+// Without HMR persistence, every arrow on screen would refetch its SVG
+// after any file change, causing 1000+ network requests and 20+ second delays.
+// ============================================================================
+
+const hmrRawSvgCache: Map<string, string> =
+  import.meta.hot?.data?.rawSvgCache ?? new Map();
+const hmrTransformedSvgCache: Map<string, ArrowSvgData> =
+  import.meta.hot?.data?.transformedSvgCache ?? new Map();
+
+// Persist caches before HMR disposal
+if (import.meta.hot) {
+  import.meta.hot.dispose((data) => {
+    data.rawSvgCache = hmrRawSvgCache;
+    data.transformedSvgCache = hmrTransformedSvgCache;
+  });
+}
+
 @injectable()
 export class ArrowSvgLoader implements IArrowSvgLoader {
-  // 🚀 OPTIMIZATION: Multi-level caching
-  private rawSvgCache = new Map<string, string>(); // path -> raw SVG text
-  private transformedSvgCache = new Map<string, ArrowSvgData>(); // path:color:themeMode -> transformed data
-  private loadingPromises = new Map<string, Promise<string>>(); // path -> loading promise (deduplication)
+  // 🚀 OPTIMIZATION: Use HMR-aware module-level caches
+  private rawSvgCache = hmrRawSvgCache; // path -> raw SVG text
+  private transformedSvgCache = hmrTransformedSvgCache; // path:color:themeMode -> transformed data
+  private loadingPromises = new Map<string, Promise<string>>(); // path -> loading promise (not persisted)
 
   // Performance monitoring
   private cacheHits = 0;
