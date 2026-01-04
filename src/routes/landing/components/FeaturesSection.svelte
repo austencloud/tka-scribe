@@ -78,7 +78,7 @@
 
 	.feature-card p {
 		color: var(--text-muted, rgba(255, 255, 255, 0.6));
-		font-size: 0.95rem;
+		font-size: var(--font-size-sm, 0.875rem);
 	}
 
 	@media (prefers-reduced-motion: reduce) {

@@ -143,7 +143,7 @@
 	}
 
 	.loop-desc {
-		font-size: 0.75rem;
+		font-size: var(--font-size-compact, 0.75rem);
 		color: var(--text-muted, rgba(255, 255, 255, 0.6));
 	}
 

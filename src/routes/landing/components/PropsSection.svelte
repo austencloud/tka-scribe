@@ -59,7 +59,7 @@
 		border: 1px solid var(--border, rgba(255, 255, 255, 0.1));
 		padding: 10px 20px;
 		border-radius: 100px;
-		font-size: 0.95rem;
+		font-size: var(--font-size-sm, 0.875rem);
 		transition: all 0.2s ease;
 	}
 

@@ -7,7 +7,7 @@
 	import type { BeatData } from '$lib/features/create/shared/domain/models/BeatData';
 	import type { StartPositionData } from '$lib/features/create/shared/domain/models/StartPositionData';
 	import type { IAnimationPlaybackController } from '$lib/features/compose/services/contracts/IAnimationPlaybackController';
-	import type { ISequenceRepository } from '$lib/features/create/shared/services/contracts/ISequenceRepository';
+	import type { IDiscoverLoader } from '$lib/features/discover/gallery/display/services/contracts/IDiscoverLoader';
 	import type { IStartPositionDeriver } from '$lib/shared/pictograph/shared/services/contracts/IStartPositionDeriver';
 	import { createAnimationPanelState } from '$lib/features/compose/state/animation-panel-state.svelte';
 	import { resolve, loadFeatureModule } from '$lib/shared/inversify/di';
@@ -18,6 +18,7 @@
 	} from '$lib/shared/animation-engine/state/animation-settings-state.svelte';
 	import { getAnimationVisibilityManager } from '$lib/shared/animation-engine/state/animation-visibility-state.svelte';
 	import BeatGrid from '$lib/features/create/shared/workspace-panel/sequence-display/components/BeatGrid.svelte';
+	import DemoControlBar from './DemoControlBar.svelte';
 	import { SHOWCASE_SEQUENCES, RANDOM_PROPS } from '../landing-content';
 	import { PropType } from '$lib/shared/pictograph/prop/domain/enums/PropType';
 
@@ -55,7 +56,7 @@
 	// Animation state
 	const animationState = createAnimationPanelState();
 	let playbackController: IAnimationPlaybackController | null = null;
-	let sequenceService: ISequenceRepository | null = null;
+	let discoverLoader: IDiscoverLoader | null = null;
 	let startPositionDeriver: IStartPositionDeriver | null = null;
 	let servicesReady = $state(false);
 	let animationReady = $state(false);
@@ -151,8 +152,10 @@
 			// Enable dark mode on mount for visual impact
 			visibilityManager.setDarkMode(darkMode);
 
+			// Load both animate and discover modules for sequence loading
 			await loadFeatureModule('animate');
-			sequenceService = resolve<ISequenceRepository>(TYPES.ISequenceRepository);
+			await loadFeatureModule('discover');
+			discoverLoader = resolve<IDiscoverLoader>(TYPES.IDiscoverLoader);
 			playbackController = resolve<IAnimationPlaybackController>(TYPES.IAnimationPlaybackController);
 			startPositionDeriver = resolve<IStartPositionDeriver>(TYPES.IStartPositionDeriver);
 			servicesReady = true;
@@ -172,7 +175,7 @@
 	});
 
 	async function loadSequence(word: string) {
-		if (!sequenceService || !playbackController) return;
+		if (!discoverLoader || !playbackController) return;
 
 		transitionKey++;
 		isLoading = true;
@@ -184,7 +187,8 @@
 			}
 			animationState.reset();
 
-			const rawSequence = await sequenceService.getSequence(word);
+			// Load from gallery's sequence-index.json (not local persistence)
+			const rawSequence = await discoverLoader.loadFullSequenceData(word);
 			if (!rawSequence) {
 				throw new Error(`Failed to load sequence: ${word}`);
 			}
@@ -308,38 +312,15 @@
 		</div>
 	{/key}
 
-	<div class="demo-controls">
-		<button
-			class="light-toggle-btn"
-			class:dark-mode={darkMode}
-			onclick={handleToggleDarkMode}
-			disabled={!servicesReady || isLoading}
-			aria-label={darkMode ? 'Switch to light mode' : 'Switch to dark mode'}
-			title={darkMode ? 'Switch to light mode' : 'Switch to dark mode'}
-		>
-			<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-				<!-- Bulb body: filled when light mode, outline when dark mode -->
-				<path
-					d="M9 18h6M10 22h4M12 2a7 7 0 0 0-4 12.7V18h8v-3.3A7 7 0 0 0 12 2z"
-					fill={darkMode ? 'none' : 'currentColor'}
-				/>
-			</svg>
-		</button>
-
-		<button class="change-prop-btn" onclick={handleChangeProp} disabled={!servicesReady || isLoading}>
-			<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-				<!-- Prop/tool swap icon -->
-				<path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" stroke-linecap="round" />
-			</svg>
-			<span>Change Prop</span>
-		</button>
-
-		<button class="randomize-btn" onclick={handleRandomize} disabled={!servicesReady || isLoading}>
-			<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-				<path d="M16 3h5v5M4 20L21 3M21 16v5h-5M15 15l6 6M4 4l5 5" />
-			</svg>
-			<span>Try Another</span>
-		</button>
+	<div class="controls-wrapper">
+		<DemoControlBar
+			{servicesReady}
+			{isLoading}
+			{darkMode}
+			onToggleDarkMode={handleToggleDarkMode}
+			onChangeProp={handleChangeProp}
+			onRandomize={handleRandomize}
+		/>
 	</div>
 </div>
 
@@ -406,8 +387,8 @@
 	}
 
 	.canvas-wrapper {
-		width: clamp(300px, 38cqw, 400px);
-		height: clamp(300px, 38cqw, 400px);
+		width: clamp(280px, 38cqw, 400px);
+		height: clamp(280px, 38cqw, 400px);
 		background: rgba(0, 0, 0, 0.4);
 		border: 1px solid var(--border, rgba(255, 255, 255, 0.1));
 		border-radius: 16px;
@@ -417,8 +398,8 @@
 
 	.beat-grid-panel {
 		flex: 0 0 auto;
-		width: clamp(400px, 50cqw, 530px);
-		height: clamp(300px, 38cqw, 400px);
+		width: clamp(280px, 50cqw, 530px);
+		height: clamp(280px, 38cqw, 400px);
 		background: transparent;
 		border: 2px solid var(--border-strong, rgba(255, 255, 255, 0.2));
 		border-radius: 16px;
@@ -461,150 +442,30 @@
 		}
 	}
 
-	.demo-controls {
+	.controls-wrapper {
 		position: absolute;
 		bottom: 0;
 		z-index: 10;
-		display: flex;
-		align-items: center;
-		gap: 12px;
 	}
 
-	.light-toggle-btn {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		width: 48px;
-		height: 48px;
-		background: var(--bg-card, rgba(255, 255, 255, 0.03));
-		border: 1px solid var(--border, rgba(255, 255, 255, 0.1));
-		border-radius: 50%;
-		color: var(--text-muted, rgba(255, 255, 255, 0.6));
-		cursor: pointer;
-		transition: all 0.25s ease;
-	}
-
-	.light-toggle-btn svg {
-		width: 24px;
-		height: 24px;
-	}
-
-	.light-toggle-btn:hover:not(:disabled) {
-		background: var(--bg-card-hover, rgba(255, 255, 255, 0.06));
-		border-color: var(--border-strong, rgba(255, 255, 255, 0.2));
-		color: var(--text, #ffffff);
-		transform: scale(1.05);
-	}
-
-	.light-toggle-btn:active:not(:disabled) {
-		transform: scale(0.95);
-	}
-
-	.light-toggle-btn:disabled {
-		opacity: 0.5;
-		cursor: not-allowed;
-	}
-
-	/* Dark mode active - glowing effect */
-	.light-toggle-btn.dark-mode {
-		background: rgba(99, 102, 241, 0.15);
-		border-color: rgba(99, 102, 241, 0.4);
-		color: var(--primary-light, #818cf8);
-		box-shadow:
-			0 0 20px rgba(99, 102, 241, 0.3),
-			inset 0 0 15px rgba(99, 102, 241, 0.1);
-	}
-
-	.light-toggle-btn.dark-mode:hover:not(:disabled) {
-		background: rgba(99, 102, 241, 0.25);
-		box-shadow:
-			0 0 30px rgba(99, 102, 241, 0.5),
-			inset 0 0 20px rgba(99, 102, 241, 0.15);
-	}
-
-	.randomize-btn {
-		display: inline-flex;
-		align-items: center;
-		gap: 10px;
-		padding: 14px 28px;
-		background: linear-gradient(135deg, var(--primary, #6366f1) 0%, #818cf8 100%);
-		border: none;
-		border-radius: 100px;
-		color: white;
-		font-size: 1rem;
-		font-weight: 600;
-		cursor: pointer;
-		transition: all 0.2s ease;
-		box-shadow: 0 4px 20px rgba(99, 102, 241, 0.3);
-	}
-
-	.randomize-btn:hover:not(:disabled) {
-		transform: translateY(-2px) scale(1.02);
-		box-shadow: 0 8px 30px rgba(99, 102, 241, 0.4);
-	}
-
-	.randomize-btn:active:not(:disabled) {
-		transform: translateY(0) scale(0.98);
-	}
-
-	.randomize-btn:disabled {
-		opacity: 0.6;
-		cursor: not-allowed;
-	}
-
-	.randomize-btn svg {
-		width: 20px;
-		height: 20px;
-		stroke-linecap: round;
-		stroke-linejoin: round;
-	}
-
-	.change-prop-btn {
-		display: inline-flex;
-		align-items: center;
-		gap: 10px;
-		padding: 14px 28px;
-		background: linear-gradient(135deg, #0d9488 0%, #14b8a6 100%);
-		border: none;
-		border-radius: 100px;
-		color: white;
-		font-size: 1rem;
-		font-weight: 600;
-		cursor: pointer;
-		transition: all 0.2s ease;
-		box-shadow: 0 4px 20px rgba(13, 148, 136, 0.3);
-	}
-
-	.change-prop-btn:hover:not(:disabled) {
-		transform: translateY(-2px) scale(1.02);
-		box-shadow: 0 8px 30px rgba(13, 148, 136, 0.4);
-	}
-
-	.change-prop-btn:active:not(:disabled) {
-		transform: translateY(0) scale(0.98);
-	}
-
-	.change-prop-btn:disabled {
-		opacity: 0.6;
-		cursor: not-allowed;
-	}
-
-	.change-prop-btn svg {
-		width: 20px;
-		height: 20px;
-		stroke-linecap: round;
-		stroke-linejoin: round;
-	}
-
-	@media (max-width: 768px) {
+	/* Tablet - show both but stacked */
+	@media (max-width: 900px) {
 		.demo-content-row {
-			flex-wrap: wrap;
+			flex-direction: column;
+			align-items: center;
 		}
 
 		.beat-grid-panel {
 			width: 100%;
-			max-width: clamp(300px, 85vw, 440px);
-			height: clamp(280px, 55vw, 380px);
+			max-width: min(500px, 90vw);
+			height: clamp(200px, 40vw, 300px);
+		}
+	}
+
+	/* Mobile - hide beat grid, focus on animation */
+	@media (max-width: 600px) {
+		.beat-grid-panel {
+			display: none;
 		}
 
 		.word-label-row .word-text {
@@ -612,55 +473,20 @@
 		}
 
 		.canvas-wrapper {
-			width: clamp(280px, 70vw, 360px);
-			height: clamp(280px, 70vw, 360px);
+			width: min(320px, 85vw);
+			height: min(320px, 85vw);
 		}
 
 		.animation-loading,
 		.animation-fallback {
-			width: clamp(240px, 65vw, 320px);
-			height: clamp(240px, 65vw, 320px);
-		}
-
-		.demo-controls {
-			gap: 10px;
-		}
-
-		.light-toggle-btn {
-			width: 44px;
-			height: 44px;
-		}
-
-		.light-toggle-btn svg {
-			width: 22px;
-			height: 22px;
-		}
-
-		.randomize-btn,
-		.change-prop-btn {
-			padding: 12px 24px;
-			font-size: 0.9rem;
+			width: min(280px, 80vw);
+			height: min(280px, 80vw);
 		}
 	}
 
 	@media (prefers-reduced-motion: reduce) {
-		.randomize-btn,
-		.change-prop-btn,
-		.light-toggle-btn {
-			transition: none;
-		}
-
 		.spinner {
 			animation: none;
-		}
-
-		.randomize-btn:hover:not(:disabled),
-		.randomize-btn:active:not(:disabled),
-		.change-prop-btn:hover:not(:disabled),
-		.change-prop-btn:active:not(:disabled),
-		.light-toggle-btn:hover:not(:disabled),
-		.light-toggle-btn:active:not(:disabled) {
-			transform: none;
 		}
 	}
 </style>

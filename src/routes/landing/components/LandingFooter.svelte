@@ -210,7 +210,7 @@
 	.footer-legal a {
 		color: rgba(255, 255, 255, 0.7);
 		text-decoration: none;
-		font-size: 0.75rem;
+		font-size: var(--font-size-compact, 0.75rem);
 		padding: 8px 0;
 		transition: color 0.2s ease;
 	}

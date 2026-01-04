@@ -116,7 +116,7 @@
 	}
 
 	.check {
-		color: #22c55e;
+		color: var(--semantic-success, #22c55e);
 		font-weight: bold;
 	}
 
