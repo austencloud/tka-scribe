@@ -13,6 +13,7 @@ A LOOP sequence is **circular** - it ends where it began with matching orientati
 ## LOOP Component Types
 
 ### 1. Rotated
+
 **Transformation:** Positions rotate 180° (halved) or 90° (quartered)
 **Icon:** rotate
 **Color:** #36c3ff (cyan)
@@ -20,12 +21,14 @@ A LOOP sequence is **circular** - it ends where it began with matching orientati
 **Example:** Beat 1 has props at N/S, Beat 9 (halfway) has props at S/N (180° rotation)
 
 **Intervals:**
+
 - **Halved (½)**: Rotation occurs at 180° (beat n+8 in 16-beat sequence)
 - **Quartered (¼)**: Rotation occurs at 90° intervals (every 4 beats)
 
 ---
 
 ### 2. Swapped
+
 **Transformation:** Blue and red hands swap roles
 **Icon:** shuffle
 **Color:** #26e600 (green)
@@ -33,12 +36,14 @@ A LOOP sequence is **circular** - it ends where it began with matching orientati
 **Example:** Beat 1 has blue at N and red at S, Beat 9 has blue at S (red's position) and red at N (blue's position)
 
 **Intervals:**
+
 - **Halved (½)**: Swap occurs at midpoint
 - **Quartered (¼)**: Swap occurs every quarter
 
 ---
 
 ### 3. Mirrored
+
 **Transformation:** Positions mirror vertically (left ↔ right)
 **Icon:** left-right
 **Color:** #6F2DA8 (purple)
@@ -50,6 +55,7 @@ A LOOP sequence is **circular** - it ends where it began with matching orientati
 ---
 
 ### 4. Flipped
+
 **Transformation:** Positions mirror horizontally (top ↔ bottom)
 **Icon:** up-down
 **Color:** #14b8a6 (teal)
@@ -61,6 +67,7 @@ A LOOP sequence is **circular** - it ends where it began with matching orientati
 ---
 
 ### 5. Inverted
+
 **Transformation:** Pro ↔ Anti motion types flip
 **Icon:** yin-yang
 **Color:** #eb7d00 (orange)
@@ -72,6 +79,7 @@ A LOOP sequence is **circular** - it ends where it began with matching orientati
 ---
 
 ### 6. Rewound
+
 **Transformation:** Second half plays in reverse
 **Icon:** backward
 **Color:** #ec4899 (pink)
@@ -83,6 +91,7 @@ A LOOP sequence is **circular** - it ends where it began with matching orientati
 ---
 
 ### 7. Repeated
+
 **Transformation:** Sequence repeats 2-4x for true circularity (orientations match)
 **Icon:** repeat
 **Color:** #f59e0b (amber)
@@ -113,10 +122,12 @@ A LOOP sequence is **circular** - it ends where it began with matching orientati
 #### Example: AAKE
 
 **Structure:**
+
 - **Motif A**: AA (two "A" letters in sequence)
 - **Motif B**: KE (K followed by E)
 
 **Independent Transformations:**
+
 - **AA rotation**: Alternates CCW/CW every **quarter** (every 4 beats)
   - Beats 1-2: AA (CCW)
   - Beats 5-6: AA (CW)
@@ -134,26 +145,31 @@ A LOOP sequence is **circular** - it ends where it began with matching orientati
 #### How Modular Differs:
 
 **vs. Simple LOOPs:**
+
 - Simple: Entire sequence follows one transformation (all rotated, all swapped)
 - Modular: Different parts follow different transformations
 
 **vs. Section LOOPs:**
+
 - Section: Sections relate to each other with the same transformation type
 - Modular: Sections contain motifs with independent transformation rules
 
 **vs. Repeated:**
+
 - Repeated: Same content repeats multiple times
 - Modular: Different motifs transform independently (may include repetition as one component)
 
 #### When to Use Modular:
 
 Use "modular" when you observe:
+
 1. ✅ Distinct recurring motifs/phrases within the sequence
 2. ✅ Each motif transforms according to its own pattern
 3. ✅ Transformation intervals differ between motifs
 4. ✅ Cannot be cleanly described by a single whole-sequence LOOP
 
 **Do NOT use modular for:**
+
 - ❌ Simple whole-sequence transformations
 - ❌ Section relationships that all follow the same transformation type
 - ❌ Beat pair relationships without motif-level structure
@@ -168,6 +184,7 @@ Use "modular" when you observe:
    - The interval for each transformation
 
 **Example Note for AAKE:**
+
 ```
 Modular: AA alternates rotation (quartered: CCW/CW/CCW/CW),
 KE swaps destination (halved: beta1/beta5/beta5/beta1)
@@ -176,6 +193,7 @@ KE swaps destination (halved: beta1/beta5/beta5/beta1)
 #### Future Expansion:
 
 The modular designation opens the door for more complex pattern analysis:
+
 - Multi-layer notation systems
 - Motif-level interval tracking
 - Transformation dependency graphs
@@ -208,14 +226,18 @@ Transformations can occur at different intervals:
 ## Non-LOOP Designations
 
 ### Freeform
+
 No recognizable transformation pattern. Use **only when**:
+
 - No whole-sequence transformations
 - No section-level patterns
 - No beat pair relationships
 - Truly irregular/improvised structure
 
 ### Unknown
+
 Pattern exists but cannot be currently categorized. Use for:
+
 - Complex patterns not yet in taxonomy
 - Patterns requiring further analysis
 - Transitional placeholder during labeling

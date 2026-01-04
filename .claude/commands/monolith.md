@@ -1,6 +1,7 @@
 Run monolith detection to identify files with multiple responsibilities.
 
 First, run the detection script:
+
 ```bash
 node scripts/find-monoliths.cjs
 ```
@@ -19,20 +20,24 @@ Present your analysis and recommendations, then ask if the user wants to proceed
 When multiple agents are working on monoliths simultaneously, use the claiming system to avoid conflicts:
 
 **Before starting work**, claim the file:
+
 ```bash
 node scripts/find-monoliths.cjs --claim "lib/path/to/File.svelte"
 ```
 
 **After completing the refactor**, release the claim:
+
 ```bash
 node scripts/find-monoliths.cjs --release "lib/path/to/File.svelte"
 ```
 
 **Other useful commands:**
+
 - `--claims` - See all active claims
 - `--clear-expired` - Remove claims older than 2 hours (stale/crashed agents)
 
 **If a file is already claimed:**
+
 - The script will show who claimed it and when
 - Move to the next available candidate instead
 - Do NOT work on claimed files - another agent is already on it
@@ -42,12 +47,14 @@ node scripts/find-monoliths.cjs --release "lib/path/to/File.svelte"
 The goal is **AI parseability and single responsibility**, not hitting specific line counts.
 
 **Signs a file needs decomposition:**
+
 - Multiple unrelated `$effect` blocks
 - Many private functions doing different things
 - Mixed concerns (data fetching + UI logic + state management)
 - Hard to describe what the file does in one sentence
 
 **The pattern:**
+
 1. **Identify responsibilities** - what does this file actually do?
 2. **Group by domain** - related responsibilities become one service
 3. **Extract contracts** - `services/contracts/I{ServiceName}.ts`
@@ -56,6 +63,7 @@ The goal is **AI parseability and single responsibility**, not hitting specific 
 6. **Slim the original** - it becomes an orchestrator that composes services
 
 ## What NOT to do:
+
 - Create utility files (use services)
 - Create barrel exports (import directly)
 - Split just to reduce line count

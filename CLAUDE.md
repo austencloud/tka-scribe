@@ -127,50 +127,52 @@ This is a core architectural decision. The word "Service" is redundant - everyth
 
 **Naming patterns:**
 
-| If the service does... | Name it... | Example |
-|------------------------|------------|---------|
-| Detection/checking | `*Detector` | `LOOPDetector`, `ReversalDetector` |
-| Management/coordination | `*Manager` | `TurnManager`, `CollectionManager` |
-| Configuration | `*Configurator` | `CardConfigurator` |
-| Orchestration | `*Orchestrator` | `GenerationOrchestrator` |
-| Persistence/storage | `*Persister` | `SequencePersister`, `FilterPersister` |
-| Loading data | `*Loader` | `SequenceLoader`, `OptionLoader` |
-| Filtering | `*Filter` | `OptionFilter`, `DiscoverFilter` |
-| Sorting | `*Sorter` | `OptionSorter`, `DiscoverSorter` |
-| Validation | `*Validator` | `SequenceValidator` |
-| Transformation | `*Transformer` | `SequenceTransformer` |
-| Analysis | `*Analyzer` | `SequenceAnalyzer`, `PositionAnalyzer` |
-| Calculation | `*Calculator` | `SequenceStatsCalculator` |
-| Export/conversion | `*Exporter` | `SequenceExporter`, `CocoExporter` |
-| Import | `*Importer` | `SequenceImporter` |
-| Indexing | `*Indexer` | `SequenceIndexer` |
-| Repository/CRUD | `*Repository` | `LibraryRepository`, `FeedbackRepository` |
-| Playing media | `*Player` | `MusicPlayer` |
-| Recording | `*Recorder` | `PerformanceRecorder` |
-| Tracking | `*Tracker` | `SessionTracker`, `ActivityTracker` |
-| Handling events | `*Handler` | `DeepLinkSequenceHandler` |
-| Notifying | `*Notifier` | `AdminNotifier` |
-| Caching | `*Cache` | `DiscoverCache`, `SequenceCache` |
+| If the service does...  | Name it...      | Example                                   |
+| ----------------------- | --------------- | ----------------------------------------- |
+| Detection/checking      | `*Detector`     | `LOOPDetector`, `ReversalDetector`        |
+| Management/coordination | `*Manager`      | `TurnManager`, `CollectionManager`        |
+| Configuration           | `*Configurator` | `CardConfigurator`                        |
+| Orchestration           | `*Orchestrator` | `GenerationOrchestrator`                  |
+| Persistence/storage     | `*Persister`    | `SequencePersister`, `FilterPersister`    |
+| Loading data            | `*Loader`       | `SequenceLoader`, `OptionLoader`          |
+| Filtering               | `*Filter`       | `OptionFilter`, `DiscoverFilter`          |
+| Sorting                 | `*Sorter`       | `OptionSorter`, `DiscoverSorter`          |
+| Validation              | `*Validator`    | `SequenceValidator`                       |
+| Transformation          | `*Transformer`  | `SequenceTransformer`                     |
+| Analysis                | `*Analyzer`     | `SequenceAnalyzer`, `PositionAnalyzer`    |
+| Calculation             | `*Calculator`   | `SequenceStatsCalculator`                 |
+| Export/conversion       | `*Exporter`     | `SequenceExporter`, `CocoExporter`        |
+| Import                  | `*Importer`     | `SequenceImporter`                        |
+| Indexing                | `*Indexer`      | `SequenceIndexer`                         |
+| Repository/CRUD         | `*Repository`   | `LibraryRepository`, `FeedbackRepository` |
+| Playing media           | `*Player`       | `MusicPlayer`                             |
+| Recording               | `*Recorder`     | `PerformanceRecorder`                     |
+| Tracking                | `*Tracker`      | `SessionTracker`, `ActivityTracker`       |
+| Handling events         | `*Handler`      | `DeepLinkSequenceHandler`                 |
+| Notifying               | `*Notifier`     | `AdminNotifier`                           |
+| Caching                 | `*Cache`        | `DiscoverCache`, `SequenceCache`          |
 
 **Examples:**
 
 ```typescript
 // ✅ CORRECT - Descriptive, action-oriented names
-class LOOPDetector implements ILOOPDetector { }
-class SequencePersister implements ISequencePersister { }
-class TurnManager implements ITurnManager { }
+class LOOPDetector implements ILOOPDetector {}
+class SequencePersister implements ISequencePersister {}
+class TurnManager implements ITurnManager {}
 
 // ❌ WRONG - Redundant "Service" suffix
-class LOOPDetectionService implements ILOOPDetectionService { }
-class SequencePersistenceService implements ISequencePersistenceService { }
-class TurnManagementService implements ITurnManagementService { }
+class LOOPDetectionService implements ILOOPDetectionService {}
+class SequencePersistenceService implements ISequencePersistenceService {}
+class TurnManagementService implements ITurnManagementService {}
 ```
 
 **Interface naming:** Interfaces follow the same pattern with `I` prefix:
+
 - `ISequencePersister` (not `ISequencePersistenceService`)
 - `ILOOPDetector` (not `ILOOPDetectionService`)
 
 **When creating new services:**
+
 1. Think: "What does this service DO?"
 2. Name it after that action: Detector, Manager, Loader, etc.
 3. Never append "Service" - it adds no information
@@ -199,16 +201,17 @@ class TurnManagementService implements ITurnManagementService { }
 
 **What to share in Svelte:**
 
-| ✅ SHARE (via CSS variables) | ❌ DON'T SHARE (keep scoped) |
-|------------------------------|------------------------------|
-| Colors: `var(--theme-card-bg)` | Layout: `.container { max-width }` |
-| Spacing tokens: `var(--spacing-md)` | Typography: `h2 { font-size }` |
-| Border radii: `var(--radius-lg)` | Section padding: `.section { padding }` |
+| ✅ SHARE (via CSS variables)             | ❌ DON'T SHARE (keep scoped)                |
+| ---------------------------------------- | ------------------------------------------- |
+| Colors: `var(--theme-card-bg)`           | Layout: `.container { max-width }`          |
+| Spacing tokens: `var(--spacing-md)`      | Typography: `h2 { font-size }`              |
+| Border radii: `var(--radius-lg)`         | Section padding: `.section { padding }`     |
 | Semantic colors: `var(--semantic-error)` | Grid definitions: `.grid { display: grid }` |
 
 **The rule:** Share design tokens (values), not layout classes (rules).
 
 **If you see "duplicated" layout CSS across Svelte components:**
+
 - That's fine. Leave it alone.
 - Each component owns its own layout.
 - The "duplication" is actually encapsulation.
@@ -260,11 +263,13 @@ See `src/lib/shared/settings/utils/background-theme-calculator.ts` for implement
 **Panel Types:**
 
 1. **Main Panels** (full-screen content areas):
+
    ```css
    background: var(--theme-panel-bg, rgba(18, 18, 28, 0.98));
    ```
 
 2. **Cards/Sub-panels** (nested content):
+
    ```css
    background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
    border: 1.5px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
@@ -303,15 +308,15 @@ See `docs/UNIFIED_PANEL_BACKGROUNDS.md` for full guidelines.
 
 **When to write tests:**
 
-| Scenario | Write Test? | Why |
-|----------|-------------|-----|
-| Pure algorithm/calculation | ✅ Yes | Math is stable, bugs are subtle |
-| Silent data corruption risk | ✅ Yes | You won't notice until it's too late |
-| Bug that regressed twice | ✅ Yes | Proven problem worth preventing |
-| New feature, still evolving | ❌ No | Will change, test will die |
-| UI component | ❌ No | You'll see if it's broken |
-| Glue code / wiring | ❌ No | Obvious when broken |
-| Something you'd notice immediately | ❌ No | Your eyes are the test |
+| Scenario                           | Write Test? | Why                                  |
+| ---------------------------------- | ----------- | ------------------------------------ |
+| Pure algorithm/calculation         | ✅ Yes      | Math is stable, bugs are subtle      |
+| Silent data corruption risk        | ✅ Yes      | You won't notice until it's too late |
+| Bug that regressed twice           | ✅ Yes      | Proven problem worth preventing      |
+| New feature, still evolving        | ❌ No       | Will change, test will die           |
+| UI component                       | ❌ No       | You'll see if it's broken            |
+| Glue code / wiring                 | ❌ No       | Obvious when broken                  |
+| Something you'd notice immediately | ❌ No       | Your eyes are the test               |
 
 **The "silent bug" test:** Ask yourself: "If this breaks, will I notice immediately, or will it silently produce wrong output?" Only test the silent ones.
 
@@ -457,6 +462,7 @@ When executing a release, you MUST complete ALL of these steps:
 3. **Execute** - Run `node scripts/release.js --version X.Y.Z --confirm`
 4. **Push tag** - `git push origin main && git push origin vX.Y.Z`
 5. **Create GitHub Release** - **MANDATORY, DO NOT SKIP**:
+
    ```bash
    gh release create vX.Y.Z --title "vX.Y.Z" --notes "$(cat <<'EOF'
    ## What's New
@@ -472,6 +478,7 @@ When executing a release, you MUST complete ALL of these steps:
    EOF
    )"
    ```
+
 6. **Archive feedback** - Run `node scripts/archive-feedback.js X.Y.Z`
 7. **Sync develop** - `git checkout develop && git merge main && git push origin develop`
 
@@ -551,9 +558,10 @@ OptionPictographCell.svelte → OptionPictograph
 ```
 
 **Key files:**
+
 - `$lib/shared/pictograph/option/OptionPictograph.svelte` - THE renderer (edit this for rendering changes)
 - `$lib/shared/pictograph/option/PreparedPictographData.ts` - shared type definition
-- `OptionCardContent.svelte` - desktop wrapper (polls for Lights Off state)
+- `OptionCardContent.svelte` - desktop wrapper (polls for Dark Mode state)
 - `OptionPictographCell.svelte` - mobile wrapper (receives lightsOff prop from parent)
 
 **When fixing rendering issues:** Edit `OptionPictograph.svelte` - both desktop and mobile use it.
@@ -576,20 +584,25 @@ node scripts/fetch-feedback.js create --title "Title" --description "Desc" --typ
 ```
 
 **Create syntax:**
+
 ```bash
 node scripts/fetch-feedback.js create "title" "description" [type] [module] [tab]
 ```
+
 - `type`: bug, feature, enhancement, general (default: enhancement)
 - `module`: compose, create, discover, settings, etc.
 - `tab`: optional sub-tab
 
 **Update status syntax:**
+
 ```bash
 node scripts/fetch-feedback.js <id> <status> "resolution notes"
 ```
+
 - Status: new, in-progress, in-review, completed, archived
 
 **Examples:**
+
 ```bash
 # Create a feature
 node scripts/fetch-feedback.js create "What's New modal" "Shows version changes to users" feature settings
@@ -614,6 +627,7 @@ When `/done` is called and there's no matching feedback item for the work just c
 **Source field distinction:**
 
 Feedback items have a `source` field to distinguish origin:
+
 - `source: "app"` - User submitted through the in-app feedback form (real user feedback)
 - `source: "terminal"` - Created via CLI/Claude Code (dev work log)
 
@@ -622,6 +636,7 @@ When auto-creating via `/done`, the script automatically sets `source: "terminal
 **Terminal-sourced items (via /done):**
 
 Unlike app feedback (problem → resolution), terminal items are work logs:
+
 - Work is already complete when created
 - Title describes what was done (not a problem to solve)
 - Description has details of the work

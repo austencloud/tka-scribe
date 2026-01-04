@@ -91,20 +91,24 @@ Review both the feedback items AND the commit messages to build a complete pictu
 Present a comprehensive preview that includes:
 
 **Sources gathered:**
+
 - Completed feedback count and breakdown (X bugs, Y features, Z general)
 - Git commits since last release (N commits)
 
 **Version info:**
+
 - Current version vs. suggested new version
 - Bump rationale (minor for features, patch for fixes only)
 
 **Combined changelog preview:**
+
 - **YOUR REWRITTEN changelog** (categorized by fixed/added/improved)
 - Include items from BOTH feedback AND commits
 - Deduplicate where the same change appears in both sources
 - Infrastructure/build changes from commits that weren't in feedback
 
 **Warnings:**
+
 - Git status warnings (if uncommitted changes exist)
 
 ### Step 4: Get User Confirmation
@@ -327,6 +331,7 @@ All done! Release v0.2.0 is live.
 ```
 
 **Key points demonstrated:**
+
 - Both feedback AND commits were gathered
 - Commits revealed a security fix not tracked in feedback
 - Changelog was rewritten in user-friendly language

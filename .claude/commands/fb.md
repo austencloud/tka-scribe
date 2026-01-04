@@ -564,6 +564,7 @@ Reasoning: Icon change requires finding the correct file, identifying the icon s
 ```
 
 **Why not Haiku?** Even though this is "just an icon swap," the agent needs to:
+
 - Find the correct component file
 - Understand the icon system (FontAwesome? Custom SVGs? Icon component?)
 - Locate the specific icon reference

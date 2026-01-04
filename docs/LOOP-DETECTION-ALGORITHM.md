@@ -39,14 +39,14 @@ LOOPs are analyzed by comparing beats at different "slice" intervals:
 
 Each component describes HOW positions/colors change between compared beats:
 
-| Component | Description | Position Transform | Color Transform |
-|-----------|-------------|-------------------|-----------------|
-| **ROTATED** | 180° position rotation | n↔s, e↔w, ne↔sw, nw↔se | Same colors |
-| **SWAPPED** | Colors exchange | Same positions | Blue↔Red |
-| **MIRRORED** | Vertical mirror (left/right) | e↔w, ne↔nw, se↔sw | Same colors |
-| **FLIPPED** | Horizontal flip (top/bottom) | n↔s, ne↔se, nw↔sw | Same colors |
-| **INVERTED** | Motion type inversion | Same positions | pro↔anti |
-| **REPEATED** | Exact copy | Identical | Identical |
+| Component    | Description                  | Position Transform     | Color Transform |
+| ------------ | ---------------------------- | ---------------------- | --------------- |
+| **ROTATED**  | 180° position rotation       | n↔s, e↔w, ne↔sw, nw↔se | Same colors     |
+| **SWAPPED**  | Colors exchange              | Same positions         | Blue↔Red        |
+| **MIRRORED** | Vertical mirror (left/right) | e↔w, ne↔nw, se↔sw      | Same colors     |
+| **FLIPPED**  | Horizontal flip (top/bottom) | n↔s, ne↔se, nw↔sw      | Same colors     |
+| **INVERTED** | Motion type inversion        | Same positions         | pro↔anti        |
+| **REPEATED** | Exact copy                   | Identical              | Identical       |
 
 ### Compound Components
 
@@ -83,6 +83,7 @@ IF beat count % 4 ≠ 0:
 For each beat pair `(i, i + halfLength)`:
 
 1. **Check ROTATED**: Are positions rotated 180°?
+
    ```
    blue1.startLoc → ROTATE_180 → blue2.startLoc?
    blue1.endLoc → ROTATE_180 → blue2.endLoc?
@@ -91,6 +92,7 @@ For each beat pair `(i, i + halfLength)`:
    ```
 
 2. **Check SWAPPED**: Are colors exchanged (with same positions)?
+
    ```
    blue1 positions = red2 positions?
    red1 positions = blue2 positions?
@@ -102,21 +104,25 @@ For each beat pair `(i, i + halfLength)`:
    If blue and red both do `pro`, swapping them changes nothing choreographically.
 
 3. **Check MIRRORED**: Are positions mirrored left/right?
+
    ```
    Apply MIRROR_VERTICAL map (e↔w)
    ```
 
 4. **Check FLIPPED**: Are positions flipped top/bottom?
+
    ```
    Apply FLIP_HORIZONTAL map (n↔s)
    ```
 
 5. **Check INVERTED**: Are motion types inverted?
+
    ```
    Same positions, but pro↔anti
    ```
 
 6. **Check REPEATED**: Are beats identical?
+
    ```
    All positions and motion types match exactly
    ```
@@ -147,6 +153,7 @@ For sequences divisible by 4, check 90° rotation patterns:
 **Check each quarter transition (Q1→Q2, Q2→Q3, Q3→Q4, Q4→Q1):**
 
 1. **Pure 90° Rotation** (no swap):
+
    ```
    blue1 positions → ROTATE_90_CCW → blue2 positions?
    red1 positions → ROTATE_90_CCW → red2 positions?
@@ -165,16 +172,19 @@ For sequences divisible by 4, check 90° rotation patterns:
 **Key insight**: Components can operate at DIFFERENT slice granularities!
 
 **Rotated(¼) + Swapped(½)** means:
+
 - Rotation happens at 90° per quarter (¼ slice)
 - Swap happens only at the half boundary (½ slice)
 
 This pattern occurs when quarter transitions alternate:
+
 - Q1→Q2: 90° rotation only (no swap)
 - Q2→Q3: 90° rotation + swap
 - Q3→Q4: 90° rotation + swap
 - Q4→Q1: 90° rotation only (no swap)
 
 Detection:
+
 ```
 IF all quarter transitions have 90° rotation (either pure OR with swap)
 AND some transitions have swap
@@ -185,6 +195,7 @@ THEN this is a mixed-slice pattern → Report as "rotated+swapped"
 **Why this works mathematically:**
 
 When comparing halves (beat i vs beat i+8 in a 16-beat sequence):
+
 - Beats from Q1 reach Q3 by crossing ONE swap boundary (Q2→Q3)
   - Result: 180° rotation + 1 swap = **ROTATED+SWAPPED**
 - Beats from Q2 reach Q4 by crossing TWO swap boundaries (Q2→Q3 and Q3→Q4)
@@ -197,6 +208,7 @@ This causes inconsistent halved detection (some pairs show ROTATED+SWAPPED, othe
 ## Position Transform Maps
 
 ### ROTATE_180 (180° rotation)
+
 ```
 n ↔ s
 e ↔ w
@@ -205,12 +217,14 @@ nw ↔ se
 ```
 
 ### ROTATE_90_CCW (90° counter-clockwise)
+
 ```
 n → w → s → e → n
 ne → nw → sw → se → ne
 ```
 
 ### MIRROR_VERTICAL (left/right mirror)
+
 ```
 n → n, s → s
 e ↔ w
@@ -219,6 +233,7 @@ se ↔ sw
 ```
 
 ### FLIP_HORIZONTAL (top/bottom flip)
+
 ```
 e → e, w → w
 n ↔ s
@@ -233,14 +248,17 @@ nw ↔ sw
 Swap detection requires careful handling:
 
 **Swap IS meaningful when:**
+
 - Hands have DIFFERENT motion types (one pro, one anti)
 - The swap actually exchanges distinct choreographic roles
 
 **Swap is NOT meaningful when:**
+
 - Both hands have the SAME motion type
 - Swapping them produces identical choreography (coincidental match)
 
 **Exception - Mixed-slice patterns:**
+
 - For Rotated(¼)+Swapped(½) patterns, the swap IS meaningful even with same motion types
 - The structural exchange of rotational paths creates distinct choreography
 - The swap alternates at quarter boundaries, creating the pattern
@@ -263,41 +281,49 @@ When multiple patterns match, use this priority:
 ### Simple ROTATED (halved)
 
 An 8-beat sequence where comparing beat pairs (1↔5, 2↔6, 3↔7, 4↔8):
+
 ```
 Beat 1: blue s→w, red s→e
 Beat 5: blue n→e, red n→w  (positions rotated 180°, colors same)
 ```
+
 All pairs show 180° rotation → **ROTATED**
 
 ### ROTATED+SWAPPED (uniform quartered)
 
 A 16-beat sequence where EVERY quarter transition shows 90° rotation + swap:
+
 ```
 Q1→Q2: 90° rotation + swap
 Q2→Q3: 90° rotation + swap
 Q3→Q4: 90° rotation + swap
 Q4→Q1: 90° rotation + swap
 ```
+
 Consistent pattern across all quarters → **ROTATED+SWAPPED**
 
 ### ROTATED+SWAPPED (mixed-slice)
 
 A 16-beat sequence where quarter transitions alternate:
+
 ```
 Q1→Q2: 90° rotation only (no swap)
 Q2→Q3: 90° rotation + swap
 Q3→Q4: 90° rotation + swap
 Q4→Q1: 90° rotation only (no swap)
 ```
+
 Rotation at ¼ slice, swap at ½ slice → **ROTATED+SWAPPED**
 
 ### REPEATED
 
 An 8-beat sequence where beats 1-4 are identical to beats 5-8:
+
 ```
 Beat 1: blue s→w (pro), red s→e (anti)
 Beat 5: blue s→w (pro), red s→e (anti)  (exact copy)
 ```
+
 Second half repeats first half exactly → **REPEATED**
 
 This occurs when a sequence needs to repeat itself to return to the original orientation.
@@ -345,4 +371,4 @@ This occurs when a sequence needs to repeat itself to return to the original ori
 
 ---
 
-*Last updated: 2024-12-23*
+_Last updated: 2024-12-23_
